@@ -1,0 +1,73 @@
+/* 
+  Localizable.strings
+  babyMoa
+
+  Created by Baba on 10/20/25.
+  
+*/
+
+
+/* --- 공통으로 사용되는 값을 표준화   */
+"appName"="Baby Moa";
+"textName" = "이름";
+"textNickName" = "태명";
+"textGender" = "성별";
+"textBoy" = "남아";
+"textGirl" = "여아";
+"textBirthday" = "출생일";
+"textMeRelation" = "아이와 나의 관계";
+"textSave" = "저장";
+"textOk" = "확인";
+
+/* --- AddBaby (아기 추가) 화면 --- */
+
+"addBaby.navigationTitle" = "아기 추가";
+
+"addBaby.new.title" = "새로운 아기 추가";
+"addBaby.new.description" = "새로운 아기 정보를 만들어 추가합니다. 생성한 아기 정보는 공동 양육자에게 초대 코드로 공유 할 수 있습니다.";
+"addBaby.new.button" = "새로운 아기 추가";
+
+"addBaby.connect.title" = "초대코드 연결";
+"addBaby.connect.description" = "베이비모아를 사용하고 있는 공동 양육자가 생성한 초대 코드를 입력하여, 등록된 아기의 정보를 연결합니다.";
+"addBaby.connect.button" = "초대코드 연결";
+
+
+/* --- AddBabyNew (새로운 아기 추가 - 출생 여부) 화면 --- */
+
+"addBabyNew.question.title" = "태어난 아이인가요?";
+"addBabyNew.question.yesButton" = "네, 태어났어요";
+"addBabyNew.question.noButton" = "아니요, 아직 뱃속에 있어요";
+
+/* --- AddBabyInvitation (초대 코드 입력) 화면 --- */
+
+"addBabyInvitation.navigationTitle" = "초대 코드";
+
+"addBabyInvitation.title" = "초대 코드 입력";
+"addBabyInvitation.description" = "다른 양육자에게 받은 6자리 초대 코드를 입력해 주세요.";
+"addBabyInvitation.textField.placeholder" = "초대코드 6자리";
+
+
+/* --- Login And Join View String (회원가입 및 로그인) 화면 ----- */
+
+"login.description" = "아이의 성장발달 순간과 일상을 사진과 기록으로 담아, 성장과 추억을 함께 모아보세요";
+"login.appleLoginButton" = "Apple로 로그인";
+
+"terms.title" = "약관에 동의해 주세요";
+"terms.ageRequirement" = "만 14세 이상";
+"terms.serviceAgreement" = "이용약관 동의";
+"terms.privacyPolicy" = "개인정보 수집 및 이용 동의";
+
+
+/* --- GuardianCode (공동 양육자 초대 코드) 화면 --- */
+
+"guardianCode.navigationTitle" = "공동 양육자 초대 코드";
+
+"guardianCode.description1" = "공동 양육자가 초대 코드를 입력하면,\n 육아를 함께 추억할 수 있습니다.";
+"guardianCode.description2" = "연결할 공동 양육자의 기기에서 아기를 추가할 때,\n 위에있는 초대 코드를 입력해 주세요.";
+"guardianCode.description3" = "초대코드는 보안상 24시간만 유효하며,\n 시간 경과 후에는 재발급하여 사용 가능 합니다.";
+
+// "24시간" 부분은 동적으로 바뀔 수 있으므로 "코드 입력 유효시간 :"만 키로 만듭니다.
+"guardianCode.expiration.label" = "코드 입력 유효시간 : 24h";
+
+// 버튼 텍스트가 동일하므로 키 하나를 재사용합니다.
+"guardianCode.cancelButton" = "초대 코드 취소하기";
