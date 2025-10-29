@@ -75,7 +75,7 @@ struct GrowthMetricButton: View {
                             alignment: .bottomTrailing
                         )
                         .padding(.trailing, 8)
-                        .padding(.bottom, title == "몸무게" ? -14 : -1)  // 몸무게만 더 아래로 왼쪽 몸무게 오른쪽은 기린
+                        .padding(.bottom, title == "몸무게" ? -10 : 0)  // 몸무게만 더 아래로 왼쪽 몸무게 오른쪽은 기린
                 }
             }
             .frame(height: 100)

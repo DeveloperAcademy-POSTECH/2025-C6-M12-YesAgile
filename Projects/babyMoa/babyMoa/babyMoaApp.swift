@@ -11,7 +11,7 @@ import SwiftUI
 struct babyMoaApp: App {
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            AddBabyView()
         }
     }
 }

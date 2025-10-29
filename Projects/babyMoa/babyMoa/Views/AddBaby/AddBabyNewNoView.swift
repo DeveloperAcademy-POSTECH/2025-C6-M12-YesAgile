@@ -61,6 +61,7 @@ struct AddBabyNewNoView: View {
     @State private var babyNickname: String = ""
     @State private var expectedBirthDate = Date()
     @State private var relationship: BabyRelationship = .mom
+    @State private var showDatePicker = false
     
     // 기본 프로필 이미지 배열
     private let defaultProfiles = DefaultBabyProfile.allCases
@@ -189,20 +190,40 @@ struct AddBabyNewNoView: View {
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(Color("Font").opacity(0.6))
             
-            HStack {
-                Text(formatDate(expectedBirthDate))
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(Color("Font"))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(8)
+            Button(action: { showDatePicker = true }) {
+                HStack {
+                    Text(formatDate(expectedBirthDate))
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(Color("Font"))
+                    Spacer()
+                    Image(systemName: "calendar")
+                        .foregroundColor(Color("Font").opacity(0.4))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
             }
-            .overlay {
-                DatePicker("", selection: $expectedBirthDate, displayedComponents: .date)
-                    .labelsHidden()
-                    .contentShape(Rectangle())
-                    .opacity(0.011)
+            .sheet(isPresented: $showDatePicker) {
+                VStack {
+                    DatePicker("출생 예정일 선택", selection: $expectedBirthDate, displayedComponents: .date)
+                        .datePickerStyle(.graphical)
+                        .labelsHidden()
+                        .padding()
+                    
+                    Button("완료") {
+                        showDatePicker = false
+                    }
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(Color("Brand-50"))
+                    .cornerRadius(12)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 20)
+                }
+                .presentationDetents([.height(450)])
             }
         }
     }

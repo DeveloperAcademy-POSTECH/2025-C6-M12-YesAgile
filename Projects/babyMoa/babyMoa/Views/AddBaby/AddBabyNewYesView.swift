@@ -11,9 +11,6 @@ import PhotosUI
 enum Mytype: String, CaseIterable, Identifiable {
     case dady = "아빠"
     case mom = "엄마"
-    case grandPa = "할아버지"
-    case grandMam = "할머니"
-    case another = "기타"
     var id: String { self.rawValue }
 }
 
@@ -28,6 +25,7 @@ struct AddBabyNewYes: View {
     @State private var selectedGender: String = "" // "M", "F", "N"
     @State private var birthDate = Date()
     @State private var relationship: Mytype = .mom
+    @State private var showDatePicker = false
     
     // MARK: - Validation
     private var isFormValid: Bool {
@@ -52,7 +50,7 @@ struct AddBabyNewYes: View {
                         // 태명
                         inputField(
                             label: "태명",
-                            placeholder: "응애자임",
+                            placeholder: "태명을 입력해주세요",
                             text: $babyNickname
                         )
                         
@@ -74,16 +72,8 @@ struct AddBabyNewYes: View {
             .background(Color("Background"))
             .navigationTitle("아기 정보 편집")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { handleDelete() }) {
-                        Image(systemName: "trash")
-                            .foregroundColor(Color("Brand-50"))
-                    }
-                }
-            }
             .safeAreaInset(edge: .bottom) {
-                bottomButtons
+                saveButton
             }
         .onChange(of: selectedPhotoItem) { _, newItem in
             Task {
@@ -174,20 +164,40 @@ struct AddBabyNewYes: View {
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(Color("Font").opacity(0.6))
             
-            HStack {
-                Text(formatDate(birthDate))
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(Color("Font"))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(8)
+            Button(action: { showDatePicker = true }) {
+                HStack {
+                    Text(formatDate(birthDate))
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(Color("Font"))
+                    Spacer()
+                    Image(systemName: "calendar")
+                        .foregroundColor(Color("Font").opacity(0.4))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
             }
-            .overlay {
-                DatePicker("", selection: $birthDate, displayedComponents: .date)
-                    .labelsHidden()
-                    .contentShape(Rectangle())
-                    .opacity(0.011)
+            .sheet(isPresented: $showDatePicker) {
+                VStack {
+                    DatePicker("출생일 선택", selection: $birthDate, displayedComponents: .date)
+                        .datePickerStyle(.graphical)
+                        .labelsHidden()
+                        .padding()
+                    
+                    Button("완료") {
+                        showDatePicker = false
+                    }
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(Color("Brand-50"))
+                    .cornerRadius(12)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 20)
+                }
+                .presentationDetents([.height(450)])
             }
         }
     }
@@ -223,30 +233,18 @@ struct AddBabyNewYes: View {
         }
     }
     
-    // MARK: - Bottom Buttons
-    private var bottomButtons: some View {
-        HStack(spacing: 12) {
-            Button(action: { dismiss() }) {
-                Text("취소")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(Color("Font"))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(Color(.systemGray6))
-                    .cornerRadius(12)
-            }
-            
-            Button(action: { handleSave() }) {
-                Text("저장")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(isFormValid ? Color("Brand-50") : Color.gray)
-                    .cornerRadius(12)
-            }
-            .disabled(!isFormValid)
+    // MARK: - Save Button
+    private var saveButton: some View {
+        Button(action: { handleSave() }) {
+            Text("저장")
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(isFormValid ? Color("Brand-50") : Color.gray)
+                .cornerRadius(12)
         }
+        .disabled(!isFormValid)
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
         .background(Color("Background"))
@@ -291,7 +289,7 @@ struct AddBabyNewYes: View {
         dismiss()
     }
     
-    /// 삭제 처리
+    /// 삭제 처리 -> 나중에 편집시에 재활용 가능하게
     private func handleDelete() {
         // TODO: 삭제 확인 다이얼로그 추가
         UserDefaults.standard.removeObject(forKey: "currentBaby")
