@@ -83,6 +83,9 @@ struct BabyView: View {
                     }
                 }
             }
+        } onDismiss: {
+            // 편집 완료 후 데이터 다시 로드
+            loadBabyInfo()
         }
     }
     
@@ -120,6 +123,9 @@ struct BabyView: View {
             print("⚠️ BabyView: 아기 정보가 없습니다")
             return
         }
+        
+        // 0. currentBaby 저장 (편집 기능에 필요)
+        currentBaby = baby
         
         // 1. 이름과 태명 로드
         babyName = baby.name
