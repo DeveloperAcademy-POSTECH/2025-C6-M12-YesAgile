@@ -17,15 +17,44 @@ enum Mytype: String, CaseIterable, Identifiable {
 struct AddBabyNewYes: View {
     @Environment(\.dismiss) private var dismiss
     
+    // MARK: - Mode & Data
+    let isEditMode: Bool
+    let baby: Baby?
+    
     // MARK: - States
     @State private var profileImage: UIImage?
     @State private var selectedPhotoItem: PhotosPickerItem?
-    @State private var babyName: String = ""
-    @State private var babyNickname: String = ""
-    @State private var selectedGender: String = "" // "M", "F", "N"
-    @State private var birthDate = Date()
-    @State private var relationship: Mytype = .mom
+    @State private var babyName: String
+    @State private var babyNickname: String
+    @State private var selectedGender: String // "M", "F", "N"
+    @State private var birthDate: Date
+    @State private var relationship: Mytype
     @State private var showDatePicker = false
+    
+    // MARK: - Initializers
+    
+    /// 신규 등록 모드
+    init() {
+        self.isEditMode = false
+        self.baby = nil
+        self._babyName = State(initialValue: "")
+        self._babyNickname = State(initialValue: "")
+        self._selectedGender = State(initialValue: "")
+        self._birthDate = State(initialValue: Date())
+        self._relationship = State(initialValue: .mom)
+    }
+    
+    /// 편집 모드
+    init(baby: Baby) {
+        self.isEditMode = true
+        self.baby = baby
+        self._babyName = State(initialValue: baby.name ?? "")
+        self._babyNickname = State(initialValue: baby.nickname)
+        self._selectedGender = State(initialValue: baby.gender.rawValue)
+        self._birthDate = State(initialValue: baby.birthDate)
+        self._relationship = State(initialValue: Mytype(rawValue: baby.relationship) ?? .mom)
+        // TODO: profileImage 로드
+    }
     
     // MARK: - Validation
     private var isFormValid: Bool {
@@ -70,8 +99,18 @@ struct AddBabyNewYes: View {
                 .padding(.top, 20)
             }
             .background(Color("Background"))
-            .navigationTitle("아기 정보 편집")
+            .navigationTitle(isEditMode ? "아기 정보 편집" : "아기 정보 입력")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if isEditMode {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: { handleDelete() }) {
+                            Image(systemName: "trash")
+                                .foregroundColor(Color("Brand-50"))
+                        }
+                    }
+                }
+            }
             .safeAreaInset(edge: .bottom) {
                 saveButton
             }
@@ -261,25 +300,33 @@ struct AddBabyNewYes: View {
     
     /// 저장 처리
     private func handleSave() {
-        // UserDefaults에 아기 정보 저장
-        let babyData: [String: Any] = [
-            "name": babyName,
-            "nickname": babyNickname,
-            "gender": selectedGender,
-            "birthDate": formatDate(birthDate),
-            "relationship": relationship.rawValue
-        ]
-        
-        UserDefaults.standard.set(babyData, forKey: "currentBaby")
-        
-        // 프로필 이미지 저장 (Base64)
-        if let profileImage = profileImage,
-           let imageData = profileImage.jpegData(compressionQuality: 0.8) {
-            let base64String = imageData.base64EncodedString()
-            UserDefaults.standard.set(base64String, forKey: "babyProfileImage")
+        if isEditMode {
+            // 편집 모드: 기존 아기 정보 업데이트
+            print("✅ 아기 정보 수정 완료 (ID: \(baby?.id ?? "unknown"))")
+            // TODO: API 호출하여 서버에 업데이트
+        } else {
+            // 신규 등록 모드
+            // UserDefaults에 아기 정보 저장
+            let babyData: [String: Any] = [
+                "name": babyName,
+                "nickname": babyNickname,
+                "gender": selectedGender,
+                "birthDate": formatDate(birthDate),
+                "relationship": relationship.rawValue
+            ]
+            
+            UserDefaults.standard.set(babyData, forKey: "currentBaby")
+            
+            // 프로필 이미지 저장 (Base64)
+            if let profileImage = profileImage,
+               let imageData = profileImage.jpegData(compressionQuality: 0.8) {
+                let base64String = imageData.base64EncodedString()
+                UserDefaults.standard.set(base64String, forKey: "babyProfileImage")
+            }
+            
+            print("✅ 아기 정보 저장 완료")
         }
         
-        print("✅ 아기 정보 저장 완료")
         print("📝 이름: \(babyName)")
         print("📝 태명: \(babyNickname)")
         print("📝 성별: \(selectedGender)")
@@ -299,6 +346,21 @@ struct AddBabyNewYes: View {
     }
 }
 
-#Preview {
-    AddBabyNewYes()
+#Preview("신규 등록") {
+    NavigationStack {
+        AddBabyNewYes()
+    }
+}
+
+#Preview("편집 모드") {
+    NavigationStack {
+        AddBabyNewYes(baby: Baby(
+            id: "test",
+            gender: .male,
+            name: "응애",
+            nickname: "응애자일",
+            birthDate: Date(),
+            relationship: "엄마"
+        ))
+    }
 }
