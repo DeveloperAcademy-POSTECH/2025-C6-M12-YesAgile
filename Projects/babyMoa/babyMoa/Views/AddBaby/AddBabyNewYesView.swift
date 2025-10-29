@@ -16,6 +16,7 @@ enum Mytype: String, CaseIterable, Identifiable {
 
 struct AddBabyNewYes: View {
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("hasCompletedBabySetup") private var hasCompletedBabySetup = false
     
     // MARK: - Mode & Data
     let isEditMode: Bool
@@ -395,11 +396,16 @@ struct AddBabyNewYes: View {
         dismiss()
     }
     
-    /// 삭제 처리 -> 나중에 편집시에 재활용 가능하게
+    /// 삭제 처리
     private func handleDelete() {
-        // TODO: 삭제 확인 다이얼로그 추가
+        // UserDefaults에서 모든 아기 데이터 삭제
         UserDefaults.standard.removeObject(forKey: "currentBaby")
         UserDefaults.standard.removeObject(forKey: "babyProfileImage")
+        UserDefaults.standard.removeObject(forKey: "babyProfileImageName")
+        
+        // 아기 등록 플래그 해제 → AddBabyView로 자동 전환
+        hasCompletedBabySetup = false
+        
         print("🗑️ 아기 정보 삭제 완료")
         dismiss()
     }

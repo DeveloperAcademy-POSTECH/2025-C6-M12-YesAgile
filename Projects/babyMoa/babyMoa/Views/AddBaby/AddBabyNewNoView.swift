@@ -19,17 +19,50 @@ private enum BabyRelationship: String, CaseIterable, Identifiable {
 
 struct AddBabyNewNoView: View {
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("hasCompletedBabySetup") private var hasCompletedBabySetup = false
+    
+    // MARK: - Mode & Data
+    let isEditMode: Bool
+    let baby: Baby?
     
     // MARK: - States
-    @State private var babyName: String = ""
-    @State private var babyNickname: String = ""
-    @State private var expectedBirthDate = Date()
-    @State private var relationship: BabyRelationship = .mom
+    @State private var babyName: String
+    @State private var babyNickname: String
+    @State private var expectedBirthDate: Date
+    @State private var relationship: BabyRelationship
     @State private var showDatePicker = false
     @State private var showRelationshipPicker = false
     
     // 고정 프로필 이미지
     private let fixedProfileImage = "baby_milestone_illustration"
+    
+    // MARK: - Initializers
+    
+    /// 신규 등록 모드
+    init() {
+        self.isEditMode = false
+        self.baby = nil
+        self._babyName = State(initialValue: "")
+        self._babyNickname = State(initialValue: "")
+        self._expectedBirthDate = State(initialValue: Date())
+        self._relationship = State(initialValue: .mom)
+    }
+    
+    /// 편집 모드
+    init(baby: Baby) {
+        self.isEditMode = true
+        self.baby = baby
+        self._babyName = State(initialValue: baby.name ?? "")
+        self._babyNickname = State(initialValue: baby.nickname)
+        self._expectedBirthDate = State(initialValue: baby.birthDate)
+        
+        // relationship 매칭
+        if baby.relationship == "아빠" {
+            self._relationship = State(initialValue: .dad)
+        } else {
+            self._relationship = State(initialValue: .mom)
+        }
+    }
     
     // MARK: - Validation
     private var isFormValid: Bool {
@@ -71,8 +104,18 @@ struct AddBabyNewNoView: View {
                 .padding(.top, 20)
             }
             .background(Color("Background"))
-            .navigationTitle("아기 정보 입력")
+            .navigationTitle(isEditMode ? "아기 정보 편집" : "아기 정보 입력")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if isEditMode {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: { handleDelete() }) {
+                            Image(systemName: "trash")
+                                .foregroundColor(Color("Brand-50"))
+                        }
+                    }
+                }
+            }
             .safeAreaInset(edge: .bottom) {
                 saveButton
             }
@@ -264,34 +307,75 @@ struct AddBabyNewNoView: View {
     
     /// 저장 처리
     private func handleSave() {
-        // Baby 모델 생성 (태명 등록)
-        let newBaby = Baby(
-            profileImage: fixedProfileImage,
-            gender: .notSpecified, // 태명 등록 시 성별 미정
-            name: babyName.isEmpty ? nil : babyName,
-            nickname: babyNickname,
-            birthDate: expectedBirthDate,
-            relationship: relationship.rawValue,
-            isPregnant: true // 태명 등록이므로 임신 상태
-        )
-        
-        // Baby 모델을 JSON으로 인코딩하여 저장
-        if let encoded = try? JSONEncoder().encode(newBaby) {
-            UserDefaults.standard.set(encoded, forKey: "currentBaby")
-            print("✅ Baby 모델 저장 완료 (태명)")
+        if isEditMode {
+            // 편집 모드: 기존 데이터 업데이트
+            let updatedBaby = Baby(
+                profileImage: fixedProfileImage,
+                gender: baby?.gender ?? .notSpecified,
+                name: babyName.isEmpty ? nil : babyName,
+                nickname: babyNickname,
+                birthDate: expectedBirthDate,
+                relationship: relationship.rawValue,
+                isPregnant: true
+            )
+            
+            if let encoded = try? JSONEncoder().encode(updatedBaby) {
+                UserDefaults.standard.set(encoded, forKey: "currentBaby")
+                print("✅ Baby 모델 업데이트 완료 (태명)")
+            }
+            
+            // 프로필 이미지명 저장 (고정 이미지)
+            UserDefaults.standard.set(fixedProfileImage, forKey: "babyProfileImageName")
+            
+            print("📝 수정 - 이름: \(babyName.isEmpty ? "(없음)" : babyName)")
+            print("📝 수정 - 태명: \(babyNickname)")
+            print("📝 수정 - 출생 예정일: \(formatDate(expectedBirthDate))")
+            print("📝 수정 - 관계: \(relationship.rawValue)")
+            
+        } else {
+            // 신규 등록 모드
+            let newBaby = Baby(
+                profileImage: fixedProfileImage,
+                gender: .notSpecified,
+                name: babyName.isEmpty ? nil : babyName,
+                nickname: babyNickname,
+                birthDate: expectedBirthDate,
+                relationship: relationship.rawValue,
+                isPregnant: true
+            )
+            
+            if let encoded = try? JSONEncoder().encode(newBaby) {
+                UserDefaults.standard.set(encoded, forKey: "currentBaby")
+                print("✅ Baby 모델 저장 완료 (태명)")
+            }
+            
+            // 프로필 이미지명 저장 (고정 이미지)
+            UserDefaults.standard.set(fixedProfileImage, forKey: "babyProfileImageName")
+            
+            // 아기 등록 완료 플래그 설정 → MainTabView로 자동 전환
+            UserDefaults.standard.set(true, forKey: "hasCompletedBabySetup")
+            
+            print("📝 이름: \(babyName.isEmpty ? "(없음)" : babyName)")
+            print("📝 태명: \(babyNickname)")
+            print("📝 출생 예정일: \(formatDate(expectedBirthDate))")
+            print("📝 관계: \(relationship.rawValue)")
+            print("📝 프로필: \(fixedProfileImage)")
         }
         
-        // 프로필 이미지명 저장 (고정 이미지)
-        UserDefaults.standard.set(fixedProfileImage, forKey: "babyProfileImageName")
+        dismiss()
+    }
+    
+    /// 삭제 처리
+    private func handleDelete() {
+        // UserDefaults에서 모든 아기 데이터 삭제
+        UserDefaults.standard.removeObject(forKey: "currentBaby")
+        UserDefaults.standard.removeObject(forKey: "babyProfileImage")
+        UserDefaults.standard.removeObject(forKey: "babyProfileImageName")
         
-        // 아기 등록 완료 플래그 설정 → MainTabView로 자동 전환
-        UserDefaults.standard.set(true, forKey: "hasCompletedBabySetup")
+        // 아기 등록 플래그 해제 → AddBabyView로 자동 전환
+        hasCompletedBabySetup = false
         
-        print("📝 이름: \(babyName.isEmpty ? "(없음)" : babyName)")
-        print("📝 태명: \(babyNickname)")
-        print("📝 출생 예정일: \(formatDate(expectedBirthDate))")
-        print("📝 관계: \(relationship.rawValue)")
-        print("📝 프로필: \(fixedProfileImage)")
+        print("🗑️ 아기 정보 삭제 완료 (태명)")
         
         dismiss()
     }
