@@ -381,6 +381,9 @@ struct AddBabyNewYes: View {
                 let base64String = imageData.base64EncodedString()
                 UserDefaults.standard.set(base64String, forKey: "babyProfileImage")
             }
+            
+            // 아기 등록 완료 플래그 설정 → MainTabView로 자동 전환
+            UserDefaults.standard.set(true, forKey: "hasCompletedBabySetup")
         }
         
         print("📝 이름: \(babyName)")

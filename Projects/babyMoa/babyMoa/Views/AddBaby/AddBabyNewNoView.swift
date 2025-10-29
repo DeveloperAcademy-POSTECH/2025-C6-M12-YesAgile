@@ -284,6 +284,9 @@ struct AddBabyNewNoView: View {
         // 프로필 이미지명 저장 (고정 이미지)
         UserDefaults.standard.set(fixedProfileImage, forKey: "babyProfileImageName")
         
+        // 아기 등록 완료 플래그 설정 → MainTabView로 자동 전환
+        UserDefaults.standard.set(true, forKey: "hasCompletedBabySetup")
+        
         print("📝 이름: \(babyName.isEmpty ? "(없음)" : babyName)")
         print("📝 태명: \(babyNickname)")
         print("📝 출생 예정일: \(formatDate(expectedBirthDate))")

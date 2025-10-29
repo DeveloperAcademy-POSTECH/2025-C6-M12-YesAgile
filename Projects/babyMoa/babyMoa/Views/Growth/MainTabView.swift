@@ -13,7 +13,7 @@ import SwiftUI
 /// - 추천: 바바가 주시면 붙이기
 /// - 아기: 아기 설정 및 정보
 struct MainTabView: View {
-    @State private var selectedTab = 1  // 기본값: 추억 탭
+    @State private var selectedTab = 0  // 기본값: 추억 탭
 
     var body: some View {
         TabView(selection: $selectedTab) {
