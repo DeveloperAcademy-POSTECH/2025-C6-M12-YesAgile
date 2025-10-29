@@ -69,7 +69,10 @@ struct BabyView: View {
         .sheet(isPresented: $showBabyEdit) {
             AddBabyView()
         }
-        .sheet(isPresented: $showBabyEditSheet) {
+        .sheet(isPresented: $showBabyEditSheet, onDismiss: {
+            // 편집 완료 후 데이터 다시 로드
+            loadBabyInfo()
+        }) {
             if let baby = currentBaby {
                 if baby.isPregnant == true {
                     // 태명 등록 (임신 중)
@@ -83,9 +86,6 @@ struct BabyView: View {
                     }
                 }
             }
-        } onDismiss: {
-            // 편집 완료 후 데이터 다시 로드
-            loadBabyInfo()
         }
     }
     
