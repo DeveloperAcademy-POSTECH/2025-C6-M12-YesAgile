@@ -74,7 +74,10 @@ struct GrowthView: View {
                 NavigationLink(isActive: $showHeightView) {
                     HeightView(
                         heightRecords: $viewModel.heightRecords,
-                        babyId: viewModel.selectedBabyId
+                        babyId: viewModel.selectedBabyId,
+                        onAddRecord: { height, date, memo in
+                            viewModel.addHeightRecord(height: height, date: date, memo: memo)
+                        }
                     )
                 } label: {
                     EmptyView()
@@ -84,7 +87,10 @@ struct GrowthView: View {
                 NavigationLink(isActive: $showWeightView) {
                     WeightView(
                         weightRecords: $viewModel.weightRecords,
-                        babyId: viewModel.selectedBabyId
+                        babyId: viewModel.selectedBabyId,
+                        onAddRecord: { weight, date, memo in
+                            viewModel.addWeightRecord(weight: weight, date: date, memo: memo)
+                        }
                     )
                 } label: {
                     EmptyView()
@@ -130,16 +136,20 @@ struct GrowthView: View {
             NavigationLink(isActive: $showTeethDetail) {
                 TeethView(
                     teethRecords: $viewModel.teethRecords,
-                    babyId: viewModel.selectedBabyId
+                    babyId: viewModel.selectedBabyId,
+                    onSaveRecords: { records in
+                        viewModel.teethRecords = records
+                        viewModel.saveTeethRecords()
+                    }
                 )
             } label: {
                 EmptyView()
             }
             .hidden()
             .onChange(of: showTeethDetail) { _, isPresented in
-                // TeethView가 닫힐 때 (false로 변경) 저장
                 if !isPresented {
-                    viewModel.saveTeethRecords()
+                    print("🔄 [GrowthView] 치아 뷰 닫힘 → 로컬 저장 트리거")
+                    viewModel.loadAllData()
                 }
             }
         }

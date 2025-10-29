@@ -55,7 +55,13 @@ struct AddBabyNewYes: View {
         self._selectedGender = State(initialValue: baby.gender.rawValue)
         self._birthDate = State(initialValue: baby.birthDate)
         self._relationship = State(initialValue: Mytype(rawValue: baby.relationship) ?? .mom)
-        // TODO: profileImage 로드
+        if let base64String = UserDefaults.standard.string(forKey: "babyProfileImage"),
+           let data = Data(base64Encoded: base64String),
+           let image = UIImage(data: data) {
+            self._profileImage = State(initialValue: image)
+        } else {
+            self._profileImage = State(initialValue: nil)
+        }
     }
     
     // MARK: - Validation
@@ -355,38 +361,36 @@ struct AddBabyNewYes: View {
     
     /// 저장 처리
     private func handleSave() {
-        if isEditMode {
-            // 편집 모드: 기존 아기 정보 업데이트
-            print("✅ 아기 정보 수정 완료 (ID: \(baby?.id ?? "unknown"))")
-            // TODO: API 호출하여 서버에 업데이트
-        } else {
-            // 신규 등록 모드 - Baby 모델 사용
-            let newBaby = Baby(
-                gender: Baby.Gender(rawValue: selectedGender) ?? .notSpecified,
-                name: babyName.isEmpty ? nil : babyName,
-                nickname: babyNickname,
-                birthDate: birthDate,
-                relationship: relationship.rawValue,
-                isPregnant: false
-            )
-            
-            // Baby 모델을 JSON으로 인코딩하여 저장
-            if let encoded = try? JSONEncoder().encode(newBaby) {
-                UserDefaults.standard.set(encoded, forKey: "currentBaby")
-                print("✅ Baby 모델 저장 완료")
-            }
-            
-            // 프로필 이미지 저장 (Base64)
-            if let profileImage = profileImage,
-               let imageData = profileImage.jpegData(compressionQuality: 0.8) {
-                let base64String = imageData.base64EncodedString()
-                UserDefaults.standard.set(base64String, forKey: "babyProfileImage")
-            }
-            
-            // 아기 등록 완료 플래그 설정 → MainTabView로 자동 전환
-            UserDefaults.standard.set(true, forKey: "hasCompletedBabySetup")
+        let existingId = baby?.id ?? currentStoredBabyId()
+        let babyId = existingId ?? UUID().uuidString
+        let gender = Baby.Gender(rawValue: selectedGender) ?? .notSpecified
+        let updatedBaby = Baby(
+            id: babyId,
+            gender: gender,
+            name: babyName.isEmpty ? nil : babyName,
+            nickname: babyNickname,
+            birthDate: birthDate,
+            relationship: relationship.rawValue,
+            isPregnant: false
+        )
+        
+        saveBabyToUserDefaults(updatedBaby)
+        
+        if let profileImage = profileImage,
+           let imageData = profileImage.jpegData(compressionQuality: 0.8) {
+            let base64String = imageData.base64EncodedString()
+            UserDefaults.standard.set(base64String, forKey: "babyProfileImage")
+            UserDefaults.standard.removeObject(forKey: "babyProfileImageName")
+        } else if !isEditMode {
+            // 신규 등록에서 이미지가 없으면 기존 값 제거
+            UserDefaults.standard.removeObject(forKey: "babyProfileImage")
+            UserDefaults.standard.removeObject(forKey: "babyProfileImageName")
         }
         
+        hasCompletedBabySetup = true
+        NotificationCenter.default.post(name: .babyDataDidChange, object: nil)
+        
+        print("✅ 아기 정보 저장 완료 (ID: \(babyId))")
         print("📝 이름: \(babyName)")
         print("📝 태명: \(babyNickname)")
         print("📝 성별: \(selectedGender)")
@@ -394,6 +398,23 @@ struct AddBabyNewYes: View {
         print("📝 관계: \(relationship.rawValue)")
         
         dismiss()
+    }
+
+    private func saveBabyToUserDefaults(_ baby: Baby) {
+        guard let encoded = try? JSONEncoder().encode(baby) else {
+            print("❌ Baby 모델 인코딩 실패")
+            return
+        }
+        UserDefaults.standard.set(encoded, forKey: "currentBaby")
+        print("✅ Baby 모델 저장 완료")
+    }
+    
+    private func currentStoredBabyId() -> String? {
+        guard let data = UserDefaults.standard.data(forKey: "currentBaby"),
+              let storedBaby = try? JSONDecoder().decode(Baby.self, from: data) else {
+            return nil
+        }
+        return storedBaby.id
     }
     
     /// 삭제 처리
@@ -405,6 +426,7 @@ struct AddBabyNewYes: View {
         
         // 아기 등록 플래그 해제 → AddBabyView로 자동 전환
         hasCompletedBabySetup = false
+        NotificationCenter.default.post(name: .babyDataDidChange, object: nil)
         
         print("🗑️ 아기 정보 삭제 완료")
         dismiss()

@@ -13,6 +13,7 @@ struct TeethView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var teethRecords: [TeethRecord]
     let babyId: String
+    let onSaveRecords: (([TeethRecord]) -> Void)?
 
     @State private var selectedToothPosition: ToothPosition?
     @State private var newTeeth: [NewTooth] = []
@@ -156,6 +157,10 @@ struct TeethView: View {
     private func deleteExistingTooth(_ record: TeethRecord) {
         teethRecords.removeAll { $0.id == record.id }
         print("🗑️ 기존 치아 삭제: \(record.position.displayName)")
+        if let onSaveRecords {
+            print("💾 [TeethView] 기존 치아 삭제 후 저장 요청 (총: \(teethRecords.count))")
+            onSaveRecords(teethRecords)
+        }
     }
 
     /// 새로 난 치아를 teethRecords에 저장 (GrowthView에 즉시 반영)
@@ -168,9 +173,18 @@ struct TeethView: View {
                 teethRecords.append(record)
             }
         }
-        print(
-            "✅ 치아 기록 저장 완료: \(newTeeth.count)개 → teethRecords 총 \(teethRecords.count)개"
-        )
+        if !newTeeth.isEmpty {
+            print(
+                "✅ 치아 기록 저장 완료: \(newTeeth.count)개 → teethRecords 총 \(teethRecords.count)개"
+            )
+            newTeeth.removeAll()
+            if let onSaveRecords {
+                print("💾 [TeethView] 새 치아 저장 요청 (총: \(teethRecords.count))")
+                onSaveRecords(teethRecords)
+            }
+        } else {
+            print("ℹ️ 새 치아 기록 없음, 기존 teethRecords: \(teethRecords.count)개")
+        }
     }
 }
 
@@ -179,6 +193,7 @@ struct TeethView: View {
 #Preview {
     TeethView(
         teethRecords: .constant([]),
-        babyId: "test"
+        babyId: "test",
+        onSaveRecords: nil
     )
 }

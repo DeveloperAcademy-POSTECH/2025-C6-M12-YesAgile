@@ -21,9 +21,6 @@ struct AllMilestonesView: View {
         self.allMilestones = allMilestones
         self.localImageProvider = localImageProvider
     }
-    @State private var sortMode: SortMode = .byDateDesc
-
-    enum SortMode { case byDateDesc, byDoneDesc }
 
     var body: some View {
         ScrollView {
@@ -36,11 +33,10 @@ struct AllMilestonesView: View {
                             .foregroundColor(.primary)
                             .padding(.horizontal, 20)
 
-                        // 가로 스크롤 카드 리스트
+                        // 가로 스크롤 카드 리스트 (원래 순서대로 표시)
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {
-                                ForEach(sorted(allMilestones[monthIndex])) {
-                                    milestone in
+                                ForEach(allMilestones[monthIndex]) { milestone in
                                     MilestoneThumbnail(
                                         milestone: milestone,
                                         localImageProvider: localImageProvider
@@ -58,18 +54,6 @@ struct AllMilestonesView: View {
         .navigationTitle("전체 성장 마일스톤")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Menu(sortModeTitle) {
-                    Button("달성순") { sortMode = .byDoneDesc }
-                    Button("과거순") { sortMode = .byDateDesc }
-                }
-            }
-        }
-    }
-
-    private var sortModeTitle: String {
-        sortMode == .byDoneDesc ? "달성순" : "과거순"
     }
 
     private func monthRangeText(for index: Int) -> String {
@@ -79,24 +63,6 @@ struct AllMilestonesView: View {
             let start = index * 2 + 1
             let end = start + 1
             return "\(start)개월 - \(end)개월"
-        }
-    }
-
-    private func sorted(_ list: [GrowthMilestone]) -> [GrowthMilestone] {
-        switch sortMode {
-        case .byDateDesc:
-            return list.sorted { (a, b) in
-                (a.completedDate ?? .distantPast)
-                    > (b.completedDate ?? .distantPast)
-            }
-        case .byDoneDesc:
-            return list.sorted { (a, b) in
-                if a.isCompleted == b.isCompleted {
-                    return (a.completedDate ?? .distantPast)
-                        > (b.completedDate ?? .distantPast)
-                }
-                return a.isCompleted && !b.isCompleted
-            }
         }
     }
 
@@ -185,11 +151,19 @@ private struct MilestoneThumbnail: View {
 
     private var placeholder: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color.orange.opacity(0.1))
-            Text("곧 만나요!")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(.orange)
+            // 일러스트가 있으면 일러스트 표시
+            if let illustrationName = milestone.illustrationName {
+                Image(illustrationName)
+                    .resizable()
+                    .scaledToFill()
+            } else {
+                // 없으면 기존 placeholder
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(Color.orange.opacity(0.1))
+                Text("곧 만나요!")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.orange)
+            }
         }
     }
 

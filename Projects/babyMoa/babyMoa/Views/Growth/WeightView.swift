@@ -13,6 +13,7 @@ struct WeightView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var weightRecords: [WeightRecord]
     let babyId: String
+    let onAddRecord: ((Double, Date, String?) -> Void)?
 
     @State private var selectedTab = 0  // 0: 기록, 1: 차트
     @State private var showAddWeight = false
@@ -123,13 +124,17 @@ struct WeightView: View {
     // MARK: - Helper Methods
 
     private func addWeightRecord(weight: Double, date: Date, memo: String?) {
-        let newRecord = WeightRecord(
-            babyId: babyId,
-            weight: weight,
-            date: date,
-            memo: memo
-        )
-        weightRecords.insert(newRecord, at: 0)  // 최신순으로
+        if let onAddRecord {
+            onAddRecord(weight, date, memo)
+        } else {
+            let newRecord = WeightRecord(
+                babyId: babyId,
+                weight: weight,
+                date: date,
+                memo: memo
+            )
+            weightRecords.insert(newRecord, at: 0)  // 최신순으로
+        }
     }
 
     private func getPreviousWeight(for record: WeightRecord) -> Double? {
@@ -174,6 +179,7 @@ struct WeightView: View {
                 memo: nil
             ),
         ]),
-        babyId: "test"
+        babyId: "test",
+        onAddRecord: nil
     )
 }

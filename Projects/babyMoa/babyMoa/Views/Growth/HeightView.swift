@@ -13,6 +13,7 @@ struct HeightView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var heightRecords: [HeightRecord]
     let babyId: String
+    let onAddRecord: ((Double, Date, String?) -> Void)?
 
     @State private var selectedTab = 0  // 0: 기록, 1: 차트
     @State private var showAddHeight = false
@@ -124,13 +125,17 @@ struct HeightView: View {
     // MARK: - Helper Methods
 
     private func addHeightRecord(height: Double, date: Date, memo: String?) {
-        let newRecord = HeightRecord(
-            babyId: babyId,
-            height: height,
-            date: date,
-            memo: memo
-        )
-        heightRecords.insert(newRecord, at: 0)  // 최신순으로
+        if let onAddRecord {
+            onAddRecord(height, date, memo)
+        } else {
+            let newRecord = HeightRecord(
+                babyId: babyId,
+                height: height,
+                date: date,
+                memo: memo
+            )
+            heightRecords.insert(newRecord, at: 0)  // 최신순으로
+        }
     }
 
     private func getPreviousHeight(for record: HeightRecord) -> Double? {
@@ -175,6 +180,7 @@ struct HeightView: View {
                 memo: nil
             ),
         ]),
-        babyId: "test"
+        babyId: "test",
+        onAddRecord: nil
     )
 }

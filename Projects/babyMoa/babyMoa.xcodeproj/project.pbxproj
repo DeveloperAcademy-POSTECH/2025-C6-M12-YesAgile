@@ -273,6 +273,7 @@
 				05C5F0FE2EA65DCC00C5AA86 /* Auth */,
 				05CD80232EA61F03008C0940 /* AddBaby */,
 				4785ED4A2EAE62EB00DEC298 /* Growth */,
+				47E2F9142EB055E500EAC721 /* MainTabView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -352,7 +353,6 @@
 				473F163E2EAF64150028BA97 /* AddHeightView.swift */,
 				473F16402EAF641D0028BA97 /* AddWeightView.swift */,
 				473F16422EAF818E0028BA97 /* GrowthMilestoneView.swift */,
-				47E2F9142EB055E500EAC721 /* MainTabView.swift */,
 			);
 			path = Growth;
 			sourceTree = "<group>";

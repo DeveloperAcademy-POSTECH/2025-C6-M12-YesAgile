@@ -28,6 +28,7 @@ struct GrowthMilestone: Identifiable, Codable {
     var isCompleted: Bool          // 완료 여부
     var completedDate: Date?       // 완료 날짜
     let description: String?       // 설명 (선택)
+    let illustrationName: String?  // 기본 일러스트 이름 (예: "Baby01")
     
     init(
         id: String = UUID().uuidString,
@@ -36,7 +37,8 @@ struct GrowthMilestone: Identifiable, Codable {
         imageURL: String? = nil,
         isCompleted: Bool = false,
         completedDate: Date? = nil,
-        description: String? = nil
+        description: String? = nil,
+        illustrationName: String? = nil
     ) {
         self.id = id
         self.title = title
@@ -45,6 +47,7 @@ struct GrowthMilestone: Identifiable, Codable {
         self.isCompleted = isCompleted
         self.completedDate = completedDate
         self.description = description
+        self.illustrationName = illustrationName
     }
 }
 
@@ -313,20 +316,20 @@ struct CreateTeethRequest: Codable {
 
 // MARK: - 샘플 데이터
 
-extension GrowthMilestone {
-    /// 0~2개월 마일스톤 샘플
-    static let sampleAge0to2: [GrowthMilestone] = [
-        GrowthMilestone(title: "화내기", ageRange: "0~2개월", description: "나도 화낼 수 있어요!"),
-        GrowthMilestone(title: "기기", ageRange: "0~2개월", description: "첫 기어가기 도전"),
-    ]
-    
-    /// 전체 마일스톤 샘플
-    static let allSamples: [GrowthMilestone] = [
-        GrowthMilestone(title: "화내기", ageRange: "0~2개월"),
-        GrowthMilestone(title: "기기", ageRange: "0~2개월"),
-        GrowthMilestone(title: "키", ageRange: "3~5개월"),
-        GrowthMilestone(title: "몸무게", ageRange: "3~5개월"),
-    ]
-}
+//extension GrowthMilestone {
+//    /// 0~2개월 마일스톤 샘플
+//    static let sampleAge0to2: [GrowthMilestone] = [
+//        GrowthMilestone(title: "화내기", ageRange: "0~2개월", description: "나도 화낼 수 있어요!"),
+//        GrowthMilestone(title: "기기", ageRange: "0~2개월", description: "첫 기어가기 도전"),
+//    ]
+//    
+//    /// 전체 마일스톤 샘플
+//    static let allSamples: [GrowthMilestone] = [
+//        GrowthMilestone(title: "화내기", ageRange: "0~2개월"),
+//        GrowthMilestone(title: "기기", ageRange: "0~2개월"),
+//        GrowthMilestone(title: "키", ageRange: "3~5개월"),
+//        GrowthMilestone(title: "몸무게", ageRange: "3~5개월"),
+//    ]
+//}
 
 

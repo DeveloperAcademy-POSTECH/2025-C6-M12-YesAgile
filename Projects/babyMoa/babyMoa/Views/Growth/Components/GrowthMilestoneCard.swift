@@ -256,29 +256,43 @@ struct MilestoneCardItem: View {
     @ViewBuilder
     private var placeholderIllustration: some View {
         ZStack {
-            // 배경색 (미완료는 연한 오렌지)
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color("Brand-50").opacity(0.1))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .strokeBorder(
-                            Color("Brand-50").opacity(0.2),
-                            style: StrokeStyle(lineWidth: 1.5, dash: [5, 3])
+            // 일러스트가 있으면 일러스트 표시
+            if let illustrationName = milestone.illustrationName {
+                Image(illustrationName)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 160, height: 160)
+                    .clipShape(
+                        RoundedRectangle(
+                            cornerRadius: 12,
+                            style: .continuous
                         )
-                )
+                    )
+            } else {
+                // 일러스트가 없을 때만 기본 placeholder
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(Color("Brand-50").opacity(0.1))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .strokeBorder(
+                                Color("Brand-50").opacity(0.2),
+                                style: StrokeStyle(lineWidth: 1.5, dash: [5, 3])
+                            )
+                    )
 
-            VStack(spacing: 12) {
-                // 일러스트 아이콘 (나중에 실제 일러스트로 교체)
-                Image(systemName: "figure.walk")
-                    .font(.system(size: 50))
-                    .foregroundColor(Color("Brand-50").opacity(0.6))
+                VStack(spacing: 12) {
+                    // 기본 아이콘
+                    Image(systemName: "figure.walk")
+                        .font(.system(size: 50))
+                        .foregroundColor(Color("Brand-50").opacity(0.6))
 
-                // 미완료 텍스트
-                Text("나는 할 수 없어")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(Color("Brand-50"))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 12)
+                    // 미완료 텍스트
+                    Text("나는 할 수 없어")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(Color("Brand-50"))
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 12)
+                }
             }
         }
     }

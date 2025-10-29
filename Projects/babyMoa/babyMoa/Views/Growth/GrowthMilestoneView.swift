@@ -236,27 +236,38 @@ struct GrowthMilestoneView: View {
     private var photoSection: some View {
         ZStack {
             if selectedImage == nil && (milestone.imageURL?.isEmpty ?? true) {
-                // 이미지가 없을 때만 플레이스홀더 박스 표시
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color(.systemBackground))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(
-                                Color("Brand-50").opacity(0.4),
-                                lineWidth: 1
-                            )
-                    )
-                    .frame(height: 250)
-                    .overlay(
-                        VStack(spacing: 8) {
-                            Image(systemName: "photo")
-                                .font(.system(size: 40))
-                                .foregroundColor(.gray)
-                            Text("사진을 선택하세요")
-                                .font(.system(size: 14))
-                                .foregroundColor(.gray)
-                        }
-                    )
+                // 일러스트가 있으면 일러스트 표시, 없으면 플레이스홀더
+                if let illustrationName = milestone.illustrationName {
+                    Image(illustrationName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity)
+                        .clipShape(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        )
+                } else {
+                    // 이미지가 없을 때만 플레이스홀더 박스 표시
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color(.systemBackground))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .stroke(
+                                    Color("Brand-50").opacity(0.4),
+                                    lineWidth: 1
+                                )
+                        )
+                        .frame(height: 250)
+                        .overlay(
+                            VStack(spacing: 8) {
+                                Image(systemName: "photo")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(.gray)
+                                Text("사진을 선택하세요")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.gray)
+                            }
+                        )
+                }
             } else {
                 // 이미지가 있을 때는 비율에 맞게 표시
                 aspectFilledImage
