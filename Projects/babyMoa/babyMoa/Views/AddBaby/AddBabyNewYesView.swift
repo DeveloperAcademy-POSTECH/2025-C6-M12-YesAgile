@@ -359,17 +359,21 @@ struct AddBabyNewYes: View {
             print("✅ 아기 정보 수정 완료 (ID: \(baby?.id ?? "unknown"))")
             // TODO: API 호출하여 서버에 업데이트
         } else {
-            // 신규 등록 모드
-            // UserDefaults에 아기 정보 저장
-            let babyData: [String: Any] = [
-                "name": babyName,
-                "nickname": babyNickname,
-                "gender": selectedGender,
-                "birthDate": formatDate(birthDate),
-                "relationship": relationship.rawValue
-            ]
+            // 신규 등록 모드 - Baby 모델 사용
+            let newBaby = Baby(
+                gender: Baby.Gender(rawValue: selectedGender) ?? .notSpecified,
+                name: babyName.isEmpty ? nil : babyName,
+                nickname: babyNickname,
+                birthDate: birthDate,
+                relationship: relationship.rawValue,
+                isPregnant: false
+            )
             
-            UserDefaults.standard.set(babyData, forKey: "currentBaby")
+            // Baby 모델을 JSON으로 인코딩하여 저장
+            if let encoded = try? JSONEncoder().encode(newBaby) {
+                UserDefaults.standard.set(encoded, forKey: "currentBaby")
+                print("✅ Baby 모델 저장 완료")
+            }
             
             // 프로필 이미지 저장 (Base64)
             if let profileImage = profileImage,
@@ -377,8 +381,6 @@ struct AddBabyNewYes: View {
                 let base64String = imageData.base64EncodedString()
                 UserDefaults.standard.set(base64String, forKey: "babyProfileImage")
             }
-            
-            print("✅ 아기 정보 저장 완료")
         }
         
         print("📝 이름: \(babyName)")

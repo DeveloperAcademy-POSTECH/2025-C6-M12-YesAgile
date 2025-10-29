@@ -11,19 +11,12 @@ import SwiftUI
 
 struct GrowthBabyHeader: View {
     @Binding var showBabySelection: Bool
-    let babyName: String
-    let babyProfileImage: String?
     
+    @State private var currentBaby: Baby?
     @State private var localProfileImage: UIImage?
 
-    init(
-        showBabySelection: Binding<Bool>,
-        babyName: String = "아기 이름",
-        babyProfileImage: String? = nil
-    ) {
+    init(showBabySelection: Binding<Bool>) {
         self._showBabySelection = showBabySelection
-        self.babyName = babyName
-        self.babyProfileImage = babyProfileImage
     }
 
     var body: some View {
@@ -36,7 +29,7 @@ struct GrowthBabyHeader: View {
                 showBabySelection = true
             }) {
                 HStack(spacing: 6) {
-                    Text(babyName)
+                    Text(displayName)
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundColor(Color("Font"))
 
@@ -52,8 +45,19 @@ struct GrowthBabyHeader: View {
         .padding(.vertical, 14)
         .background(Color(red: 0.949, green: 0.949, blue: 0.965))
         .onAppear {
-            loadLocalProfileImage()
+            loadBabyData()
         }
+    }
+    
+    // MARK: - Computed Properties
+    
+    /// 표시할 이름 (태명 우선, 없으면 이름, 둘 다 없으면 기본값)
+    private var displayName: String {
+        if let baby = currentBaby {
+            // 태명 우선 표시
+            return baby.nickname
+        }
+        return "아기"
     }
     
     // MARK: - Profile Image View
@@ -66,25 +70,23 @@ struct GrowthBabyHeader: View {
                     .scaledToFill()
                     .frame(width: 44, height: 44)
                     .clipShape(Circle())
-            } else if let profileImageName = UserDefaults.standard.string(forKey: "babyProfileImageName"),
+            } else if let baby = currentBaby,
+                      let profileImageName = baby.profileImage,
                       let uiImage = UIImage(named: profileImageName) {
-                // 기본 프로필 이미지 (AddBabyNewNoView에서 저장)
+                // Baby 모델에 저장된 프로필 이미지 (태명 등록 시)
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFill()
                     .frame(width: 44, height: 44)
                     .clipShape(Circle())
-            } else if let imageURL = babyProfileImage, !imageURL.isEmpty {
-                // 백엔드에서 받은 URL 이미지
-                AsyncImage(url: URL(string: imageURL)) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } placeholder: {
-                    defaultProfileImage
-                }
-                .frame(width: 44, height: 44)
-                .clipShape(Circle())
+            } else if let profileImageName = UserDefaults.standard.string(forKey: "babyProfileImageName"),
+                      let uiImage = UIImage(named: profileImageName) {
+                // 레거시: 별도 저장된 이미지명 (하위 호환)
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 44, height: 44)
+                    .clipShape(Circle())
             } else {
                 // 기본 이미지
                 defaultProfileImage
@@ -105,20 +107,26 @@ struct GrowthBabyHeader: View {
     
     // MARK: - Helper Functions
     
-    /// UserDefaults에서 프로필 이미지 로드
-    /// 우선순위:
-    /// 1. Base64 이미지 (AddBabyNewYesView에서 저장한 실제 사진)
-    /// 2. 기본 프로필 이름 (AddBabyNewNoView에서 저장한 기본 이미지)
-    /// 3. URL 이미지 (백엔드)
-    /// 4. 기본 아이콘
-    private func loadLocalProfileImage() {
+    /// UserDefaults에서 Baby 모델 및 프로필 이미지 로드
+    private func loadBabyData() {
+        // 1. Baby 모델 로드
+        if let data = UserDefaults.standard.data(forKey: "currentBaby"),
+           let baby = try? JSONDecoder().decode(Baby.self, from: data) {
+            currentBaby = baby
+            print("✅ Baby 모델 로드 성공")
+            print("📝 이름: \(baby.name ?? "(없음)")")
+            print("📝 태명: \(baby.nickname)")
+            print("📝 임신 여부: \(baby.isPregnant ?? false)")
+        } else {
+            print("ℹ️ 저장된 아기 정보 없음")
+        }
+        
+        // 2. 프로필 이미지 로드 (Base64)
         if let base64String = UserDefaults.standard.string(forKey: "babyProfileImage"),
            let imageData = Data(base64Encoded: base64String),
            let uiImage = UIImage(data: imageData) {
             localProfileImage = uiImage
-            print("✅ 로컬 프로필 이미지 로드 성공 (Base64)")
-        } else {
-            print("ℹ️ Base64 이미지 없음, 기본 프로필 이미지 확인 중...")
+            print("✅ 프로필 이미지 로드 성공 (Base64)")
         }
     }
 }

@@ -12,45 +12,10 @@ import SwiftUI
 private enum BabyRelationship: String, CaseIterable, Identifiable {
     case mom = "엄마"
     case dad = "아빠"
-    case grandma = "할머니"
-    case grandpa = "할아버지"
-    case babysitter = "베이비시터"
-    case familyMember = "가족 구성원"
     
     var id: String { self.rawValue }
 }
 
-// 기본 아기 프로필 이미지 (10개)
-enum DefaultBabyProfile: String, CaseIterable, Identifiable {
-    case profile1 = "baby_profile_1"
-    case profile2 = "baby_profile_2"
-    case profile3 = "baby_profile_3"
-    case profile4 = "baby_profile_4"
-    case profile5 = "baby_profile_5"
-    case profile6 = "baby_profile_6"
-    case profile7 = "baby_profile_7"
-    case profile8 = "baby_profile_8"
-    case profile9 = "baby_profile_9"
-    case profile10 = "baby_profile_10"
-    
-    var id: String { self.rawValue }
-    
-    // Assets에 이미지가 없을 경우 임시 SF Symbol
-    var systemImageFallback: String {
-        switch self {
-        case .profile1: return "face.smiling.fill"
-        case .profile2: return "face.dashed.fill"
-        case .profile3: return "figure.child"
-        case .profile4: return "heart.fill"
-        case .profile5: return "star.fill"
-        case .profile6: return "moon.fill"
-        case .profile7: return "sun.max.fill"
-        case .profile8: return "cloud.fill"
-        case .profile9: return "leaf.fill"
-        case .profile10: return "snowflake"
-        }
-    }
-}
 
 struct AddBabyNewNoView: View {
     @Environment(\.dismiss) private var dismiss
@@ -299,20 +264,26 @@ struct AddBabyNewNoView: View {
     
     /// 저장 처리
     private func handleSave() {
-        // UserDefaults에 아기 정보 저장
-        let babyData: [String: Any] = [
-            "name": babyName,
-            "nickname": babyNickname,
-            "expectedBirthDate": formatDate(expectedBirthDate),
-            "relationship": relationship.rawValue,
-            "profileImageName": fixedProfileImage,
-            "isPregnant": true // 태명 등록이므로 임신 상태
-        ]
+        // Baby 모델 생성 (태명 등록)
+        let newBaby = Baby(
+            profileImage: fixedProfileImage,
+            gender: .notSpecified, // 태명 등록 시 성별 미정
+            name: babyName.isEmpty ? nil : babyName,
+            nickname: babyNickname,
+            birthDate: expectedBirthDate,
+            relationship: relationship.rawValue,
+            isPregnant: true // 태명 등록이므로 임신 상태
+        )
         
-        UserDefaults.standard.set(babyData, forKey: "currentBaby")
+        // Baby 모델을 JSON으로 인코딩하여 저장
+        if let encoded = try? JSONEncoder().encode(newBaby) {
+            UserDefaults.standard.set(encoded, forKey: "currentBaby")
+            print("✅ Baby 모델 저장 완료 (태명)")
+        }
+        
+        // 프로필 이미지명 저장 (고정 이미지)
         UserDefaults.standard.set(fixedProfileImage, forKey: "babyProfileImageName")
         
-        print("✅ 아기 정보 저장 완료 (태명)")
         print("📝 이름: \(babyName.isEmpty ? "(없음)" : babyName)")
         print("📝 태명: \(babyNickname)")
         print("📝 출생 예정일: \(formatDate(expectedBirthDate))")
