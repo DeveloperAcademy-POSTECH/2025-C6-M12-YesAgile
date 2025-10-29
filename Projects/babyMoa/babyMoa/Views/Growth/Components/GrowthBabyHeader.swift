@@ -51,10 +51,14 @@ struct GrowthBabyHeader: View {
     
     // MARK: - Computed Properties
     
-    /// 표시할 이름 (태명 우선, 없으면 이름, 둘 다 없으면 기본값)
+    /// 표시할 이름 (이름 우선, 없으면 태명)
     private var displayName: String {
         if let baby = currentBaby {
-            // 태명 우선 표시
+            // 이름이 있으면 이름 표시 (AddBabyYesView - 출생한 아기)
+            if let name = baby.name, !name.isEmpty {
+                return name
+            }
+            // 이름이 없으면 태명 표시 (AddBabyNoView - 태명 등록)
             return baby.nickname
         }
         return "아기"
