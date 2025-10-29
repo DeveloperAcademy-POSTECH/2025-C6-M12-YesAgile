@@ -53,10 +53,10 @@ struct BabyProfileCard: View {
             .padding(.horizontal, 20)
             .frame(height: 100)
 
-            // 성별 캡슐 뱃지 (우상단)
-            GenderBadge(gender: gender)
-                .padding(.top, 12)
-                .padding(.trailing, 12)
+            // 성별 캡슐 뱃지 (우상단) - 임시 비활성화
+            // GenderBadge(gender: gender)
+            //     .padding(.top, 12)
+            //     .padding(.trailing, 12)
         }
         .background(Color.white)
         .cornerRadius(16)
@@ -64,4 +64,3 @@ struct BabyProfileCard: View {
         .frame(height: 100)
     }
 }
-

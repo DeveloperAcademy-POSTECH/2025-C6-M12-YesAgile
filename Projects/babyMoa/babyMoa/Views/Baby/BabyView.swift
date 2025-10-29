@@ -13,6 +13,7 @@ struct BabyView: View {
     @State private var showBabySelection = false
     @State private var showBabyEdit = false
     @State private var showBabyEditSheet = false
+    @State private var showGuardianListSheet = false
     @State private var currentBaby: Baby?
     
     // UserDefaults에서 아기 정보 로드
@@ -31,21 +32,30 @@ struct BabyView: View {
             
            
             
-            // 아기 프로필 카드
-            BabyProfileCard(
-                babyName: babyName,
-                babyNickname: babyNickname,
-                ageText: dDay,
-                guardianCount: guardianCount,
-                gender: gender,
-                profileImage: profileImage,
-                profileImageName: profileImageName
-            )
-            .padding(.horizontal, 20)
+            // 아기 프로필 카드 (데이터 로드 후에만 표시)
+            if currentBaby != nil {
+                BabyProfileCard(
+                    babyName: babyName,
+                    babyNickname: babyNickname,
+                    ageText: dDay,
+                    guardianCount: guardianCount,
+                    gender: gender,
+                    profileImage: profileImage,
+                    profileImageName: profileImageName
+                )
+                .padding(.horizontal, 20)
+                .onTapGesture {
+                    handleEditBaby()
+                }
+            } else {
+                ProgressView()
+                    .frame(height: 100)
+                    .padding(.horizontal, 20)
+            }
             
             // 메뉴 버튼들
             VStack(spacing: 12) {
-                Button(action: { handleEditBaby() }) {
+                Button(action: { showGuardianListSheet = true }) {
                     menuButton(title: "양육자 편집")
                 }
                 
@@ -86,6 +96,9 @@ struct BabyView: View {
                     }
                 }
             }
+        }
+        .sheet(isPresented: $showGuardianListSheet) {
+            GuardianListSheet()
         }
     }
     

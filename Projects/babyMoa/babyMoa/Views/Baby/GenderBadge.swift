@@ -15,6 +15,7 @@ struct GenderBadge: View {
         case .male: return "남아"
         case .female: return "여아"
         case .notSpecified: return "성별 미정"
+        @unknown default: return "성별 미정"
         }
     }
     
@@ -23,6 +24,7 @@ struct GenderBadge: View {
         case .male: return Color("Brand-50")
         case .female: return Color("MemoryPink")
         case .notSpecified: return Color.gray
+        @unknown default: return Color.gray
         }
     }
     
