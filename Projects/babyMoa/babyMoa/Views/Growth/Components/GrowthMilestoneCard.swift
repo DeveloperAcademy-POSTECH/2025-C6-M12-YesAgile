@@ -41,7 +41,7 @@ struct GrowthMilestoneCard: View {
             // 헤더: 성장 마일스톤
             Text("성장 마일스톤")
                 .font(.system(size: 20, weight: .bold))
-                .foregroundColor(Color("TextPrimary"))
+                .foregroundColor(Color("Font"))
                 .padding(.horizontal, 20)
 
             // 개월수 선택 (좌우 화살표 + 텍스트)
@@ -56,7 +56,7 @@ struct GrowthMilestoneCard: View {
                         .font(.system(size: 22, weight: .semibold))
                         .foregroundColor(
                             selectedMonth > 0
-                                ? Color("BrandPrimary")
+                                ? Color("Brand-50")
                                 : Color.gray.opacity(0.3)
                         )
                 }
@@ -68,10 +68,10 @@ struct GrowthMilestoneCard: View {
                 Button(action: onMonthTap) {
                     Text(monthRanges[safe: selectedMonth] ?? "0~2개월")
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(Color("BrandPrimary"))
+                        .foregroundColor(Color("Brand-50"))
                         .padding(.horizontal, 28)
                         .padding(.vertical, 10)
-                        .background(Color("BrandPrimary").opacity(0.1))
+                        .background(Color("Brand-50").opacity(0.1))
                         .clipShape(
                             RoundedRectangle(
                                 cornerRadius: 12,
@@ -92,7 +92,7 @@ struct GrowthMilestoneCard: View {
                         .font(.system(size: 22, weight: .semibold))
                         .foregroundColor(
                             selectedMonth < monthRanges.count - 1
-                                ? Color("BrandPrimary")
+                                ? Color("Brand-50")
                                 : Color.gray.opacity(0.3)
                         )
                 }
@@ -246,7 +246,7 @@ struct MilestoneCardItem: View {
                 // 타이틀
                 Text(milestone.title)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(Color("BrandPrimary"))
+                    .foregroundColor(Color("Brand-50"))
                     .lineLimit(1)
             }
         }
@@ -258,11 +258,11 @@ struct MilestoneCardItem: View {
         ZStack {
             // 배경색 (미완료는 연한 오렌지)
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color("BrandPrimary").opacity(0.1))
+                .fill(Color("Brand-50").opacity(0.1))
                 .overlay(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .strokeBorder(
-                            Color("BrandPrimary").opacity(0.2),
+                            Color("Brand-50").opacity(0.2),
                             style: StrokeStyle(lineWidth: 1.5, dash: [5, 3])
                         )
                 )
@@ -271,12 +271,12 @@ struct MilestoneCardItem: View {
                 // 일러스트 아이콘 (나중에 실제 일러스트로 교체)
                 Image(systemName: "figure.walk")
                     .font(.system(size: 50))
-                    .foregroundColor(Color("BrandPrimary").opacity(0.6))
+                    .foregroundColor(Color("Brand-50").opacity(0.6))
 
                 // 미완료 텍스트
                 Text("나는 할 수 없어")
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(Color("BrandPrimary"))
+                    .foregroundColor(Color("Brand-50"))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 12)
             }

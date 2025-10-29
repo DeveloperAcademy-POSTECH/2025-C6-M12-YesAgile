@@ -68,7 +68,7 @@ struct GrowthView: View {
                     .padding(.top, 16)
                     .padding(.bottom, 20)
                 }
-                .background(Color("BackgroundPrimary"))
+                .background(Color("Background"))
 
                 // 네비게이션 링크 (isActive)
                 NavigationLink(isActive: $showHeightView) {
@@ -158,17 +158,17 @@ struct GrowthView: View {
             // 상단 텍스트
             Text("저는 매일 쑥쑥 크고 있어요")
                 .font(.system(size: 16, weight: .medium))
-                .foregroundColor(Color("BrandPrimary"))
+                .foregroundColor(Color("Brand-50"))
 
             // 메인 타이틀
             HStack(spacing: 4) {
                 Text("그동안 함께,")
                     .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(Color("TextPrimary"))
+                    .foregroundColor(Color("Font"))
 
                 Text("해낸 성장 여정은?")
                     .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(Color("TextPrimary"))
+                    .foregroundColor(Color("Font"))
             }
 
             // 설명 텍스트
@@ -176,7 +176,7 @@ struct GrowthView: View {
                 "때로는 시간이 빠르게 가기도 하고, 때로는 시간이 느리게 가기도 해요. 가끔 저를 보며 \"언제 저렇게 컸지?\" 라는 생각이 들지 않으셨나요? 저는 매일 매일 쑥!쑥! 클게요. 저의 성장 여정을 계속 함께해주세요!"
             )
             .font(.system(size: 14, weight: .regular))
-            .foregroundColor(Color("TextPrimary").opacity(0.7))
+            .foregroundColor(Color("Font").opacity(0.7))
             .multilineTextAlignment(.center)
             .lineSpacing(4)
             .padding(.horizontal, 20)
@@ -193,7 +193,7 @@ struct GrowthView: View {
                     "\(String(format: "%.1f", $0.height))cm"
                 },
                 latestDate: viewModel.latestHeight?.formattedDate,
-                color: Color("BrandTertiary"),
+                color: Color("Orange-50"),
                 onTap: { showHeightView = true },
                 illustration: Image("GiraffeNeck")
             )

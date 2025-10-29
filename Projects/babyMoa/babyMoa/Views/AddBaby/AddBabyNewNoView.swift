@@ -4,6 +4,7 @@
 //
 //  Created by pherd on 10/25/25.
 //
+// 프로필 고정으로 하기 아기로 
 
 import SwiftUI
 
@@ -103,7 +104,7 @@ struct AddBabyNewNoView: View {
                 }
                 .padding(.top, 20)
             }
-            .background(Color("BackgroundPrimary"))
+            .background(Color("Background"))
             .navigationTitle("아기 정보 입력")
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
@@ -127,7 +128,7 @@ struct AddBabyNewNoView: View {
             HStack(spacing: 6) {
                 ForEach(0..<defaultProfiles.count, id: \.self) { index in
                     Circle()
-                        .fill(selectedProfileIndex == index ? Color("BrandPrimary") : Color.gray.opacity(0.3))
+                        .fill(selectedProfileIndex == index ? Color("Brand-50") : Color.gray.opacity(0.3))
                         .frame(width: 8, height: 8)
                         .animation(.easeInOut, value: selectedProfileIndex)
                 }
@@ -135,7 +136,7 @@ struct AddBabyNewNoView: View {
             
             Text("좌우로 스와이프하여 프로필을 선택하세요")
                 .font(.system(size: 12, weight: .regular))
-                .foregroundColor(Color("TextPrimary").opacity(0.5))
+                .foregroundColor(Color("Font").opacity(0.5))
         }
     }
     
@@ -153,9 +154,9 @@ struct AddBabyNewNoView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 60, height: 60)
-                    .foregroundColor(Color("BrandPrimary"))
+                    .foregroundColor(Color("Brand-50"))
                     .frame(width: 100, height: 100)
-                    .background(Color("BrandPrimary").opacity(0.1))
+                    .background(Color("Brand-50").opacity(0.1))
                     .clipShape(Circle())
             }
         }
@@ -171,7 +172,7 @@ struct AddBabyNewNoView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(label)
                 .font(.system(size: 14, weight: .medium))
-                .foregroundColor(Color("TextPrimary").opacity(0.6))
+                .foregroundColor(Color("Font").opacity(0.6))
             
             TextField(placeholder, text: text)
                 .font(.system(size: 16, weight: .medium))
@@ -186,12 +187,12 @@ struct AddBabyNewNoView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("출생 예정일")
                 .font(.system(size: 14, weight: .medium))
-                .foregroundColor(Color("TextPrimary").opacity(0.6))
+                .foregroundColor(Color("Font").opacity(0.6))
             
             HStack {
                 Text(formatDate(expectedBirthDate))
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(Color("TextPrimary"))
+                    .foregroundColor(Color("Font"))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
                     .background(Color(.systemGray6))
@@ -211,7 +212,7 @@ struct AddBabyNewNoView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("아이와 나의 관계")
                 .font(.system(size: 14, weight: .medium))
-                .foregroundColor(Color("TextPrimary").opacity(0.6))
+                .foregroundColor(Color("Font").opacity(0.6))
             
             Menu {
                 ForEach(BabyRelationship.allCases) { type in
@@ -223,12 +224,12 @@ struct AddBabyNewNoView: View {
                 HStack {
                     Text(relationship.rawValue)
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(Color("TextPrimary"))
+                        .foregroundColor(Color("Font"))
                     
                     Spacer()
                     
                     Image(systemName: "chevron.down")
-                        .foregroundColor(Color("TextPrimary").opacity(0.4))
+                        .foregroundColor(Color("Font").opacity(0.4))
                 }
                 .padding()
                 .background(Color(.systemGray6))
@@ -245,13 +246,13 @@ struct AddBabyNewNoView: View {
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(isFormValid ? Color("BrandPrimary") : Color.gray)
+                .background(isFormValid ? Color("Brand-50") : Color.gray)
                 .cornerRadius(12)
         }
         .disabled(!isFormValid)
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
-        .background(Color("BackgroundPrimary"))
+        .background(Color("Background"))
     }
     
     // MARK: - Helper Functions

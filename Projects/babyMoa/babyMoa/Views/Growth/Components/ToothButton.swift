@@ -35,7 +35,7 @@ struct ToothButton: View {
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
                             .stroke(
                                 isSelected
-                                    ? Color("BrandPrimary") : Color.clear,
+                                    ? Color("Brand-50") : Color.clear,
                                 lineWidth: 2
                             )
                             .frame(width: 32, height: 46)

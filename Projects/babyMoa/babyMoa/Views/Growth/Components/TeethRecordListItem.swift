@@ -31,10 +31,10 @@ struct TeethRecordListItem: View {
             Button(action: onDateTap) {
                 Text(date.formatted(date: .numeric, time: .omitted))
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(Color("BrandPrimary"))
+                    .foregroundColor(Color("Brand-50"))
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
-                    .background(Color("BrandPrimary").opacity(0.12))
+                    .background(Color("Brand-50").opacity(0.12))
                     .clipShape(
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
                     )

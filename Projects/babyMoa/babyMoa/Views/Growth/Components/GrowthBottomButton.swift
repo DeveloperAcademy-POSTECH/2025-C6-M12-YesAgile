@@ -29,7 +29,7 @@ struct GrowthBottomButton: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 56)
                 .background(
-                    isEnabled ? Color("BrandPrimary") : Color.gray.opacity(0.3)
+                    isEnabled ? Color("Brand-50") : Color.gray.opacity(0.3)
                 )
                 .cornerRadius(12)
         }

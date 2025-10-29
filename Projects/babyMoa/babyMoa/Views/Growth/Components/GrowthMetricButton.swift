@@ -91,7 +91,7 @@ struct GrowthMetricButton: View {
             icon: "ruler",
             latestValue: "50.5cm",
             latestDate: "2025.10.26",
-            color: Color("BrandTertiary"),
+            color: Color("Orange-50"),
             onTap: {}
         )
 

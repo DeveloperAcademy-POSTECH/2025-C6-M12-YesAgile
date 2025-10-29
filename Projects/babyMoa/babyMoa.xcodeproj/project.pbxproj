@@ -29,8 +29,6 @@
 		05CD802B2EA61FEF008C0940 /* AddBabyInvitationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD802A2EA61FEF008C0940 /* AddBabyInvitationView.swift */; };
 		05DB6C312EAAEEF60043E76E /* KeyChainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DB6C302EAAEEF60043E76E /* KeyChainHelper.swift */; };
 		1769449C008645FE9E4FCB80 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4805623329EB41E788220F54 /* APIService.swift */; };
-		2B11FC41754F4B14B1C8C693 /* MemoryNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED6619F12D694AC38A2D538E /* MemoryNetworkError.swift */; };
-		2DE7DF6DDD9043E2B4D0A640 /* MemoryAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6F3CB8092DD4CBEAE6B78E5 /* MemoryAPIEndpoint.swift */; };
 		3BCEDCD2C0964E7BB776504A /* MemoryData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C1A27B11546BCA817A1B2 /* MemoryData.swift */; };
 		43FC48A93D8E4708B14FC4F5 /* GrowthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90FFC80991A844A1A14D342E /* GrowthViewModel.swift */; };
 		473F163F2EAF64150028BA97 /* AddHeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473F163E2EAF64150028BA97 /* AddHeightView.swift */; };
@@ -65,7 +63,6 @@
 		47E7D1922EAF8A73005A9CF0 /* GrowthRulerInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E7D18B2EAF8A73005A9CF0 /* GrowthRulerInput.swift */; };
 		4A7C71C984754709B3EF085F /* GrowthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D170F4E9FFFD4366BCBA3F45 /* GrowthData.swift */; };
 		6BD89887DCE74968B7F6F1D3 /* PhotoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32717F8110124BBFA7F7B1AE /* PhotoRepository.swift */; };
-		6CCD9A6F6192416C840E9BBD /* MemoryAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B3BD030A634CC3B0A09296 /* MemoryAPIClient.swift */; };
 		936978613919405E9610A1C1 /* PhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDC3BF28872420E9588A0D5 /* PhotoViewModel.swift */; };
 		B699CEDFB3434646B3F3BFC7 /* BabyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB86369F97244FAB24F77AE /* BabyModel.swift */; };
 		BFFA94CF318D441392F9CF49 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6BEF68AB1C4416BE5BC3B2 /* LocationManager.swift */; };
@@ -135,14 +132,16 @@
 		853C1A27B11546BCA817A1B2 /* MemoryData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryData.swift; sourceTree = "<group>"; };
 		90FFC80991A844A1A14D342E /* GrowthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthViewModel.swift; sourceTree = "<group>"; };
 		A7FB4A36244B492F8B7DFA08 /* PhotoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoService.swift; sourceTree = "<group>"; };
-		D0B3BD030A634CC3B0A09296 /* MemoryAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryAPIClient.swift; sourceTree = "<group>"; };
 		D170F4E9FFFD4366BCBA3F45 /* GrowthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthData.swift; sourceTree = "<group>"; };
-		D6F3CB8092DD4CBEAE6B78E5 /* MemoryAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryAPIEndpoint.swift; sourceTree = "<group>"; };
 		ECDC3BF28872420E9588A0D5 /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
-		ED6619F12D694AC38A2D538E /* MemoryNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryNetworkError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		47DB30092EB1A81900073D03 /* Memory */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Memory;
+			sourceTree = "<group>";
+		};
 		47E2F9182EB0D38700EAC721 /* Baby */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Baby;
@@ -361,9 +360,7 @@
 		4BAC1C45C3D54BC5AC108E9B /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				D0B3BD030A634CC3B0A09296 /* MemoryAPIClient.swift */,
-				D6F3CB8092DD4CBEAE6B78E5 /* MemoryAPIEndpoint.swift */,
-				ED6619F12D694AC38A2D538E /* MemoryNetworkError.swift */,
+				47DB30092EB1A81900073D03 /* Memory */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -410,6 +407,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				47DB30092EB1A81900073D03 /* Memory */,
 				47E2F9182EB0D38700EAC721 /* Baby */,
 			);
 			name = babyMoa;
@@ -482,9 +480,6 @@
 				475CF6722EAFC88C005AA61D /* NewTooth.swift in Sources */,
 				B699CEDFB3434646B3F3BFC7 /* BabyModel.swift in Sources */,
 				3BCEDCD2C0964E7BB776504A /* MemoryData.swift in Sources */,
-				6CCD9A6F6192416C840E9BBD /* MemoryAPIClient.swift in Sources */,
-				2DE7DF6DDD9043E2B4D0A640 /* MemoryAPIEndpoint.swift in Sources */,
-				2B11FC41754F4B14B1C8C693 /* MemoryNetworkError.swift in Sources */,
 				6BD89887DCE74968B7F6F1D3 /* PhotoRepository.swift in Sources */,
 				47E2F9172EB0942800EAC721 /* GrowthDataManager.swift in Sources */,
 				1769449C008645FE9E4FCB80 /* APIService.swift in Sources */,

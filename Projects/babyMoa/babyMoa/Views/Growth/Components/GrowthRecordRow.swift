@@ -58,8 +58,8 @@ struct GrowthRecordRow: View {
                         .font(.system(size: 15, weight: .medium))
                         .foregroundColor(
                             diff > 0
-                                ? Color("BrandPrimary")
-                                : Color("TextPrimary").opacity(0.4)
+                                ? Color("Brand-50")
+                                : Color("Font").opacity(0.4)
                         )
                 }
 

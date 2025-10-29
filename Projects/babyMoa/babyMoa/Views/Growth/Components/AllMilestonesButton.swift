@@ -28,7 +28,7 @@ struct AllMilestonesButton: View {
                 .background(
                     LinearGradient(
                         colors: [
-                            Color("BrandPrimary"), Color("BrandSecondary"),
+                            Color("Brand-50"), Color("BrandSecondary"),
                         ],
                         startPoint: .leading,
                         endPoint: .trailing
@@ -36,7 +36,7 @@ struct AllMilestonesButton: View {
                 )
                 .cornerRadius(16)
                 .shadow(
-                    color: Color("BrandPrimary").opacity(0.3),
+                    color: Color("Brand-50").opacity(0.3),
                     radius: 8,
                     x: 0,
                     y: 4

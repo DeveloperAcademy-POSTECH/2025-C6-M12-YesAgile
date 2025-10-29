@@ -38,11 +38,11 @@ struct GrowthBabyHeader: View {
                 HStack(spacing: 6) {
                     Text(babyName)
                         .font(.system(size: 20, weight: .semibold))
-                        .foregroundColor(Color("TextPrimary"))
+                        .foregroundColor(Color("Font"))
 
                     Image(systemName: "chevron.down")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(Color("TextPrimary"))
+                        .foregroundColor(Color("Font"))
                 }
             }
 

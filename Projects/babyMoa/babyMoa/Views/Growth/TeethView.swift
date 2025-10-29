@@ -16,7 +16,7 @@ struct TeethView: View {
 
     @State private var selectedToothPosition: ToothPosition?
     @State private var newTeeth: [NewTooth] = []
-    @State private var showInfoAlert = false
+    
 
     // 위쪽 10개 치아 (유치 기준)
     private let upperTeeth: [ToothPosition] = [
@@ -67,22 +67,9 @@ struct TeethView: View {
             }
             .navigationTitle("치아")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showInfoAlert = true }) {
-                        Image(systemName: "info.circle")
-                            .foregroundColor(Color("BrandPrimary"))
-                    }
-                }
-            }
             .onDisappear {
                 // 뷰가 사라질 때 자동으로 저장
                 saveNewTeeth()
-            }
-            .alert("치아 좌우 구분", isPresented: $showInfoAlert) {
-                Button("확인", role: .cancel) {}
-            } message: {
-                Text("치아 위치는 아이와 마주하면\n보이는 그대로 기록해요.")
             }
         }
     }
@@ -95,7 +82,7 @@ struct TeethView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("새로 난 치아")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(Color("TextPrimary"))
+                        .foregroundColor(Color("Font"))
                         .padding(.leading, 20)
 
                     // 새로 추가된 치아 (newTeeth)

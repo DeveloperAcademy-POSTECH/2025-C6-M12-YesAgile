@@ -71,14 +71,14 @@ struct AddBabyNewYes: View {
                 }
                 .padding(.top, 20)
             }
-            .background(Color("BackgroundPrimary"))
+            .background(Color("Background"))
             .navigationTitle("아기 정보 편집")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { handleDelete() }) {
                         Image(systemName: "trash")
-                            .foregroundColor(Color("BrandPrimary"))
+                            .foregroundColor(Color("Brand-50"))
                     }
                 }
             }
@@ -127,7 +127,7 @@ struct AddBabyNewYes: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(label)
                 .font(.system(size: 14, weight: .medium))
-                .foregroundColor(Color("TextPrimary").opacity(0.6))
+                .foregroundColor(Color("Font").opacity(0.6))
             
             TextField(placeholder, text: text)
                 .font(.system(size: 16, weight: .medium))
@@ -142,10 +142,10 @@ struct AddBabyNewYes: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("성별")
                 .font(.system(size: 14, weight: .medium))
-                .foregroundColor(Color("TextPrimary").opacity(0.6))
+                .foregroundColor(Color("Font").opacity(0.6))
             
             HStack(spacing: 12) {
-                genderButton(title: "남아", value: "M", color: Color("BrandPrimary"))
+                genderButton(title: "남아", value: "M", color: Color("Brand-50"))
                 genderButton(title: "여아", value: "F", color: Color("MemoryPink"))
             }
         }
@@ -172,12 +172,12 @@ struct AddBabyNewYes: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("출생일")
                 .font(.system(size: 14, weight: .medium))
-                .foregroundColor(Color("TextPrimary").opacity(0.6))
+                .foregroundColor(Color("Font").opacity(0.6))
             
             HStack {
                 Text(formatDate(birthDate))
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(Color("TextPrimary"))
+                    .foregroundColor(Color("Font"))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
                     .background(Color(.systemGray6))
@@ -197,7 +197,7 @@ struct AddBabyNewYes: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("아이와 나의 관계")
                 .font(.system(size: 14, weight: .medium))
-                .foregroundColor(Color("TextPrimary").opacity(0.6))
+                .foregroundColor(Color("Font").opacity(0.6))
             
             Menu {
                 ForEach(Mytype.allCases) { type in
@@ -209,12 +209,12 @@ struct AddBabyNewYes: View {
                 HStack {
                     Text(relationship.rawValue)
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(Color("TextPrimary"))
+                        .foregroundColor(Color("Font"))
                     
                     Spacer()
                     
                     Image(systemName: "chevron.down")
-                        .foregroundColor(Color("TextPrimary").opacity(0.4))
+                        .foregroundColor(Color("Font").opacity(0.4))
                 }
                 .padding()
                 .background(Color(.systemGray6))
@@ -229,7 +229,7 @@ struct AddBabyNewYes: View {
             Button(action: { dismiss() }) {
                 Text("취소")
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(Color("TextPrimary"))
+                    .foregroundColor(Color("Font"))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
                     .background(Color(.systemGray6))
@@ -242,14 +242,14 @@ struct AddBabyNewYes: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
-                    .background(isFormValid ? Color("BrandPrimary") : Color.gray)
+                    .background(isFormValid ? Color("Brand-50") : Color.gray)
                     .cornerRadius(12)
             }
             .disabled(!isFormValid)
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
-        .background(Color("BackgroundPrimary"))
+        .background(Color("Background"))
     }
     
     // MARK: - Helper Functions

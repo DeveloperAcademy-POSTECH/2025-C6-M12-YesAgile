@@ -47,13 +47,13 @@ struct WeightView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .frame(height: 56)
-                    .background(Color("BrandPrimary"))
+                    .background(Color("Brand-50"))
                     .cornerRadius(12)
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
         }
-        .background(Color("BackgroundPrimary"))
+        .background(Color("Background"))
         .navigationTitle("몸무게")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showAddWeight) {

@@ -4,7 +4,7 @@
 //
 //  Created by TaeHyeon Koo on 10/20/25.
 //  추억(Memory) 기능 전용 네트워크 에러
-//
+/// 그대로 사용
 
 import Foundation
 

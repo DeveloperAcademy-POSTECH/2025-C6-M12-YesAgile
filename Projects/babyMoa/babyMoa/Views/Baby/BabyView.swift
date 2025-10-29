@@ -58,7 +58,7 @@ struct BabyView: View {
             
             Spacer()
         }
-        .background(Color("BackgroundPrimary"))
+        .background(Color("Background"))
         .onAppear {
             loadBabyInfo()
         }
@@ -81,11 +81,11 @@ struct BabyView: View {
                 HStack(spacing: 4) {
                     Text(displayName.isEmpty ? "아기 이름" : displayName)
                         .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(Color("TextPrimary"))
+                        .foregroundColor(Color("Font"))
                     
                     Image(systemName: "chevron.down")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(Color("BrandPrimary"))
+                        .foregroundColor(Color("Brand-50"))
                 }
             }
             
@@ -95,7 +95,7 @@ struct BabyView: View {
             Button(action: { showSettings = true }) {
                 Image(systemName: "gearshape.fill")
                     .font(.system(size: 24))
-                    .foregroundColor(Color("BrandPrimary"))
+                    .foregroundColor(Color("Brand-50"))
             }
         }
     }
@@ -114,7 +114,7 @@ struct BabyView: View {
                 // D-day 또는 나이
                 Text(dDay)
                     .font(.system(size: 14, weight: .regular))
-                    .foregroundColor(Color("TextPrimary").opacity(0.6))
+                    .foregroundColor(Color("Font").opacity(0.6))
                 
                 // 양육자 정보 + 뱃지
                 guardianInfoView
@@ -136,27 +136,27 @@ struct BabyView: View {
                 HStack(spacing: 6) {
                     Text(name)
                         .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(Color("TextPrimary"))
+                        .foregroundColor(Color("Font"))
                     
                     Text("| \(nickname)")
                         .font(.system(size: 14, weight: .regular))
-                        .foregroundColor(Color("TextPrimary").opacity(0.6))
+                        .foregroundColor(Color("Font").opacity(0.6))
                 }
             } else if let name = babyName, !name.isEmpty {
                 // 케이스 2: 이름만 있음
                 Text(name)
                     .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(Color("TextPrimary"))
+                    .foregroundColor(Color("Font"))
             } else if let nickname = babyNickname, !nickname.isEmpty {
                 // 케이스 3: 태명만 있음
                 Text(nickname)
                     .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(Color("TextPrimary"))
+                    .foregroundColor(Color("Font"))
             } else {
                 // 케이스 4: 둘 다 없음 (기본값)
                 Text("아기 이름")
                     .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(Color("TextPrimary").opacity(0.4))
+                    .foregroundColor(Color("Font").opacity(0.4))
             }
         }
     }
@@ -167,7 +167,7 @@ struct BabyView: View {
             // 양육자 수
             Text("양육자 \(guardianCount)명")
                 .font(.system(size: 14, weight: .medium))
-                .foregroundColor(Color("TextPrimary"))
+                .foregroundColor(Color("Font"))
             
             // 대표 양육자 2명만 표시
             ForEach(guardianNames.prefix(2), id: \.self) { guardianName in
@@ -176,7 +176,7 @@ struct BabyView: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
-                    .background(Color("BrandPrimary"))
+                    .background(Color("Brand-50"))
                     .cornerRadius(12)
             }
             
@@ -184,7 +184,7 @@ struct BabyView: View {
             if guardianCount > 2 {
                 Text("...")
                     .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(Color("TextPrimary").opacity(0.6))
+                    .foregroundColor(Color("Font").opacity(0.6))
             }
         }
     }
@@ -229,7 +229,7 @@ struct BabyView: View {
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .background(Color("BrandPrimary"))
+            .background(Color("Brand-50"))
             .cornerRadius(12)
     }
     

@@ -54,7 +54,7 @@ struct AllMilestonesView: View {
             }
             .padding(.vertical, 16)
         }
-        .background(Color("BackgroundPrimary"))
+        .background(Color("Background"))
         .navigationTitle("전체 성장 마일스톤")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

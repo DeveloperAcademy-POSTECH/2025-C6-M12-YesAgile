@@ -24,6 +24,7 @@ struct HeightView: View {
                 Text("기록").tag(0)
                 Text("차트").tag(1)
             }
+            .font(Font.system(size: 17, weight: .semibold))
             .pickerStyle(.segmented)
             .padding(.horizontal, 20)
             .padding(.top, 16)
@@ -47,13 +48,13 @@ struct HeightView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .frame(height: 56)
-                    .background(Color("BrandPrimary"))
+                    .background(Color("Brand-50"))
                     .cornerRadius(12)
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
         }
-        .background(Color("BackgroundPrimary"))
+        .background(Color("Background"))
         .navigationTitle("키")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showAddHeight) {

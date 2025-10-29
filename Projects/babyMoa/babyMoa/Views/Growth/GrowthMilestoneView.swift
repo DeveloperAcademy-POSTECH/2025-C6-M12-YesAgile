@@ -124,7 +124,7 @@ struct GrowthMilestoneView: View {
                     .padding(.bottom, 20)
                 }
             }
-            .background(Color("BackgroundPrimary"))
+            .background(Color("Background"))
             .navigationTitle(milestone.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -138,14 +138,14 @@ struct GrowthMilestoneView: View {
                         }
                     }) {
                         Image(systemName: "chevron.left")
-                            .foregroundColor(Color("TextPrimary"))
+                            .foregroundColor(Color("Font"))
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     if onDelete != nil {
                         Button(action: { onDelete?() }) {
                             Image(systemName: "trash")
-                                .foregroundColor(Color("BrandPrimary"))
+                                .foregroundColor(Color("Brand-50"))
                         }
                     }
                 }
@@ -171,7 +171,7 @@ struct GrowthMilestoneView: View {
                     )
                     dismiss()
                 }
-                .background(Color("BackgroundPrimary"))
+                .background(Color("Background"))
             }
             .sheet(isPresented: $showDatePicker) {
                 VStack(spacing: 0) {
@@ -192,7 +192,7 @@ struct GrowthMilestoneView: View {
                         Button("완료") {
                             showDatePicker = false
                         }
-                        .foregroundColor(Color("BrandPrimary"))
+                        .foregroundColor(Color("Brand-50"))
                     }
                     .padding()
 
@@ -242,7 +242,7 @@ struct GrowthMilestoneView: View {
                     .overlay(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
                             .stroke(
-                                Color("BrandPrimary").opacity(0.4),
+                                Color("Brand-50").opacity(0.4),
                                 lineWidth: 1
                             )
                     )

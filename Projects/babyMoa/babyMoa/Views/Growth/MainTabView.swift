@@ -47,28 +47,13 @@ struct MainTabView: View {
             }
 
         }
-        .tint(Color("BrandPrimary"))  // 선택된 탭 색상
+        .tint(Color("Brand-50"))  // 선택된 탭 색상
         // 탭바 배경이 상황 따라 투명/유리로 바뀌지 않도록 "항상 보이게"
         .toolbarBackground(.visible, for: .tabBar)
         // 시스템 배경색을 강제 (유리감/플로팅 인상 제거)
         .toolbarBackground(Color(.systemBackground), for: .tabBar)
     }
 }
-
-// MARK: - Memory View (추억 - 현재 메인 화면)
-// Note: GrowthView는 Views/Growth/GrowthView.swift에 구현되어 있습니다
-
-//struct MemoryView: View {
-//    var body: some View {
-//        VStack(spacing: 0) {
-//            // 상단 헤더 (아기 선택)
-//            BabySelectionHeader()
-//
-//            // 기존 ContentView 내용 (캘린더 + 지도)
-//            MemoryContentView()
-//        }
-//    }
-//}
 
 // MARK: - Baby Selection Header
 
@@ -95,11 +80,11 @@ struct BabySelectionHeader: View {
                 HStack(spacing: 4) {
                     Text("아기")
                         .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(Color("TextPrimary"))
+                        .foregroundColor(Color("Font"))
 
                     Image(systemName: "chevron.down")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(Color("TextPrimary"))
+                        .foregroundColor(Color("Font"))
                 }
             }
 
@@ -120,88 +105,6 @@ struct BabySelectionHeader: View {
         }
     }
 }
-
-// MARK: - Memory Content View
-
-/// 추억 화면의 메인 컨텐츠 (캘린더 + 지도)
-//struct MemoryContentView: View {
-//    @State private var viewModel = PhotoViewModel()
-//    @State private var showAddMemory = false
-//    @State private var showMemoryList = false
-//    @State private var selectedDateForMemory: Date = Date()
-//
-//    var body: some View {
-//        @Bindable var viewModel = viewModel
-//
-//        ScrollView {
-//            VStack(spacing: 16) {
-//                // 캘린더 카드
-//                CalendarCard(
-//                    selectedDate: $viewModel.selectedDate,
-//                    photos: viewModel.photos
-//                ) { date in
-//                    selectedDateForMemory = date
-//                    // 해당 날짜의 추억이 있는지 확인
-//                    let memoriesForDate = getMemories(
-//                        for: date,
-//                        from: viewModel.photos
-//                    )
-//                    if memoriesForDate.isEmpty {
-//                        showAddMemory = true
-//                    } else {
-//                        showMemoryList = true
-//                    }
-//                }
-//
-//                // 지도 카드
-//                CompactMapCard(
-//                    photos: $viewModel.photos,
-//                    currentLocation: viewModel.currentLocation
-//                )
-//                .frame(height: 400)  // 고정 높이
-//
-//                Spacer(minLength: 20)
-//            }
-//            .padding(.bottom, 20)  // 탭바 공간 확보
-//        }
-//        .scrollIndicators(.hidden)
-//        .background(Color(.systemGroupedBackground))
-//        .fullScreenCover(isPresented: $showAddMemory) {
-//            AddMemoryView(selectedDate: selectedDateForMemory) {
-//                image,
-//                memo,
-//                date in
-//                // 사진 저장 로직
-//                viewModel.addPhoto(image: image, memo: memo, date: date)
-//            }
-//        }
-//        .fullScreenCover(isPresented: $showMemoryList) {
-//            let memoriesForDate = getMemories(
-//                for: selectedDateForMemory,
-//                from: viewModel.photos
-//            )
-//            AddMemoryListView(
-//                selectedDate: selectedDateForMemory,
-//                memories: memoriesForDate
-//            ) { image, memo, date in
-//                // 추가 사진 저장 로직
-//                viewModel.addPhoto(image: image, memo: memo, date: date)
-//            }
-//        }
-//    }
-
-// MARK: - Helper
-//
-//    private func getMemories(for date: Date, from photos: [LocalPhoto])
-//        -> [LocalPhoto]
-//    {
-//        let calendar = Calendar.current
-//        return photos.filter { photo in
-//            calendar.isDate(photo.date, inSameDayAs: date)
-//        }
-//    }
-//}
-
 // MARK: - Preview
 
 #Preview {

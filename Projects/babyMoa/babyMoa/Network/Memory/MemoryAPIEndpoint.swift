@@ -4,7 +4,7 @@
 //
 //  Created by TaeHyeon Koo on 10/20/25.
 //  추억(Memory) 기능 전용 API 엔드포인트
-//
+/// 포맷 가져가고 내용 수정
 
 import Foundation
 

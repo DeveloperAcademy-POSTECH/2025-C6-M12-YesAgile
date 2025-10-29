@@ -4,7 +4,7 @@
 // 모든 API AccessToken 들어가야함.
 //  Created by TaeHyeon Koo on 10/20/25.
 //  추억(Memory) 기능 전용 API 클라이언트
-//
+/// 그대로 사용 예정
 
 import Foundation
 
