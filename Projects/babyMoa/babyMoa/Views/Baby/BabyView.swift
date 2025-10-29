@@ -46,7 +46,7 @@ struct BabyView: View {
                 }
                 
                 NavigationLink(destination: AllGuardiansView()) {
-                    menuButton(title: "공동 양육자 조대")
+                    menuButton(title: "공동 양육자 초대")
                 }
                 
                 Button(action: { showBabyEdit = true }) {

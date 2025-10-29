@@ -67,6 +67,7 @@ struct TeethView: View {
             }
             .navigationTitle("치아")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(.hidden, for: .tabBar)
             .onDisappear {
                 // 뷰가 사라질 때 자동으로 저장
                 saveNewTeeth()

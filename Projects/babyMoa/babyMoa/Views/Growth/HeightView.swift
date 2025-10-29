@@ -57,6 +57,7 @@ struct HeightView: View {
         .background(Color("Background"))
         .navigationTitle("키")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
         .sheet(isPresented: $showAddHeight) {
             AddHeightView(babyId: babyId) { height, date, memo in
                 addHeightRecord(height: height, date: date, memo: memo)

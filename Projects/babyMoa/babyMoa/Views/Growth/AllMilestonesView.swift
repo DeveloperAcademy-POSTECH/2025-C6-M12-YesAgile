@@ -57,6 +57,7 @@ struct AllMilestonesView: View {
         .background(Color("Background"))
         .navigationTitle("전체 성장 마일스톤")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Menu(sortModeTitle) {

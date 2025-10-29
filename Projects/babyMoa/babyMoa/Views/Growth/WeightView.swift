@@ -56,6 +56,7 @@ struct WeightView: View {
         .background(Color("Background"))
         .navigationTitle("몸무게")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
         .sheet(isPresented: $showAddWeight) {
             AddWeightView(babyId: babyId) { weight, date, memo in
                 addWeightRecord(weight: weight, date: date, memo: memo)

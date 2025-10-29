@@ -2,7 +2,7 @@
 //  MainTabView.swift
 //  BabyMoaMap
 //
-//  메인 탭바 - 성장/추억/아기 화면 전환
+/// 메인 탭바 - 성장/추억/아기 화면 전환 -> 추억/추천/아기 전환
 //
 
 import SwiftUI
