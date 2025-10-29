@@ -56,15 +56,15 @@ struct AddBabyNewNoView: View {
     @Environment(\.dismiss) private var dismiss
     
     // MARK: - States
-    @State private var selectedProfileIndex: Int = 0
     @State private var babyName: String = ""
     @State private var babyNickname: String = ""
     @State private var expectedBirthDate = Date()
     @State private var relationship: BabyRelationship = .mom
     @State private var showDatePicker = false
+    @State private var showRelationshipPicker = false
     
-    // 기본 프로필 이미지 배열
-    private let defaultProfiles = DefaultBabyProfile.allCases
+    // 고정 프로필 이미지
+    private let fixedProfileImage = "baby_milestone_illustration"
     
     // MARK: - Validation
     private var isFormValid: Bool {
@@ -74,8 +74,8 @@ struct AddBabyNewNoView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
                 VStack(spacing: 24) {
-                    // 프로필 이미지 선택 (좌우 스와이프)
-                    profileImageCarousel
+                    // 고정 프로필 이미지
+                    profileImageView
                     
                     // 입력 필드들
                     VStack(alignment: .leading, spacing: 20) {
@@ -111,61 +111,30 @@ struct AddBabyNewNoView: View {
             .safeAreaInset(edge: .bottom) {
                 saveButton
             }
-    }
-    
-    // MARK: - Profile Image Carousel
-    private var profileImageCarousel: some View {
-        VStack(spacing: 12) {
-            TabView(selection: $selectedProfileIndex) {
-                ForEach(0..<defaultProfiles.count, id: \.self) { index in
-                    profileImageView(for: defaultProfiles[index])
-                        .tag(index)
+            .overlay {
+                if showDatePicker {
+                    centerDatePicker
                 }
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .frame(height: 140)
-            
-            // 커스텀 페이지 인디케이터
-            HStack(spacing: 6) {
-                ForEach(0..<defaultProfiles.count, id: \.self) { index in
-                    Circle()
-                        .fill(selectedProfileIndex == index ? Color("Brand-50") : Color.gray.opacity(0.3))
-                        .frame(width: 8, height: 8)
-                        .animation(.easeInOut, value: selectedProfileIndex)
+            .overlay {
+                if showRelationshipPicker {
+                    centerRelationshipPicker
                 }
             }
-            
-            Text("좌우로 스와이프하여 프로필을 선택하세요")
-                .font(.system(size: 12, weight: .regular))
-                .foregroundColor(Color("Font").opacity(0.5))
-        }
     }
     
-    private func profileImageView(for profile: DefaultBabyProfile) -> some View {
-        ZStack {
-            // Assets에 이미지가 있으면 사용, 없으면 SF Symbol
-            if let uiImage = UIImage(named: profile.rawValue) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 100, height: 100)
-                    .clipShape(Circle())
-            } else {
-                Image(systemName: profile.systemImageFallback)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 60, height: 60)
-                    .foregroundColor(Color("Brand-50"))
-                    .frame(width: 100, height: 100)
-                    .background(Color("Brand-50").opacity(0.1))
-                    .clipShape(Circle())
-            }
-        }
-        .overlay(
-            Circle()
-                .stroke(Color.white, lineWidth: 4)
-        )
-        .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
+    // MARK: - Fixed Profile Image
+    private var profileImageView: some View {
+        Image(fixedProfileImage)
+            .resizable()
+            .scaledToFit()
+            .frame(width: 120, height: 120)
+            .clipShape(Circle())
+            .overlay(
+                Circle()
+                    .stroke(Color.white, lineWidth: 4)
+            )
+            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
     }
     
     // MARK: - Input Field
@@ -178,7 +147,7 @@ struct AddBabyNewNoView: View {
             TextField(placeholder, text: text)
                 .font(.system(size: 16, weight: .medium))
                 .padding()
-                .background(Color(.systemGray6))
+                .background(Color("Gray-80"))
                 .cornerRadius(8)
         }
     }
@@ -201,29 +170,8 @@ struct AddBabyNewNoView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
-                .background(Color(.systemGray6))
+                .background(Color("Gray-80"))
                 .cornerRadius(8)
-            }
-            .sheet(isPresented: $showDatePicker) {
-                VStack {
-                    DatePicker("출생 예정일 선택", selection: $expectedBirthDate, displayedComponents: .date)
-                        .datePickerStyle(.graphical)
-                        .labelsHidden()
-                        .padding()
-                    
-                    Button("완료") {
-                        showDatePicker = false
-                    }
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(Color("Brand-50"))
-                    .cornerRadius(12)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
-                }
-                .presentationDetents([.height(450)])
             }
         }
     }
@@ -235,13 +183,7 @@ struct AddBabyNewNoView: View {
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(Color("Font").opacity(0.6))
             
-            Menu {
-                ForEach(BabyRelationship.allCases) { type in
-                    Button(type.rawValue) {
-                        relationship = type
-                    }
-                }
-            } label: {
+            Button(action: { showRelationshipPicker = true }) {
                 HStack {
                     Text(relationship.rawValue)
                         .font(.system(size: 16, weight: .medium))
@@ -276,6 +218,76 @@ struct AddBabyNewNoView: View {
         .background(Color("Background"))
     }
     
+    // MARK: - Center Pickers
+    
+    private var centerDatePicker: some View {
+        ZStack {
+            Color.black.opacity(0.3)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    showDatePicker = false
+                }
+            
+            VStack(spacing: 0) {
+                DatePicker("", selection: $expectedBirthDate, displayedComponents: .date)
+                    .datePickerStyle(.graphical)
+                    .labelsHidden()
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .cornerRadius(12)
+                    .padding(.horizontal, 20)
+            }
+        }
+    }
+    
+    private var centerRelationshipPicker: some View {
+        ZStack {
+            Color.black.opacity(0.3)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    showRelationshipPicker = false
+                }
+            
+            VStack(spacing: 0) {
+                Picker("관계", selection: $relationship) {
+                    ForEach(BabyRelationship.allCases) { type in
+                        Text(type.rawValue).tag(type)
+                    }
+                }
+                .pickerStyle(.wheel)
+                .frame(height: 200)
+                .background(Color(.systemBackground))
+                .cornerRadius(12)
+                .padding(.horizontal, 40)
+                
+                HStack(spacing: 0) {
+                    Button("취소") {
+                        showRelationshipPicker = false
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Color(.systemBackground))
+                    
+                    Divider()
+                        .frame(height: 44)
+                    
+                    Button("완료") {
+                        showRelationshipPicker = false
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Color(.systemBackground))
+                    .foregroundColor(Color("Brand-50"))
+                }
+                .frame(height: 44)
+                .background(Color(.systemBackground))
+                .cornerRadius(12)
+                .padding(.horizontal, 40)
+                .padding(.top, 1)
+            }
+        }
+    }
+    
     // MARK: - Helper Functions
     
     /// 날짜 포맷팅 (2025.09.01 형식)
@@ -287,28 +299,25 @@ struct AddBabyNewNoView: View {
     
     /// 저장 처리
     private func handleSave() {
-        // 선택된 프로필 이미지 이름
-        let selectedProfileName = defaultProfiles[selectedProfileIndex].rawValue
-        
         // UserDefaults에 아기 정보 저장
         let babyData: [String: Any] = [
             "name": babyName,
             "nickname": babyNickname,
             "expectedBirthDate": formatDate(expectedBirthDate),
             "relationship": relationship.rawValue,
-            "profileImageName": selectedProfileName,
+            "profileImageName": fixedProfileImage,
             "isPregnant": true // 태명 등록이므로 임신 상태
         ]
         
         UserDefaults.standard.set(babyData, forKey: "currentBaby")
-        UserDefaults.standard.set(selectedProfileName, forKey: "babyProfileImageName")
+        UserDefaults.standard.set(fixedProfileImage, forKey: "babyProfileImageName")
         
         print("✅ 아기 정보 저장 완료 (태명)")
         print("📝 이름: \(babyName.isEmpty ? "(없음)" : babyName)")
         print("📝 태명: \(babyNickname)")
         print("📝 출생 예정일: \(formatDate(expectedBirthDate))")
         print("📝 관계: \(relationship.rawValue)")
-        print("📝 프로필: \(selectedProfileName)")
+        print("📝 프로필: \(fixedProfileImage)")
         
         dismiss()
     }

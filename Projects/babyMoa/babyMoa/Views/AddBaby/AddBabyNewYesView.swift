@@ -30,6 +30,7 @@ struct AddBabyNewYes: View {
     @State private var birthDate: Date
     @State private var relationship: Mytype
     @State private var showDatePicker = false
+    @State private var showRelationshipPicker = false
     
     // MARK: - Initializers
     
@@ -114,6 +115,16 @@ struct AddBabyNewYes: View {
             .safeAreaInset(edge: .bottom) {
                 saveButton
             }
+            .overlay {
+                if showDatePicker {
+                    centerDatePicker
+                }
+            }
+            .overlay {
+                if showRelationshipPicker {
+                    centerRelationshipPicker
+                }
+            }
         .onChange(of: selectedPhotoItem) { _, newItem in
             Task {
                 if let data = try? await newItem?.loadTransferable(type: Data.self),
@@ -132,14 +143,14 @@ struct AddBabyNewYes: View {
                     Image(uiImage: profileImage)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 100, height: 100)
+                        .frame(width: 120, height: 120)
                         .clipShape(Circle())
                 } else {
                     // 기본 아기 일러스트 (Assets에 추가 필요)
                     Image(systemName: "person.circle.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 100, height: 100)
+                        .frame(width: 120, height: 120)
                         .foregroundColor(.gray.opacity(0.3))
                 }
             }
@@ -161,7 +172,7 @@ struct AddBabyNewYes: View {
             TextField(placeholder, text: text)
                 .font(.system(size: 16, weight: .medium))
                 .padding()
-                .background(Color(.systemGray6))
+                .background(Color("Gray-80"))
                 .cornerRadius(8)
         }
     }
@@ -214,29 +225,8 @@ struct AddBabyNewYes: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
-                .background(Color(.systemGray6))
+                .background(Color("Gray-80"))
                 .cornerRadius(8)
-            }
-            .sheet(isPresented: $showDatePicker) {
-                VStack {
-                    DatePicker("출생일 선택", selection: $birthDate, displayedComponents: .date)
-                        .datePickerStyle(.graphical)
-                        .labelsHidden()
-                        .padding()
-                    
-                    Button("완료") {
-                        showDatePicker = false
-                    }
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(Color("Brand-50"))
-                    .cornerRadius(12)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
-                }
-                .presentationDetents([.height(450)])
             }
         }
     }
@@ -248,13 +238,7 @@ struct AddBabyNewYes: View {
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(Color("Font").opacity(0.6))
             
-            Menu {
-                ForEach(Mytype.allCases) { type in
-                    Button(type.rawValue) {
-                        relationship = type
-                    }
-                }
-            } label: {
+            Button(action: { showRelationshipPicker = true }) {
                 HStack {
                     Text(relationship.rawValue)
                         .font(.system(size: 16, weight: .medium))
@@ -287,6 +271,76 @@ struct AddBabyNewYes: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
         .background(Color("Background"))
+    }
+    
+    // MARK: - Center Pickers
+    
+    private var centerDatePicker: some View {
+        ZStack {
+            Color.black.opacity(0.3)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    showDatePicker = false
+                }
+            
+            VStack(spacing: 0) {
+                DatePicker("", selection: $birthDate, displayedComponents: .date)
+                    .datePickerStyle(.graphical)
+                    .labelsHidden()
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .cornerRadius(12)
+                    .padding(.horizontal, 20)
+            }
+        }
+    }
+    
+    private var centerRelationshipPicker: some View {
+        ZStack {
+            Color.black.opacity(0.3)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    showRelationshipPicker = false
+                }
+            
+            VStack(spacing: 0) {
+                Picker("관계", selection: $relationship) {
+                    ForEach(Mytype.allCases) { type in
+                        Text(type.rawValue).tag(type)
+                    }
+                }
+                .pickerStyle(.wheel)
+                .frame(height: 200)
+                .background(Color(.systemBackground))
+                .cornerRadius(12)
+                .padding(.horizontal, 40)
+                
+                HStack(spacing: 0) {
+                    Button("취소") {
+                        showRelationshipPicker = false
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Color(.systemBackground))
+                    
+                    Divider()
+                        .frame(height: 44)
+                    
+                    Button("완료") {
+                        showRelationshipPicker = false
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Color(.systemBackground))
+                    .foregroundColor(Color("Brand-50"))
+                }
+                .frame(height: 44)
+                .background(Color(.systemBackground))
+                .cornerRadius(12)
+                .padding(.horizontal, 40)
+                .padding(.top, 1)
+            }
+        }
     }
     
     // MARK: - Helper Functions
