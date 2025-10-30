@@ -307,12 +307,18 @@ struct AddBabyNewNoView: View {
     
     /// 저장 처리
     private func handleSave() {
-        let existingId = baby?.id ?? currentStoredBabyId()
-        let babyId = existingId ?? UUID().uuidString
+        // ID 결정: 편집 모드면 기존 ID, 신규면 새 UUID
+        let babyId: String
+        if isEditMode, let existingBaby = baby {
+            babyId = existingBaby.id  // 편집: 기존 ID 유지
+        } else {
+            babyId = UUID().uuidString  // 신규: 새 UUID 생성
+        }
+        
         let gender = baby?.gender ?? .notSpecified
         let updatedBaby = Baby(
             id: babyId,
-            profileImage: fixedProfileImage,
+            profileImage: fixedProfileImage,  // Assets 이미지명
             gender: gender,
             name: babyName.isEmpty ? nil : babyName,
             nickname: babyNickname,
@@ -322,8 +328,13 @@ struct AddBabyNewNoView: View {
         )
         
         saveBabyToUserDefaults(updatedBaby)
-        UserDefaults.standard.set(fixedProfileImage, forKey: "babyProfileImageName")
-        UserDefaults.standard.removeObject(forKey: "babyProfileImage")
+        
+        // UserDefaults 마이그레이션 (기존 Base64 이미지 제거)
+        if !isEditMode {
+            UserDefaults.standard.removeObject(forKey: "babyProfileImage")
+            UserDefaults.standard.removeObject(forKey: "babyProfileImageName")
+        }
+        
         hasCompletedBabySetup = true
         NotificationCenter.default.post(name: .babyDataDidChange, object: nil)
         
@@ -332,16 +343,41 @@ struct AddBabyNewNoView: View {
         print("📝 태명: \(babyNickname)")
         print("📝 출생 예정일: \(formatDate(expectedBirthDate))")
         print("📝 관계: \(relationship.rawValue)")
+        print("📝 프로필 이미지: \(fixedProfileImage)")
         
         dismiss()
     }
 
     private func saveBabyToUserDefaults(_ baby: Baby) {
-        guard let encoded = try? JSONEncoder().encode(baby) else {
-            print("❌ Baby 모델 인코딩 실패 (태명)")
-            return
+        // 1. babies 배열 로드
+        var babies: [Baby] = []
+        if let data = UserDefaults.standard.data(forKey: "babies"),
+           let loadedBabies = try? JSONDecoder().decode([Baby].self, from: data) {
+            babies = loadedBabies
         }
-        UserDefaults.standard.set(encoded, forKey: "currentBaby")
+        
+        // 2. 새 아기 추가 또는 기존 아기 업데이트
+        if let index = babies.firstIndex(where: { $0.id == baby.id }) {
+            babies[index] = baby  // 기존 아기 업데이트
+            print("✅ 기존 아기 정보 업데이트 (ID: \(baby.id))")
+        } else {
+            babies.append(baby)   // 새 아기 추가
+            print("✅ 새 아기 추가 (ID: \(baby.id))")
+        }
+        
+        // 3. babies 배열 저장
+        if let encoded = try? JSONEncoder().encode(babies) {
+            UserDefaults.standard.set(encoded, forKey: "babies")
+            print("✅ babies 배열 저장 완료 (총 \(babies.count)명)")
+        }
+        
+        // 4. selectedBabyId 업데이트 (새로 추가/수정된 아기 선택)
+        UserDefaults.standard.set(baby.id, forKey: "selectedBabyId")
+        
+        // 5. 하위 호환: currentBaby도 유지 (GrowthView용)
+        if let encoded = try? JSONEncoder().encode(baby) {
+            UserDefaults.standard.set(encoded, forKey: "currentBaby")
+        }
     }
     
     private func currentStoredBabyId() -> String? {
@@ -354,16 +390,49 @@ struct AddBabyNewNoView: View {
     
     /// 삭제 처리
     private func handleDelete() {
-        // UserDefaults에서 모든 아기 데이터 삭제
-        UserDefaults.standard.removeObject(forKey: "currentBaby")
-        UserDefaults.standard.removeObject(forKey: "babyProfileImage")
-        UserDefaults.standard.removeObject(forKey: "babyProfileImageName")
+        guard let babyToDelete = baby else {
+            print("❌ 삭제할 아기 정보가 없습니다")
+            return
+        }
         
-        // 아기 등록 플래그 해제 → AddBabyView로 자동 전환
-        hasCompletedBabySetup = false
+        // 1. babies 배열에서 해당 아기 제거
+        var babies: [Baby] = []
+        if let data = UserDefaults.standard.data(forKey: "babies"),
+           let loadedBabies = try? JSONDecoder().decode([Baby].self, from: data) {
+            babies = loadedBabies.filter { $0.id != babyToDelete.id }
+        }
+        
+        // 2. babies 배열 저장
+        if let encoded = try? JSONEncoder().encode(babies) {
+            UserDefaults.standard.set(encoded, forKey: "babies")
+            print("✅ babies 배열 저장 완료 (남은 아기: \(babies.count)명)")
+        }
+        
+        // 3. 프로필 이미지 파일 삭제 (Assets 이미지는 삭제 안 됨)
+        if let profileImageFileName = babyToDelete.profileImage {
+            ImageHelper.deleteImage(fileName: profileImageFileName)
+        }
+        
+        // 4. selectedBabyId 업데이트 (첫 번째 아기 선택)
+        if let first = babies.first {
+            UserDefaults.standard.set(first.id, forKey: "selectedBabyId")
+            if let encoded = try? JSONEncoder().encode(first) {
+                UserDefaults.standard.set(encoded, forKey: "currentBaby")
+            }
+            print("✅ 첫 번째 아기로 전환 (ID: \(first.id))")
+        } else {
+            // 모든 아기 삭제된 경우
+            UserDefaults.standard.removeObject(forKey: "selectedBabyId")
+            UserDefaults.standard.removeObject(forKey: "currentBaby")
+            UserDefaults.standard.removeObject(forKey: "babyProfileImage")
+            UserDefaults.standard.removeObject(forKey: "babyProfileImageName")
+            hasCompletedBabySetup = false
+            print("✅ 모든 아기 삭제됨 → 아기 추가 화면으로 전환")
+        }
+        
         NotificationCenter.default.post(name: .babyDataDidChange, object: nil)
         
-        print("🗑️ 아기 정보 삭제 완료 (태명)")
+        print("🗑️ 아기 정보 삭제 완료 (ID: \(babyToDelete.id))")
         
         dismiss()
     }

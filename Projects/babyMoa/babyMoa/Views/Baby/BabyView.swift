@@ -14,61 +14,71 @@ struct BabyView: View {
     @State private var showBabyEdit = false
     @State private var showBabyEditSheet = false
     @State private var showGuardianListSheet = false
-    @State private var currentBaby: Baby?
-    
-    // UserDefaults에서 아기 정보 로드
-    @State private var babyName: String?
-    @State private var babyNickname: String?
-    @State private var dDay: String = ""
+    @State private var babies: [Baby] = []  // 전체 아기 목록
+    @State private var selectedBaby: Baby?  // 편집할 아기
     @State private var guardianCount: Int = 1
-    @State private var profileImage: UIImage?
-    @State private var profileImageName: String?
-    @State private var gender: Baby.Gender = .notSpecified
     
     var body: some View {
         VStack(spacing: 0) {
             // GrowthBabyHeader (공통 헤더)
             GrowthBabyHeader(showBabySelection: $showBabySelection)
             
-           
-            
-            // 아기 프로필 카드 (데이터 로드 후에만 표시)
-            if currentBaby != nil {
-                BabyProfileCard(
-                    babyName: babyName,
-                    babyNickname: babyNickname,
-                    ageText: dDay,
-                    guardianCount: guardianCount,
-                    gender: gender,
-                    profileImage: profileImage,
-                    profileImageName: profileImageName
-                )
-                .padding(.horizontal, 20)
-                .onTapGesture {
-                    handleEditBaby()
-                }
-            } else {
-                ProgressView()
-                    .frame(height: 100)
+            ScrollView {
+                VStack(spacing: 16) {
+                    // 아기 카드 목록
+                    if babies.isEmpty {
+                        // 아기가 없을 때
+                        VStack(spacing: 12) {
+                            Text("등록된 아기가 없습니다")
+                                .font(.system(size: 16))
+                                .foregroundColor(.gray)
+                            
+                            Button(action: { showBabyEdit = true }) {
+                                Text("첫 아기 추가하기")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(Color("Orange-50"))
+                            }
+                        }
+                        .frame(height: 100)
+                        .padding(.horizontal, 20)
+                    } else {
+                        // 여러 아기 카드 표시
+                        ForEach(babies) { baby in
+                            BabyProfileCard(
+                                babyName: baby.name,
+                                babyNickname: baby.nickname,
+                                ageText: calculateAgeText(for: baby),
+                                guardianCount: guardianCount,
+                                gender: baby.gender,
+                                profileImage: loadProfileImage(for: baby),
+                                profileImageName: baby.profileImage
+                            )
+                            .padding(.horizontal, 20)
+                            .onTapGesture {
+                                handleEditBaby(baby)
+                            }
+                        }
+                    }
+                    
+                    // 메뉴 버튼들
+                    VStack(spacing: 12) {
+                        Button(action: { showGuardianListSheet = true }) {
+                            menuButton(title: "양육자 편집")
+                        }
+                        
+                        NavigationLink(destination: AllGuardiansView()) {
+                            menuButton(title: "공동 양육자 초대")
+                        }
+                        
+                        Button(action: { showBabyEdit = true }) {
+                            menuButton(title: "아기 추가")
+                        }
+                    }
                     .padding(.horizontal, 20)
+                    .padding(.top, 8)
+                }
+                .padding(.top, 16)
             }
-            
-            // 메뉴 버튼들
-            VStack(spacing: 12) {
-                Button(action: { showGuardianListSheet = true }) {
-                    menuButton(title: "양육자 편집")
-                }
-                
-                NavigationLink(destination: AllGuardiansView()) {
-                    menuButton(title: "공동 양육자 초대")
-                }
-                
-                Button(action: { showBabyEdit = true }) {
-                    menuButton(title: "아기 추가")
-                }
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 24)
             
             Spacer()
         }
@@ -76,14 +86,17 @@ struct BabyView: View {
         .onAppear {
             loadBabyInfo()
         }
-        .sheet(isPresented: $showBabyEdit) {
+        .sheet(isPresented: $showBabyEdit, onDismiss: {
+            // 아기 추가 후 데이터 다시 로드
+            loadBabyInfo()
+        }) {
             AddBabyView()
         }
         .sheet(isPresented: $showBabyEditSheet, onDismiss: {
             // 편집 완료 후 데이터 다시 로드
             loadBabyInfo()
         }) {
-            if let baby = currentBaby {
+            if let baby = selectedBaby {
                 if baby.isPregnant == true {
                     // 태명 등록 (임신 중)
                     NavigationStack {
@@ -109,76 +122,71 @@ struct BabyView: View {
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
-            .background(Color("Brand-50"))
+            .background(Color("Orange-50"))
             .cornerRadius(12)
     }
     
     // MARK: - Handle Edit Baby
-    private func handleEditBaby() {
-        // 현재 아기 데이터 로드
-        guard let data = UserDefaults.standard.data(forKey: "currentBaby"),
-              let baby = try? JSONDecoder().decode(Baby.self, from: data) else {
-            print("⚠️ BabyView: 편집할 아기 정보가 없습니다")
-            return
-        }
-        
-        currentBaby = baby
+    private func handleEditBaby(_ baby: Baby) {
+        selectedBaby = baby
         showBabyEditSheet = true
         
-        print("✏️ 아기 정보 편집 시작")
+        print("✏️ 아기 정보 편집 시작 (ID: \(baby.id))")
     }
     
     // MARK: - Load Baby Info
     private func loadBabyInfo() {
-        // Baby 모델로부터 데이터 로드
-        guard let data = UserDefaults.standard.data(forKey: "currentBaby"),
-              let baby = try? JSONDecoder().decode(Baby.self, from: data) else {
-            print("⚠️ BabyView: 아기 정보가 없습니다")
-            return
+        // 1. babies 배열 로드
+        var loadedBabies: [Baby] = []
+        if let data = UserDefaults.standard.data(forKey: "babies"),
+           let decoded = try? JSONDecoder().decode([Baby].self, from: data) {
+            loadedBabies = decoded
         }
         
-        // 0. currentBaby 저장 (편집 기능에 필요)
-        currentBaby = baby
+        // 2. 마이그레이션: currentBaby가 babies에 없으면 추가
+        if let data = UserDefaults.standard.data(forKey: "currentBaby"),
+           let currentBaby = try? JSONDecoder().decode(Baby.self, from: data) {
+            
+            // babies 배열에 currentBaby가 없으면 맨 앞에 추가
+            if !loadedBabies.contains(where: { $0.id == currentBaby.id }) {
+                loadedBabies.insert(currentBaby, at: 0)
+                
+                // babies 배열 저장
+                if let encoded = try? JSONEncoder().encode(loadedBabies) {
+                    UserDefaults.standard.set(encoded, forKey: "babies")
+                }
+                
+                // selectedBabyId 설정 (없으면)
+                if UserDefaults.standard.string(forKey: "selectedBabyId") == nil {
+                    UserDefaults.standard.set(currentBaby.id, forKey: "selectedBabyId")
+                }
+                
+                print("✅ 기존 아기를 babies 배열로 마이그레이션 완료 (ID: \(currentBaby.id))")
+            }
+        }
         
-        // 1. 이름과 태명 로드
-        babyName = baby.name
-        babyNickname = baby.nickname
-        gender = baby.gender
-        
-        // 2. D-day 또는 나이 계산
+        babies = loadedBabies
+        print("✅ BabyView: \(babies.count)명의 아기 로드 완료")
+    }
+    
+    // MARK: - Helper Functions
+    
+    /// 아기별 나이/D-day 계산
+    private func calculateAgeText(for baby: Baby) -> String {
         let isPregnant = baby.isPregnant ?? false
         if isPregnant {
             // 임신 중 (태명 등록): D-day 계산
-            dDay = calculateDDay(from: baby.birthDate)
+            return calculateDDay(from: baby.birthDate)
         } else {
             // 출생 후 (이름 등록): 개월수 계산
-            dDay = calculateAge(from: baby.birthDate)
+            return calculateAge(from: baby.birthDate)
         }
-        
-        // 3. 프로필 이미지 로드
-        loadProfileImage()
-        
-        print("✅ BabyView: 아기 정보 로드 완료")
-        print("📝 이름: \(babyName ?? "nil")")
-        print("📝 태명: \(babyNickname ?? "nil")")
-        print("📝 D-day/나이: \(dDay)")
-        print("📝 성별: \(gender)")
     }
     
-    /// 프로필 이미지 로드
-    private func loadProfileImage() {
-        // 1. Base64 이미지 (AddBabyNewYesView에서 저장)
-        if let base64String = UserDefaults.standard.string(forKey: "babyProfileImage"),
-           let imageData = Data(base64Encoded: base64String),
-           let uiImage = UIImage(data: imageData) {
-            profileImage = uiImage
-            print("✅ BabyView: Base64 프로필 이미지 로드")
-        }
-        // 2. 기본 이미지 이름 (AddBabyNewNoView에서 저장)
-        else if let imageName = UserDefaults.standard.string(forKey: "babyProfileImageName") {
-            profileImageName = imageName
-            print("✅ BabyView: 기본 프로필 이미지 로드 (\(imageName))")
-        }
+    /// 아기별 프로필 이미지 로드
+    private func loadProfileImage(for baby: Baby) -> UIImage? {
+        // Baby 모델의 profileImage 필드에서 파일명/Assets 이미지명 가져오기
+        return ImageHelper.loadImage(fileName: baby.profileImage)
     }
     
     /// 출생 예정일로부터 D-day 계산 (임신 중)

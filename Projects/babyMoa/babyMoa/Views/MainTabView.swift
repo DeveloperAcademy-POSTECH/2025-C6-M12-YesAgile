@@ -32,7 +32,15 @@ struct MainTabView: View {
             //                    Text("추천")
             //                }
             //                .tag(1)
-
+            RecommendFoodLibraryView(
+                foodLibrary: FoodLibrary(), // FoodLibrary()가 음식 데이터를 로드한다고 가정
+                selectedItem: .constant(nil) // .constant를 사용해 임시 바인딩 제공
+            )
+            .tabItem {
+                Image(systemName: "plus")
+                Text("Food Recommend")
+            }
+            .tag(1)
             // 아기 탭
             BabyView()
                 .tabItem {
@@ -41,10 +49,7 @@ struct MainTabView: View {
                 }
                 .tag(2)
 
-            VStack {
-                Text("Additional Tab")
-
-            }
+           
 
         }
         .tint(Color("Brand-50"))  // 선택된 탭 색상
