@@ -70,11 +70,25 @@
 		4A7C71C984754709B3EF085F /* GrowthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D170F4E9FFFD4366BCBA3F45 /* GrowthData.swift */; };
 		6BD89887DCE74968B7F6F1D3 /* PhotoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32717F8110124BBFA7F7B1AE /* PhotoRepository.swift */; };
 		936978613919405E9610A1C1 /* PhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDC3BF28872420E9588A0D5 /* PhotoViewModel.swift */; };
+		9FD7CC422EB37D7D00508130 /* AppleLoginReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD7CC412EB37D7300508130 /* AppleLoginReqModel.swift */; };
+		9FD7CC442EB37D8500508130 /* AppleLoginResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD7CC432EB37D7F00508130 /* AppleLoginResModel.swift */; };
+		9FD7CC462EB37DA600508130 /* BaseResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD7CC452EB37DA400508130 /* BaseResponse.swift */; };
+		9FD7CC482EB37E1400508130 /* BabyMoaEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD7CC472EB37E1100508130 /* BabyMoaEndpoint.swift */; };
 		B699CEDFB3434646B3F3BFC7 /* BabyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB86369F97244FAB24F77AE /* BabyModel.swift */; };
 		BFFA94CF318D441392F9CF49 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6BEF68AB1C4416BE5BC3B2 /* LocationManager.swift */; };
 		C8247DA4CC44432E9174A07E /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076226F153C5419AA5FEEB60 /* TokenManager.swift */; };
 		ECBF6B3F8FD64247A6BA05A9 /* PhotoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB4A36244B492F8B7DFA08 /* PhotoService.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9FD7CC332EB37C3900508130 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 05CD7FF82EA5F5FF008C0940 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 05CD7FFF2EA5F5FF008C0940;
+			remoteInfo = babyMoa;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0588570A2EA8287D00EAF72B /* TopNavigationBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopNavigationBarView.swift; sourceTree = "<group>"; };
@@ -143,10 +157,25 @@
 		4805623329EB41E788220F54 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		853C1A27B11546BCA817A1B2 /* MemoryData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryData.swift; sourceTree = "<group>"; };
 		90FFC80991A844A1A14D342E /* GrowthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthViewModel.swift; sourceTree = "<group>"; };
+		9FD7CC2F2EB37C3900508130 /* babyMoaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = babyMoaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9FD7CC412EB37D7300508130 /* AppleLoginReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLoginReqModel.swift; sourceTree = "<group>"; };
+		9FD7CC432EB37D7F00508130 /* AppleLoginResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLoginResModel.swift; sourceTree = "<group>"; };
+		9FD7CC452EB37DA400508130 /* BaseResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResponse.swift; sourceTree = "<group>"; };
+		9FD7CC472EB37E1100508130 /* BabyMoaEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabyMoaEndpoint.swift; sourceTree = "<group>"; };
 		A7FB4A36244B492F8B7DFA08 /* PhotoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoService.swift; sourceTree = "<group>"; };
 		D170F4E9FFFD4366BCBA3F45 /* GrowthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthData.swift; sourceTree = "<group>"; };
 		ECDC3BF28872420E9588A0D5 /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9FD7CC4A2EB38BB700508130 /* Exceptions for "babyMoaTests" folder in "babyMoaTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9FD7CC2E2EB37C3900508130 /* babyMoaTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		47DB30092EB1A81900073D03 /* Memory */ = {
@@ -184,10 +213,25 @@
 			path = DesignSystem;
 			sourceTree = "<group>";
 		};
+		9FD7CC302EB37C3900508130 /* babyMoaTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9FD7CC4A2EB38BB700508130 /* Exceptions for "babyMoaTests" folder in "babyMoaTests" target */,
+			);
+			path = babyMoaTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		05CD7FFD2EA5F5FF008C0940 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9FD7CC2C2EB37C3900508130 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -235,6 +279,10 @@
 		05C5F0FF2EA73A3200C5AA86 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				9FD7CC472EB37E1100508130 /* BabyMoaEndpoint.swift */,
+				9FD7CC452EB37DA400508130 /* BaseResponse.swift */,
+				9FD7CC402EB37D6E00508130 /* ResponseModel */,
+				9FD7CC3F2EB37D6300508130 /* RequestModel */,
 				47634A902EB316B500D50E96 /* HTTPClient.swift */,
 				47634A932EB316B700D50E96 /* BabyMoaService.swift */,
 				47634A922EB316B600D50E96 /* EndPoint.swift */,
@@ -250,6 +298,7 @@
 			isa = PBXGroup;
 			children = (
 				05CD80112EA5F81F008C0940 /* babyMoa */,
+				9FD7CC302EB37C3900508130 /* babyMoaTests */,
 				05CD80012EA5F5FF008C0940 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -258,6 +307,7 @@
 			isa = PBXGroup;
 			children = (
 				05CD80002EA5F5FF008C0940 /* babyMoa.app */,
+				9FD7CC2F2EB37C3900508130 /* babyMoaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -431,6 +481,22 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		9FD7CC3F2EB37D6300508130 /* RequestModel */ = {
+			isa = PBXGroup;
+			children = (
+				9FD7CC412EB37D7300508130 /* AppleLoginReqModel.swift */,
+			);
+			path = RequestModel;
+			sourceTree = "<group>";
+		};
+		9FD7CC402EB37D6E00508130 /* ResponseModel */ = {
+			isa = PBXGroup;
+			children = (
+				9FD7CC432EB37D7F00508130 /* AppleLoginResModel.swift */,
+			);
+			path = ResponseModel;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -462,6 +528,29 @@
 			productReference = 05CD80002EA5F5FF008C0940 /* babyMoa.app */;
 			productType = "com.apple.product-type.application";
 		};
+		9FD7CC2E2EB37C3900508130 /* babyMoaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9FD7CC372EB37C3900508130 /* Build configuration list for PBXNativeTarget "babyMoaTests" */;
+			buildPhases = (
+				9FD7CC2B2EB37C3900508130 /* Sources */,
+				9FD7CC2C2EB37C3900508130 /* Frameworks */,
+				9FD7CC2D2EB37C3900508130 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9FD7CC342EB37C3900508130 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				9FD7CC302EB37C3900508130 /* babyMoaTests */,
+			);
+			name = babyMoaTests;
+			packageProductDependencies = (
+			);
+			productName = babyMoaTests;
+			productReference = 9FD7CC2F2EB37C3900508130 /* babyMoaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -474,6 +563,10 @@
 				TargetAttributes = {
 					05CD7FFF2EA5F5FF008C0940 = {
 						CreatedOnToolsVersion = 16.4;
+					};
+					9FD7CC2E2EB37C3900508130 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 05CD7FFF2EA5F5FF008C0940;
 					};
 				};
 			};
@@ -492,6 +585,7 @@
 			projectRoot = "";
 			targets = (
 				05CD7FFF2EA5F5FF008C0940 /* babyMoa */,
+				9FD7CC2E2EB37C3900508130 /* babyMoaTests */,
 			);
 		};
 /* End PBXProject section */
@@ -506,6 +600,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9FD7CC2D2EB37C3900508130 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -513,6 +614,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FD7CC482EB37E1400508130 /* BabyMoaEndpoint.swift in Sources */,
 				4A7C71C984754709B3EF085F /* GrowthData.swift in Sources */,
 				47E7D18D2EAF8A73005A9CF0 /* GrowthRecordRow.swift in Sources */,
 				47E7D18E2EAF8A73005A9CF0 /* GrowthLabeledField.swift in Sources */,
@@ -544,6 +646,7 @@
 				475CF6782EB03F0E005AA61D /* GrowthAPIEndpoint.swift in Sources */,
 				0588570B2EA8287D00EAF72B /* TopNavigationBarView.swift in Sources */,
 				058857152EA8768A00EAF72B /* GuardianCodeView.swift in Sources */,
+				9FD7CC442EB37D8500508130 /* AppleLoginResModel.swift in Sources */,
 				05CD80292EA61F57008C0940 /* AddBabyNewYesView.swift in Sources */,
 				05CD80132EA5F81F008C0940 /* babyMoaApp.swift in Sources */,
 				0588570E2EA8432F00EAF72B /* ProfileView.swift in Sources */,
@@ -559,8 +662,10 @@
 				4785ED512EAE62EB00DEC298 /* AllMilestonesButton.swift in Sources */,
 				4785ED532EAE62EB00DEC298 /* AllMilestonesView.swift in Sources */,
 				4785ED542EAE62EB00DEC298 /* GrowthView.swift in Sources */,
+				9FD7CC422EB37D7D00508130 /* AppleLoginReqModel.swift in Sources */,
 				4785ED552EAE62EB00DEC298 /* TeethCard.swift in Sources */,
 				05CD801D2EA611C0008C0940 /* SessionManager.swift in Sources */,
+				9FD7CC462EB37DA600508130 /* BaseResponse.swift in Sources */,
 				475CF66D2EAFC86A005AA61D /* ToothButton.swift in Sources */,
 				47EB09112EB2F63600134E8D /* FoodLibrary.swift in Sources */,
 				475CF66E2EAFC86A005AA61D /* TeethRecordListItem.swift in Sources */,
@@ -581,7 +686,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9FD7CC2B2EB37C3900508130 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9FD7CC342EB37C3900508130 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 05CD7FFF2EA5F5FF008C0940 /* babyMoa */;
+			targetProxy = 9FD7CC332EB37C3900508130 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		05C5F0F72EA627C100C5AA86 /* Localizable.strings */ = {
@@ -782,6 +902,46 @@
 			};
 			name = Release;
 		};
+		9FD7CC352EB37C3900508130 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZP2P7SHATC;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = babyMoaTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.keonheehan.designsystemexample.babyMoaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/babyMoa.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/babyMoa";
+			};
+			name = Debug;
+		};
+		9FD7CC362EB37C3900508130 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = ZP2P7SHATC;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = babyMoaTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.keonheehan.designsystemexample.babyMoaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/babyMoa.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/babyMoa";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -799,6 +959,15 @@
 			buildConfigurations = (
 				05CD800C2EA5F600008C0940 /* Debug */,
 				05CD800D2EA5F600008C0940 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9FD7CC372EB37C3900508130 /* Build configuration list for PBXNativeTarget "babyMoaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9FD7CC352EB37C3900508130 /* Debug */,
+				9FD7CC362EB37C3900508130 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

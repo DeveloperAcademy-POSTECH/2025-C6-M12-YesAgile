@@ -20,8 +20,6 @@ extension HTTPClient {
         var components = URLComponents()
         components.scheme = endpoint.scheme
         components.host = endpoint.host
-        // MARK: 개발서버 - port 설정 필요, 프로덕션 서버에서는 포트 제거(host를 도메인으로 정)
-        components.port = endpoint.port
         components.path = endpoint.path
         
         if let query = endpoint.query {
@@ -49,9 +47,10 @@ extension HTTPClient {
                 return .failure(.decode)
             }
             
-            if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                // WLogger.log("\(json)")
-            }
+//            if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+//                // WLogger.log("\(json)")
+//                print(json)
+//            }
             
             switch response.statusCode {
             case 200...299:
@@ -59,15 +58,15 @@ extension HTTPClient {
                         let decodeResponse = try JSONDecoder().decode(responseModel, from: data)
                         return .success(decodeResponse)
                     } catch let DecodingError.keyNotFound(key, context) {
-                        //WLogger.error("Key not found: \(key.stringValue), codingPath: \(context.codingPath)")
+                        print("Key not found: \(key.stringValue), codingPath: \(context.codingPath)")
                     } catch let DecodingError.typeMismatch(type, context) {
-                        //WLogger.error("Type mismatch for type \(type), codingPath: \(context.codingPath)")
+                        print("Type mismatch for type \(type), codingPath: \(context.codingPath)")
                     } catch let DecodingError.valueNotFound(type, context) {
-                        //WLogger.error("Value not found for type \(type), codingPath: \(context.codingPath)")
+                        print("Value not found for type \(type), codingPath: \(context.codingPath)")
                     } catch let DecodingError.dataCorrupted(context) {
-                        //WLogger.error("Data corrupted: \(context.debugDescription)")
+                        print("Data corrupted: \(context.debugDescription)")
                     } catch {
-                        // WLogger.error("Unknown decoding error: \(error.localizedDescription)")
+                        print("Unknown decoding error: \(error.localizedDescription)")
                     }
                     
                     return .failure(.decode)
@@ -93,6 +92,7 @@ extension HTTPClient {
                 
             default:
                 // WLogger.log("data: \(data)")
+                print("data: \(data)")
                 return .failure(.unexpectedStatusCode)
             }
             

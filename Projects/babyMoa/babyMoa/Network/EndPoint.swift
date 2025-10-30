@@ -17,7 +17,6 @@ import Foundation
 protocol Endpoint {
     var scheme: String { get }
     var host: String { get }
-    var port: Int { get }
     var path: String { get }
     var method: RequestMethod { get }
     var header: [String: String]? { get }
@@ -26,10 +25,12 @@ protocol Endpoint {
 }
 
 extension Endpoint {
-    // MARK: 개발서버: http, 운영서버: https
     var scheme: String {
-//         return "https"
-          return "http"
+        return "http"
+    }
+    
+    var host: String {
+        return "yesagile.shop"
     }
 }
 
