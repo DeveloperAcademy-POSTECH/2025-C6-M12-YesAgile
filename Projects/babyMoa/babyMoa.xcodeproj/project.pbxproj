@@ -42,7 +42,6 @@
 		475CF6742EB03EDE005AA61D /* GrowthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6732EB03EDE005AA61D /* GrowthRepository.swift */; };
 		475CF6772EB03F0E005AA61D /* GrowthAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6752EB03F0E005AA61D /* GrowthAPIClient.swift */; };
 		475CF6782EB03F0E005AA61D /* GrowthAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6762EB03F0E005AA61D /* GrowthAPIEndpoint.swift */; };
-		47634A922EB316B800D50E96 /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A912EB316B600D50E96 /* HttpClient.swift */; };
 		4785ED4B2EAE62EB00DEC298 /* GrowthBabyHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED3F2EAE62EB00DEC298 /* GrowthBabyHeader.swift */; };
 		4785ED4C2EAE62EB00DEC298 /* TeethView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED492EAE62EB00DEC298 /* TeethView.swift */; };
 		4785ED4D2EAE62EB00DEC298 /* GrowthMetricButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED402EAE62EB00DEC298 /* GrowthMetricButton.swift */; };
@@ -68,6 +67,9 @@
 		4A7C71C984754709B3EF085F /* GrowthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D170F4E9FFFD4366BCBA3F45 /* GrowthData.swift */; };
 		6BD89887DCE74968B7F6F1D3 /* PhotoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32717F8110124BBFA7F7B1AE /* PhotoRepository.swift */; };
 		936978613919405E9610A1C1 /* PhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDC3BF28872420E9588A0D5 /* PhotoViewModel.swift */; };
+		47634A942EB316B800D50E96 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A902EB316B500D50E96 /* HTTPClient.swift */; };
+		47634A952EB316B900D50E96 /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A922EB316B600D50E96 /* EndPoint.swift */; };
+		47634A962EB316BA00D50E96 /* BabyMoaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A932EB316B700D50E96 /* BabyMoaService.swift */; };
 		B699CEDFB3434646B3F3BFC7 /* BabyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB86369F97244FAB24F77AE /* BabyModel.swift */; };
 		BFFA94CF318D441392F9CF49 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6BEF68AB1C4416BE5BC3B2 /* LocationManager.swift */; };
 		C8247DA4CC44432E9174A07E /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076226F153C5419AA5FEEB60 /* TokenManager.swift */; };
@@ -112,7 +114,9 @@
 		475CF6732EB03EDE005AA61D /* GrowthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthRepository.swift; sourceTree = "<group>"; };
 		475CF6752EB03F0E005AA61D /* GrowthAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthAPIClient.swift; sourceTree = "<group>"; };
 		475CF6762EB03F0E005AA61D /* GrowthAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthAPIEndpoint.swift; sourceTree = "<group>"; };
-		47634A912EB316B600D50E96 /* HttpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
+		47634A902EB316B500D50E96 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
+		47634A922EB316B600D50E96 /* EndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPoint.swift; sourceTree = "<group>"; };
+		47634A932EB316B700D50E96 /* BabyMoaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabyMoaService.swift; sourceTree = "<group>"; };
 		4785ED3E2EAE62EB00DEC298 /* AllMilestonesButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllMilestonesButton.swift; sourceTree = "<group>"; };
 		4785ED3F2EAE62EB00DEC298 /* GrowthBabyHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthBabyHeader.swift; sourceTree = "<group>"; };
 		4785ED402EAE62EB00DEC298 /* GrowthMetricButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthMetricButton.swift; sourceTree = "<group>"; };
@@ -231,6 +235,9 @@
 		05C5F0FF2EA73A3200C5AA86 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				47634A902EB316B500D50E96 /* HTTPClient.swift */,
+				47634A932EB316B700D50E96 /* BabyMoaService.swift */,
+				47634A922EB316B600D50E96 /* EndPoint.swift */,
 				475CF6752EB03F0E005AA61D /* GrowthAPIClient.swift */,
 				475CF6762EB03F0E005AA61D /* GrowthAPIEndpoint.swift */,
 			);
@@ -349,7 +356,6 @@
 		2C91162A55654672B5921828 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				47634A912EB316B600D50E96 /* HttpClient.swift */,
 				47E2F9162EB0942800EAC721 /* GrowthDataManager.swift */,
 				4805623329EB41E788220F54 /* APIService.swift */,
 				A7FB4A36244B492F8B7DFA08 /* PhotoService.swift */,
@@ -553,7 +559,6 @@
 				4785ED4B2EAE62EB00DEC298 /* GrowthBabyHeader.swift in Sources */,
 				473F163F2EAF64150028BA97 /* AddHeightView.swift in Sources */,
 				4785ED4C2EAE62EB00DEC298 /* TeethView.swift in Sources */,
-				47634A922EB316B800D50E96 /* HttpClient.swift in Sources */,
 				4785ED4D2EAE62EB00DEC298 /* GrowthMetricButton.swift in Sources */,
 				4785ED4E2EAE62EB00DEC298 /* GrowthMilestoneCard.swift in Sources */,
 				4785ED502EAE62EB00DEC298 /* MonthPickerView.swift in Sources */,
@@ -578,6 +583,9 @@
 				05DB6C312EAAEEF60043E76E /* KeyChainHelper.swift in Sources */,
 				47DFD01A2EACCA4100E69E33 /* AddBabyNewNoView.swift in Sources */,
 				05CD80142EA5F81F008C0940 /* ContentView.swift in Sources */,
+				47634A942EB316B800D50E96 /* HTTPClient.swift in Sources */,
+				47634A952EB316B900D50E96 /* EndPoint.swift in Sources */,
+				47634A962EB316BA00D50E96 /* BabyMoaService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

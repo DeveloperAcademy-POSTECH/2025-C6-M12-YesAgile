@@ -17,7 +17,7 @@ enum NetworkError: Error {
 }
 
 @Observable
-class APIService: HttpClient {
+class APIService: HTTPClient {
     static let shared = APIService()
     
     // TODO: 실제 백엔드 URL로 변경
