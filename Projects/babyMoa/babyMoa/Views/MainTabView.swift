@@ -48,9 +48,6 @@ struct MainTabView: View {
                     Text("아기")
                 }
                 .tag(2)
-
-           
-
         }
         .tint(Color("Brand-50"))  // 선택된 탭 색상
         // 탭바 배경이 상황 따라 투명/유리로 바뀌지 않도록 "항상 보이게"

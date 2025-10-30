@@ -142,9 +142,9 @@ final class GrowthViewModel {
     ]
     
     // 측정 기록
-    var heightRecords: [HeightRecord] = []
-    var weightRecords: [WeightRecord] = []
-    var teethRecords: [TeethRecord] = []
+    var heightRecords: [HeightRecord] = [] // MARK: 메인에서는 최근 기록만 보여주도록 해당 데이터는 필요 없음
+    var weightRecords: [WeightRecord] = [] // MARK: 메인에서는 최근 기록만 보여주도록 "
+    var teethRecords: [TeethRecord] = [] // ok
     
     // MARK: - Computed Properties
     
@@ -160,6 +160,8 @@ final class GrowthViewModel {
     var latestWeight: WeightRecord? {
         weightRecords.first
     }
+    
+    // ------- 위 ViewModel 데이터 필드 값들은 잘 작성되어 있음. -------
     
     // MARK: - Initialization
     

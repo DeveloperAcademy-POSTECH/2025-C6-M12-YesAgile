@@ -17,11 +17,11 @@ enum NetworkError: Error {
 }
 
 @Observable
-class APIService {
+class APIService: HttpClient {
     static let shared = APIService()
     
     // TODO: 실제 백엔드 URL로 변경
-    private let baseURL = "https://api.example.com/v1"
+    private let baseURL = "http://yesagile.shop"
     
     private init() {}
     

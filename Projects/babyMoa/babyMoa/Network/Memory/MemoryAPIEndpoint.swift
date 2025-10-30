@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 enum MemoryAPIEndpoint {
     // Memory (추억) API
     case uploadMemory
