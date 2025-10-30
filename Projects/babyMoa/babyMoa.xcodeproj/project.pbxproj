@@ -42,6 +42,9 @@
 		475CF6742EB03EDE005AA61D /* GrowthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6732EB03EDE005AA61D /* GrowthRepository.swift */; };
 		475CF6772EB03F0E005AA61D /* GrowthAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6752EB03F0E005AA61D /* GrowthAPIClient.swift */; };
 		475CF6782EB03F0E005AA61D /* GrowthAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6762EB03F0E005AA61D /* GrowthAPIEndpoint.swift */; };
+		47634A942EB316B800D50E96 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A902EB316B500D50E96 /* HTTPClient.swift */; };
+		47634A952EB316B900D50E96 /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A922EB316B600D50E96 /* EndPoint.swift */; };
+		47634A962EB316BA00D50E96 /* BabyMoaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A932EB316B700D50E96 /* BabyMoaService.swift */; };
 		4785ED4B2EAE62EB00DEC298 /* GrowthBabyHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED3F2EAE62EB00DEC298 /* GrowthBabyHeader.swift */; };
 		4785ED4C2EAE62EB00DEC298 /* TeethView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED492EAE62EB00DEC298 /* TeethView.swift */; };
 		4785ED4D2EAE62EB00DEC298 /* GrowthMetricButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED402EAE62EB00DEC298 /* GrowthMetricButton.swift */; };
@@ -67,9 +70,6 @@
 		4A7C71C984754709B3EF085F /* GrowthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D170F4E9FFFD4366BCBA3F45 /* GrowthData.swift */; };
 		6BD89887DCE74968B7F6F1D3 /* PhotoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32717F8110124BBFA7F7B1AE /* PhotoRepository.swift */; };
 		936978613919405E9610A1C1 /* PhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDC3BF28872420E9588A0D5 /* PhotoViewModel.swift */; };
-		47634A942EB316B800D50E96 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A902EB316B500D50E96 /* HTTPClient.swift */; };
-		47634A952EB316B900D50E96 /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A922EB316B600D50E96 /* EndPoint.swift */; };
-		47634A962EB316BA00D50E96 /* BabyMoaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A932EB316B700D50E96 /* BabyMoaService.swift */; };
 		B699CEDFB3434646B3F3BFC7 /* BabyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB86369F97244FAB24F77AE /* BabyModel.swift */; };
 		BFFA94CF318D441392F9CF49 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6BEF68AB1C4416BE5BC3B2 /* LocationManager.swift */; };
 		C8247DA4CC44432E9174A07E /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076226F153C5419AA5FEEB60 /* TokenManager.swift */; };
@@ -240,6 +240,8 @@
 				47634A922EB316B600D50E96 /* EndPoint.swift */,
 				475CF6752EB03F0E005AA61D /* GrowthAPIClient.swift */,
 				475CF6762EB03F0E005AA61D /* GrowthAPIEndpoint.swift */,
+				47DB30092EB1A81900073D03 /* Memory */,
+				47EB090C2EB2F5EF00134E8D /* DTOs */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -264,7 +266,6 @@
 			isa = PBXGroup;
 			children = (
 				47C693B32EAF17ED004E5273 /* Info.plist */,
-				4BAC1C45C3D54BC5AC108E9B /* Network */,
 				8D1369C5D1734E50B45FF3FC /* Utilities */,
 				803C4904B29A435F86D9C039 /* Repositories */,
 				2C91162A55654672B5921828 /* Services */,
@@ -399,15 +400,6 @@
 				473F16422EAF818E0028BA97 /* GrowthMilestoneView.swift */,
 			);
 			path = Growth;
-			sourceTree = "<group>";
-		};
-		4BAC1C45C3D54BC5AC108E9B /* Network */ = {
-			isa = PBXGroup;
-			children = (
-				47DB30092EB1A81900073D03 /* Memory */,
-				47EB090C2EB2F5EF00134E8D /* DTOs */,
-			);
-			path = Network;
 			sourceTree = "<group>";
 		};
 		6E64AFDD61054DEC8F1C8400 /* ViewModels */ = {
@@ -734,7 +726,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = V2LV98H8GJ;
+				DEVELOPMENT_TEAM = ZP2P7SHATC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = babyMoa/Info.plist;
@@ -766,7 +758,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = V2LV98H8GJ;
+				DEVELOPMENT_TEAM = ZP2P7SHATC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = babyMoa/Info.plist;
