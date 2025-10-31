@@ -42,6 +42,8 @@
 		475CF6742EB03EDE005AA61D /* GrowthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6732EB03EDE005AA61D /* GrowthRepository.swift */; };
 		475CF6772EB03F0E005AA61D /* GrowthAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6752EB03F0E005AA61D /* GrowthAPIClient.swift */; };
 		475CF6782EB03F0E005AA61D /* GrowthAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6762EB03F0E005AA61D /* GrowthAPIEndpoint.swift */; };
+		476096FF2EB4A24E00298D2C /* RegisterBabyReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476096FE2EB4A24E00298D2C /* RegisterBabyReqModel.swift */; };
+		476097012EB4A35900298D2C /* RegisterBabyResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476097002EB4A35600298D2C /* RegisterBabyResModel.swift */; };
 		47634A942EB316B800D50E96 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A902EB316B500D50E96 /* HTTPClient.swift */; };
 		47634A952EB316B900D50E96 /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A922EB316B600D50E96 /* EndPoint.swift */; };
 		47634A962EB316BA00D50E96 /* BabyMoaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47634A932EB316B700D50E96 /* BabyMoaService.swift */; };
@@ -128,6 +130,8 @@
 		475CF6732EB03EDE005AA61D /* GrowthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthRepository.swift; sourceTree = "<group>"; };
 		475CF6752EB03F0E005AA61D /* GrowthAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthAPIClient.swift; sourceTree = "<group>"; };
 		475CF6762EB03F0E005AA61D /* GrowthAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthAPIEndpoint.swift; sourceTree = "<group>"; };
+		476096FE2EB4A24E00298D2C /* RegisterBabyReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterBabyReqModel.swift; sourceTree = "<group>"; };
+		476097002EB4A35600298D2C /* RegisterBabyResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterBabyResModel.swift; sourceTree = "<group>"; };
 		47634A902EB316B500D50E96 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		47634A922EB316B600D50E96 /* EndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPoint.swift; sourceTree = "<group>"; };
 		47634A932EB316B700D50E96 /* BabyMoaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabyMoaService.swift; sourceTree = "<group>"; };
@@ -485,6 +489,7 @@
 			isa = PBXGroup;
 			children = (
 				9FD7CC412EB37D7300508130 /* AppleLoginReqModel.swift */,
+				476096FE2EB4A24E00298D2C /* RegisterBabyReqModel.swift */,
 			);
 			path = RequestModel;
 			sourceTree = "<group>";
@@ -492,6 +497,7 @@
 		9FD7CC402EB37D6E00508130 /* ResponseModel */ = {
 			isa = PBXGroup;
 			children = (
+				476097002EB4A35600298D2C /* RegisterBabyResModel.swift */,
 				9FD7CC432EB37D7F00508130 /* AppleLoginResModel.swift */,
 			);
 			path = ResponseModel;
@@ -658,6 +664,7 @@
 				4785ED4E2EAE62EB00DEC298 /* GrowthMilestoneCard.swift in Sources */,
 				4785ED502EAE62EB00DEC298 /* MonthPickerView.swift in Sources */,
 				47C693B52EAF1902004E5273 /* HeightView.swift in Sources */,
+				476096FF2EB4A24E00298D2C /* RegisterBabyReqModel.swift in Sources */,
 				475CF6742EB03EDE005AA61D /* GrowthRepository.swift in Sources */,
 				4785ED512EAE62EB00DEC298 /* AllMilestonesButton.swift in Sources */,
 				4785ED532EAE62EB00DEC298 /* AllMilestonesView.swift in Sources */,
@@ -674,6 +681,7 @@
 				475CF6702EAFC86A005AA61D /* TeethRow.swift in Sources */,
 				05C5F0FD2EA63EFF00C5AA86 /* AddBabyTextFieldStyle.swift in Sources */,
 				05CD80202EA61EC2008C0940 /* SignUpView.swift in Sources */,
+				476097012EB4A35900298D2C /* RegisterBabyResModel.swift in Sources */,
 				058857132EA8581F00EAF72B /* GuardianAddSheetView.swift in Sources */,
 				05CD80272EA61F2E008C0940 /* AddBabyNewView.swift in Sources */,
 				05CD80252EA61F1E008C0940 /* AddBabyView.swift in Sources */,

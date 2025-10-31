@@ -31,12 +31,10 @@ struct SignInView: View {
              return
          }
          
-         guard let authorizationCode = String(data: authorizationCodeData, encoding: .utf8) else {
+         guard let _ = String(data: authorizationCodeData, encoding: .utf8) else {
              print("authorizationCode error")
              return
          }
-         
-         let userIdentityToken = identityToken
          
         
         print("Click The Apple Login Button")
