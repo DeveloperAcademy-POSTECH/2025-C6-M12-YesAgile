@@ -46,7 +46,7 @@ extension BabyMoaEndpoint {
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
-                "Authorization": "Bearer"
+                "Authorization": "Bearer \(UserToken.accessToken)"
             ]
         default:
             return nil

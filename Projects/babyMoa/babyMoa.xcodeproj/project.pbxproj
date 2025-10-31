@@ -76,6 +76,8 @@
 		9FD7CC442EB37D8500508130 /* AppleLoginResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD7CC432EB37D7F00508130 /* AppleLoginResModel.swift */; };
 		9FD7CC462EB37DA600508130 /* BaseResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD7CC452EB37DA400508130 /* BaseResponse.swift */; };
 		9FD7CC482EB37E1400508130 /* BabyMoaEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD7CC472EB37E1100508130 /* BabyMoaEndpoint.swift */; };
+		9FD7CCA82EB4FDD200508130 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD7CCA72EB4FDCC00508130 /* UserDefault.swift */; };
+		9FD7CCAB2EB4FE9200508130 /* UserToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD7CCAA2EB4FE8F00508130 /* UserToken.swift */; };
 		B699CEDFB3434646B3F3BFC7 /* BabyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB86369F97244FAB24F77AE /* BabyModel.swift */; };
 		BFFA94CF318D441392F9CF49 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6BEF68AB1C4416BE5BC3B2 /* LocationManager.swift */; };
 		C8247DA4CC44432E9174A07E /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076226F153C5419AA5FEEB60 /* TokenManager.swift */; };
@@ -166,6 +168,8 @@
 		9FD7CC432EB37D7F00508130 /* AppleLoginResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLoginResModel.swift; sourceTree = "<group>"; };
 		9FD7CC452EB37DA400508130 /* BaseResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResponse.swift; sourceTree = "<group>"; };
 		9FD7CC472EB37E1100508130 /* BabyMoaEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabyMoaEndpoint.swift; sourceTree = "<group>"; };
+		9FD7CCA72EB4FDCC00508130 /* UserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefault.swift; sourceTree = "<group>"; };
+		9FD7CCAA2EB4FE8F00508130 /* UserToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserToken.swift; sourceTree = "<group>"; };
 		A7FB4A36244B492F8B7DFA08 /* PhotoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoService.swift; sourceTree = "<group>"; };
 		D170F4E9FFFD4366BCBA3F45 /* GrowthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthData.swift; sourceTree = "<group>"; };
 		ECDC3BF28872420E9588A0D5 /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
@@ -478,6 +482,7 @@
 		8D1369C5D1734E50B45FF3FC /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				9FD7CCA92EB4FE8800508130 /* UserDefault */,
 				47EB0A122EB2FF0000134E8D /* ImageHelper.swift */,
 				1C6BEF68AB1C4416BE5BC3B2 /* LocationManager.swift */,
 				47EB090E2EB2F61A00134E8D /* Date+Extensions.swift */,
@@ -501,6 +506,15 @@
 				9FD7CC432EB37D7F00508130 /* AppleLoginResModel.swift */,
 			);
 			path = ResponseModel;
+			sourceTree = "<group>";
+		};
+		9FD7CCA92EB4FE8800508130 /* UserDefault */ = {
+			isa = PBXGroup;
+			children = (
+				9FD7CCAA2EB4FE8F00508130 /* UserToken.swift */,
+				9FD7CCA72EB4FDCC00508130 /* UserDefault.swift */,
+			);
+			path = UserDefault;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -631,6 +645,7 @@
 				473F16412EAF641D0028BA97 /* AddWeightView.swift in Sources */,
 				C8247DA4CC44432E9174A07E /* TokenManager.swift in Sources */,
 				475CF6722EAFC88C005AA61D /* NewTooth.swift in Sources */,
+				9FD7CCA82EB4FDD200508130 /* UserDefault.swift in Sources */,
 				B699CEDFB3434646B3F3BFC7 /* BabyModel.swift in Sources */,
 				3BCEDCD2C0964E7BB776504A /* MemoryData.swift in Sources */,
 				6BD89887DCE74968B7F6F1D3 /* PhotoRepository.swift in Sources */,
@@ -685,6 +700,7 @@
 				058857132EA8581F00EAF72B /* GuardianAddSheetView.swift in Sources */,
 				05CD80272EA61F2E008C0940 /* AddBabyNewView.swift in Sources */,
 				05CD80252EA61F1E008C0940 /* AddBabyView.swift in Sources */,
+				9FD7CCAB2EB4FE9200508130 /* UserToken.swift in Sources */,
 				05DB6C312EAAEEF60043E76E /* KeyChainHelper.swift in Sources */,
 				47DFD01A2EACCA4100E69E33 /* AddBabyNewNoView.swift in Sources */,
 				05CD80142EA5F81F008C0940 /* ContentView.swift in Sources */,
