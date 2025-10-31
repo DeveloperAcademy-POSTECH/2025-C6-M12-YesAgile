@@ -188,6 +188,16 @@
 		ECDC3BF28872420E9588A0D5 /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9FD7CE442EB510FE00508130 /* Exceptions for "babyMoaTests" folder in "babyMoaTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9FD7CDE62EB50EFF00508130 /* babyMoaTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		47DB30092EB1A81900073D03 /* Memory */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -226,6 +236,9 @@
 		};
 		9FD7CDE82EB50EFF00508130 /* babyMoaTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9FD7CE442EB510FE00508130 /* Exceptions for "babyMoaTests" folder in "babyMoaTests" target */,
+			);
 			path = babyMoaTests;
 			sourceTree = "<group>";
 		};
@@ -947,6 +960,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZP2P7SHATC;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = babyMoaTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.keonheehan.designsystemexample.babyMoaTests;
@@ -966,6 +980,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZP2P7SHATC;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = babyMoaTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.keonheehan.designsystemexample.babyMoaTests;
