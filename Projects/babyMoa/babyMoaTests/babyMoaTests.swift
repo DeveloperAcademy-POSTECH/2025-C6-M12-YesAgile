@@ -17,9 +17,8 @@ struct babyMoaTests {
         switch result {
         case .success(let success):
             if let loginResModel = success.data {
-                print("accessToken: \(loginResModel.accessToken)")
-                print("refreshToken: \(loginResModel.refreshToken)")
-                print("tokenType: \(loginResModel.tokenType)")
+                UserToken.accessToken = loginResModel.accessToken
+                UserToken.refreshToken = loginResModel.refreshToken
             }
             
         case .failure(let failure):
