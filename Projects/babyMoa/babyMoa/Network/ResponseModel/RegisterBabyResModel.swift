@@ -6,6 +6,6 @@
 //
 
 struct RegisterBabyResModel: Decodable {
-    var babyCode : String
-    var babyId : String
+    var babyCode: String
+    var babyId: String
 }
