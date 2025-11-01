@@ -18,6 +18,10 @@ enum BabyMoaEndpoint: Endpoint {
     case registerBabyByCode(
         babyCode: String
     )
+    case setRelationshipWithBaby(
+        babyId: Int,
+        relationshipType: String
+    )
 }
 
 extension BabyMoaEndpoint {
@@ -30,12 +34,14 @@ extension BabyMoaEndpoint {
             return "/api/baby/register_baby"
         case .registerBabyByCode:
             return "/api/baby/register_baby_by_code"
+        case .setRelationshipWithBaby:
+            return "/api/baby/set_relationship"
         }
     }
 
     var method: RequestMethod {
         switch self {
-        case .appleLogin, .registerBaby, .registerBabyByCode:
+        case .appleLogin, .registerBaby, .registerBabyByCode, .setRelationshipWithBaby:
             return .post
         }
     }
@@ -59,6 +65,12 @@ extension BabyMoaEndpoint {
                 "accept": "*/*",
                 "Content-Type": "application/json",
                 "Authorization": "Bearer \(UserToken.accessToken)",
+            ]
+        case .setRelationshipWithBaby:
+            return [
+                "accept": "*/*",
+                "Content-Type": "application/json",
+                "Authorization": "Bearer \(UserToken.accessToken)"
             ]
         default:
             return nil
@@ -97,6 +109,14 @@ extension BabyMoaEndpoint {
         case .registerBabyByCode(let babyCode):
             return [
                 "babyCode": babyCode
+            ]
+        case .setRelationshipWithBaby(
+            let babyId,
+            let relationshipType
+        ):
+            return [
+                "babyId": babyId,
+                "relationshipType": relationshipType
             ]
         default:
             return nil

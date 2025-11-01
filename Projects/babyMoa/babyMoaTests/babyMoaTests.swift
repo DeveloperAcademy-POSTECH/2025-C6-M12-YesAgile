@@ -48,6 +48,21 @@ struct babyMoaTests {
         }
     }
 }
+@Test func setRelationshipWithBaby() async {
+    
+    let result = await BabyMoaService.shared.postSetRelationshipWithBaby(
+        babyId: 9007199254740991,
+        relationshipType: "MOTHER"
+    )
+    
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+
 @Test func registerBabyByCode() async {
 
     let result = await BabyMoaService.shared.postRegisterBabyByCode(
@@ -61,3 +76,4 @@ struct babyMoaTests {
         print(error)
     }
 }
+

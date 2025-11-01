@@ -56,6 +56,12 @@
 		478627D22EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478627D02EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift */; };
 		478627D42EB58001004B9568 /* RegisterBabyByCodeResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478627D32EB58001004B9568 /* RegisterBabyByCodeResModel.swift */; };
 		478627D52EB58001004B9568 /* RegisterBabyByCodeResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478627D32EB58001004B9568 /* RegisterBabyByCodeResModel.swift */; };
+		478627DD2EB5D726004B9568 /* SetRelationshipWithBabyReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478627DC2EB5D726004B9568 /* SetRelationshipWithBabyReqModel.swift */; };
+		478627DE2EB5D726004B9568 /* SetRelationshipWithBabyReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478627DC2EB5D726004B9568 /* SetRelationshipWithBabyReqModel.swift */; };
+		478627E02EB5D775004B9568 /* SetRelationshipWithBabyResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478627DF2EB5D775004B9568 /* SetRelationshipWithBabyResModel.swift */; };
+		478627E12EB5D775004B9568 /* SetRelationshipWithBabyResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478627DF2EB5D775004B9568 /* SetRelationshipWithBabyResModel.swift */; };
+		478627E62EB629B5004B9568 /* EmptyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478627E52EB629B5004B9568 /* EmptyData.swift */; };
+		478627E72EB629B5004B9568 /* EmptyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478627E52EB629B5004B9568 /* EmptyData.swift */; };
 		47C693B52EAF1902004E5273 /* HeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C693B42EAF1902004E5273 /* HeightView.swift */; };
 		47C693B72EAF1910004E5273 /* WeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C693B62EAF1910004E5273 /* WeightView.swift */; };
 		47DFD01A2EACCA4100E69E33 /* AddBabyNewNoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DFD0192EACCA4100E69E33 /* AddBabyNewNoView.swift */; };
@@ -160,6 +166,9 @@
 		478627CE2EB57E3F004B9568 /* HttpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		478627D02EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterBabyByCodeReqModel.swift; sourceTree = "<group>"; };
 		478627D32EB58001004B9568 /* RegisterBabyByCodeResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterBabyByCodeResModel.swift; sourceTree = "<group>"; };
+		478627DC2EB5D726004B9568 /* SetRelationshipWithBabyReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetRelationshipWithBabyReqModel.swift; sourceTree = "<group>"; };
+		478627DF2EB5D775004B9568 /* SetRelationshipWithBabyResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetRelationshipWithBabyResModel.swift; sourceTree = "<group>"; };
+		478627E52EB629B5004B9568 /* EmptyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyData.swift; sourceTree = "<group>"; };
 		47C693B32EAF17ED004E5273 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47C693B42EAF1902004E5273 /* HeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightView.swift; sourceTree = "<group>"; };
 		47C693B62EAF1910004E5273 /* WeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightView.swift; sourceTree = "<group>"; };
@@ -317,6 +326,7 @@
 				9FD7CDFC2EB50FA300508130 /* HTTPClient.swift */,
 				9FD7CE0B2EB5101500508130 /* RequestModel */,
 				9FD7CE122EB5101E00508130 /* ResponseModel */,
+				478627E52EB629B5004B9568 /* EmptyData.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -525,6 +535,7 @@
 				9FD7CE092EB5101500508130 /* AppleLoginReqModel.swift */,
 				9FD7CE0A2EB5101500508130 /* RegisterBabyReqModel.swift */,
 				478627D02EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift */,
+				478627DC2EB5D726004B9568 /* SetRelationshipWithBabyReqModel.swift */,
 			);
 			path = RequestModel;
 			sourceTree = "<group>";
@@ -535,6 +546,7 @@
 				9FD7CE102EB5101E00508130 /* AppleLoginResModel.swift */,
 				9FD7CE112EB5101E00508130 /* RegisterBabyResModel.swift */,
 				478627D32EB58001004B9568 /* RegisterBabyByCodeResModel.swift */,
+				478627DF2EB5D775004B9568 /* SetRelationshipWithBabyResModel.swift */,
 			);
 			path = ResponseModel;
 			sourceTree = "<group>";
@@ -669,6 +681,7 @@
 				43FC48A93D8E4708B14FC4F5 /* GrowthViewModel.swift in Sources */,
 				473F16412EAF641D0028BA97 /* AddWeightView.swift in Sources */,
 				C8247DA4CC44432E9174A07E /* TokenManager.swift in Sources */,
+				478627E72EB629B5004B9568 /* EmptyData.swift in Sources */,
 				475CF6722EAFC88C005AA61D /* NewTooth.swift in Sources */,
 				B699CEDFB3434646B3F3BFC7 /* BabyModel.swift in Sources */,
 				3BCEDCD2C0964E7BB776504A /* MemoryData.swift in Sources */,
@@ -692,6 +705,7 @@
 				478627D52EB58001004B9568 /* RegisterBabyByCodeResModel.swift in Sources */,
 				05CD80222EA61ECE008C0940 /* SignInView.swift in Sources */,
 				9FD7CDF22EB50F8200508130 /* BabyMoaEndpoint.swift in Sources */,
+				478627E02EB5D775004B9568 /* SetRelationshipWithBabyResModel.swift in Sources */,
 				475CF6772EB03F0E005AA61D /* GrowthAPIClient.swift in Sources */,
 				475CF6782EB03F0E005AA61D /* GrowthAPIEndpoint.swift in Sources */,
 				0588570B2EA8287D00EAF72B /* TopNavigationBarView.swift in Sources */,
@@ -701,6 +715,7 @@
 				0588570E2EA8432F00EAF72B /* ProfileView.swift in Sources */,
 				05CD80182EA5FDBA008C0940 /* ButtonComponents.swift in Sources */,
 				4785ED4B2EAE62EB00DEC298 /* GrowthBabyHeader.swift in Sources */,
+				478627DE2EB5D726004B9568 /* SetRelationshipWithBabyReqModel.swift in Sources */,
 				473F163F2EAF64150028BA97 /* AddHeightView.swift in Sources */,
 				4785ED4C2EAE62EB00DEC298 /* TeethView.swift in Sources */,
 				4785ED4D2EAE62EB00DEC298 /* GrowthMetricButton.swift in Sources */,
@@ -742,8 +757,10 @@
 				478627D42EB58001004B9568 /* RegisterBabyByCodeResModel.swift in Sources */,
 				9FD7CDF12EB50F8200508130 /* BabyMoaEndpoint.swift in Sources */,
 				9FD7CDFD2EB50FA300508130 /* HTTPClient.swift in Sources */,
+				478627E12EB5D775004B9568 /* SetRelationshipWithBabyResModel.swift in Sources */,
 				9FD7CDFB2EB50F9C00508130 /* EndPoint.swift in Sources */,
 				9FD7CE0C2EB5101500508130 /* RegisterBabyReqModel.swift in Sources */,
+				478627DD2EB5D726004B9568 /* SetRelationshipWithBabyReqModel.swift in Sources */,
 				9FD7CE132EB5101E00508130 /* AppleLoginResModel.swift in Sources */,
 				9FD7CE142EB5101E00508130 /* RegisterBabyResModel.swift in Sources */,
 				9FD7CE0D2EB5101500508130 /* AppleLoginReqModel.swift in Sources */,
@@ -752,6 +769,7 @@
 				478627D12EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift in Sources */,
 				9FD7CE032EB50FD300508130 /* UserToken.swift in Sources */,
 				9FD7CE052EB50FD300508130 /* UserDefaultWrapper.swift in Sources */,
+				478627E62EB629B5004B9568 /* EmptyData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

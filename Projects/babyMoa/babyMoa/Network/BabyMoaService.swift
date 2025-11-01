@@ -20,9 +20,34 @@ protocol BabyMoaServicable: HTTPClient {
     func postRegisterBabyByCode(babyCode: String) async -> Result<
         BaseResponse<RegisterBabyByCodeResModel>, RequestError
     >
+    func postSetRelationshipWithBaby(babyId: Int, relationshipType: String)
+        async -> Result<BaseResponse<EmptyData>, RequestError
+    >
 }
 
 class BabyMoaService: BabyMoaServicable {
+    func postSetRelationshipWithBaby(
+        babyId: Int, relationshipType: String
+    ) async ->
+    Result<BaseResponse<EmptyData>,
+           RequestError> {
+               let result = await request(
+                endpoint: BabyMoaEndpoint.setRelationshipWithBaby(babyId: babyId, relationshipType: relationshipType),
+                responseModel:
+                    BaseResponse<EmptyData>.self
+               )
+               switch result {
+               case .success:
+                   return result
+               case .failure(let error):
+                   switch error {
+                   case .unauthorized :
+                       return await self.postSetRelationshipWithBaby(babyId: babyId, relationshipType: relationshipType)
+                   default:
+                       return result
+                   }
+               }
+}
     func postRegisterBabyByCode(
         babyCode: String
     ) async -> Result<BaseResponse<RegisterBabyByCodeResModel>, RequestError> {
