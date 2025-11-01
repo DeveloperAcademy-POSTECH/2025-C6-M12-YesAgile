@@ -35,7 +35,7 @@ extension BabyMoaEndpoint {
         case .registerBabyByCode:
             return "/api/baby/register_baby_by_code"
         case .setRelationshipWithBaby:
-            return "/api/baby/set_relationship"
+            return "/api/baby/set_relationship_with_baby"
         }
     }
 
@@ -53,27 +53,12 @@ extension BabyMoaEndpoint {
                 "accept": "*/*",
                 "Content-Type": "application/json",
             ]
-        case .registerBaby:
+        case .registerBaby, .registerBabyByCode, .setRelationshipWithBaby:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
                 "Authorization": "Bearer \(UserToken.accessToken)",
             ]
-        //공부 할것 체크
-        case .registerBabyByCode:
-            return [
-                "accept": "*/*",
-                "Content-Type": "application/json",
-                "Authorization": "Bearer \(UserToken.accessToken)",
-            ]
-        case .setRelationshipWithBaby:
-            return [
-                "accept": "*/*",
-                "Content-Type": "application/json",
-                "Authorization": "Bearer \(UserToken.accessToken)"
-            ]
-        default:
-            return nil
         }
     }
 
