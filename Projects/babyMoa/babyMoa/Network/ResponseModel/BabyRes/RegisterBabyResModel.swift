@@ -8,3 +8,4 @@ struct RegisterBabyResModel: Decodable {
     var babyCode: String
     var babyId: String
 }
+

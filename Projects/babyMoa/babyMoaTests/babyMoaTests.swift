@@ -54,7 +54,7 @@ struct babyMoaTests {
         babyId: 3,
         relationshipType: "MOTHER"
     )
-    
+
     switch result {
     case .success(let success):
         print(success)
@@ -63,14 +63,13 @@ struct babyMoaTests {
     }
 }
 @Test func setTeethStatus() async {
-    
-    let result = await
-    BabyMoaService.shared.postSetTeethStatus(
-        babyId: 3,
-        teethId: 0, // 0~19, 윗니 10, 아랫니 10 왼쪽 -> 오른쪽
+
+    let result = await BabyMoaService.shared.postSetTeethStatus(
+        babyId: 9,
+        teethId: 0,  // 0~19, 윗니 10, 아랫니 10 왼쪽 -> 오른쪽
         date: "2025-11-01",
-        deletion: false
-        )
+        deletion: false  // false 이여야 난거임 true 는 삭제
+    )
     switch result {
     case .success(let success):
         print(success)
@@ -79,11 +78,9 @@ struct babyMoaTests {
     }
 }
 @Test func getGrowthData() async {
-    
-    let result = await
-    BabyMoaService.shared.getGetGrowthData(
-        babyId: 3
-        )
+    let result = await BabyMoaService.shared.getGetGrowthData(
+        babyId: 6
+    )
     switch result {
     case .success(let success):
         print(success)
@@ -106,3 +103,120 @@ struct babyMoaTests {
     }
 }
 
+@Test func getBabyList() async {
+
+    let result = await BabyMoaService.shared.getGetBabyList()
+
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+@Test func setWeight() async {
+
+    let result = await BabyMoaService.shared.postSetWeight(
+        babyId: 6,  // 처음에 발급되는거 체크하고 해야함
+        weight: 10,
+        date: "2025-11-02"
+    )
+
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+
+@Test func setHeight() async {
+
+    let result = await BabyMoaService.shared.postSetHeight(
+        babyId: 5,
+        height: 0,
+        date: "2025-11-02"
+    )
+
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+@Test func getWeights() async {
+
+    let result = await BabyMoaService.shared.getGetWeights(
+        babyId: 5
+    )
+
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+@Test func getHeights() async {
+
+    let result = await BabyMoaService.shared.getGetHeights(
+        babyId: 5
+    )
+
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+@Test func authRefresh() async {
+
+    let result = await BabyMoaService.shared.postAuthRefresh(
+        refreshToken: ""
+    )
+
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+@Test func addjourney() async {
+
+    let result = await BabyMoaService.shared.postAddJourney(
+        babyId: 9,
+        journeyImage: "https://example.com/image.png",
+        latitude: 37.5665,
+        longitude: 126.9780,
+        date: "2025-11-02",
+        memo: "Hello World!"
+    )
+
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+
+@Test func setBabyMilestone() async {
+
+    let result = await BabyMoaService.shared.postSetBabyMilestone(
+        babyId: 9,
+        milestoneIdx: 1,
+        milestoneImage: "https://example.com/image.png",
+        date: "2025-11-02",
+        memo: "Hello World!"
+    )
+
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}

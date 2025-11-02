@@ -90,6 +90,10 @@
 		478628552EB6590A004B9568 /* GetBabyMilestonesResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628532EB658F6004B9568 /* GetBabyMilestonesResModel.swift */; };
 		478628572EB661DC004B9568 /* GrowthAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628562EB661DC004B9568 /* GrowthAPIClient.swift */; };
 		478628592EB661F9004B9568 /* GrowthAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628582EB661F9004B9568 /* GrowthAPIEndpoint.swift */; };
+		478629072EB7201A004B9568 /* AuthRefreshReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478629062EB72001004B9568 /* AuthRefreshReqModel.swift */; };
+		478629082EB7201A004B9568 /* AuthRefreshReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478629062EB72001004B9568 /* AuthRefreshReqModel.swift */; };
+		4786290A2EB7206D004B9568 /* AuthRefreshResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478629092EB72069004B9568 /* AuthRefreshResModel.swift */; };
+		4786290B2EB7206D004B9568 /* AuthRefreshResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478629092EB72069004B9568 /* AuthRefreshResModel.swift */; };
 		47C693B52EAF1902004E5273 /* HeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C693B42EAF1902004E5273 /* HeightView.swift */; };
 		47C693B72EAF1910004E5273 /* WeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C693B62EAF1910004E5273 /* WeightView.swift */; };
 		47DFD01A2EACCA4100E69E33 /* AddBabyNewNoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DFD0192EACCA4100E69E33 /* AddBabyNewNoView.swift */; };
@@ -213,6 +217,8 @@
 		478628532EB658F6004B9568 /* GetBabyMilestonesResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetBabyMilestonesResModel.swift; sourceTree = "<group>"; };
 		478628562EB661DC004B9568 /* GrowthAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthAPIClient.swift; sourceTree = "<group>"; };
 		478628582EB661F9004B9568 /* GrowthAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthAPIEndpoint.swift; sourceTree = "<group>"; };
+		478629062EB72001004B9568 /* AuthRefreshReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRefreshReqModel.swift; sourceTree = "<group>"; };
+		478629092EB72069004B9568 /* AuthRefreshResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRefreshResModel.swift; sourceTree = "<group>"; };
 		47C693B32EAF17ED004E5273 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		47C693B42EAF1902004E5273 /* HeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightView.swift; sourceTree = "<group>"; };
 		47C693B62EAF1910004E5273 /* WeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightView.swift; sourceTree = "<group>"; };
@@ -665,6 +671,7 @@
 				478628262EB648EF004B9568 /* GrowthStatusReq */,
 				478628242EB6480A004B9568 /* BabyReq */,
 				9FD7CE092EB5101500508130 /* AppleLoginReqModel.swift */,
+				478629062EB72001004B9568 /* AuthRefreshReqModel.swift */,
 			);
 			path = RequestModel;
 			sourceTree = "<group>";
@@ -677,6 +684,7 @@
 				478628272EB64926004B9568 /* GrowthStatusRes */,
 				478628252EB64834004B9568 /* BabyRes */,
 				9FD7CE102EB5101E00508130 /* AppleLoginResModel.swift */,
+				478629092EB72069004B9568 /* AuthRefreshResModel.swift */,
 			);
 			path = ResponseModel;
 			sourceTree = "<group>";
@@ -855,6 +863,7 @@
 				47EB090F2EB2F61A00134E8D /* Date+Extensions.swift in Sources */,
 				478627CF2EB57E3F004B9568 /* HttpClient.swift in Sources */,
 				05C5F0FB2EA62D2600C5AA86 /* CapsuleTextStyle.swift in Sources */,
+				4786290B2EB7206D004B9568 /* AuthRefreshResModel.swift in Sources */,
 				D474CF532EB62EBB00F02B26 /* BabyMoaCoordinator.swift in Sources */,
 				05CD801B2EA611B1008C0940 /* SessionState.swift in Sources */,
 				058857112EA8494700EAF72B /* GuardianInvitationCodeView.swift in Sources */,
@@ -913,6 +922,7 @@
 				D474CF552EB62F5F00F02B26 /* BabyMoaRootView.swift in Sources */,
 				47DFD01A2EACCA4100E69E33 /* AddBabyNewNoView.swift in Sources */,
 				05CD80142EA5F81F008C0940 /* ContentView.swift in Sources */,
+				478629072EB7201A004B9568 /* AuthRefreshReqModel.swift in Sources */,
 				478628292EB64CD7004B9568 /* SetWeightReqModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -927,7 +937,9 @@
 				9FD7CDF12EB50F8200508130 /* BabyMoaEndpoint.swift in Sources */,
 				9FD7CDFD2EB50FA300508130 /* HTTPClient.swift in Sources */,
 				478628322EB64F41004B9568 /* GetWeightsReqModel.swift in Sources */,
+				478629082EB7201A004B9568 /* AuthRefreshReqModel.swift in Sources */,
 				478628462EB6560B004B9568 /* GetJourniesAtMonthReqModel.swift in Sources */,
+				4786290A2EB7206D004B9568 /* AuthRefreshResModel.swift in Sources */,
 				478628172EB63780004B9568 /* SetTeethStatusReqModel.swift in Sources */,
 				9FD7CDFB2EB50F9C00508130 /* EndPoint.swift in Sources */,
 				4786283B2EB652C9004B9568 /* GetHeightsResModel.swift in Sources */,

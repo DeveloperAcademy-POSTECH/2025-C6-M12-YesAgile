@@ -31,6 +31,42 @@ enum BabyMoaEndpoint: Endpoint {
     case getGrowthData(
         babyId: Int
     )
+    case getBabyList
+
+    case setWeight(
+        babyId: Int,
+        weight: Double,
+        date: String  // "2025-11-02"
+    )
+    case setHeight(
+        babyId: Int,
+        height: Double,
+        date: String  // "2025-11-02"
+    )
+    case getWeights(
+        babyId: Int
+    )
+    case getHeights(
+        babyId: Int
+    )
+    case authRefresh(
+        refreshToken: String
+    )
+    case addJourney(
+        babyId: Int,
+        journeyImage: String,
+        latitude: Double,
+        longtitude: Double,
+        date: String,
+        memo: String
+    )
+    case setBabyMilestone(
+        babyId: Int,
+        milestoneIdx: Int,
+        milestoneImage: String,
+        date: String,
+        memo: String
+    )
 }
 
 extension BabyMoaEndpoint {
@@ -49,25 +85,47 @@ extension BabyMoaEndpoint {
             return "/api/baby/growth/set_teeth_status"
         case .getGrowthData:
             return "/api/baby/growth/get_growth_data"
+        case .getBabyList:
+            return "/api/baby/get_baby_list"
+        case .setWeight:
+            return "/api/growth/set_weight"
+        case .setHeight:
+            return "/api/growth/set_height"
+        case .getWeights:
+            return "/api/growth/get_weights"
+        case .getHeights:
+            return "/api/growth/get_heights"
+        case .authRefresh:
+            return "/api/auth/refresh"
+        case .addJourney:
+            return "/api/journey/add_journey"
+        case .setBabyMilestone:
+            return "/api/milestones/set_baby_milestone"
         }
     }
 
     var method: RequestMethod {
         switch self {
         case .appleLogin, .registerBaby, .registerBabyByCode,
-            .setRelationshipWithBaby, .setTeethStatus, .getGrowthData:
+            .setRelationshipWithBaby, .setTeethStatus, .setWeight, .setHeight,
+            .authRefresh, .addJourney, .setBabyMilestone:
             return .post
+        case .getGrowthData, .getBabyList, .getWeights, .getHeights:
+            return .get
         }
     }
 
     var header: [String: String]? {
         switch self {
-        case .appleLogin:
+        case .appleLogin, .authRefresh:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
             ]
-        case .registerBaby, .registerBabyByCode, .setRelationshipWithBaby, .getGrowthData, .setTeethStatus:
+        case .registerBaby, .registerBabyByCode, .setRelationshipWithBaby,
+            .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
+            .setHeight, .getWeights, .getHeights, .addJourney,
+            .setBabyMilestone:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -80,6 +138,18 @@ extension BabyMoaEndpoint {
 
     var query: [String: String]? {
         switch self {
+        case .getHeights(let babyId):
+            return [
+                "babyId" : String(babyId)
+            ]
+        case .getGrowthData(let babyId):
+            return [
+                "babyId" : String(babyId)
+            ]
+        case .getWeights(let babyId):
+            return [
+                "babyId" : String(babyId)
+            ]
         default:
             return nil
         }
@@ -131,13 +201,65 @@ extension BabyMoaEndpoint {
                 "date": date,
                 "deletion": deletion,
             ]
-        case .getGrowthData(
+        case .setWeight(
             let babyId,
+            let weight,
+            let date
         ):
             return [
-                "babyId" : babyId,
+                "babyId": babyId,
+                "weight": weight,
+                "date": date,
             ]
-            
+        case .setHeight(
+            let babyId,
+            let height,
+            let date
+        ):
+            return [
+                "babyId": babyId,
+                "height": height,
+                "date": date,
+            ]
+        case .authRefresh(
+            let refreshToken
+        ):
+            return [
+                "refreshToken": refreshToken
+
+            ]
+        case .addJourney(
+            let babyId,
+            let journeyImage,
+            let latitude,
+            let longitude,
+            let date,
+            let memo
+        ):
+            return [
+                "babyId": babyId,
+                "journeyImage": journeyImage,
+                "latitude": latitude,
+                "longitude": longitude,
+                "date": date,
+                "memo": memo,
+            ]
+        case .setBabyMilestone(
+            let babyId,
+            let milestoneIdx,
+            let milestoneImage,
+            let date,
+            let memo
+        ):
+            return [
+                "babyId": babyId,
+                "milestoneIdx": milestoneIdx,
+                "milestoneImage": milestoneImage,
+                "date": date,
+                "memo": memo,
+            ]
+
+        // case 없이도 가능
         default:
             return nil
         }
