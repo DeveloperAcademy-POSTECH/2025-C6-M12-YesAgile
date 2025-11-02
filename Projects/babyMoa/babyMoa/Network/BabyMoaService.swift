@@ -21,24 +21,180 @@ protocol BabyMoaServicable: HTTPClient {
         BaseResponse<RegisterBabyByCodeResModel>, RequestError
     >
     func postSetRelationshipWithBaby(babyId: Int, relationshipType: String)
-        async -> Result<BaseResponse<EmptyData>, RequestError
-    >
-    func postSetTeethStatus(babyId: Int,
-                            teethId: Int,
-                            date: String,
-                            deletion: Bool
-                            
+        async -> Result<
+            BaseResponse<EmptyData>, RequestError
+        >
+    func postSetTeethStatus(
+        babyId: Int,
+        teethId: Int,
+        date: String,
+        deletion: Bool
+
     ) async -> Result<
         BaseResponse<EmptyData>, RequestError
     >
-    func getGetGrowthData(babyId: Int
+    func getGetGrowthData(
+        babyId: Int
     )
-    async -> Result<BaseResponse<GetGrowthDataResModel>, RequestError
+        async -> Result<
+            BaseResponse<GetGrowthDataResModel>, RequestError
+        >
+    func getGetBabyList() async -> Result<
+        BaseResponse<[GetBabyListResModel]>, RequestError
     >
+    func postSetWeight(
+        babyId: Int,
+        weight: Double,
+        date: String
+    ) async -> Result<
+        BaseResponse<EmptyData>, RequestError
+    >
+    func postSetHeight(
+        babyId: Int,
+        height: Double,
+        date: String
+    ) async -> Result<
+        BaseResponse<EmptyData>, RequestError
+    >
+    func getGetWeights(
+        babyId: Int
+    ) async -> Result<
+        BaseResponse<[GetWeightsResModel]>, RequestError
+    >
+    func getGetHeights(
+        babyId: Int
+    ) async -> Result<
+        BaseResponse<[GetHeightsResModel]>, RequestError
+    >
+
 }
 
 class BabyMoaService: BabyMoaServicable {
-    func getGetGrowthData(babyId: Int) async -> Result<BaseResponse<GetGrowthDataResModel>, RequestError> {
+    func getGetHeights(babyId: Int) async -> Result<
+        BaseResponse<[GetHeightsResModel]>, RequestError
+    > {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.getHeights(
+                babyId: babyId
+            ),
+            responseModel: BaseResponse<[GetHeightsResModel]>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                return await self.getGetHeights(
+                    babyId: babyId
+                )
+            default:
+                return result
+            }
+        }
+    }
+    func getGetWeights(babyId: Int) async -> Result<
+        BaseResponse<[GetWeightsResModel]>, RequestError
+    > {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.getWeights(
+                babyId: babyId
+            ),
+            responseModel: BaseResponse<[GetWeightsResModel]>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                return await self.getGetWeights(
+                    babyId: babyId
+                )
+            default:
+                return result
+            }
+        }
+    }
+
+    func postSetHeight(babyId: Int, height: Double, date: String) async
+        -> Result<BaseResponse<EmptyData>, RequestError>
+    {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.setHeight(
+                babyId: babyId,
+                height: height,
+                date: date
+            ),
+            responseModel: BaseResponse<EmptyData>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                return await self.postSetHeight(
+                    babyId: babyId,
+                    height: height,
+                    date: date
+                )
+            default:
+                return result
+            }
+        }
+    }
+
+    func postSetWeight(babyId: Int, weight: Double, date: String) async
+        -> Result<BaseResponse<EmptyData>, RequestError>
+    {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.setWeight(
+                babyId: babyId,
+                weight: weight,
+                date: date
+            ),
+            responseModel: BaseResponse<EmptyData>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                return await self.postSetWeight(
+                    babyId: babyId,
+                    weight: weight,
+                    date: date
+                )
+            default:
+                return result
+            }
+        }
+    }
+    func getGetBabyList() async -> Result<
+        BaseResponse<[GetBabyListResModel]>, RequestError
+    > {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.getBabyList,
+            responseModel: BaseResponse<[GetBabyListResModel]>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                return await self.getGetBabyList()
+            default:
+                return result
+            }
+        }
+    }
+
+    func getGetGrowthData(babyId: Int) async -> Result<
+        BaseResponse<GetGrowthDataResModel>, RequestError
+    > {
         let result = await request(
             endpoint: BabyMoaEndpoint.getGrowthData(babyId: babyId),
             responseModel: BaseResponse<GetGrowthDataResModel>.self
@@ -48,60 +204,80 @@ class BabyMoaService: BabyMoaServicable {
             return result
         case .failure(let error):
             switch error {
-            case .unauthorized :
-                return await
-                self.getGetGrowthData(babyId: babyId)
+            case .unauthorized:
+                return await self.getGetGrowthData(babyId: babyId)
             default:
                 return result
             }
         }
     }
     func postSetTeethStatus(
-        babyId: Int, teethId: Int, date: String, deletion: Bool
-    ) async ->
-    Result<BaseResponse<EmptyData>,
-            RequestError> {
+        babyId: Int,
+        teethId: Int,
+        date: String,
+        deletion: Bool
+    ) async -> Result<
+        BaseResponse<EmptyData>,
+        RequestError
+    > {
         let result = await request(
             endpoint:
-                BabyMoaEndpoint.setTeethStatus(babyId: babyId, teethId: teethId, date: date, deletion: deletion),
+                BabyMoaEndpoint.setTeethStatus(
+                    babyId: babyId,
+                    teethId: teethId,
+                    date: date,
+                    deletion: deletion
+                ),
             responseModel: BaseResponse<EmptyData>.self
-            )
-                switch result {
-                case .success:
-                    return result
-                case .failure(let error):
-                    switch error {
-                    case .unauthorized :
-                        return await
-                        self.postSetTeethStatus(babyId: babyId, teethId: teethId, date: date, deletion: deletion)
-                    default:
-                        return result
-                    }
-                }
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                return await self.postSetTeethStatus(
+                    babyId: babyId,
+                    teethId: teethId,
+                    date: date,
+                    deletion: deletion
+                )
+            default:
+                return result
+            }
+        }
     }
-    
+
     func postSetRelationshipWithBaby(
-        babyId: Int, relationshipType: String
-    ) async ->
-    Result<BaseResponse<EmptyData>,
-           RequestError> {
-               let result = await request(
-                endpoint: BabyMoaEndpoint.setRelationshipWithBaby(babyId: babyId, relationshipType: relationshipType),
-                responseModel:
-                    BaseResponse<EmptyData>.self
-               )
-               switch result {
-               case .success:
-                   return result
-               case .failure(let error):
-                   switch error {
-                   case .unauthorized :
-                       return await self.postSetRelationshipWithBaby(babyId: babyId, relationshipType: relationshipType)
-                   default:
-                       return result
-                   }
-               }
-}
+        babyId: Int,
+        relationshipType: String
+    ) async -> Result<
+        BaseResponse<EmptyData>,
+        RequestError
+    > {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.setRelationshipWithBaby(
+                babyId: babyId,
+                relationshipType: relationshipType
+            ),
+            responseModel:
+                BaseResponse<EmptyData>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                return await self.postSetRelationshipWithBaby(
+                    babyId: babyId,
+                    relationshipType: relationshipType
+                )
+            default:
+                return result
+            }
+        }
+    }
     func postRegisterBabyByCode(
         babyCode: String
     ) async -> Result<BaseResponse<RegisterBabyByCodeResModel>, RequestError> {

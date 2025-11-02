@@ -31,6 +31,24 @@ enum BabyMoaEndpoint: Endpoint {
     case getGrowthData(
         babyId: Int
     )
+    case getBabyList
+
+    case setWeight(
+        babyId: Int,
+        weight: Double,
+        date: String  // "2025-11-02"
+    )
+    case setHeight(
+        babyId: Int,
+        height: Double,
+        date: String  // "2025-11-02"
+    )
+    case getWeights(
+        babyId: Int
+    )
+    case getHeights(
+        babyId: Int
+    )
 }
 
 extension BabyMoaEndpoint {
@@ -49,14 +67,26 @@ extension BabyMoaEndpoint {
             return "/api/baby/growth/set_teeth_status"
         case .getGrowthData:
             return "/api/baby/growth/get_growth_data"
+        case .getBabyList:
+            return "/api/baby/get_baby_list"
+        case .setWeight:
+            return "/api/growth/set_weight"
+        case .setHeight:
+            return "/api/growth/set_height"
+        case .getWeights:
+            return "/api/growth/get_weights"
+        case .getHeights:
+            return "/api/growth/get_heights"
         }
     }
 
     var method: RequestMethod {
         switch self {
         case .appleLogin, .registerBaby, .registerBabyByCode,
-            .setRelationshipWithBaby, .setTeethStatus, .getGrowthData:
+            .setRelationshipWithBaby, .setTeethStatus, .setWeight, .setHeight:
             return .post
+        case .getGrowthData, .getBabyList, .getWeights, .getHeights:
+            return .get
         }
     }
 
@@ -67,7 +97,9 @@ extension BabyMoaEndpoint {
                 "accept": "*/*",
                 "Content-Type": "application/json",
             ]
-        case .registerBaby, .registerBabyByCode, .setRelationshipWithBaby, .getGrowthData, .setTeethStatus:
+        case .registerBaby, .registerBabyByCode, .setRelationshipWithBaby,
+            .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
+            .setHeight, .getWeights, .getHeights:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -135,9 +167,42 @@ extension BabyMoaEndpoint {
             let babyId,
         ):
             return [
-                "babyId" : babyId,
+                "babyId": babyId
             ]
-            
+        case .setWeight(
+            let babyId,
+            let weight,
+            let date
+        ):
+            return [
+                "babyId": babyId,
+                "weight": weight,
+                "date": date,
+            ]
+        case .setHeight(
+            let babyId,
+            let height,
+            let date
+        ):
+            return [
+                "babyId": babyId,
+                "height": height,
+                "date": date,
+            ]
+        case .getWeights(
+            let babyId
+        ):
+            return [
+                "babyId": babyId
+            ]
+        case .getHeights(
+            let babyId
+        ):
+            return [
+                "babyId": babyId
+            ]
+
+        // case 없이도 가능
         default:
             return nil
         }
