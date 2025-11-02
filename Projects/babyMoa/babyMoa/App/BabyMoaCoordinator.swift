@@ -20,6 +20,8 @@ class BabyMoaCoordinator: ObservableObject {
 }
 
 enum CoordinatorPath {
+    case startBabyMoa
+    case privacyConsent
     case login
     case growth
     case journey
