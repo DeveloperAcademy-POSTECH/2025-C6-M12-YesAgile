@@ -51,10 +51,39 @@ struct babyMoaTests {
 @Test func setRelationshipWithBaby() async {
     print(UserToken.accessToken)
     let result = await BabyMoaService.shared.postSetRelationshipWithBaby(
-        babyId: 1,
+        babyId: 3,
         relationshipType: "MOTHER"
     )
     
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+@Test func setTeethStatus() async {
+    
+    let result = await
+    BabyMoaService.shared.postSetTeethStatus(
+        babyId: 3,
+        teethId: 0, // 0~19, 윗니 10, 아랫니 10 왼쪽 -> 오른쪽
+        date: "2025-11-01",
+        deletion: false
+        )
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+@Test func getGrowthData() async {
+    
+    let result = await
+    BabyMoaService.shared.getGetGrowthData(
+        babyId: 3
+        )
     switch result {
     case .success(let success):
         print(success)
