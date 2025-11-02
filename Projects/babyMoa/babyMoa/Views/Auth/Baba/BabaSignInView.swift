@@ -8,7 +8,7 @@
 import SwiftUI
 import AuthenticationServices
 
-struct SignInView: View {
+struct BabaSignInView: View {
     
      func handleSignInWithApple(_ authorization: ASAuthorization){
         guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
@@ -89,5 +89,5 @@ struct SignInView: View {
 
 
 #Preview {
-    SignInView()
+    BabaSignInView()
 }

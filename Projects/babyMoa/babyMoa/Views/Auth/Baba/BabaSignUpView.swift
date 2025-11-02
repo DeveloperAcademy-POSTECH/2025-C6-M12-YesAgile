@@ -8,7 +8,7 @@
 import SwiftUI
 import AuthenticationServices
 
-struct SignUpView: View {
+struct BabaSignUpView: View {
     var body: some View {
         VStack{
             
@@ -107,5 +107,5 @@ struct SignUpView: View {
 }
 
 #Preview {
-    SignUpView()
+    BabaSignUpView()
 }
