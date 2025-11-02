@@ -7,9 +7,9 @@
 import Foundation
 
 struct GetGrowthDataResModel: Decodable {
-    var latestHeight: Double
-    var latestHeightDate: String
-    var latestWeight: Double
-    var latestWeighDate: String
+    var latestHeight: Double?
+    var latestHeightDate: String?
+    var latestWeight: Double?
+    var latestWeighDate: String?
     var toothStatus: [Bool]
 }

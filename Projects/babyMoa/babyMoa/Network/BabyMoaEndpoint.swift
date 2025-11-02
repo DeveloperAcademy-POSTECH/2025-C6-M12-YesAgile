@@ -138,6 +138,18 @@ extension BabyMoaEndpoint {
 
     var query: [String: String]? {
         switch self {
+        case .getHeights(let babyId):
+            return [
+                "babyId" : String(babyId)
+            ]
+        case .getGrowthData(let babyId):
+            return [
+                "babyId" : String(babyId)
+            ]
+        case .getWeights(let babyId):
+            return [
+                "babyId" : String(babyId)
+            ]
         default:
             return nil
         }
@@ -189,12 +201,6 @@ extension BabyMoaEndpoint {
                 "date": date,
                 "deletion": deletion,
             ]
-        case .getGrowthData(
-            let babyId,
-        ):
-            return [
-                "babyId": babyId
-            ]
         case .setWeight(
             let babyId,
             let weight,
@@ -214,18 +220,6 @@ extension BabyMoaEndpoint {
                 "babyId": babyId,
                 "height": height,
                 "date": date,
-            ]
-        case .getWeights(
-            let babyId
-        ):
-            return [
-                "babyId": babyId
-            ]
-        case .getHeights(
-            let babyId
-        ):
-            return [
-                "babyId": babyId
             ]
         case .authRefresh(
             let refreshToken
