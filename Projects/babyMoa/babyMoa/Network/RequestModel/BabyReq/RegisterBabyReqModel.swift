@@ -3,7 +3,7 @@
 //  babyMoa
 //
 //  Created by pherd on 10/31/25.
-//
+// 완료
 
 struct RegisterBabyReqModel: Encodable {
     var alias: String
