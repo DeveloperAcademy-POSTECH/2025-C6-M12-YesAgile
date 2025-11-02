@@ -78,13 +78,66 @@ protocol BabyMoaServicable: HTTPClient {
         longitude: Double,
         date: String,
         memo: String
-        ) async -> Result<
+    ) async -> Result<
         BaseResponse<EmptyData>, RequestError
-            >
+    >
+    func postSetBabyMilestone(
+        babyId: Int,
+        milestoneIdx: Int,
+        milestoneImage: String,
+        date: String,
+        memo: String
+    ) async -> Result<
+        BaseResponse<EmptyData>, RequestError
+    >
 }
 
 class BabyMoaService: BabyMoaServicable {
-    func postAddJourney(babyId: Int, journeyImage: String, latitude: Double, longitude: Double, date: String, memo: String) async -> Result<BaseResponse<EmptyData>, RequestError> {
+    func postSetBabyMilestone(
+        babyId: Int,
+        milestoneIdx: Int,
+        milestoneImage: String,
+        date: String,
+        memo: String
+    ) async -> Result<BaseResponse<EmptyData>, RequestError> {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.setBabyMilestone(
+                babyId: babyId,
+                milestoneIdx: milestoneIdx,
+                milestoneImage: milestoneImage,
+                date: date,
+                memo: memo
+            ),
+            responseModel: BaseResponse<EmptyData>.self
+        )
+
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                return await self.postSetBabyMilestone(
+                    babyId: babyId,
+                    milestoneIdx: milestoneIdx,
+                    milestoneImage: milestoneImage,
+                    date: date,
+                    memo: memo
+                )
+            default:
+                return result
+            }
+        }
+    }
+
+    func postAddJourney(
+        babyId: Int,
+        journeyImage: String,
+        latitude: Double,
+        longitude: Double,
+        date: String,
+        memo: String
+    ) async -> Result<BaseResponse<EmptyData>, RequestError> {
         let result = await request(
             endpoint: BabyMoaEndpoint.addJourney(
                 babyId: babyId,
@@ -115,7 +168,7 @@ class BabyMoaService: BabyMoaServicable {
             }
         }
     }
-    
+
     func postAuthRefresh(refreshToken: String) async -> Result<
         BaseResponse<AuthRefreshResModel>, RequestError
     > {

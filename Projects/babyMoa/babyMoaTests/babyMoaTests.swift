@@ -65,10 +65,10 @@ struct babyMoaTests {
 @Test func setTeethStatus() async {
 
     let result = await BabyMoaService.shared.postSetTeethStatus(
-        babyId: 6,
+        babyId: 9,
         teethId: 0,  // 0~19, 윗니 10, 아랫니 10 왼쪽 -> 오른쪽
         date: "2025-11-01",
-        deletion: false // false 이여야 난거임 true 는 삭제
+        deletion: false  // false 이여야 난거임 true 는 삭제
     )
     switch result {
     case .success(let success):
@@ -146,11 +146,11 @@ struct babyMoaTests {
     }
 }
 @Test func getWeights() async {
-    
+
     let result = await BabyMoaService.shared.getGetWeights(
         babyId: 5
     )
-    
+
     switch result {
     case .success(let success):
         print(success)
@@ -159,11 +159,11 @@ struct babyMoaTests {
     }
 }
 @Test func getHeights() async {
-    
+
     let result = await BabyMoaService.shared.getGetHeights(
         babyId: 5
     )
-    
+
     switch result {
     case .success(let success):
         print(success)
@@ -172,10 +172,47 @@ struct babyMoaTests {
     }
 }
 @Test func authRefresh() async {
-    
-    let result = await BabyMoaService.shared.postAuthRefresh(refreshToken: ""
+
+    let result = await BabyMoaService.shared.postAuthRefresh(
+        refreshToken: ""
     )
-    
+
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+@Test func addjourney() async {
+
+    let result = await BabyMoaService.shared.postAddJourney(
+        babyId: 9,
+        journeyImage: "https://example.com/image.png",
+        latitude: 37.5665,
+        longitude: 126.9780,
+        date: "2025-11-02",
+        memo: "Hello World!"
+    )
+
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+
+@Test func setBabyMilestone() async {
+
+    let result = await BabyMoaService.shared.postSetBabyMilestone(
+        babyId: 9,
+        milestoneIdx: 1,
+        milestoneImage: "https://example.com/image.png",
+        date: "2025-11-02",
+        memo: "Hello World!"
+    )
+
     switch result {
     case .success(let success):
         print(success)

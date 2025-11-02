@@ -60,6 +60,13 @@ enum BabyMoaEndpoint: Endpoint {
         date: String,
         memo: String
     )
+    case setBabyMilestone(
+        babyId: Int,
+        milestoneIdx: Int,
+        milestoneImage: String,
+        date: String,
+        memo: String
+    )
 }
 
 extension BabyMoaEndpoint {
@@ -89,9 +96,11 @@ extension BabyMoaEndpoint {
         case .getHeights:
             return "/api/growth/get_heights"
         case .authRefresh:
-            return "api/auth/refresh"
+            return "/api/auth/refresh"
         case .addJourney:
-            return "api/journey/add_journey"
+            return "/api/journey/add_journey"
+        case .setBabyMilestone:
+            return "/api/milestones/set_baby_milestone"
         }
     }
 
@@ -99,7 +108,7 @@ extension BabyMoaEndpoint {
         switch self {
         case .appleLogin, .registerBaby, .registerBabyByCode,
             .setRelationshipWithBaby, .setTeethStatus, .setWeight, .setHeight,
-            .authRefresh, .addJourney:
+            .authRefresh, .addJourney, .setBabyMilestone:
             return .post
         case .getGrowthData, .getBabyList, .getWeights, .getHeights:
             return .get
@@ -115,7 +124,8 @@ extension BabyMoaEndpoint {
             ]
         case .registerBaby, .registerBabyByCode, .setRelationshipWithBaby,
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
-            .setHeight, .getWeights, .getHeights, .addJourney:
+            .setHeight, .getWeights, .getHeights, .addJourney,
+            .setBabyMilestone:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -226,7 +236,7 @@ extension BabyMoaEndpoint {
             ]
         case .addJourney(
             let babyId,
-            let JourneyImage,
+            let journeyImage,
             let latitude,
             let longitude,
             let date,
@@ -234,9 +244,23 @@ extension BabyMoaEndpoint {
         ):
             return [
                 "babyId": babyId,
-                "journeyImage": JourneyImage,
+                "journeyImage": journeyImage,
                 "latitude": latitude,
                 "longitude": longitude,
+                "date": date,
+                "memo": memo,
+            ]
+        case .setBabyMilestone(
+            let babyId,
+            let milestoneIdx,
+            let milestoneImage,
+            let date,
+            let memo
+        ):
+            return [
+                "babyId": babyId,
+                "milestoneIdx": milestoneIdx,
+                "milestoneImage": milestoneImage,
                 "date": date,
                 "memo": memo,
             ]
