@@ -23,9 +23,63 @@ protocol BabyMoaServicable: HTTPClient {
     func postSetRelationshipWithBaby(babyId: Int, relationshipType: String)
         async -> Result<BaseResponse<EmptyData>, RequestError
     >
+    func postSetTeethStatus(babyId: Int,
+                            teethId: Int,
+                            date: String,
+                            deletion: Bool
+                            
+    ) async -> Result<
+        BaseResponse<EmptyData>, RequestError
+    >
+    func getGetGrowthData(babyId: Int
+    )
+    async -> Result<BaseResponse<GetGrowthDataResModel>, RequestError
+    >
 }
 
 class BabyMoaService: BabyMoaServicable {
+    func getGetGrowthData(babyId: Int) async -> Result<BaseResponse<GetGrowthDataResModel>, RequestError> {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.getGrowthData(babyId: babyId),
+            responseModel: BaseResponse<GetGrowthDataResModel>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized :
+                return await
+                self.getGetGrowthData(babyId: babyId)
+            default:
+                return result
+            }
+        }
+    }
+    func postSetTeethStatus(
+        babyId: Int, teethId: Int, date: String, deletion: Bool
+    ) async ->
+    Result<BaseResponse<EmptyData>,
+            RequestError> {
+        let result = await request(
+            endpoint:
+                BabyMoaEndpoint.setTeethStatus(babyId: babyId, teethId: teethId, date: date, deletion: deletion),
+            responseModel: BaseResponse<EmptyData>.self
+            )
+                switch result {
+                case .success:
+                    return result
+                case .failure(let error):
+                    switch error {
+                    case .unauthorized :
+                        return await
+                        self.postSetTeethStatus(babyId: babyId, teethId: teethId, date: date, deletion: deletion)
+                    default:
+                        return result
+                    }
+                }
+    }
+    
     func postSetRelationshipWithBaby(
         babyId: Int, relationshipType: String
     ) async ->

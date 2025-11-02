@@ -22,6 +22,15 @@ enum BabyMoaEndpoint: Endpoint {
         babyId: Int,
         relationshipType: String
     )
+    case setTeethStatus(
+        babyId: Int,
+        teethId: Int,
+        date: String,
+        deletion: Bool
+    )
+    case getGrowthData(
+        babyId: Int
+    )
 }
 
 extension BabyMoaEndpoint {
@@ -36,12 +45,17 @@ extension BabyMoaEndpoint {
             return "/api/baby/register_baby_by_code"
         case .setRelationshipWithBaby:
             return "/api/baby/set_relationship_with_baby"
+        case .setTeethStatus:
+            return "/api/baby/growth/set_teeth_status"
+        case .getGrowthData:
+            return "/api/baby/growth/get_growth_data"
         }
     }
 
     var method: RequestMethod {
         switch self {
-        case .appleLogin, .registerBaby, .registerBabyByCode, .setRelationshipWithBaby:
+        case .appleLogin, .registerBaby, .registerBabyByCode,
+            .setRelationshipWithBaby, .setTeethStatus, .getGrowthData:
             return .post
         }
     }
@@ -53,12 +67,14 @@ extension BabyMoaEndpoint {
                 "accept": "*/*",
                 "Content-Type": "application/json",
             ]
-        case .registerBaby, .registerBabyByCode, .setRelationshipWithBaby:
+        case .registerBaby, .registerBabyByCode, .setRelationshipWithBaby, .getGrowthData, .setTeethStatus:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
                 "Authorization": "Bearer \(UserToken.accessToken)",
             ]
+        default:
+            return nil
         }
     }
 
@@ -101,8 +117,27 @@ extension BabyMoaEndpoint {
         ):
             return [
                 "babyId": babyId,
-                "relationshipType": relationshipType
+                "relationshipType": relationshipType,
             ]
+        case .setTeethStatus(
+            let babyId,
+            let teethID,
+            let date,
+            let deletion
+        ):
+            return [
+                "babyId": babyId,
+                "teethId": teethID,
+                "date": date,
+                "deletion": deletion,
+            ]
+        case .getGrowthData(
+            let babyId,
+        ):
+            return [
+                "babyId" : babyId,
+            ]
+            
         default:
             return nil
         }
