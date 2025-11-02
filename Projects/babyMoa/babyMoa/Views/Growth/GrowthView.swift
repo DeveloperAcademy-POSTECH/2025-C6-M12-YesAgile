@@ -11,7 +11,7 @@ import SwiftUI
 
 struct GrowthView: View {
     // MARK: - State Properties
-
+    
     @State private var viewModel = GrowthViewModel()
     @State private var showBabySelection = false
     @State private var showAllMilestones = false
