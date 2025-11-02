@@ -9,10 +9,10 @@ import AuthenticationServices
 import SwiftUI
 
 struct SignUpView: View {
-    @StateObject var viewModel: SignUpViewModel
+    @State var viewModel: SignUpViewModel
     
     init(coordinator: BabyMoaCoordinator) {
-        _viewModel = StateObject(wrappedValue: SignUpViewModel(coordinator: coordinator))
+        viewModel = SignUpViewModel(coordinator: coordinator)
     }
     
     var body: some View {

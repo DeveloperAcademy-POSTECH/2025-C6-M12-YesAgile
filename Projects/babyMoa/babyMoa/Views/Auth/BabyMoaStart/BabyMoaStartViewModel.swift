@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-class BabyMoaStartViewModel: ObservableObject {
-    @ObservedObject var coordinator: BabyMoaCoordinator
+@Observable
+class BabyMoaStartViewModel {
+    var coordinator: BabyMoaCoordinator
     
     init(coordinator: BabyMoaCoordinator) {
         self.coordinator = coordinator

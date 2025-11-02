@@ -7,9 +7,10 @@
 import AuthenticationServices
 import SwiftUI
 
-final class SignUpViewModel: ObservableObject {
-    @ObservedObject var coordinator: BabyMoaCoordinator
-    @Published var termCheckList: [TermCheckItem]
+@Observable
+final class SignUpViewModel {
+    var coordinator: BabyMoaCoordinator
+    var termCheckList: [TermCheckItem]
     
     init(coordinator: BabyMoaCoordinator) {
         self.coordinator = coordinator

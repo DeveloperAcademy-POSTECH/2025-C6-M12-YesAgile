@@ -34,11 +34,13 @@ struct BabyMoaRootView: View {
                     SignUpView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
                 case .growth:
-                    EmptyView()
+                    GrowthView()
+                        .navigationBarBackButtonHidden()
                 case .journey:
                     EmptyView()
                 case .privacyConsent:
-                    EmptyView()
+                    PrivacyConsentView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
                 }
             }
         }

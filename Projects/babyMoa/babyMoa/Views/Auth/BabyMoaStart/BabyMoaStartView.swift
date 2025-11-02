@@ -9,10 +9,10 @@ import SwiftUI
 
 struct BabyMoaStartView: View {
     
-    @StateObject var viewModel: BabyMoaStartViewModel
+    @State var viewModel: BabyMoaStartViewModel
     
     init(coordinator: BabyMoaCoordinator) {
-        _viewModel = StateObject(wrappedValue: BabyMoaStartViewModel(coordinator: coordinator))
+        viewModel = BabyMoaStartViewModel(coordinator: coordinator)
     }
     
     var body: some View {
