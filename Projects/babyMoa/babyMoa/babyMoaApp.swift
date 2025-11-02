@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct babyMoaApp: App {
     @AppStorage("hasCompletedBabySetup") private var hasCompletedBabySetup = false
-    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     var body: some Scene {
         WindowGroup {
             if hasCompletedBabySetup {
