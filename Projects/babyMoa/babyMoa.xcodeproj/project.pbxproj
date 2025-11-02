@@ -21,8 +21,6 @@
 		05CD80182EA5FDBA008C0940 /* ButtonComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD80172EA5FDB9008C0940 /* ButtonComponents.swift */; };
 		05CD801B2EA611B1008C0940 /* SessionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD801A2EA611B1008C0940 /* SessionState.swift */; };
 		05CD801D2EA611C0008C0940 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD801C2EA611C0008C0940 /* SessionManager.swift */; };
-		05CD80202EA61EC2008C0940 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD801F2EA61EC2008C0940 /* SignUpView.swift */; };
-		05CD80222EA61ECE008C0940 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD80212EA61ECE008C0940 /* SignInView.swift */; };
 		05CD80252EA61F1E008C0940 /* AddBabyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD80242EA61F1E008C0940 /* AddBabyView.swift */; };
 		05CD80272EA61F2E008C0940 /* AddBabyNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD80262EA61F2E008C0940 /* AddBabyNewView.swift */; };
 		05CD80292EA61F57008C0940 /* AddBabyNewYesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD80282EA61F57008C0940 /* AddBabyNewYesView.swift */; };
@@ -136,6 +134,7 @@
 		D474CF532EB62EBB00F02B26 /* BabyMoaCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D474CF522EB62EAD00F02B26 /* BabyMoaCoordinator.swift */; };
 		D474CF552EB62F5F00F02B26 /* BabyMoaRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D474CF542EB62F5600F02B26 /* BabyMoaRootView.swift */; };
 		D474CF582EB630F500F02B26 /* BabyMoaRootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D474CF572EB630F200F02B26 /* BabyMoaRootViewModel.swift */; };
+		D474D1F22EB7201D00F02B26 /* JWTUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = D474D1F12EB7200400F02B26 /* JWTUtil.swift */; };
 		ECBF6B3F8FD64247A6BA05A9 /* PhotoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB4A36244B492F8B7DFA08 /* PhotoService.swift */; };
 /* End PBXBuildFile section */
 
@@ -165,8 +164,6 @@
 		05CD80172EA5FDB9008C0940 /* ButtonComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonComponents.swift; sourceTree = "<group>"; };
 		05CD801A2EA611B1008C0940 /* SessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionState.swift; sourceTree = "<group>"; };
 		05CD801C2EA611C0008C0940 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
-		05CD801F2EA61EC2008C0940 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
-		05CD80212EA61ECE008C0940 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		05CD80242EA61F1E008C0940 /* AddBabyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyView.swift; sourceTree = "<group>"; };
 		05CD80262EA61F2E008C0940 /* AddBabyNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyNewView.swift; sourceTree = "<group>"; };
 		05CD80282EA61F57008C0940 /* AddBabyNewYesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyNewYesView.swift; sourceTree = "<group>"; };
@@ -251,8 +248,23 @@
 		D474CF522EB62EAD00F02B26 /* BabyMoaCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabyMoaCoordinator.swift; sourceTree = "<group>"; };
 		D474CF542EB62F5600F02B26 /* BabyMoaRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabyMoaRootView.swift; sourceTree = "<group>"; };
 		D474CF572EB630F200F02B26 /* BabyMoaRootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabyMoaRootViewModel.swift; sourceTree = "<group>"; };
+		D474D1F12EB7200400F02B26 /* JWTUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTUtil.swift; sourceTree = "<group>"; };
+		D474D1F32EB7230600F02B26 /* babyMoa.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = babyMoa.entitlements; sourceTree = "<group>"; };
 		ECDC3BF28872420E9588A0D5 /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D474D1CE2EB70CF300F02B26 /* Exceptions for "Auth" folder in "babyMoaTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Baba/BabaSignInView.swift,
+				Baba/BabaSignUpView.swift,
+				BabyMoaStart/BabyMoaStartView.swift,
+				BabyMoaStart/BabyMoaStartViewModel.swift,
+			);
+			target = 9FD7CDE62EB50EFF00508130 /* babyMoaTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		47E2F9182EB0D38700EAC721 /* Baby */ = {
@@ -288,6 +300,19 @@
 		9FD7CDE82EB50EFF00508130 /* babyMoaTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = babyMoaTests;
+			sourceTree = "<group>";
+		};
+		D474D1C62EB70CD800F02B26 /* Auth */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D474D1CE2EB70CF300F02B26 /* Exceptions for "Auth" folder in "babyMoaTests" target */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		D4D4130F2EB727370093653E /* PrivacyConsent */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PrivacyConsent;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -336,15 +361,6 @@
 			path = Strings;
 			sourceTree = "<group>";
 		};
-		05C5F0FE2EA65DCC00C5AA86 /* Auth */ = {
-			isa = PBXGroup;
-			children = (
-				05CD801F2EA61EC2008C0940 /* SignUpView.swift */,
-				05CD80212EA61ECE008C0940 /* SignInView.swift */,
-			);
-			path = Auth;
-			sourceTree = "<group>";
-		};
 		05C5F0FF2EA73A3200C5AA86 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -384,6 +400,7 @@
 		05CD80112EA5F81F008C0940 /* babyMoa */ = {
 			isa = PBXGroup;
 			children = (
+				D474D1F32EB7230600F02B26 /* babyMoa.entitlements */,
 				D474CF512EB62E9000F02B26 /* App */,
 				47C693B32EAF17ED004E5273 /* Info.plist */,
 				8D1369C5D1734E50B45FF3FC /* Utilities */,
@@ -428,13 +445,14 @@
 		05CD801E2EA61EAF008C0940 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				D4D4130F2EB727370093653E /* PrivacyConsent */,
+				D474D1C62EB70CD800F02B26 /* Auth */,
 				47EB09302EB2F7EA00134E8D /* DesignSystem */,
 				47EB09282EB2F7E200134E8D /* Food */,
 				47EB09252EB2F7D700134E8D /* Recommend */,
 				47E2F9182EB0D38700EAC721 /* Baby */,
 				0588570F2EA8486000EAF72B /* Guardian */,
 				0588570C2EA8431C00EAF72B /* Settings */,
-				05C5F0FE2EA65DCC00C5AA86 /* Auth */,
 				05CD80232EA61F03008C0940 /* AddBaby */,
 				4785ED4A2EAE62EB00DEC298 /* Growth */,
 				47E2F9142EB055E500EAC721 /* MainTabView.swift */,
@@ -621,6 +639,7 @@
 		8D1369C5D1734E50B45FF3FC /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				D474D1F12EB7200400F02B26 /* JWTUtil.swift */,
 				47EB0A122EB2FF0000134E8D /* ImageHelper.swift */,
 				1C6BEF68AB1C4416BE5BC3B2 /* LocationManager.swift */,
 				47EB090E2EB2F61A00134E8D /* Date+Extensions.swift */,
@@ -703,6 +722,8 @@
 				47EB09252EB2F7D700134E8D /* Recommend */,
 				47EB09282EB2F7E200134E8D /* Food */,
 				47EB09302EB2F7EA00134E8D /* DesignSystem */,
+				D474D1C62EB70CD800F02B26 /* Auth */,
+				D4D4130F2EB727370093653E /* PrivacyConsent */,
 			);
 			name = babyMoa;
 			packageProductDependencies = (
@@ -842,7 +863,6 @@
 				478628592EB661F9004B9568 /* GrowthAPIEndpoint.swift in Sources */,
 				47E2F9152EB055E500EAC721 /* MainTabView.swift in Sources */,
 				478627D52EB58001004B9568 /* RegisterBabyByCodeResModel.swift in Sources */,
-				05CD80222EA61ECE008C0940 /* SignInView.swift in Sources */,
 				9FD7CDF22EB50F8200508130 /* BabyMoaEndpoint.swift in Sources */,
 				478628182EB63780004B9568 /* SetTeethStatusReqModel.swift in Sources */,
 				0588570B2EA8287D00EAF72B /* TopNavigationBarView.swift in Sources */,
@@ -856,6 +876,7 @@
 				478627DE2EB5D726004B9568 /* SetRelationshipWithBabyReqModel.swift in Sources */,
 				478628352EB65083004B9568 /* GetWeightsResModel.swift in Sources */,
 				4786281E2EB638E0004B9568 /* GetGrowthDataResModel.swift in Sources */,
+				D474D1F22EB7201D00F02B26 /* JWTUtil.swift in Sources */,
 				478628472EB6560B004B9568 /* GetJourniesAtMonthReqModel.swift in Sources */,
 				473F163F2EAF64150028BA97 /* AddHeightView.swift in Sources */,
 				4785ED4C2EAE62EB00DEC298 /* TeethView.swift in Sources */,
@@ -882,7 +903,6 @@
 				475CF6702EAFC86A005AA61D /* TeethRow.swift in Sources */,
 				9FD7CDF42EB50F9100508130 /* BabyMoaService.swift in Sources */,
 				05C5F0FD2EA63EFF00C5AA86 /* AddBabyTextFieldStyle.swift in Sources */,
-				05CD80202EA61EC2008C0940 /* SignUpView.swift in Sources */,
 				9FD7CDFE2EB50FA300508130 /* HTTPClient.swift in Sources */,
 				058857132EA8581F00EAF72B /* GuardianAddSheetView.swift in Sources */,
 				478628202EB64524004B9568 /* GetBabyListResModel.swift in Sources */,
@@ -1085,6 +1105,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = babyMoa/babyMoa.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1103,7 +1124,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = BabaTutorial.babyMoa;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yesagile.babyMoa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1117,6 +1138,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = babyMoa/babyMoa.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1135,7 +1157,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = BabaTutorial.babyMoa;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yesagile.babyMoa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
