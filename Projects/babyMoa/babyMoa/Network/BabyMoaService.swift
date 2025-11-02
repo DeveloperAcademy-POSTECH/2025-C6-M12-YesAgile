@@ -66,10 +66,78 @@ protocol BabyMoaServicable: HTTPClient {
     ) async -> Result<
         BaseResponse<[GetHeightsResModel]>, RequestError
     >
-
+    func postAuthRefresh(
+        refreshToken: String
+    ) async -> Result<
+        BaseResponse<AuthRefreshResModel>, RequestError
+    >
+    func postAddJourney(
+        babyId: Int,
+        journeyImage: String,
+        latitude: Double,
+        longitude: Double,
+        date: String,
+        memo: String
+        ) async -> Result<
+        BaseResponse<EmptyData>, RequestError
+            >
 }
 
 class BabyMoaService: BabyMoaServicable {
+    func postAddJourney(babyId: Int, journeyImage: String, latitude: Double, longitude: Double, date: String, memo: String) async -> Result<BaseResponse<EmptyData>, RequestError> {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.addJourney(
+                babyId: babyId,
+                journeyImage: journeyImage,
+                latitude: latitude,
+                longtitude: longitude,
+                date: date,
+                memo: memo
+            ),
+            responseModel: BaseResponse<EmptyData>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                return await self.postAddJourney(
+                    babyId: babyId,
+                    journeyImage: journeyImage,
+                    latitude: latitude,
+                    longitude: longitude,
+                    date: date,
+                    memo: memo
+                )
+            default:
+                return result
+            }
+        }
+    }
+    
+    func postAuthRefresh(refreshToken: String) async -> Result<
+        BaseResponse<AuthRefreshResModel>, RequestError
+    > {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.authRefresh(refreshToken: refreshToken),
+            responseModel: BaseResponse<AuthRefreshResModel>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                return await self.postAuthRefresh(
+                    refreshToken: refreshToken
+                )
+            default:
+                return result
+            }
+        }
+    }
+
     func getGetHeights(babyId: Int) async -> Result<
         BaseResponse<[GetHeightsResModel]>, RequestError
     > {

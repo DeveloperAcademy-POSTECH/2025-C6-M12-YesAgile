@@ -49,6 +49,17 @@ enum BabyMoaEndpoint: Endpoint {
     case getHeights(
         babyId: Int
     )
+    case authRefresh(
+        refreshToken: String
+    )
+    case addJourney(
+        babyId: Int,
+        journeyImage: String,
+        latitude: Double,
+        longtitude: Double,
+        date: String,
+        memo: String
+    )
 }
 
 extension BabyMoaEndpoint {
@@ -77,13 +88,18 @@ extension BabyMoaEndpoint {
             return "/api/growth/get_weights"
         case .getHeights:
             return "/api/growth/get_heights"
+        case .authRefresh:
+            return "api/auth/refresh"
+        case .addJourney:
+            return "api/journey/add_journey"
         }
     }
 
     var method: RequestMethod {
         switch self {
         case .appleLogin, .registerBaby, .registerBabyByCode,
-            .setRelationshipWithBaby, .setTeethStatus, .setWeight, .setHeight:
+            .setRelationshipWithBaby, .setTeethStatus, .setWeight, .setHeight,
+            .authRefresh, .addJourney:
             return .post
         case .getGrowthData, .getBabyList, .getWeights, .getHeights:
             return .get
@@ -92,14 +108,14 @@ extension BabyMoaEndpoint {
 
     var header: [String: String]? {
         switch self {
-        case .appleLogin:
+        case .appleLogin, .authRefresh:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
             ]
         case .registerBaby, .registerBabyByCode, .setRelationshipWithBaby,
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
-            .setHeight, .getWeights, .getHeights:
+            .setHeight, .getWeights, .getHeights, .addJourney:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -200,6 +216,29 @@ extension BabyMoaEndpoint {
         ):
             return [
                 "babyId": babyId
+            ]
+        case .authRefresh(
+            let refreshToken
+        ):
+            return [
+                "refreshToken": refreshToken
+
+            ]
+        case .addJourney(
+            let babyId,
+            let JourneyImage,
+            let latitude,
+            let longitude,
+            let date,
+            let memo
+        ):
+            return [
+                "babyId": babyId,
+                "journeyImage": JourneyImage,
+                "latitude": latitude,
+                "longitude": longitude,
+                "date": date,
+                "memo": memo,
             ]
 
         // case 없이도 가능

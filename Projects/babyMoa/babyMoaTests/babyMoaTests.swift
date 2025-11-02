@@ -65,7 +65,7 @@ struct babyMoaTests {
 @Test func setTeethStatus() async {
 
     let result = await BabyMoaService.shared.postSetTeethStatus(
-        babyId: 5,
+        babyId: 6,
         teethId: 0,  // 0~19, 윗니 10, 아랫니 10 왼쪽 -> 오른쪽
         date: "2025-11-01",
         deletion: false // false 이여야 난거임 true 는 삭제
@@ -78,9 +78,8 @@ struct babyMoaTests {
     }
 }
 @Test func getGrowthData() async {
-
     let result = await BabyMoaService.shared.getGetGrowthData(
-        babyId: 5
+        babyId: 6
     )
     switch result {
     case .success(let success):
@@ -118,8 +117,8 @@ struct babyMoaTests {
 @Test func setWeight() async {
 
     let result = await BabyMoaService.shared.postSetWeight(
-        babyId: 5,  // 처음에 발급되는거 체크하고 해야함
-        weight: 0,
+        babyId: 6,  // 처음에 발급되는거 체크하고 해야함
+        weight: 10,
         date: "2025-11-02"
     )
 
@@ -163,6 +162,18 @@ struct babyMoaTests {
     
     let result = await BabyMoaService.shared.getGetHeights(
         babyId: 5
+    )
+    
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+@Test func authRefresh() async {
+    
+    let result = await BabyMoaService.shared.postAuthRefresh(refreshToken: ""
     )
     
     switch result {
