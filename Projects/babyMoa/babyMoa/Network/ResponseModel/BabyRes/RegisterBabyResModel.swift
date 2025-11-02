@@ -4,8 +4,7 @@
 //
 //  Created by pherd on 10/31/25.
 //
-
 struct RegisterBabyResModel: Decodable {
-    var babyCode : String
-    var babyId : String
+    var babyCode: String
+    var babyId: String
 }

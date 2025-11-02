@@ -15,66 +15,129 @@ enum BabyMoaEndpoint: Endpoint {
         avatarImageName: String,
         relationshipType: String
     )
+    case registerBabyByCode(
+        babyCode: String
+    )
+    case setRelationshipWithBaby(
+        babyId: Int,
+        relationshipType: String
+    )
+    case setTeethStatus(
+        babyId: Int,
+        teethId: Int,
+        date: String,
+        deletion: Bool
+    )
+    case getGrowthData(
+        babyId: Int
+    )
 }
 
 extension BabyMoaEndpoint {
-    
+
     var path: String {
         switch self {
         case .appleLogin:
             return "/api/auth/apple/login"
         case .registerBaby:
             return "/api/baby/register_baby"
+        case .registerBabyByCode:
+            return "/api/baby/register_baby_by_code"
+        case .setRelationshipWithBaby:
+            return "/api/baby/set_relationship_with_baby"
+        case .setTeethStatus:
+            return "/api/baby/growth/set_teeth_status"
+        case .getGrowthData:
+            return "/api/baby/growth/get_growth_data"
         }
     }
-    
+
     var method: RequestMethod {
         switch self {
-        case .appleLogin, .registerBaby:
+        case .appleLogin, .registerBaby, .registerBabyByCode,
+            .setRelationshipWithBaby, .setTeethStatus, .getGrowthData:
             return .post
         }
     }
-    
-    var header: [String : String]? {
+
+    var header: [String: String]? {
         switch self {
         case .appleLogin:
             return [
                 "accept": "*/*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             ]
-        case .registerBaby:
+        case .registerBaby, .registerBabyByCode, .setRelationshipWithBaby, .getGrowthData, .setTeethStatus:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
-                "Authorization": "Bearer \(UserToken.accessToken)"
+                "Authorization": "Bearer \(UserToken.accessToken)",
             ]
         default:
             return nil
         }
     }
-    
-    var query: [String : String]? {
+
+    var query: [String: String]? {
         switch self {
         default:
             return nil
         }
     }
-    
-    var body: [String : Any?]? {
+
+    var body: [String: Any?]? {
         switch self {
         case .appleLogin(let idToken):
             return [
                 "idToken": idToken
             ]
-        case .registerBaby(let alias, let name, let birthDate, let gender, let avatarImageName, let relationshipType):
+        case .registerBaby(
+            let alias,
+            let name,
+            let birthDate,
+            let gender,
+            let avatarImageName,
+            let relationshipType
+        ):
             return [
                 "alias": alias,
                 "name": name,
                 "birthDate": birthDate,
                 "gender": gender,
                 "avatarImageName": avatarImageName,
-                "relationshipType": relationshipType
+                "relationshipType": relationshipType,
             ]
+        case .registerBabyByCode(let babyCode):
+            return [
+                "babyCode": babyCode
+            ]
+        case .setRelationshipWithBaby(
+            let babyId,
+            let relationshipType
+        ):
+            return [
+                "babyId": babyId,
+                "relationshipType": relationshipType,
+            ]
+        case .setTeethStatus(
+            let babyId,
+            let teethID,
+            let date,
+            let deletion
+        ):
+            return [
+                "babyId": babyId,
+                "teethId": teethID,
+                "date": date,
+                "deletion": deletion,
+            ]
+        case .getGrowthData(
+            let babyId,
+        ):
+            return [
+                "babyId" : babyId,
+            ]
+            
         default:
             return nil
         }
