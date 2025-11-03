@@ -90,6 +90,8 @@ protocol BabyMoaServicable: HTTPClient {
     ) async -> Result<
         BaseResponse<EmptyData>, RequestError
     >
+    
+    func getBaby(babyId: Int) async -> Result<BaseResponse<GetBabyResModel>, RequestError>
 }
 
 class BabyMoaService: BabyMoaServicable {
@@ -313,9 +315,11 @@ class BabyMoaService: BabyMoaServicable {
         }
     }
 
-    func getGetGrowthData(babyId: Int) async -> Result<
-        BaseResponse<GetGrowthDataResModel>, RequestError
-    > {
+    func getBaby(babyId: Int) async -> Result<BaseResponse<GetBabyResModel>, RequestError> {
+        return await request(endpoint: BabyMoaEndpoint.getBaby(babyId: babyId), responseModel: BaseResponse<GetBabyResModel>.self)
+    }
+
+    func getGetGrowthData(babyId: Int) async -> Result<BaseResponse<GetGrowthDataResModel>, RequestError> {
         let result = await request(
             endpoint: BabyMoaEndpoint.getGrowthData(babyId: babyId),
             responseModel: BaseResponse<GetGrowthDataResModel>.self

@@ -16,9 +16,10 @@ extension Notification.Name {
 }
 
 @Observable
-final class GrowthViewModel {
-    // MARK: - Properties
+final class OldGrowthViewModel {
+    var coordinator: BabyMoaCoordinator
     
+    // MARK: - Properties
     var selectedBabyId: String = ""
     var selectedMonth: Int = 0
     
@@ -32,7 +33,7 @@ final class GrowthViewModel {
     var allMilestones: [[GrowthMilestone]] = [
         // 0~2개월
         [
-            GrowthMilestone(id: "milestone_0_0", title: "누워있기", ageRange: "0~2개월", isCompleted: false, completedDate: nil, illustrationName: "Baby01"),
+            GrowthMilestone(id: "milestone_0_0", title: "누워있기", ageRange: "0~2개월", isCompleted: false, completedDate: nil, illustrationName: "Baby01"), // illustrationName은 url 형식으로 올 수 있음
             GrowthMilestone(id: "milestone_0_1", title: "손발 움직이기", ageRange: "0~2개월", isCompleted: false, completedDate: nil, illustrationName: "Baby02"),
             GrowthMilestone(id: "milestone_0_2", title: "빛 반응하기", ageRange: "0~2개월", isCompleted: false, completedDate: nil, illustrationName: "Baby03"),
             GrowthMilestone(id: "milestone_0_3", title: "소리 반응하기", ageRange: "0~2개월", isCompleted: false, completedDate: nil, illustrationName: "Baby04"),
@@ -167,7 +168,9 @@ final class GrowthViewModel {
     
     private var babyDataChangedObserver: NSObjectProtocol?
 
-    init() {
+    init(coordinator: BabyMoaCoordinator) {
+        self.coordinator = coordinator
+        
         // UserDefaults에서 현재 아기 ID 로드
         if let data = UserDefaults.standard.data(forKey: "currentBaby"),
            let baby = try? JSONDecoder().decode(Baby.self, from: data) {
@@ -193,11 +196,23 @@ final class GrowthViewModel {
 
         loadAllData()
     }
+    
 
     deinit {
         if let observer = babyDataChangedObserver {
             NotificationCenter.default.removeObserver(observer)
         }
+    }
+    
+    // MARK: Methods
+    @MainActor
+    func heightButtonTapped() {
+        coordinator.push(path: .height)
+    }
+    
+    @MainActor
+    func weightButtonTapped() {
+        coordinator.push(path: .weight)
     }
     
     /// UserDefaults에서 모든 데이터 로드
