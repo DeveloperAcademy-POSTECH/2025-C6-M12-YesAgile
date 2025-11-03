@@ -39,7 +39,6 @@
 		475CF6722EAFC88C005AA61D /* NewTooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6712EAFC88C005AA61D /* NewTooth.swift */; };
 		475CF6742EB03EDE005AA61D /* GrowthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6732EB03EDE005AA61D /* GrowthRepository.swift */; };
 		4785ED4B2EAE62EB00DEC298 /* GrowthBabyHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED3F2EAE62EB00DEC298 /* GrowthBabyHeader.swift */; };
-		4785ED4C2EAE62EB00DEC298 /* TeethView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED492EAE62EB00DEC298 /* TeethView.swift */; };
 		4785ED4D2EAE62EB00DEC298 /* GrowthMetricButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED402EAE62EB00DEC298 /* GrowthMetricButton.swift */; };
 		4785ED4E2EAE62EB00DEC298 /* GrowthMilestoneCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED412EAE62EB00DEC298 /* GrowthMilestoneCard.swift */; };
 		4785ED502EAE62EB00DEC298 /* MonthPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED482EAE62EB00DEC298 /* MonthPickerView.swift */; };
@@ -146,6 +145,7 @@
 		D4D413EA2EB7606E0093653E /* BabyMoaRootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D474CF572EB630F200F02B26 /* BabyMoaRootViewModel.swift */; };
 		D4D413EC2EB7606E0093653E /* BabyMoaCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D474CF522EB62EAD00F02B26 /* BabyMoaCoordinator.swift */; };
 		D4D413ED2EB7606E0093653E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D474CF4F2EB62E1300F02B26 /* AppDelegate.swift */; };
+		D4D414C72EB877930093653E /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D414C62EB8778F0093653E /* ImageManager.swift */; };
 		ECBF6B3F8FD64247A6BA05A9 /* PhotoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB4A36244B492F8B7DFA08 /* PhotoService.swift */; };
 /* End PBXBuildFile section */
 
@@ -200,7 +200,6 @@
 		4785ED462EAE62EB00DEC298 /* AllMilestonesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllMilestonesView.swift; sourceTree = "<group>"; };
 		4785ED472EAE62EB00DEC298 /* OldGrowthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldGrowthView.swift; sourceTree = "<group>"; };
 		4785ED482EAE62EB00DEC298 /* MonthPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthPickerView.swift; sourceTree = "<group>"; };
-		4785ED492EAE62EB00DEC298 /* TeethView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeethView.swift; sourceTree = "<group>"; };
 		478627CE2EB57E3F004B9568 /* HttpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		478627D02EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterBabyByCodeReqModel.swift; sourceTree = "<group>"; };
 		478627D32EB58001004B9568 /* RegisterBabyByCodeResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterBabyByCodeResModel.swift; sourceTree = "<group>"; };
@@ -265,6 +264,7 @@
 		D4D4138E2EB7535E0093653E /* BabySummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabySummary.swift; sourceTree = "<group>"; };
 		D4D413902EB754E30093653E /* SelectedBaby.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedBaby.swift; sourceTree = "<group>"; };
 		D4D413962EB7563B0093653E /* GetBabyResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetBabyResModel.swift; sourceTree = "<group>"; };
+		D4D414C62EB8778F0093653E /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
 		ECDC3BF28872420E9588A0D5 /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -348,6 +348,11 @@
 		D4D4138A2EB751D70093653E /* MainTab */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MainTab;
+			sourceTree = "<group>";
+		};
+		D4D414CE2EB893C80093653E /* Teeth */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Teeth;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -480,6 +485,7 @@
 		05CD801E2EA61EAF008C0940 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				D4D414CE2EB893C80093653E /* Teeth */,
 				D4D4138A2EB751D70093653E /* MainTab */,
 				D4D4137D2EB74F630093653E /* Growth */,
 				D4D4130F2EB727370093653E /* PrivacyConsent */,
@@ -568,7 +574,6 @@
 				4785ED462EAE62EB00DEC298 /* AllMilestonesView.swift */,
 				4785ED472EAE62EB00DEC298 /* OldGrowthView.swift */,
 				4785ED482EAE62EB00DEC298 /* MonthPickerView.swift */,
-				4785ED492EAE62EB00DEC298 /* TeethView.swift */,
 				47C693B42EAF1902004E5273 /* HeightView.swift */,
 				47C693B62EAF1910004E5273 /* WeightView.swift */,
 				473F163E2EAF64150028BA97 /* AddHeightView.swift */,
@@ -677,6 +682,7 @@
 		8D1369C5D1734E50B45FF3FC /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				D4D414C62EB8778F0093653E /* ImageManager.swift */,
 				D474D1F12EB7200400F02B26 /* JWTUtil.swift */,
 				47EB0A122EB2FF0000134E8D /* ImageHelper.swift */,
 				1C6BEF68AB1C4416BE5BC3B2 /* LocationManager.swift */,
@@ -767,6 +773,7 @@
 				D4D4130F2EB727370093653E /* PrivacyConsent */,
 				D4D4137D2EB74F630093653E /* Growth */,
 				D4D4138A2EB751D70093653E /* MainTab */,
+				D4D414CE2EB893C80093653E /* Teeth */,
 			);
 			name = babyMoa;
 			packageProductDependencies = (
@@ -863,6 +870,7 @@
 			files = (
 				4A7C71C984754709B3EF085F /* GrowthData.swift in Sources */,
 				47E7D18D2EAF8A73005A9CF0 /* GrowthRecordRow.swift in Sources */,
+				D4D414C72EB877930093653E /* ImageManager.swift in Sources */,
 				478628442EB65475004B9568 /* GetJourniesAtMonthResModel.swift in Sources */,
 				47E7D18E2EAF8A73005A9CF0 /* GrowthLabeledField.swift in Sources */,
 				9FD7CE062EB50FD300508130 /* UserToken.swift in Sources */,
@@ -922,7 +930,6 @@
 				D474D1F22EB7201D00F02B26 /* JWTUtil.swift in Sources */,
 				478628472EB6560B004B9568 /* GetJourniesAtMonthReqModel.swift in Sources */,
 				473F163F2EAF64150028BA97 /* AddHeightView.swift in Sources */,
-				4785ED4C2EAE62EB00DEC298 /* TeethView.swift in Sources */,
 				4785ED4D2EAE62EB00DEC298 /* GrowthMetricButton.swift in Sources */,
 				9FD7CE152EB5101E00508130 /* AppleLoginResModel.swift in Sources */,
 				9FD7CE162EB5101E00508130 /* RegisterBabyResModel.swift in Sources */,
