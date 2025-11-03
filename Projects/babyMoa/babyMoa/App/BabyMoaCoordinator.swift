@@ -20,12 +20,15 @@ class BabyMoaCoordinator: ObservableObject {
     }
 }
 
-enum CoordinatorPath {
+enum CoordinatorPath: Hashable {
     case startBabyMoa
     case privacyConsent
     case login
+    case mainTab
     case growth
+    case allMilestones([[GrowthMilestone]])
     case height
     case weight
+    case teeth(teethList: [TeethData])
     case journey
 }
