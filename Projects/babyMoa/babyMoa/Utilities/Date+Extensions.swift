@@ -30,6 +30,14 @@ extension DateFormatter {
         return formatter
     }()
     
+    /// "yyyy-MM-dd" 형식을 위한 static, 재사용 가능한 DateFormatter
+    static let yyyyDashMMDashdd: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter
+    }()
+    
     /// "yyyy년 MM월 dd일" 형식을 위한 static, 재사용 가능한 DateFormatter
     static let yyyyMMddKorean: DateFormatter = {
         let formatter = DateFormatter()
