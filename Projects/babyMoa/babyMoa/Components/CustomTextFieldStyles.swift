@@ -1,0 +1,41 @@
+//
+//  AddBabyTextFieldStyle.swift
+//  babyMoa
+//
+//  Created by Baba on 10/20/25.
+//
+
+import Foundation
+import SwiftUI
+
+struct AddBabyTextFieldStyle: TextFieldStyle {
+    
+    var bgColor: Color = .gray.opacity(0.5)
+    
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration
+            .font(.system(size: 14))
+            .padding()
+            .background(bgColor.opacity(0.5))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .keyboardType(.emailAddress)
+            .textInputAutocapitalization(.never)
+    }
+}
+
+
+struct  DefaultTextFielStyle: TextFieldStyle {
+    
+    var bgColor: Color = .blue //
+    
+    
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration
+            .font(.system(size: 14, weight: .medium))
+            .padding()
+            .background(bgColor)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .textInputAutocapitalization(.never)
+    }
+    
+}
