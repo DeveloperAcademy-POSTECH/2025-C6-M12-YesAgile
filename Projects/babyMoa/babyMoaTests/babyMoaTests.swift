@@ -30,11 +30,10 @@ struct babyMoaTests {
     }
 
     @Test func registerBaby() async {
-
         let result = await BabyMoaService.shared.postRegisterBaby(
-            alias: "두번째",
-            name: "두번째",
-            birthDate: "2025-01-10",
+            alias: "테스트아기",
+            name: "아아",
+            birthDate: "2025-01-01",
             gender: "M",
             avatarImageName: "dfdfddfdfsd",
             relationshipType: "FATHER"
@@ -45,6 +44,16 @@ struct babyMoaTests {
             print(success)
         case .failure(let error):
             print(error)
+        }
+    }
+    
+    @Test func getBaby() async {
+        let result = await BabyMoaService.shared.getBaby(babyId: 11)
+        switch result {
+        case .success(let success):
+            print(success)
+        case .failure(let failure):
+            print(failure)
         }
     }
 }
@@ -63,7 +72,6 @@ struct babyMoaTests {
     }
 }
 @Test func setTeethStatus() async {
-
     let result = await BabyMoaService.shared.postSetTeethStatus(
         babyId: 9,
         teethId: 0,  // 0~19, 윗니 10, 아랫니 10 왼쪽 -> 오른쪽

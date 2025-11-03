@@ -31,6 +31,7 @@ enum BabyMoaEndpoint: Endpoint {
     case getGrowthData(
         babyId: Int
     )
+
     case getBabyList
 
     case setWeight(
@@ -67,6 +68,9 @@ enum BabyMoaEndpoint: Endpoint {
         date: String,
         memo: String
     )
+    case getBaby(
+        babyId: Int
+    )
 }
 
 extension BabyMoaEndpoint {
@@ -101,6 +105,8 @@ extension BabyMoaEndpoint {
             return "/api/journey/add_journey"
         case .setBabyMilestone:
             return "/api/milestones/set_baby_milestone"
+        case .getBaby:
+            return "/api/baby/get_baby"
         }
     }
 
@@ -110,7 +116,8 @@ extension BabyMoaEndpoint {
             .setRelationshipWithBaby, .setTeethStatus, .setWeight, .setHeight,
             .authRefresh, .addJourney, .setBabyMilestone:
             return .post
-        case .getGrowthData, .getBabyList, .getWeights, .getHeights:
+
+        case .getGrowthData, .getBabyList, .getWeights, .getHeights, .getBaby:
             return .get
         }
     }
@@ -122,10 +129,11 @@ extension BabyMoaEndpoint {
                 "accept": "*/*",
                 "Content-Type": "application/json",
             ]
+
         case .registerBaby, .registerBabyByCode, .setRelationshipWithBaby,
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
             .setHeight, .getWeights, .getHeights, .addJourney,
-            .setBabyMilestone:
+            .setBabyMilestone, .getBaby:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -149,6 +157,10 @@ extension BabyMoaEndpoint {
         case .getWeights(let babyId):
             return [
                 "babyId" : String(babyId)
+            ]
+        case .getBaby(let babyId):
+            return [
+                "babyId": String(babyId)
             ]
         default:
             return nil
