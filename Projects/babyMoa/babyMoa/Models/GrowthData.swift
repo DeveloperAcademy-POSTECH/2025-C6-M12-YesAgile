@@ -13,7 +13,8 @@ import SwiftUI
 // MARK: - 성장 마일스톤
 
 /// 성장 마일스톤 항목
-struct GrowthMilestone: Identifiable, Codable {
+/// 사용자가 사진, 메모를 입력하고 저장하면 [imageURL, description, completedDate] 가 추가됨.
+struct GrowthMilestone: Identifiable, Codable, Hashable {
     let id: String
     let title: String              // 마일스톤 제목 (예: "화내기", "기기")
     let ageRange: String           // 월령 범위 (예: "0~2개월") 2개월 단위, 3~4개월
