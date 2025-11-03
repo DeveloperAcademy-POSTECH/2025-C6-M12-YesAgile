@@ -11,5 +11,5 @@ struct GetGrowthDataResModel: Decodable {
     var latestHeightDate: String?
     var latestWeight: Double?
     var latestWeighDate: String?
-    var toothStatus: [Bool]
+    var toothStatus: [TeethData]
 }

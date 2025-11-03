@@ -19,7 +19,7 @@ struct BabyMoaRootView: View {
             .navigationBarBackButtonHidden()
             .onAppear {
                 if viewModel.isUserAuthorized() {
-                    coordinator.push(path: .growth)
+                    coordinator.push(path: .mainTab)
                 } else {
                     coordinator.push(path: .startBabyMoa)
                 }
@@ -29,22 +29,31 @@ struct BabyMoaRootView: View {
                 case .startBabyMoa:
                     BabyMoaStartView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
-                        
                 case .login:
                     SignUpView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
-                case .growth:
+                case .mainTab:
                     MainTabView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
+                case .growth:
+                    GrowthView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
                 case .journey:
                     EmptyView()
                 case .privacyConsent:
                     PrivacyConsentView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
+                case .allMilestones(let allMilestones):
+                    EmptyView()
                 case .height:
                     EmptyView()
                 case .weight:
                     EmptyView()
+                case .teeth(let teethList):
+                    TeethView(
+                        coordinator: coordinator,
+                        teethList: teethList
+                    )
                 }
             }
         }

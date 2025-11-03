@@ -148,7 +148,6 @@ final class OldGrowthViewModel {
     var teethRecords: [TeethRecord] = [] // ok
     
     // MARK: - Computed Properties
-    
     var currentMilestones: [GrowthMilestone] {
         guard selectedMonth < allMilestones.count else { return [] }
         return allMilestones[selectedMonth]

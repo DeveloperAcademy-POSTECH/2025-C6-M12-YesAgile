@@ -9,7 +9,7 @@ import UIKit
 
 // TODO: 서버에서 babyId에 대한 아기의 데이터만 내려주는 api 추가 필요
 struct BabySummary {
-    var babyId: String
+    var babyId: Int
     var babyName: String
-    var babyProfileImage: UIImage
+    var babyProfileImage: UIImage?
 }
