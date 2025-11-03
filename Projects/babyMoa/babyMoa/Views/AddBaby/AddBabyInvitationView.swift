@@ -28,7 +28,7 @@ struct AddBabyInvitationView: View {
             
             // --- 텍스트필드 ---
             TextField("addBabyInvitation.textField.placeholder", text: $invitationCode)
-                .textFieldStyle(AddBabyTextFieldStyle(bgColor: .gray.opacity(0.4)))
+                .textFieldStyle(.basicForm)
                 .multilineTextAlignment(.center)
             
             Button(action: {
