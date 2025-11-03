@@ -10,6 +10,7 @@ import SwiftUI
 class BabyMoaCoordinator: ObservableObject {
     @Published var paths: [CoordinatorPath] = []
     
+    @MainActor
     public func push(path: CoordinatorPath) {
         paths.append(path)
     }
@@ -24,5 +25,7 @@ enum CoordinatorPath {
     case privacyConsent
     case login
     case growth
+    case height
+    case weight
     case journey
 }

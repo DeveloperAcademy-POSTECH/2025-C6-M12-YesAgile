@@ -23,7 +23,11 @@ final class SignUpViewModel {
                 term: Term.privacyConsent,
                 isChecked: false,
                 moreAction: {
-                    coordinator.push(path: .privacyConsent)
+                    Task {
+                        await MainActor.run {
+                            coordinator.push(path: .privacyConsent)
+                        }
+                    }
                 }
             )
         ]
@@ -57,7 +61,9 @@ final class SignUpViewModel {
                         }
                         UserToken.accessToken = resModel.accessToken
                         UserToken.refreshToken = resModel.refreshToken
-                        coordinator.push(path: .growth)
+                        await MainActor.run {
+                            coordinator.push(path: .growth)
+                        }
                     case .failure(let error):
                         print(error)
                     }

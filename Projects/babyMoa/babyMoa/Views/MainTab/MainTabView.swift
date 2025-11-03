@@ -2,36 +2,29 @@
 //  MainTabView.swift
 //  BabyMoaMap
 //
-/// 메인 탭바 - 성장/추억/아기 화면 전환 -> 추억/추천/아기 전환
+//
 //
 
 import SwiftUI
 
-/// https://huisoo.tistory.com/30 탭바참고
-/// 앱의 메인 탭바 네비게이션
-/// - 성장: 아기 성장 기록 -> 추억 탭으로
-/// - 추천: 바바가 주시면 붙이기
-/// - 아기: 아기 설정 및 정보
 struct MainTabView: View {
+    @State var viewModel: MainTabViewModel
     @State private var selectedTab = 0  // 기본값: 추억 탭
+    
+    init(coordinator: BabyMoaCoordinator) {
+        viewModel = MainTabViewModel(coordinator: coordinator)
+    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
             // 성장 탭
-            GrowthView()
+            GrowthView(coordinator: viewModel.coordinator)
                 .tabItem {
                     Image(systemName: "pencil.and.ruler.fill")
                     Text("추억")
                 }
                 .tag(0)
 
-            // 바바가 주시면 붙이는 추천 탭 이미지도 수정하기
-            //            MemoryView()
-            //                .tabItem {
-            //                    Image(systemName: "photo.on.rectangle.angled")
-            //                    Text("추천")
-            //                }
-            //                .tag(1)
             RecommendFoodLibraryView(
                 foodLibrary: FoodLibrary(), // FoodLibrary()가 음식 데이터를 로드한다고 가정
                 selectedItem: .constant(nil) // .constant를 사용해 임시 바인딩 제공
@@ -41,6 +34,7 @@ struct MainTabView: View {
                 Text("Food Recommend")
             }
             .tag(1)
+            
             // 아기 탭
             BabyView()
                 .tabItem {
@@ -110,5 +104,6 @@ struct BabySelectionHeader: View {
 // MARK: - Preview
 
 #Preview {
-    MainTabView()
+    @Previewable @StateObject var coordinator = BabyMoaCoordinator()
+    MainTabView(coordinator: coordinator)
 }
