@@ -20,25 +20,15 @@ struct MainTabView: View {
             // 성장 탭
             GrowthView(coordinator: viewModel.coordinator)
                 .tabItem {
-                    Image(systemName: "pencil.and.ruler.fill")
-                    Text("추억")
+                    Image(systemName: "book.closed.fill")
+                    Text("성장")
                 }
                 .tag(0)
-
-            RecommendFoodLibraryView(
-                foodLibrary: FoodLibrary(), // FoodLibrary()가 음식 데이터를 로드한다고 가정
-                selectedItem: .constant(nil) // .constant를 사용해 임시 바인딩 제공
-            )
-            .tabItem {
-                Image(systemName: "plus")
-                Text("Food Recommend")
-            }
-            .tag(1)
             
             // 아기 탭
             BabyView()
                 .tabItem {
-                    Image(systemName: "face.smiling")
+                    Image(systemName: "gift.fill")
                     Text("아기")
                 }
                 .tag(2)

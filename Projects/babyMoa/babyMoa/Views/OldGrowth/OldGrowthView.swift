@@ -120,37 +120,40 @@ struct OldGrowthView: View {
                 image,
                 memo,
                 date in
-                // ViewModel을 통해 저장 (이미지 업로드 + 메타데이터 업데이트)
-                Task {
-                    await viewModel.saveMilestone(
-                        updated,
-                        image: image,
-                        memo: memo,
-                        date: date
-                    )
-                }
+//                // ViewModel을 통해 저장 (이미지 업로드 + 메타데이터 업데이트)
+//                Task {
+//                    await viewModel.saveMilestone(
+//                        updated,
+//                        image: image,
+//                        memo: memo,
+//                        date: date
+//                    )
+//                }
+                // 서버에 저장
+                guard let babyId = SelectedBaby.babyId else { return }
+//                BabyMoaService.shared.postSetBabyMilestone(babyId: babyId, milestoneIdx: <#T##Int#>, milestoneImage: <#T##String#>, date: <#T##String#>, memo: <#T##String#>)
             }
         }
-        // 치아 기록 NavigationLink
-        NavigationLink(isActive: $showTeethDetail) {
-            TeethView(
-                teethRecords: $viewModel.teethRecords,
-                babyId: viewModel.selectedBabyId,
-                onSaveRecords: { records in
-                    viewModel.teethRecords = records
-                    viewModel.saveTeethRecords()
-                }
-            )
-        } label: {
-            EmptyView()
-        }
-        .hidden()
-        .onChange(of: showTeethDetail) { _, isPresented in
-            if !isPresented {
-                print("🔄 [GrowthView] 치아 뷰 닫힘 → 로컬 저장 트리거")
-                viewModel.loadAllData()
-            }
-        }
+//        // 치아 기록 NavigationLink
+//        NavigationLink(isActive: $showTeethDetail) {
+//            TeethView(
+//                teethRecords: $viewModel.teethRecords,
+//                babyId: viewModel.selectedBabyId,
+//                onSaveRecords: { records in
+//                    viewModel.teethRecords = records
+//                    viewModel.saveTeethRecords()
+//                }
+//            )
+//        } label: {
+//            EmptyView()
+//        }
+//        .hidden()
+//        .onChange(of: showTeethDetail) { _, isPresented in
+//            if !isPresented {
+//                print("🔄 [GrowthView] 치아 뷰 닫힘 → 로컬 저장 트리거")
+//                viewModel.loadAllData()
+//            }
+//        }
     }
 
     // MARK: - Subviews
