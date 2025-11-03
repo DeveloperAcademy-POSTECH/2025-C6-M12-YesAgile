@@ -71,6 +71,14 @@ enum BabyMoaEndpoint: Endpoint {
     case getBaby(
         babyId: Int
     )
+    case getJourniesAtMonth(
+        babyId: Int,
+        year : Int,
+        month : Int
+    )
+    case getBabyMilestones(
+        babyId : Int
+    )
 }
 
 extension BabyMoaEndpoint {
@@ -107,6 +115,10 @@ extension BabyMoaEndpoint {
             return "/api/milestones/set_baby_milestone"
         case .getBaby:
             return "/api/baby/get_baby"
+        case .getJourniesAtMonth:
+            return "/api/journey/get_journies_at_month"
+        case .getBabyMilestones:
+            return "/api/milestones/get_baby_milestones"
         }
     }
 
@@ -117,7 +129,7 @@ extension BabyMoaEndpoint {
             .authRefresh, .addJourney, .setBabyMilestone:
             return .post
 
-        case .getGrowthData, .getBabyList, .getWeights, .getHeights, .getBaby:
+        case .getGrowthData, .getBabyList, .getWeights, .getHeights, .getBaby, .getJourniesAtMonth, .getBabyMilestones:
             return .get
         }
     }
@@ -133,7 +145,8 @@ extension BabyMoaEndpoint {
         case .registerBaby, .registerBabyByCode, .setRelationshipWithBaby,
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
             .setHeight, .getWeights, .getHeights, .addJourney,
-            .setBabyMilestone, .getBaby:
+            .setBabyMilestone, .getBaby, .getJourniesAtMonth,
+                .getBabyMilestones:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -161,6 +174,18 @@ extension BabyMoaEndpoint {
         case .getBaby(let babyId):
             return [
                 "babyId": String(babyId)
+            ]
+        case .getJourniesAtMonth(let babyId,
+                                 let year,
+                                 let month):
+            return [
+                "babyId" : String(babyId),
+                "year" : String(year),
+                "month" : String(month)
+            ]
+        case .getBabyMilestones(let babyId):
+            return [
+                "babyId" : String(babyId)
             ]
         default:
             return nil

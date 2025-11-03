@@ -46,9 +46,9 @@ struct babyMoaTests {
             print(error)
         }
     }
-    
+
     @Test func getBaby() async {
-        let result = await BabyMoaService.shared.getBaby(babyId: 11)
+        let result = await BabyMoaService.shared.getBaby(babyId: 14)
         switch result {
         case .success(let success):
             print(success)
@@ -73,9 +73,9 @@ struct babyMoaTests {
 }
 @Test func setTeethStatus() async {
     let result = await BabyMoaService.shared.postSetTeethStatus(
-        babyId: 9,
+        babyId: 13,
         teethId: 0,  // 0~19, 윗니 10, 아랫니 10 왼쪽 -> 오른쪽
-        date: "2025-11-01",
+        date: "2025-01-01",
         deletion: false  // false 이여야 난거임 true 는 삭제
     )
     switch result {
@@ -221,6 +221,33 @@ struct babyMoaTests {
         memo: "Hello World!"
     )
 
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+@Test func getJourniesAtMonth() async {
+    let result = await BabyMoaService.shared.getGetJourniesAtMonth(
+
+        babyId: 14,
+        year: 2025,
+        month: 11
+    )
+
+    switch result {
+    case .success(let success):
+        print(success)
+    case .failure(let error):
+        print(error)
+    }
+}
+@Test func getBabyMilestones() async {
+    let result = await BabyMoaService.shared.getGetBabyMilestones(
+        babyId: 14
+    )
+    
     switch result {
     case .success(let success):
         print(success)
