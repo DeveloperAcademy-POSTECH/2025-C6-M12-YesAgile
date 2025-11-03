@@ -11,7 +11,7 @@ struct GetBabyResModel: Decodable {
     var id: Int
     var alias: String
     var name: String
-    var birthDate: Date
+    var birthDate: String
     var gender: String
     var avatarImageName: String
     var relationshipType: String
