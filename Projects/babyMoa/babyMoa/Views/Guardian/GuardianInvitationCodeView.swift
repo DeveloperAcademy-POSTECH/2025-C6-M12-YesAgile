@@ -32,7 +32,7 @@ struct GuardianInvitationCodeView: View {
                 // 아이와의 관계를 컴포넌트화 사용한다.
                 // 모델에서 데이터를 받아서 전달하는 형태가 되어야 한다.
                 TextField("아이와의 관계", text: $relationShip)
-                    .textFieldStyle(AddBabyTextFieldStyle(bgColor: .gray))
+                    .textFieldStyle(.basicForm)
                     .padding(.bottom, 10)
                 
                 Button(action: {
