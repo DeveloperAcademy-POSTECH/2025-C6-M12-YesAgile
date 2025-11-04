@@ -90,11 +90,74 @@ protocol BabyMoaServicable: HTTPClient {
     ) async -> Result<
         BaseResponse<EmptyData>, RequestError
     >
-    
-    func getBaby(babyId: Int) async -> Result<BaseResponse<GetBabyResModel>, RequestError>
+
+    func getBaby(babyId: Int) async -> Result<
+        BaseResponse<GetBabyResModel>, RequestError
+    >
+    func getGetJourniesAtMonth(
+        babyId: Int,
+        year: Int,
+        month: Int
+    ) async -> Result<BaseResponse<[GetJourniesAtMonthResModel]>, RequestError>
+    func getGetBabyMilestones(
+        babyId: Int
+    ) async -> Result<BaseResponse<[GetBabyMilestonesResModel]>, RequestError>
 }
 
 class BabyMoaService: BabyMoaServicable {
+    func getGetBabyMilestones(babyId: Int) async -> Result<
+        BaseResponse<[GetBabyMilestonesResModel]>, RequestError
+    > {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.getBabyMilestones(
+                babyId: babyId
+            ),
+            responseModel: BaseResponse<[GetBabyMilestonesResModel]>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                return await self.getGetBabyMilestones(
+                    babyId: babyId
+                )
+            default:
+                return result
+            }
+        }
+    }
+    func getGetJourniesAtMonth(
+        babyId: Int,
+        year: Int,
+        month: Int
+    ) async -> Result<BaseResponse<[GetJourniesAtMonthResModel]>, RequestError>
+    {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.getJourniesAtMonth(
+                babyId: babyId,
+                year: year,
+                month: month
+            ),
+            responseModel: BaseResponse<[GetJourniesAtMonthResModel]>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                return await self.getGetJourniesAtMonth(
+                    babyId: babyId,
+                    year: year,
+                    month: month
+                )
+            default:
+                return result
+            }
+        }
+    }
     func postSetBabyMilestone(
         babyId: Int,
         milestoneIdx: Int,
@@ -315,11 +378,18 @@ class BabyMoaService: BabyMoaServicable {
         }
     }
 
-    func getBaby(babyId: Int) async -> Result<BaseResponse<GetBabyResModel>, RequestError> {
-        return await request(endpoint: BabyMoaEndpoint.getBaby(babyId: babyId), responseModel: BaseResponse<GetBabyResModel>.self)
+    func getBaby(babyId: Int) async -> Result<
+        BaseResponse<GetBabyResModel>, RequestError
+    > {
+        return await request(
+            endpoint: BabyMoaEndpoint.getBaby(babyId: babyId),
+            responseModel: BaseResponse<GetBabyResModel>.self
+        )
     }
 
-    func getGetGrowthData(babyId: Int) async -> Result<BaseResponse<GetGrowthDataResModel>, RequestError> {
+    func getGetGrowthData(babyId: Int) async -> Result<
+        BaseResponse<GetGrowthDataResModel>, RequestError
+    > {
         let result = await request(
             endpoint: BabyMoaEndpoint.getGrowthData(babyId: babyId),
             responseModel: BaseResponse<GetGrowthDataResModel>.self

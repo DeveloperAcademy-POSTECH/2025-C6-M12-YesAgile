@@ -65,24 +65,16 @@
 		4786282A2EB64CD7004B9568 /* SetWeightReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628282EB64CD7004B9568 /* SetWeightReqModel.swift */; };
 		4786282F2EB64E3E004B9568 /* SetHeightReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4786282E2EB64E3E004B9568 /* SetHeightReqModel.swift */; };
 		478628302EB64E3E004B9568 /* SetHeightReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4786282E2EB64E3E004B9568 /* SetHeightReqModel.swift */; };
-		478628322EB64F41004B9568 /* GetWeightsReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628312EB64F41004B9568 /* GetWeightsReqModel.swift */; };
-		478628332EB64F41004B9568 /* GetWeightsReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628312EB64F41004B9568 /* GetWeightsReqModel.swift */; };
 		478628352EB65083004B9568 /* GetWeightsResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628342EB65083004B9568 /* GetWeightsResModel.swift */; };
 		478628362EB65083004B9568 /* GetWeightsResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628342EB65083004B9568 /* GetWeightsResModel.swift */; };
-		478628382EB6527A004B9568 /* GetHeightsReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628372EB6527A004B9568 /* GetHeightsReqModel.swift */; };
-		478628392EB6527A004B9568 /* GetHeightsReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628372EB6527A004B9568 /* GetHeightsReqModel.swift */; };
 		4786283B2EB652C9004B9568 /* GetHeightsResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4786283A2EB652C9004B9568 /* GetHeightsResModel.swift */; };
 		4786283C2EB652C9004B9568 /* GetHeightsResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4786283A2EB652C9004B9568 /* GetHeightsResModel.swift */; };
 		4786283F2EB6537A004B9568 /* AddJourneyReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4786283E2EB6537A004B9568 /* AddJourneyReqModel.swift */; };
 		478628402EB6537A004B9568 /* AddJourneyReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4786283E2EB6537A004B9568 /* AddJourneyReqModel.swift */; };
 		478628432EB65475004B9568 /* GetJourniesAtMonthResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628422EB65473004B9568 /* GetJourniesAtMonthResModel.swift */; };
 		478628442EB65475004B9568 /* GetJourniesAtMonthResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628422EB65473004B9568 /* GetJourniesAtMonthResModel.swift */; };
-		478628462EB6560B004B9568 /* GetJourniesAtMonthReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628452EB6560B004B9568 /* GetJourniesAtMonthReqModel.swift */; };
-		478628472EB6560B004B9568 /* GetJourniesAtMonthReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628452EB6560B004B9568 /* GetJourniesAtMonthReqModel.swift */; };
 		4786284B2EB657FA004B9568 /* SetBabyMilestoneReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4786284A2EB657E9004B9568 /* SetBabyMilestoneReqModel.swift */; };
 		4786284C2EB657FA004B9568 /* SetBabyMilestoneReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4786284A2EB657E9004B9568 /* SetBabyMilestoneReqModel.swift */; };
-		478628512EB658CC004B9568 /* GetBabyMilestonesReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628502EB658BA004B9568 /* GetBabyMilestonesReqModel.swift */; };
-		478628522EB658CC004B9568 /* GetBabyMilestonesReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628502EB658BA004B9568 /* GetBabyMilestonesReqModel.swift */; };
 		478628542EB6590A004B9568 /* GetBabyMilestonesResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628532EB658F6004B9568 /* GetBabyMilestonesResModel.swift */; };
 		478628552EB6590A004B9568 /* GetBabyMilestonesResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628532EB658F6004B9568 /* GetBabyMilestonesResModel.swift */; };
 		478628572EB661DC004B9568 /* GrowthAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478628562EB661DC004B9568 /* GrowthAPIClient.swift */; };
@@ -207,15 +199,11 @@
 		4786281F2EB64524004B9568 /* GetBabyListResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetBabyListResModel.swift; sourceTree = "<group>"; };
 		478628282EB64CD7004B9568 /* SetWeightReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetWeightReqModel.swift; sourceTree = "<group>"; };
 		4786282E2EB64E3E004B9568 /* SetHeightReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetHeightReqModel.swift; sourceTree = "<group>"; };
-		478628312EB64F41004B9568 /* GetWeightsReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetWeightsReqModel.swift; sourceTree = "<group>"; };
 		478628342EB65083004B9568 /* GetWeightsResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetWeightsResModel.swift; sourceTree = "<group>"; };
-		478628372EB6527A004B9568 /* GetHeightsReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetHeightsReqModel.swift; sourceTree = "<group>"; };
 		4786283A2EB652C9004B9568 /* GetHeightsResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetHeightsResModel.swift; sourceTree = "<group>"; };
 		4786283E2EB6537A004B9568 /* AddJourneyReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddJourneyReqModel.swift; sourceTree = "<group>"; };
 		478628422EB65473004B9568 /* GetJourniesAtMonthResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetJourniesAtMonthResModel.swift; sourceTree = "<group>"; };
-		478628452EB6560B004B9568 /* GetJourniesAtMonthReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetJourniesAtMonthReqModel.swift; sourceTree = "<group>"; };
 		4786284A2EB657E9004B9568 /* SetBabyMilestoneReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetBabyMilestoneReqModel.swift; sourceTree = "<group>"; };
-		478628502EB658BA004B9568 /* GetBabyMilestonesReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetBabyMilestonesReqModel.swift; sourceTree = "<group>"; };
 		478628532EB658F6004B9568 /* GetBabyMilestonesResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetBabyMilestonesResModel.swift; sourceTree = "<group>"; };
 		478628562EB661DC004B9568 /* GrowthAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthAPIClient.swift; sourceTree = "<group>"; };
 		478628582EB661F9004B9568 /* GrowthAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthAPIEndpoint.swift; sourceTree = "<group>"; };
@@ -604,8 +592,6 @@
 			children = (
 				478628282EB64CD7004B9568 /* SetWeightReqModel.swift */,
 				4786282E2EB64E3E004B9568 /* SetHeightReqModel.swift */,
-				478628312EB64F41004B9568 /* GetWeightsReqModel.swift */,
-				478628372EB6527A004B9568 /* GetHeightsReqModel.swift */,
 			);
 			path = GrowthStatusReq;
 			sourceTree = "<group>";
@@ -623,7 +609,6 @@
 			isa = PBXGroup;
 			children = (
 				4786283E2EB6537A004B9568 /* AddJourneyReqModel.swift */,
-				478628452EB6560B004B9568 /* GetJourniesAtMonthReqModel.swift */,
 			);
 			path = JourneyReq;
 			sourceTree = "<group>";
@@ -639,7 +624,6 @@
 		478628482EB657AF004B9568 /* MilestonesReq */ = {
 			isa = PBXGroup;
 			children = (
-				478628502EB658BA004B9568 /* GetBabyMilestonesReqModel.swift */,
 				4786284A2EB657E9004B9568 /* SetBabyMilestoneReqModel.swift */,
 			);
 			path = MilestonesReq;
@@ -869,7 +853,6 @@
 				478628442EB65475004B9568 /* GetJourniesAtMonthResModel.swift in Sources */,
 				47E7D18E2EAF8A73005A9CF0 /* GrowthLabeledField.swift in Sources */,
 				9FD7CE062EB50FD300508130 /* UserToken.swift in Sources */,
-				478628522EB658CC004B9568 /* GetBabyMilestonesReqModel.swift in Sources */,
 				9FD7CE082EB50FD300508130 /* UserDefaultWrapper.swift in Sources */,
 				47E7D1902EAF8A73005A9CF0 /* GrowthEmptyStateView.swift in Sources */,
 				47E7D1912EAF8A73005A9CF0 /* GrowthBottomButton.swift in Sources */,
@@ -912,7 +895,6 @@
 				478628182EB63780004B9568 /* SetTeethStatusReqModel.swift in Sources */,
 				058857152EA8768A00EAF72B /* GuardianCodeView.swift in Sources */,
 				05CD80292EA61F57008C0940 /* AddBabyNewYesView.swift in Sources */,
-				478628382EB6527A004B9568 /* GetHeightsReqModel.swift in Sources */,
 				05CD80132EA5F81F008C0940 /* babyMoaApp.swift in Sources */,
 				0588570E2EA8432F00EAF72B /* ProfileView.swift in Sources */,
 				4785ED4B2EAE62EB00DEC298 /* GrowthBabyHeader.swift in Sources */,
@@ -920,7 +902,6 @@
 				478628352EB65083004B9568 /* GetWeightsResModel.swift in Sources */,
 				4786281E2EB638E0004B9568 /* GetGrowthDataResModel.swift in Sources */,
 				D474D1F22EB7201D00F02B26 /* JWTUtil.swift in Sources */,
-				478628472EB6560B004B9568 /* GetJourniesAtMonthReqModel.swift in Sources */,
 				473F163F2EAF64150028BA97 /* AddHeightView.swift in Sources */,
 				4785ED4D2EAE62EB00DEC298 /* GrowthMetricButton.swift in Sources */,
 				9FD7CE152EB5101E00508130 /* AppleLoginResModel.swift in Sources */,
@@ -934,7 +915,6 @@
 				4785ED532EAE62EB00DEC298 /* AllMilestonesView.swift in Sources */,
 				4785ED542EAE62EB00DEC298 /* OldGrowthView.swift in Sources */,
 				4785ED552EAE62EB00DEC298 /* TeethCard.swift in Sources */,
-				478628332EB64F41004B9568 /* GetWeightsReqModel.swift in Sources */,
 				05CD801D2EA611C0008C0940 /* SessionManager.swift in Sources */,
 				475CF66D2EAFC86A005AA61D /* ToothButton.swift in Sources */,
 				47EB09112EB2F63600134E8D /* FoodLibrary.swift in Sources */,
@@ -975,17 +955,14 @@
 				9FD7CDF12EB50F8200508130 /* BabyMoaEndpoint.swift in Sources */,
 				9FD7CDFD2EB50FA300508130 /* HTTPClient.swift in Sources */,
 				D4D413922EB755080093653E /* SelectedBaby.swift in Sources */,
-				478628322EB64F41004B9568 /* GetWeightsReqModel.swift in Sources */,
 				478629082EB7201A004B9568 /* AuthRefreshReqModel.swift in Sources */,
 				D4D413982EB756430093653E /* GetBabyResModel.swift in Sources */,
-				478628462EB6560B004B9568 /* GetJourniesAtMonthReqModel.swift in Sources */,
 				4786290A2EB7206D004B9568 /* AuthRefreshResModel.swift in Sources */,
 				478628172EB63780004B9568 /* SetTeethStatusReqModel.swift in Sources */,
 				9FD7CDFB2EB50F9C00508130 /* EndPoint.swift in Sources */,
 				4786283B2EB652C9004B9568 /* GetHeightsResModel.swift in Sources */,
 				4786281A2EB638A6004B9568 /* GetGrowthDataReqModel.swift in Sources */,
 				4786284B2EB657FA004B9568 /* SetBabyMilestoneReqModel.swift in Sources */,
-				478628512EB658CC004B9568 /* GetBabyMilestonesReqModel.swift in Sources */,
 				478628362EB65083004B9568 /* GetWeightsResModel.swift in Sources */,
 				9FD7CE0C2EB5101500508130 /* RegisterBabyReqModel.swift in Sources */,
 				478627DD2EB5D726004B9568 /* SetRelationshipWithBabyReqModel.swift in Sources */,
@@ -997,7 +974,6 @@
 				478628552EB6590A004B9568 /* GetBabyMilestonesResModel.swift in Sources */,
 				9FD7CDF52EB50F9100508130 /* BabyMoaService.swift in Sources */,
 				9FD7CDF72EB50F9600508130 /* BaseResponse.swift in Sources */,
-				478628392EB6527A004B9568 /* GetHeightsReqModel.swift in Sources */,
 				478627D12EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift in Sources */,
 				9FD7CE032EB50FD300508130 /* UserToken.swift in Sources */,
 				4786282A2EB64CD7004B9568 /* SetWeightReqModel.swift in Sources */,
