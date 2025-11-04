@@ -10,6 +10,7 @@ import SwiftUI
 struct BabyMoaStartView: View {
     
     @State var viewModel: BabyMoaStartViewModel
+    @State private var isShowSheet: Bool = false // Assuming this is the user's state variable
     
     init(coordinator: BabyMoaCoordinator) {
         viewModel = BabyMoaStartViewModel(coordinator: coordinator)
@@ -17,34 +18,30 @@ struct BabyMoaStartView: View {
     
     var body: some View {
         VStack {
-            VStack {
-                Text("Baby Moa")
-                    .font(.system(size: 16, weight: .bold))
-                Spacer()
-                Text("아이의 성장발달 순간과 일상을 사진과 기록으로 담아, 성장과 추억을 함께 모아보세요")
-                    .lineLimit(nil)
-                    .multilineTextAlignment(.center)
-                Spacer()
-                Button(action: {
-                    viewModel.coordinator.push(path: .login)
-                }) {
-                    RoundedRectangle(cornerRadius: 12)
-                        .frame(height: 50)
-                        .padding(.horizontal, 20)
-                        .foregroundStyle(.black)
-                        .overlay(
-                            Text("BabyMoa 시작하기")
-                                .font(.system(size: 18, weight: .medium))
-                                .foregroundStyle(.white)
-                        )
-                }
-                .buttonStyle(.plain)
-            }
-            .frame(
-                width: UIScreen.main.bounds.width,
-                height: UIScreen.main.bounds.height / 2
-            )
             Spacer()
+            Image("authImg")
+                .resizable()
+                .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.width - 30)
+                .aspectRatio(contentMode: .fit)
+            
+            
+            Text("아기의 성장발달마다 기록하고 추억해요")
+                .font(.system(size: 30, weight: .bold))
+                .padding(.bottom, 44)
+                .lineLimit(nil)
+                .multilineTextAlignment(.center)
+                
+            
+            Button("BabyMoa 시작하기", action: {
+                isShowSheet = true // Show the sheet
+                // viewModel.coordinator.push(path: .login) 
+            })
+            .buttonStyle(.defaultButton)
+            
+        }
+        .backgroundPadding(.horizontal)
+        .sheet(isPresented: $isShowSheet) {
+            SignUpView(coordinator: viewModel.coordinator)
         }
     }
 }

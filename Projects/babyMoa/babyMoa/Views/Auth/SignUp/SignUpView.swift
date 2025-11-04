@@ -17,10 +17,10 @@ struct SignUpView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            TermsAgreementHeaderView(cancelAction: {
-                viewModel.coordinator.pop()
-            })
-            .padding(.bottom, 60)
+            //            TermsAgreementHeaderView(cancelAction: {
+            //                viewModel.coordinator.pop()
+            //            })
+            //            .padding(.bottom, 60)
             TermsAgreementView(termCheckList: $viewModel.termCheckList)
                 .padding(.bottom, 20)
             if viewModel.isAllChecked() {
@@ -39,7 +39,17 @@ struct SignUpView: View {
             }
             Spacer()
         }
+        .presentationDetents([.height(370)])
+        .presentationCornerRadius(25)
+        .presentationDragIndicator(.visible)
     }
+    
 }
 
 
+#Preview {
+    // SignUpView는 'coordinator'를 필요로 합니다.
+    SignUpView(
+        coordinator: BabyMoaCoordinator() // 매개변수 없이 초기화
+    )
+}
