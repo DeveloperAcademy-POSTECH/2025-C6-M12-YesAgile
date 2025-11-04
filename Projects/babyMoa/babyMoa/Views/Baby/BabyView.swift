@@ -105,7 +105,7 @@ struct BabyView: View {
                 } else {
                     // 출생 등록
                     NavigationStack {
-                        AddBabyNewYes(baby: baby)
+//                        AddBabyNewYes(baby: baby)
                     }
                 }
             }

@@ -27,15 +27,21 @@ struct CustomNavigationBar<Leading, Trailing>: View where Leading: View, Trailin
             HStack {
                 Spacer()
                 Text(title)
-                    .font(.headline)
+                    .font(.system(size: 16, weight: .bold, design: .default))
                 Spacer()
             }
 
             // Leading and Trailing buttons
             HStack {
                 leading
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(.brandMain)
                 Spacer()
                 trailing
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(.brandMain)
+
+
             }
         }
         .frame(height: 44)
@@ -69,12 +75,10 @@ extension CustomNavigationBar where Leading == EmptyView {
         CustomNavigationBar(title: "아기 추가", leading: {
             Button(action: { }) {
                 Image(systemName: "chevron.left")
-                    .foregroundStyle(.black)
             }
         }, trailing: {
             Button(action: { }) {
                 Text("완료")
-                    .foregroundStyle(.black)
             }
         })
         
@@ -82,7 +86,6 @@ extension CustomNavigationBar where Leading == EmptyView {
         CustomNavigationBar(title: "설정", leading: {
             Button(action: { }) {
                 Image(systemName: "chevron.left")
-                    .foregroundStyle(.black)
             }
         })
         
@@ -90,7 +93,6 @@ extension CustomNavigationBar where Leading == EmptyView {
         CustomNavigationBar(title: "알림", trailing: {
             Button(action: { }) {
                 Image(systemName: "gear")
-                    .foregroundStyle(.black)
             }
         })
         

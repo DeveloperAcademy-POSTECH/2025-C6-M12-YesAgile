@@ -43,8 +43,8 @@
 "addBabyInvitation.navigationTitle" = "초대 코드";
 
 "addBabyInvitation.title" = "초대 코드 입력";
-"addBabyInvitation.description" = "다른 양육자에게 받은 6자리 초대 코드를 입력해 주세요.";
-"addBabyInvitation.textField.placeholder" = "초대코드 6자리";
+"addBabyInvitation.description" = "다른 양육자에게 받은 15자리 초대 코드를 입력해 주세요.";
+"addBabyInvitation.textField.placeholder" = "초대코드 15자리";
 
 
 /* --- Login And Join View String (회원가입 및 로그인) 화면 ----- */

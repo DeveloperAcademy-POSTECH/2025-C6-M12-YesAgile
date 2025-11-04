@@ -19,10 +19,6 @@
 		05CD80142EA5F81F008C0940 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD80102EA5F81F008C0940 /* ContentView.swift */; };
 		05CD801B2EA611B1008C0940 /* SessionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD801A2EA611B1008C0940 /* SessionState.swift */; };
 		05CD801D2EA611C0008C0940 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD801C2EA611C0008C0940 /* SessionManager.swift */; };
-		05CD80252EA61F1E008C0940 /* AddBabyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD80242EA61F1E008C0940 /* AddBabyView.swift */; };
-		05CD80272EA61F2E008C0940 /* AddBabyNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD80262EA61F2E008C0940 /* AddBabyNewView.swift */; };
-		05CD80292EA61F57008C0940 /* AddBabyNewYesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD80282EA61F57008C0940 /* AddBabyNewYesView.swift */; };
-		05CD802B2EA61FEF008C0940 /* AddBabyInvitationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CD802A2EA61FEF008C0940 /* AddBabyInvitationView.swift */; };
 		05DB6C312EAAEEF60043E76E /* KeyChainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DB6C302EAAEEF60043E76E /* KeyChainHelper.swift */; };
 		1769449C008645FE9E4FCB80 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4805623329EB41E788220F54 /* APIService.swift */; };
 		3BCEDCD2C0964E7BB776504A /* MemoryData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C1A27B11546BCA817A1B2 /* MemoryData.swift */; };
@@ -141,10 +137,6 @@
 		05CD80102EA5F81F008C0940 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		05CD801A2EA611B1008C0940 /* SessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionState.swift; sourceTree = "<group>"; };
 		05CD801C2EA611C0008C0940 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
-		05CD80242EA61F1E008C0940 /* AddBabyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyView.swift; sourceTree = "<group>"; };
-		05CD80262EA61F2E008C0940 /* AddBabyNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyNewView.swift; sourceTree = "<group>"; };
-		05CD80282EA61F57008C0940 /* AddBabyNewYesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyNewYesView.swift; sourceTree = "<group>"; };
-		05CD802A2EA61FEF008C0940 /* AddBabyInvitationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyInvitationView.swift; sourceTree = "<group>"; };
 		05DB6C302EAAEEF60043E76E /* KeyChainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChainHelper.swift; sourceTree = "<group>"; };
 		076226F153C5419AA5FEEB60 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		0BB86369F97244FAB24F77AE /* BabyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabyModel.swift; sourceTree = "<group>"; };
@@ -232,6 +224,11 @@
 		0553409E2EB8426B002AEDCE /* Components */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Components;
+			sourceTree = "<group>";
+		};
+		05DC83FB2EB9A58900B23A4D /* AddBaby */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AddBaby;
 			sourceTree = "<group>";
 		};
 		47E2F9182EB0D38700EAC721 /* Baby */ = {
@@ -449,18 +446,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		05CD80232EA61F03008C0940 /* AddBaby */ = {
-			isa = PBXGroup;
-			children = (
-				05CD80242EA61F1E008C0940 /* AddBabyView.swift */,
-				05CD80262EA61F2E008C0940 /* AddBabyNewView.swift */,
-				05CD80282EA61F57008C0940 /* AddBabyNewYesView.swift */,
-				47DFD0192EACCA4100E69E33 /* AddBabyNewNoView.swift */,
-				05CD802A2EA61FEF008C0940 /* AddBabyInvitationView.swift */,
-			);
-			path = AddBaby;
-			sourceTree = "<group>";
-		};
 		05DB6C2F2EAAEEDE0043E76E /* Helper */ = {
 			isa = PBXGroup;
 			children = (
@@ -670,6 +655,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				0553409E2EB8426B002AEDCE /* Components */,
+				05DC83FB2EB9A58900B23A4D /* AddBaby */,
 				47E2F9182EB0D38700EAC721 /* Baby */,
 				47EB090C2EB2F5EF00134E8D /* DTOs */,
 				47EB09142EB2F64200134E8D /* Food */,
@@ -811,14 +797,12 @@
 				D474CF532EB62EBB00F02B26 /* BabyMoaCoordinator.swift in Sources */,
 				05CD801B2EA611B1008C0940 /* SessionState.swift in Sources */,
 				058857112EA8494700EAF72B /* GuardianInvitationCodeView.swift in Sources */,
-				05CD802B2EA61FEF008C0940 /* AddBabyInvitationView.swift in Sources */,
 				478628402EB6537A004B9568 /* AddJourneyReqModel.swift in Sources */,
 				478628592EB661F9004B9568 /* GrowthAPIEndpoint.swift in Sources */,
 				478627D52EB58001004B9568 /* RegisterBabyByCodeResModel.swift in Sources */,
 				9FD7CDF22EB50F8200508130 /* BabyMoaEndpoint.swift in Sources */,
 				478628182EB63780004B9568 /* SetTeethStatusReqModel.swift in Sources */,
 				058857152EA8768A00EAF72B /* GuardianCodeView.swift in Sources */,
-				05CD80292EA61F57008C0940 /* AddBabyNewYesView.swift in Sources */,
 				05CD80132EA5F81F008C0940 /* babyMoaApp.swift in Sources */,
 				0588570E2EA8432F00EAF72B /* ProfileView.swift in Sources */,
 				478627DE2EB5D726004B9568 /* SetRelationshipWithBabyReqModel.swift in Sources */,
@@ -839,11 +823,8 @@
 				058857132EA8581F00EAF72B /* GuardianAddSheetView.swift in Sources */,
 				478628202EB64524004B9568 /* GetBabyListResModel.swift in Sources */,
 				4786281B2EB638A6004B9568 /* GetGrowthDataReqModel.swift in Sources */,
-				05CD80272EA61F2E008C0940 /* AddBabyNewView.swift in Sources */,
-				05CD80252EA61F1E008C0940 /* AddBabyView.swift in Sources */,
 				05DB6C312EAAEEF60043E76E /* KeyChainHelper.swift in Sources */,
 				D474CF552EB62F5F00F02B26 /* BabyMoaRootView.swift in Sources */,
-				47DFD01A2EACCA4100E69E33 /* AddBabyNewNoView.swift in Sources */,
 				05CD80142EA5F81F008C0940 /* ContentView.swift in Sources */,
 				478629072EB7201A004B9568 /* AuthRefreshReqModel.swift in Sources */,
 				D4D413912EB755080093653E /* SelectedBaby.swift in Sources */,
