@@ -12,18 +12,47 @@ struct RelationshipPickerModal: View {
     @Binding var showRelationshipPicker: Bool
 
     var body: some View {
-        VStack {
-            Picker("관계", selection: $relationship) {
-                ForEach(RelationshipType.allCases) { type in
-                    Text(type.rawValue).tag(type)
-                }
+        ZStack {
+            Color.black.opacity(0.5).ignoresSafeArea().onTapGesture {
+                showRelationshipPicker = false
             }
-            .pickerStyle(.wheel)
-            Button("완료") { showRelationshipPicker = false }
+            VStack {
+                VStack(spacing: 0) {
+                    Picker("관계", selection: $relationship) {
+                        ForEach(RelationshipType.allCases) { type in
+                            Text(type.rawValue).tag(type)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    
+                    Divider()
+                    
+                    HStack(spacing: 0) {
+                        Button("취소") {
+                            showRelationshipPicker = false
+                        }
+                            .frame(maxWidth: .infinity).padding(.vertical, 12)
+                            .background(Color(.systemBackground))
+                        
+                        Divider().frame(height: 44)
+                        
+                        Button("완료") {
+                            showRelationshipPicker = false
+                        }
+                            .frame(maxWidth: .infinity).padding(.vertical, 12)
+                            .background(Color(.systemBackground))
+                    }
+                }
+                .background(.white)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .padding(.horizontal, 40)
+
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(radius: 10)
     }
+}
+
+#Preview {
+    RelationshipPickerModal(relationship: .constant(.mom),
+                            showRelationshipPicker: .constant(true))
 }

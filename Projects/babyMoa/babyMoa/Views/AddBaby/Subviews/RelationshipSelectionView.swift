@@ -12,6 +12,7 @@ struct RelationshipSelectionView: View {
     @Binding var showRelationshipPicker: Bool
 
     var body: some View {
+
         VStack(alignment: .leading, spacing: 8) {
             Text("아이와 나의 관계")
                 .font(.system(size: 14, weight: .medium))

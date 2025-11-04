@@ -7,22 +7,8 @@
 
 import SwiftUI
 
-class AddBabyStatusViewModel: ObservableObject {
-    @Published var babyName: String = ""
-    @Published var babyNickname: String = ""
-    @Published var selectedGender: String = "MALE"
-    @Published var birthDate: Date = Date()
-    @Published var showDatePicker: Bool = false
-    @Published var relationship: RelationshipType = .mom
-    @Published var showRelationshipPicker: Bool = false
-    
-    var birthDateLabel: String {
-        return birthDate.yyyyMMddKorean
-    }
-}
-
 struct AddBabyStatusView: View {
-    @StateObject var viewModel = AddBabyStatusViewModel()
+    @StateObject var viewModel = AddBabyViewModel()
     
     let genderSegments: [Segment] = [
         Segment(tag: "MALE", title: "남아"),

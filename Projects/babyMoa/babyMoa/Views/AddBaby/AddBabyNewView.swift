@@ -31,12 +31,9 @@ struct AddCreateBabyView: View {
                 // Yes, Button
             }
             .buttonStyle(.defaultButton)
-
-
-            
             
             Button("addBabyNew.question.noButton") {
-                // Yes, Button
+                // No, Button
             }
             .buttonStyle(.secondButton)
 

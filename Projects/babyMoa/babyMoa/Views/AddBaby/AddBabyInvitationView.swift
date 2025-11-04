@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AddBabyInvitationView: View {
     
-    @State var invitationCode: String = ""
+    @StateObject private var viewModel = AddBabyViewModel()
     
     var body: some View {
         VStack{
@@ -39,12 +39,13 @@ struct AddBabyInvitationView: View {
                 .padding(.bottom, 20) // 텍스트필드와의 여백
             
             // --- 텍스트필드 ---
-            TextField("addBabyInvitation.textField.placeholder", text: $invitationCode)
+            TextField("addBabyInvitation.textField.placeholder", text: $viewModel.invitationCode)
                 .textFieldStyle(.borderedForm)
                 .multilineTextAlignment(.center)
             
             Button("보내기") { }
-                .buttonStyle(.defaultButton) // ✅ 훨씬 깔끔함
+                .buttonStyle(viewModel.isInvitationCodeValid ? .defaultButton : .noneButton)
+                .disabled(!viewModel.isInvitationCodeValid)
             
             Spacer() // 나머지 공간을 모두 밀어냄
             
