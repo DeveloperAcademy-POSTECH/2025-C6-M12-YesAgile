@@ -344,6 +344,11 @@
 			path = Teeth;
 			sourceTree = "<group>";
 		};
+		D4D4162C2EB988F90093653E /* GrowthDetail */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = GrowthDetail;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -465,6 +470,7 @@
 		05CD801E2EA61EAF008C0940 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				D4D4162C2EB988F90093653E /* GrowthDetail */,
 				D4D414CE2EB893C80093653E /* Teeth */,
 				D4D4138A2EB751D70093653E /* MainTab */,
 				D4D4137D2EB74F630093653E /* Growth */,
@@ -751,6 +757,7 @@
 				D4D4137D2EB74F630093653E /* Growth */,
 				D4D4138A2EB751D70093653E /* MainTab */,
 				D4D414CE2EB893C80093653E /* Teeth */,
+				D4D4162C2EB988F90093653E /* GrowthDetail */,
 			);
 			name = babyMoa;
 			packageProductDependencies = (

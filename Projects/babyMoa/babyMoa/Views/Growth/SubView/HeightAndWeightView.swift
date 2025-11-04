@@ -16,7 +16,7 @@ struct HeightAndWeightView: View {
     var body: some View {
         HStack(spacing: 0) {
             Button(action: {
-                
+                heightTapAction()
             }) {
                 RoundedRectangle(cornerRadius: 16)
                     .overlay(
@@ -52,7 +52,7 @@ struct HeightAndWeightView: View {
             Spacer().frame(width: 20)
             
             Button(action: {
-                
+                weightTapAction()
             }) {
                 RoundedRectangle(cornerRadius: 16)
                     .overlay(

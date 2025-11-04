@@ -45,10 +45,18 @@ struct BabyMoaRootView: View {
                         .navigationBarBackButtonHidden()
                 case .allMilestones(let allMilestones):
                     EmptyView()
-                case .height:
-                    EmptyView()
-                case .weight:
-                    EmptyView()
+                case .height(let babyId):
+                    GrowthDetailView<Height>(
+                        coordinator: coordinator,
+                        growthDetailType: .height,
+                        babyId: babyId
+                    )
+                case .weight(let babyId):
+                    GrowthDetailView<Weight>(
+                        coordinator: coordinator,
+                        growthDetailType: .weight,
+                        babyId: babyId
+                    )
                 case .teeth(let teethList):
                     TeethView(
                         coordinator: coordinator,

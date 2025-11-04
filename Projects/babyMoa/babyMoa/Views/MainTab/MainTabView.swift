@@ -33,7 +33,7 @@ struct MainTabView: View {
                 }
                 .tag(2)
         }
-        .tint(Color("Brand-50"))  // 선택된 탭 색상
+        .tint(.brand50)  // 선택된 탭 색상
         // 탭바 배경이 상황 따라 투명/유리로 바뀌지 않도록 "항상 보이게"
         .toolbarBackground(.visible, for: .tabBar)
         // 시스템 배경색을 강제 (유리감/플로팅 인상 제거)
