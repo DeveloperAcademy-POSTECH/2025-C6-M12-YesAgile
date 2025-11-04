@@ -23,23 +23,8 @@
 		1769449C008645FE9E4FCB80 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4805623329EB41E788220F54 /* APIService.swift */; };
 		3BCEDCD2C0964E7BB776504A /* MemoryData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 853C1A27B11546BCA817A1B2 /* MemoryData.swift */; };
 		43FC48A93D8E4708B14FC4F5 /* OldGrowthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90FFC80991A844A1A14D342E /* OldGrowthViewModel.swift */; };
-		473F163F2EAF64150028BA97 /* AddHeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473F163E2EAF64150028BA97 /* AddHeightView.swift */; };
-		473F16412EAF641D0028BA97 /* AddWeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473F16402EAF641D0028BA97 /* AddWeightView.swift */; };
-		473F16432EAF818E0028BA97 /* GrowthMilestoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473F16422EAF818E0028BA97 /* GrowthMilestoneView.swift */; };
-		475CF66D2EAFC86A005AA61D /* ToothButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF66C2EAFC86A005AA61D /* ToothButton.swift */; };
-		475CF66E2EAFC86A005AA61D /* TeethRecordListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF66A2EAFC86A005AA61D /* TeethRecordListItem.swift */; };
-		475CF66F2EAFC86A005AA61D /* TeethDiagramCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6692EAFC86A005AA61D /* TeethDiagramCard.swift */; };
-		475CF6702EAFC86A005AA61D /* TeethRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF66B2EAFC86A005AA61D /* TeethRow.swift */; };
 		475CF6722EAFC88C005AA61D /* NewTooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6712EAFC88C005AA61D /* NewTooth.swift */; };
 		475CF6742EB03EDE005AA61D /* GrowthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475CF6732EB03EDE005AA61D /* GrowthRepository.swift */; };
-		4785ED4B2EAE62EB00DEC298 /* GrowthBabyHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED3F2EAE62EB00DEC298 /* GrowthBabyHeader.swift */; };
-		4785ED4D2EAE62EB00DEC298 /* GrowthMetricButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED402EAE62EB00DEC298 /* GrowthMetricButton.swift */; };
-		4785ED4E2EAE62EB00DEC298 /* GrowthMilestoneCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED412EAE62EB00DEC298 /* GrowthMilestoneCard.swift */; };
-		4785ED502EAE62EB00DEC298 /* MonthPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED482EAE62EB00DEC298 /* MonthPickerView.swift */; };
-		4785ED512EAE62EB00DEC298 /* AllMilestonesButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED3E2EAE62EB00DEC298 /* AllMilestonesButton.swift */; };
-		4785ED532EAE62EB00DEC298 /* AllMilestonesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED462EAE62EB00DEC298 /* AllMilestonesView.swift */; };
-		4785ED542EAE62EB00DEC298 /* OldGrowthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED472EAE62EB00DEC298 /* OldGrowthView.swift */; };
-		4785ED552EAE62EB00DEC298 /* TeethCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4785ED422EAE62EB00DEC298 /* TeethCard.swift */; };
 		478627CF2EB57E3F004B9568 /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478627CE2EB57E3F004B9568 /* HttpClient.swift */; };
 		478627D12EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478627D02EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift */; };
 		478627D22EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478627D02EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift */; };
@@ -79,14 +64,8 @@
 		478629082EB7201A004B9568 /* AuthRefreshReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478629062EB72001004B9568 /* AuthRefreshReqModel.swift */; };
 		4786290A2EB7206D004B9568 /* AuthRefreshResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478629092EB72069004B9568 /* AuthRefreshResModel.swift */; };
 		4786290B2EB7206D004B9568 /* AuthRefreshResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478629092EB72069004B9568 /* AuthRefreshResModel.swift */; };
-		47C693B52EAF1902004E5273 /* HeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C693B42EAF1902004E5273 /* HeightView.swift */; };
-		47C693B72EAF1910004E5273 /* WeightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C693B62EAF1910004E5273 /* WeightView.swift */; };
+		47DFD01A2EACCA4100E69E33 /* AddBabyNewNoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DFD0192EACCA4100E69E33 /* AddBabyNewNoView.swift */; };
 		47E2F9172EB0942800EAC721 /* GrowthDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E2F9162EB0942800EAC721 /* GrowthDataManager.swift */; };
-		47E7D18D2EAF8A73005A9CF0 /* GrowthRecordRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E7D18A2EAF8A73005A9CF0 /* GrowthRecordRow.swift */; };
-		47E7D18E2EAF8A73005A9CF0 /* GrowthLabeledField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E7D1882EAF8A73005A9CF0 /* GrowthLabeledField.swift */; };
-		47E7D1902EAF8A73005A9CF0 /* GrowthEmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E7D1872EAF8A73005A9CF0 /* GrowthEmptyStateView.swift */; };
-		47E7D1912EAF8A73005A9CF0 /* GrowthBottomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E7D1852EAF8A73005A9CF0 /* GrowthBottomButton.swift */; };
-		47E7D1922EAF8A73005A9CF0 /* GrowthRulerInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E7D18B2EAF8A73005A9CF0 /* GrowthRulerInput.swift */; };
 		47EB090F2EB2F61A00134E8D /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EB090E2EB2F61A00134E8D /* Date+Extensions.swift */; };
 		47EB09112EB2F63600134E8D /* FoodLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EB09102EB2F63600134E8D /* FoodLibrary.swift */; };
 		47EB0A132EB2FF0000134E8D /* ImageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EB0A122EB2FF0000134E8D /* ImageHelper.swift */; };
@@ -162,23 +141,8 @@
 		076226F153C5419AA5FEEB60 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		0BB86369F97244FAB24F77AE /* BabyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabyModel.swift; sourceTree = "<group>"; };
 		1C6BEF68AB1C4416BE5BC3B2 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
-		473F163E2EAF64150028BA97 /* AddHeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHeightView.swift; sourceTree = "<group>"; };
-		473F16402EAF641D0028BA97 /* AddWeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWeightView.swift; sourceTree = "<group>"; };
-		473F16422EAF818E0028BA97 /* GrowthMilestoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthMilestoneView.swift; sourceTree = "<group>"; };
-		475CF6692EAFC86A005AA61D /* TeethDiagramCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeethDiagramCard.swift; sourceTree = "<group>"; };
-		475CF66A2EAFC86A005AA61D /* TeethRecordListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeethRecordListItem.swift; sourceTree = "<group>"; };
-		475CF66B2EAFC86A005AA61D /* TeethRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeethRow.swift; sourceTree = "<group>"; };
-		475CF66C2EAFC86A005AA61D /* ToothButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToothButton.swift; sourceTree = "<group>"; };
 		475CF6712EAFC88C005AA61D /* NewTooth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTooth.swift; sourceTree = "<group>"; };
 		475CF6732EB03EDE005AA61D /* GrowthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthRepository.swift; sourceTree = "<group>"; };
-		4785ED3E2EAE62EB00DEC298 /* AllMilestonesButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllMilestonesButton.swift; sourceTree = "<group>"; };
-		4785ED3F2EAE62EB00DEC298 /* GrowthBabyHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthBabyHeader.swift; sourceTree = "<group>"; };
-		4785ED402EAE62EB00DEC298 /* GrowthMetricButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthMetricButton.swift; sourceTree = "<group>"; };
-		4785ED412EAE62EB00DEC298 /* GrowthMilestoneCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthMilestoneCard.swift; sourceTree = "<group>"; };
-		4785ED422EAE62EB00DEC298 /* TeethCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeethCard.swift; sourceTree = "<group>"; };
-		4785ED462EAE62EB00DEC298 /* AllMilestonesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllMilestonesView.swift; sourceTree = "<group>"; };
-		4785ED472EAE62EB00DEC298 /* OldGrowthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldGrowthView.swift; sourceTree = "<group>"; };
-		4785ED482EAE62EB00DEC298 /* MonthPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthPickerView.swift; sourceTree = "<group>"; };
 		478627CE2EB57E3F004B9568 /* HttpClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		478627D02EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterBabyByCodeReqModel.swift; sourceTree = "<group>"; };
 		478627D32EB58001004B9568 /* RegisterBabyByCodeResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterBabyByCodeResModel.swift; sourceTree = "<group>"; };
@@ -201,14 +165,8 @@
 		478629062EB72001004B9568 /* AuthRefreshReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRefreshReqModel.swift; sourceTree = "<group>"; };
 		478629092EB72069004B9568 /* AuthRefreshResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRefreshResModel.swift; sourceTree = "<group>"; };
 		47C693B32EAF17ED004E5273 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		47C693B42EAF1902004E5273 /* HeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeightView.swift; sourceTree = "<group>"; };
-		47C693B62EAF1910004E5273 /* WeightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightView.swift; sourceTree = "<group>"; };
+		47DFD0192EACCA4100E69E33 /* AddBabyNewNoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyNewNoView.swift; sourceTree = "<group>"; };
 		47E2F9162EB0942800EAC721 /* GrowthDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDataManager.swift; sourceTree = "<group>"; };
-		47E7D1852EAF8A73005A9CF0 /* GrowthBottomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthBottomButton.swift; sourceTree = "<group>"; };
-		47E7D1872EAF8A73005A9CF0 /* GrowthEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthEmptyStateView.swift; sourceTree = "<group>"; };
-		47E7D1882EAF8A73005A9CF0 /* GrowthLabeledField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthLabeledField.swift; sourceTree = "<group>"; };
-		47E7D18A2EAF8A73005A9CF0 /* GrowthRecordRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthRecordRow.swift; sourceTree = "<group>"; };
-		47E7D18B2EAF8A73005A9CF0 /* GrowthRulerInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthRulerInput.swift; sourceTree = "<group>"; };
 		47EB090E2EB2F61A00134E8D /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		47EB09102EB2F63600134E8D /* FoodLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLibrary.swift; sourceTree = "<group>"; };
 		47EB0A122EB2FF0000134E8D /* ImageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageHelper.swift; sourceTree = "<group>"; };
@@ -344,6 +302,11 @@
 			path = GrowthDetail;
 			sourceTree = "<group>";
 		};
+		D4D4166B2EB9FD030093653E /* MilestoneDetail */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MilestoneDetail;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -465,6 +428,7 @@
 		05CD801E2EA61EAF008C0940 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				D4D4166B2EB9FD030093653E /* MilestoneDetail */,
 				D4D4162C2EB988F90093653E /* GrowthDetail */,
 				D4D414CE2EB893C80093653E /* Teeth */,
 				D4D4138A2EB751D70093653E /* MainTab */,
@@ -477,8 +441,7 @@
 				47E2F9182EB0D38700EAC721 /* Baby */,
 				0588570F2EA8486000EAF72B /* Guardian */,
 				0588570C2EA8431C00EAF72B /* Settings */,
-				05DC83FB2EB9A58900B23A4D /* AddBaby */,
-				4785ED4A2EAE62EB00DEC298 /* OldGrowth */,
+				05CD80232EA61F03008C0940 /* AddBaby */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -513,43 +476,6 @@
 				A7FB4A36244B492F8B7DFA08 /* PhotoService.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		4785ED432EAE62EB00DEC298 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				475CF6692EAFC86A005AA61D /* TeethDiagramCard.swift */,
-				475CF66A2EAFC86A005AA61D /* TeethRecordListItem.swift */,
-				475CF66B2EAFC86A005AA61D /* TeethRow.swift */,
-				475CF66C2EAFC86A005AA61D /* ToothButton.swift */,
-				47E7D1852EAF8A73005A9CF0 /* GrowthBottomButton.swift */,
-				47E7D1872EAF8A73005A9CF0 /* GrowthEmptyStateView.swift */,
-				47E7D1882EAF8A73005A9CF0 /* GrowthLabeledField.swift */,
-				47E7D18A2EAF8A73005A9CF0 /* GrowthRecordRow.swift */,
-				47E7D18B2EAF8A73005A9CF0 /* GrowthRulerInput.swift */,
-				4785ED3E2EAE62EB00DEC298 /* AllMilestonesButton.swift */,
-				4785ED3F2EAE62EB00DEC298 /* GrowthBabyHeader.swift */,
-				4785ED402EAE62EB00DEC298 /* GrowthMetricButton.swift */,
-				4785ED412EAE62EB00DEC298 /* GrowthMilestoneCard.swift */,
-				4785ED422EAE62EB00DEC298 /* TeethCard.swift */,
-			);
-			path = Components;
-			sourceTree = "<group>";
-		};
-		4785ED4A2EAE62EB00DEC298 /* OldGrowth */ = {
-			isa = PBXGroup;
-			children = (
-				4785ED432EAE62EB00DEC298 /* Components */,
-				4785ED462EAE62EB00DEC298 /* AllMilestonesView.swift */,
-				4785ED472EAE62EB00DEC298 /* OldGrowthView.swift */,
-				4785ED482EAE62EB00DEC298 /* MonthPickerView.swift */,
-				47C693B42EAF1902004E5273 /* HeightView.swift */,
-				47C693B62EAF1910004E5273 /* WeightView.swift */,
-				473F163E2EAF64150028BA97 /* AddHeightView.swift */,
-				473F16402EAF641D0028BA97 /* AddWeightView.swift */,
-				473F16422EAF818E0028BA97 /* GrowthMilestoneView.swift */,
-			);
-			path = OldGrowth;
 			sourceTree = "<group>";
 		};
 		478628242EB6480A004B9568 /* BabyReq */ = {
@@ -742,6 +668,7 @@
 				D4D4138A2EB751D70093653E /* MainTab */,
 				D4D414CE2EB893C80093653E /* Teeth */,
 				D4D4162C2EB988F90093653E /* GrowthDetail */,
+				D4D4166B2EB9FD030093653E /* MilestoneDetail */,
 			);
 			name = babyMoa;
 			packageProductDependencies = (
@@ -839,20 +766,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A7C71C984754709B3EF085F /* GrowthData.swift in Sources */,
-				47E7D18D2EAF8A73005A9CF0 /* GrowthRecordRow.swift in Sources */,
 				D4D414C72EB877930093653E /* ImageManager.swift in Sources */,
 				478628442EB65475004B9568 /* GetJourniesAtMonthResModel.swift in Sources */,
-				47E7D18E2EAF8A73005A9CF0 /* GrowthLabeledField.swift in Sources */,
 				9FD7CE062EB50FD300508130 /* UserToken.swift in Sources */,
 				9FD7CE082EB50FD300508130 /* UserDefaultWrapper.swift in Sources */,
-				47E7D1902EAF8A73005A9CF0 /* GrowthEmptyStateView.swift in Sources */,
-				47E7D1912EAF8A73005A9CF0 /* GrowthBottomButton.swift in Sources */,
 				9FD7CE0E2EB5101500508130 /* RegisterBabyReqModel.swift in Sources */,
 				9FD7CE0F2EB5101500508130 /* AppleLoginReqModel.swift in Sources */,
 				D474CF582EB630F500F02B26 /* BabyMoaRootViewModel.swift in Sources */,
-				47E7D1922EAF8A73005A9CF0 /* GrowthRulerInput.swift in Sources */,
 				43FC48A93D8E4708B14FC4F5 /* OldGrowthViewModel.swift in Sources */,
-				473F16412EAF641D0028BA97 /* AddWeightView.swift in Sources */,
 				478628572EB661DC004B9568 /* GrowthAPIClient.swift in Sources */,
 				478628542EB6590A004B9568 /* GetBabyMilestonesResModel.swift in Sources */,
 				C8247DA4CC44432E9174A07E /* TokenManager.swift in Sources */,
@@ -867,9 +788,7 @@
 				1769449C008645FE9E4FCB80 /* APIService.swift in Sources */,
 				ECBF6B3F8FD64247A6BA05A9 /* PhotoService.swift in Sources */,
 				478627D22EB57F8F004B9568 /* RegisterBabyByCodeReqModel.swift in Sources */,
-				47C693B72EAF1910004E5273 /* WeightView.swift in Sources */,
 				9FD7CDFA2EB50F9C00508130 /* EndPoint.swift in Sources */,
-				473F16432EAF818E0028BA97 /* GrowthMilestoneView.swift in Sources */,
 				BFFA94CF318D441392F9CF49 /* LocationManager.swift in Sources */,
 				936978613919405E9610A1C1 /* PhotoViewModel.swift in Sources */,
 				47EB090F2EB2F61A00134E8D /* Date+Extensions.swift in Sources */,
@@ -886,33 +805,19 @@
 				058857152EA8768A00EAF72B /* GuardianCodeView.swift in Sources */,
 				05CD80132EA5F81F008C0940 /* babyMoaApp.swift in Sources */,
 				0588570E2EA8432F00EAF72B /* ProfileView.swift in Sources */,
-				4785ED4B2EAE62EB00DEC298 /* GrowthBabyHeader.swift in Sources */,
 				478627DE2EB5D726004B9568 /* SetRelationshipWithBabyReqModel.swift in Sources */,
 				478628352EB65083004B9568 /* GetWeightsResModel.swift in Sources */,
 				4786281E2EB638E0004B9568 /* GetGrowthDataResModel.swift in Sources */,
 				D474D1F22EB7201D00F02B26 /* JWTUtil.swift in Sources */,
-				473F163F2EAF64150028BA97 /* AddHeightView.swift in Sources */,
-				4785ED4D2EAE62EB00DEC298 /* GrowthMetricButton.swift in Sources */,
 				9FD7CE152EB5101E00508130 /* AppleLoginResModel.swift in Sources */,
 				9FD7CE162EB5101E00508130 /* RegisterBabyResModel.swift in Sources */,
-				4785ED4E2EAE62EB00DEC298 /* GrowthMilestoneCard.swift in Sources */,
-				4785ED502EAE62EB00DEC298 /* MonthPickerView.swift in Sources */,
 				D4D4138F2EB753680093653E /* BabySummary.swift in Sources */,
-				47C693B52EAF1902004E5273 /* HeightView.swift in Sources */,
 				475CF6742EB03EDE005AA61D /* GrowthRepository.swift in Sources */,
-				4785ED512EAE62EB00DEC298 /* AllMilestonesButton.swift in Sources */,
-				4785ED532EAE62EB00DEC298 /* AllMilestonesView.swift in Sources */,
-				4785ED542EAE62EB00DEC298 /* OldGrowthView.swift in Sources */,
-				4785ED552EAE62EB00DEC298 /* TeethCard.swift in Sources */,
 				05CD801D2EA611C0008C0940 /* SessionManager.swift in Sources */,
-				475CF66D2EAFC86A005AA61D /* ToothButton.swift in Sources */,
 				47EB09112EB2F63600134E8D /* FoodLibrary.swift in Sources */,
 				D474CF502EB62E1600F02B26 /* AppDelegate.swift in Sources */,
-				475CF66E2EAFC86A005AA61D /* TeethRecordListItem.swift in Sources */,
 				47EB0A132EB2FF0000134E8D /* ImageHelper.swift in Sources */,
 				9FD7CDF82EB50F9600508130 /* BaseResponse.swift in Sources */,
-				475CF66F2EAFC86A005AA61D /* TeethDiagramCard.swift in Sources */,
-				475CF6702EAFC86A005AA61D /* TeethRow.swift in Sources */,
 				9FD7CDF42EB50F9100508130 /* BabyMoaService.swift in Sources */,
 				9FD7CDFE2EB50FA300508130 /* HTTPClient.swift in Sources */,
 				058857132EA8581F00EAF72B /* GuardianAddSheetView.swift in Sources */,

@@ -21,7 +21,7 @@ struct GrowthMilestone: Identifiable, Codable, Hashable {
     var imageURL: String?          // 등록된 이미지 URL
     var isCompleted: Bool          // 완료 여부
     var completedDate: Date?       // 완료 날짜
-    let description: String?       // 설명 (선택)
+    var description: String?       // 설명 (선택)
     let illustrationName: String?  // 기본 일러스트 이름 (예: "Baby01")
     
     init(
