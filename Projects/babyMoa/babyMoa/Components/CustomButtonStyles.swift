@@ -132,7 +132,6 @@ extension ButtonStyle where Self == AppButtonStyle {
         AppButtonStyle(
             backgroundColor: .white,
             foregroundColor: .gray50,
-            pressedBackgroundColor: .brand40.opacity(0.1), // 눌려도 색 유지
             borderColor: .gray50, // 👈 테두리 색상 설정
             borderWidth: 1         // 👈 테두리 두께 설정
         )

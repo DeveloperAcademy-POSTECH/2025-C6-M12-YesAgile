@@ -10,82 +10,84 @@ import SwiftUI
 class AddBabyStatusViewModel: ObservableObject {
     @Published var babyName: String = ""
     @Published var babyNickname: String = ""
-    @Published var selectedGender: String = "" // Or an enum for gender
+    @Published var selectedGender: String = "MALE"
+    @Published var birthDate: Date = Date()
+    @Published var showDatePicker: Bool = false
+    @Published var relationship: RelationshipType = .mom
+    @Published var showRelationshipPicker: Bool = false
+    
+    var birthDateLabel: String {
+        return birthDate.yyyyMMddKorean
+    }
 }
 
 struct AddBabyStatusView: View {
     @StateObject var viewModel = AddBabyStatusViewModel()
     
-    //MARK: - 아기 정보에 대해 입력하는 TextField
-    fileprivate func BabyInputField(label: String, placeholder: String, text: Binding<String>) -> some View{
-        VStack(alignment: .leading) {
-            Text(label)
-                .font(.system(size: 14, weight: .medium))
-                .foregroundColor(.font)
-            TextField(placeholder, text: text)
-                .textFieldStyle(.basicForm)
-        }
-    }
+    let genderSegments: [Segment] = [
+        Segment(tag: "MALE", title: "남아"),
+        Segment(tag: "FEMALE", title: "여아"),
+        Segment(tag: "NONE", title: "미정")
+    ]
     
-    //MARK: - 아기 성별을 선택하는 버튼
-    fileprivate func GenderSelectionView(selectedGender: Binding<String>) -> some View{
-        VStack(alignment: .leading){
-            Text("성별")
-                .font(.system(size: 14, weight: .medium))
-                .foregroundColor(.font)
-            
-            HStack {
-                Picker("성별", selection: selectedGender) {
-                    Text("남자").tag("M")
-                    Text("여자").tag("F")
-                    Text("미정").tag("none")
-
-                }
-                .pickerStyle(SegmentedPickerStyle())
-            }
-        }
-    }
-
-    
-    
+    //MARK: - 뷰 스타트
     @State private var isBorn: Bool = true
-    
+    @State private var isFormValid: Bool = false
+
     var body: some View {
-        
-        VStack(spacing: 20) {
-            //
-            CustomNavigationBar(title: "설정", leading: {
-                Button(action: { }) {
-                    Image(systemName: "chevron.left")
+        ZStack {
+            VStack(spacing: 20) {
+                CustomNavigationBar(title: "아기 정보 입력하기", leading: {
+                    Button(action: { }) {
+                        Image(systemName: "chevron.left")
+                    }
+                })
+                
+                BabyProfileImageView(profileImage: .constant(nil), selectedPhotoItem: .constant(nil))
+                
+                VStack(spacing: 20){
+                    
+                    if isBorn {
+                        BabyInputField(label: "이름 (필수)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName)
+                        BabyInputField(label: "태명 (선택)", placeholder: "태명을 입력해주세요", text: $viewModel.babyNickname)
+                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: genderSegments)
+                    } else {
+                        BabyInputField(label: "이름 (선택)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName)
+                        BabyInputField(label: "태명 (필수)", placeholder: "태명을 입력해주세요", text: $viewModel.babyNickname)
+                    }
                 }
-            })
+                
+                BirthDateSelectionView(
+                    label: viewModel.birthDateLabel,
+                    showDatePicker: $viewModel.showDatePicker
+                )
+                
+                RelationshipSelectionView(
+                    relationship: $viewModel.relationship,
+                    showRelationshipPicker: $viewModel.showRelationshipPicker
+                )
+                
+                
+                Button("저장", action: {
+                    
+                })
+                .buttonStyle(!isFormValid ? .noneButton : .defaultButton)
+                
+                Spacer()
+            }
+            .ignoresSafeArea()
+            .navigationBarBackButtonHidden(true)
+            .backgroundPadding(.horizontal)
             
-            
-            // Profile Image Section -----
-            
-            Rectangle()
-                .frame(width: 100, height: 100)
-            
-            VStack(spacing: 20){
-                if isBorn {
-                    BabyInputField(label: "이름 (필수)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName)
-                    BabyInputField(label: "태명 (선택)", placeholder: "태명을 입력해주세요", text: $viewModel.babyNickname)
-                    GenderSelectionView(selectedGender: $viewModel.selectedGender)
-                } else {
-                    BabyInputField(label: "이름 (선택)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName)
-                    BabyInputField(label: "태명 (필수)", placeholder: "태명을 입력해주세요", text: $viewModel.babyNickname)
-                }
+            if viewModel.showDatePicker {
+                DatePickerModal(birthDate: $viewModel.birthDate, showDatePicker: $viewModel.showDatePicker)
             }
             
-            Spacer()
+            if viewModel.showRelationshipPicker {
+                RelationshipPickerModal(relationship: $viewModel.relationship, showRelationshipPicker: $viewModel.showRelationshipPicker)
+            }
         }
-        .ignoresSafeArea()
-        .navigationBarBackButtonHidden(true)
-        .backgroundPadding(.horizontal)
-        
     }
-    
-    
 }
 
 #Preview {

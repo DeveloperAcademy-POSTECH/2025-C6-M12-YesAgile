@@ -16,11 +16,9 @@ struct AddBabyInvitationView: View {
             // CustomeNavigation View
             CustomNavigationBar(title: "설정", leading: {
                 Button(action: {
-                    // 버튼 클릭
-                    
+                    // 버튼 클릭                    
                     print("뒤로가기 버튼을 클릭했습니다.")
-                    
-                    
+
                 }) {
                     Image(systemName: "chevron.left")
                         
