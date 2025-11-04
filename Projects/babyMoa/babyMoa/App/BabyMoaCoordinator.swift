@@ -27,8 +27,8 @@ enum CoordinatorPath: Hashable {
     case mainTab
     case growth
     case allMilestones([[GrowthMilestone]])
-    case height
-    case weight
+    case height(babyId: Int)
+    case weight(babyId: Int)
     case teeth(teethList: [TeethData])
     case journey
 }

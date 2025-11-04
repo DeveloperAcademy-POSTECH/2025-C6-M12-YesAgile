@@ -191,12 +191,12 @@ final class GrowthViewModel {
     
     @MainActor
     func heightButtonTapped() {
-        coordinator.push(path: .height)
+        coordinator.push(path: .height(babyId: SelectedBaby.babyId!))
     }
     
     @MainActor
     func weightButtonTapped() {
-        coordinator.push(path: .weight)
+        coordinator.push(path: .weight(babyId: SelectedBaby.babyId!))
     }
     
     @MainActor

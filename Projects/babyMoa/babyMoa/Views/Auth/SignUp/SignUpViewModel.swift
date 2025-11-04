@@ -4,6 +4,7 @@
 //
 //  Created by 한건희 on 11/2/25.
 //
+
 import AuthenticationServices
 import SwiftUI
 
@@ -62,7 +63,7 @@ final class SignUpViewModel {
                         UserToken.accessToken = resModel.accessToken
                         UserToken.refreshToken = resModel.refreshToken
                         await MainActor.run {
-                            coordinator.push(path: .growth)
+                            coordinator.push(path: .mainTab)
                         }
                     case .failure(let error):
                         print(error)
