@@ -5,46 +5,54 @@
 //  Created by Baba on 10/20/25.
 //
 
+// 이 뷰는 단순이 이동하는 것만 해당되는 뷰입니다 
+
 import SwiftUI
 
 struct AddBabyView: View {
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 20) {
+            Spacer()
+            // 새로운 아기 추가하기
             VStack {
-                VStack {
-                    Text("addBaby.new.title")
-                        .titleTextStyle()
-                    
-                    Text("addBaby.new.description")
-                        .subTitleTextStyle()
-                    
-                    // "새로운 아기 추가" 버튼 → AddCreateBabyView
-                    NavigationLink(destination: AddCreateBabyView()) {
-                        Text("addBaby.new.button")
-                            .authButtonTextStyle(bgColor: .gray)
-                    }
-                }
+                Text("addBaby.new.title")
+                    .titleTextStyle()
                 
-                VStack {
-                    Text("addBaby.connect.title")
-                        .titleTextStyle()
+                Text("addBaby.new.description")
+                    .subTitleTextStyle()
+                
+                Button(action: {
+                    // 이동하는 위치 : 어디파일로 가는것인가?
                     
-                    Text("addBaby.connect.description")
-                        .subTitleTextStyle()
                     
-                    // TODO: "초대 코드로 연결" 버튼
-                    Button(action: {
-                        // 초대 코드 화면으로 이동
-                    }, label: {
-                        Text("addBaby.connect.button")
-                            .authButtonTextStyle(bgColor: .gray)
-                    })
+                }) {
+                    Text("addBaby.new.button")
+                        .authButtonTextStyle(bgColor: .brand50)
                 }
             }
-            .padding(16)
-            .navigationTitle("아기 추가")
-            .navigationBarTitleDisplayMode(.inline)
+            
+            // 초대코드 입력하기
+            VStack {
+                Text("addBaby.connect.title")
+                    .titleTextStyle()
+                
+                Text("addBaby.connect.description")
+                    .subTitleTextStyle()
+                
+                Button(action: {
+                    // 이동하는 위치 : 어디파일로 가는것인가?
+
+                }, label: {
+                    Text("addBaby.connect.button")
+                        .authButtonTextStyle(bgColor: .brand70)
+                })
+            }
+            
+            Spacer()
         }
+        .ignoresSafeArea()
+        .backgroundPadding(.horizontal)
+
     }
 }
 
