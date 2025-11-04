@@ -45,14 +45,16 @@ protocol BabyMoaServicable: HTTPClient {
     func postSetWeight(
         babyId: Int,
         weight: Double,
-        date: String
+        date: String,
+        memo: String?
     ) async -> Result<
         BaseResponse<EmptyData>, RequestError
     >
     func postSetHeight(
         babyId: Int,
         height: Double,
-        date: String
+        date: String,
+        memo: String?
     ) async -> Result<
         BaseResponse<EmptyData>, RequestError
     >
@@ -120,6 +122,7 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.getGetBabyMilestones(
                     babyId: babyId
                 )
@@ -148,6 +151,7 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.getGetJourniesAtMonth(
                     babyId: babyId,
                     year: year,
@@ -182,6 +186,7 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.postSetBabyMilestone(
                     babyId: babyId,
                     milestoneIdx: milestoneIdx,
@@ -220,6 +225,7 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.postAddJourney(
                     babyId: babyId,
                     journeyImage: journeyImage,
@@ -245,14 +251,8 @@ class BabyMoaService: BabyMoaServicable {
         case .success:
             return result
         case .failure(let error):
-            switch error {
-            case .unauthorized:
-                return await self.postAuthRefresh(
-                    refreshToken: refreshToken
-                )
-            default:
-                return result
-            }
+            print(error)
+            return result
         }
     }
 
@@ -271,6 +271,7 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.getGetHeights(
                     babyId: babyId
                 )
@@ -294,6 +295,7 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.getGetWeights(
                     babyId: babyId
                 )
@@ -303,14 +305,15 @@ class BabyMoaService: BabyMoaServicable {
         }
     }
 
-    func postSetHeight(babyId: Int, height: Double, date: String) async
+    func postSetHeight(babyId: Int, height: Double, date: String, memo: String?) async
         -> Result<BaseResponse<EmptyData>, RequestError>
     {
         let result = await request(
             endpoint: BabyMoaEndpoint.setHeight(
                 babyId: babyId,
                 height: height,
-                date: date
+                date: date,
+                memo: memo
             ),
             responseModel: BaseResponse<EmptyData>.self
         )
@@ -320,10 +323,12 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.postSetHeight(
                     babyId: babyId,
                     height: height,
-                    date: date
+                    date: date,
+                    memo: memo
                 )
             default:
                 return result
@@ -331,14 +336,15 @@ class BabyMoaService: BabyMoaServicable {
         }
     }
 
-    func postSetWeight(babyId: Int, weight: Double, date: String) async
+    func postSetWeight(babyId: Int, weight: Double, date: String, memo: String?) async
         -> Result<BaseResponse<EmptyData>, RequestError>
     {
         let result = await request(
             endpoint: BabyMoaEndpoint.setWeight(
                 babyId: babyId,
                 weight: weight,
-                date: date
+                date: date,
+                memo: memo
             ),
             responseModel: BaseResponse<EmptyData>.self
         )
@@ -348,10 +354,12 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.postSetWeight(
                     babyId: babyId,
                     weight: weight,
-                    date: date
+                    date: date,
+                    memo: memo
                 )
             default:
                 return result
@@ -371,6 +379,7 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.getGetBabyList()
             default:
                 return result
@@ -400,6 +409,7 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.getGetGrowthData(babyId: babyId)
             default:
                 return result
@@ -431,6 +441,7 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.postSetTeethStatus(
                     babyId: babyId,
                     teethId: teethId,
@@ -464,6 +475,7 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.postSetRelationshipWithBaby(
                     babyId: babyId,
                     relationshipType: relationshipType
@@ -487,6 +499,7 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
+                await refreshToken()
                 return await self.postRegisterBabyByCode(babyCode: babyCode)
             default:
                 return result
@@ -518,8 +531,7 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
-                // refresh api 호출 -> access, refresh 토큰 발급할 거에요 -> 로컬에 저장해주시면 되고,
-
+                await refreshToken()
                 return await self.postRegisterBaby(
                     alias: alias,
                     name: name,
@@ -545,6 +557,17 @@ class BabyMoaService: BabyMoaServicable {
             endpoint: BabyMoaEndpoint.appleLogin(idToken: idToken),
             responseModel: BaseResponse<AppleLoginResModel>.self
         )
+    }
+    
+    private func refreshToken() async {
+        let authResult = await postAuthRefresh(refreshToken: UserToken.refreshToken)
+        switch authResult {
+        case .success(let success):
+            UserToken.accessToken = success.data!.accessToken
+            UserToken.refreshToken = success.data!.refreshToken
+        case .failure(let failure):
+            print(failure)
+        }
     }
 
 }

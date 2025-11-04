@@ -37,12 +37,14 @@ enum BabyMoaEndpoint: Endpoint {
     case setWeight(
         babyId: Int,
         weight: Double,
-        date: String  // "2025-11-02"
+        date: String,  // "2025-11-02"
+        memo: String?
     )
     case setHeight(
         babyId: Int,
         height: Double,
-        date: String  // "2025-11-02"
+        date: String,  // "2025-11-02"
+        memo: String?
     )
     case getWeights(
         babyId: Int
@@ -241,22 +243,41 @@ extension BabyMoaEndpoint {
         case .setWeight(
             let babyId,
             let weight,
-            let date
+            let date,
+            let memo
         ):
+            if let memo = memo {
+                return [
+                    "babyId": babyId,
+                    "weight": weight,
+                    "date": date,
+                    "memo": memo
+                ]
+            }
             return [
                 "babyId": babyId,
                 "weight": weight,
                 "date": date,
+                "memo": memo
             ]
         case .setHeight(
             let babyId,
             let height,
-            let date
+            let date,
+            let memo
         ):
+            if let memo = memo {
+                return [
+                    "babyId": babyId,
+                    "height": height,
+                    "date": date,
+                    "memo": memo
+                ]
+            }
             return [
                 "babyId": babyId,
                 "height": height,
-                "date": date,
+                "date": date
             ]
         case .authRefresh(
             let refreshToken

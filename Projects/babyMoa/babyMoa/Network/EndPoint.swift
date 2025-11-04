@@ -30,7 +30,8 @@ extension Endpoint {
     }
     
     var host: String {
-        return "yesagile.shop"
+//        return "yesagile.shop"
+        return "localhost"
     }
 }
 
