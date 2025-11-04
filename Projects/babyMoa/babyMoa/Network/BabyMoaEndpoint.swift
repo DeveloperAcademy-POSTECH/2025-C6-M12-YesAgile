@@ -65,10 +65,10 @@ enum BabyMoaEndpoint: Endpoint {
     )
     case setBabyMilestone(
         babyId: Int,
-        milestoneIdx: Int,
+        milestoneName: String,
         milestoneImage: String,
         date: String,
-        memo: String
+        memo: String?
     )
     case getBaby(
         babyId: Int
@@ -304,17 +304,25 @@ extension BabyMoaEndpoint {
             ]
         case .setBabyMilestone(
             let babyId,
-            let milestoneIdx,
+            let milestoneName,
             let milestoneImage,
             let date,
             let memo
         ):
+            if let memo = memo {
+                return [
+                    "babyId": babyId,
+                    "milestoneName": milestoneName,
+                    "milestoneImage": milestoneImage,
+                    "date": date,
+                    "memo": memo,
+                ]
+            }
             return [
                 "babyId": babyId,
-                "milestoneIdx": milestoneIdx,
+                "milestoneName": milestoneName,
                 "milestoneImage": milestoneImage,
-                "date": date,
-                "memo": memo,
+                "date": date
             ]
 
         // case 없이도 가능
