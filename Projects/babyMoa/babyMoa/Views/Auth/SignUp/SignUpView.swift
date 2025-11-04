@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SignUpView: View {
     @State var viewModel: SignUpViewModel
+    @Environment(\.dismiss) var dismiss
     
     init(coordinator: BabyMoaCoordinator) {
         viewModel = SignUpViewModel(coordinator: coordinator)
@@ -17,10 +18,10 @@ struct SignUpView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            //            TermsAgreementHeaderView(cancelAction: {
-            //                viewModel.coordinator.pop()
-            //            })
-            //            .padding(.bottom, 60)
+//            TermsAgreementHeaderView(cancelAction: {
+//                viewModel.coordinator.pop()
+//            })
+//            .padding(.bottom, 60)
             TermsAgreementView(termCheckList: $viewModel.termCheckList)
                 .padding(.bottom, 20)
             if viewModel.isAllChecked() {
@@ -29,7 +30,8 @@ struct SignUpView: View {
                 } onCompletion: { result in
                     Task {
                         await viewModel.handleCompletion(result: result)
-                        
+                        //  로그인 성공 후 시트 닫기
+                        dismiss() // 시트를 닫습니다.
                     }
                 }
                 .signInWithAppleButtonStyle(.black)
