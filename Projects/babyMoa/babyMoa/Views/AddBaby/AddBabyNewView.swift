@@ -9,27 +9,43 @@ import SwiftUI
 
 struct AddCreateBabyView: View {
     var body: some View {
-        VStack {
+        VStack(spacing: 20) {
+            
+            CustomNavigationBar(title: "설정", leading: {
+                Button(action: {
+                    
+                    // 어디로 이동을 해야 되는가?
+                    
+                }) {
+                    Image(systemName: "chevron.left")
+                }
+            })
+            
             Text("addBabyNew.question.title")
                 .titleTextStyle()
+                .padding(.bottom, 60)
+
             
             // "예" 버튼 → AddBabyNewYesView
-            NavigationLink(destination: AddBabyNewYes()) {
-                Text("addBabyNew.question.yesButton")
-                    .authButtonTextStyle(bgColor: .gray)
+            Button("addBabyNew.question.yesButton") {
+                // Yes, Button
             }
-            .padding(.top, 24)
+            .buttonStyle(.defaultButton)
+
+
             
-            // "아니오" 버튼 → AddBabyNewNoView
-            NavigationLink(destination: AddBabyNewNoView()) {
-                Text("addBabyNew.question.noButton")
-                    .authButtonTextStyle(bgColor: .gray)
+            
+            Button("addBabyNew.question.noButton") {
+                // Yes, Button
             }
-            .padding(.top, 16)
+            .buttonStyle(.secondButton)
+
+            
             
             Spacer()
         }
-        .padding(16)
+        .ignoresSafeArea()
+        .backgroundPadding(.horizontal)
     }
 }
 

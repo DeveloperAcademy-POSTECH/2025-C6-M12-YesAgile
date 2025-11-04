@@ -48,7 +48,7 @@ struct AppButtonStyle: ButtonStyle {
     // 1. 스타일 설정용 프로퍼티
     var backgroundColor: Color
     var foregroundColor: Color
-    var pressedBackgroundColor: Color
+    var pressedBackgroundColor: Color?
     
     var borderColor: Color = .clear // 테두리 (Outline용)
     var borderWidth: CGFloat = 0     // 테두리 두께 (Outline용)
@@ -64,7 +64,7 @@ struct AppButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity)
             .padding(16)
             // 3. 눌렸을 때와 아닐 때의 배경색을
-            .background(configuration.isPressed ? pressedBackgroundColor : backgroundColor)
+            .background(configuration.isPressed ? (pressedBackgroundColor ?? backgroundColor) : backgroundColor)
             .cornerRadius(12)
             .overlay {
                 // 4. borderColor가 .clear가 아닐 때만 테두리를 그립니다.
@@ -99,6 +99,15 @@ extension ButtonStyle where Self == AppButtonStyle {
         )
     }
     
+    
+    static var secondButton: AppButtonStyle {
+        AppButtonStyle(
+            backgroundColor: .orange50,
+            foregroundColor: .white,
+            pressedBackgroundColor: .orange70
+        )
+    }
+    
     static var noneButton: AppButtonStyle {
         AppButtonStyle(
             backgroundColor: .gray90,
@@ -118,6 +127,16 @@ extension ButtonStyle where Self == AppButtonStyle {
             borderWidth: 1         // 👈 테두리 두께 설정
         )
     }
+    
+    static var outlineSecondButton: AppButtonStyle {
+        AppButtonStyle(
+            backgroundColor: .white,
+            foregroundColor: .gray50,
+            pressedBackgroundColor: .brand40.opacity(0.1), // 눌려도 색 유지
+            borderColor: .gray50, // 👈 테두리 색상 설정
+            borderWidth: 1         // 👈 테두리 두께 설정
+        )
+    }
 }
 
 
@@ -128,7 +147,7 @@ extension ButtonStyle where Self == AppButtonStyle {
         
         var body: some View {
             ScrollView {
-                VStack(spacing: 10) {
+                VStack(spacing: 5) {
                     
                     // --- GenderSelectButtonStyle (고유 스타일) ---
                     Text("GenderSelectButtonStyle")
@@ -168,6 +187,13 @@ extension ButtonStyle where Self == AppButtonStyle {
                         .buttonStyle(.primaryButton) // ✅ 훨씬 깔끔함
                     
                     Divider()
+                    
+                    Text("PrimaryButtonStyle (이제 .primaryButton)")
+                        .font(.headline)
+                    Button("주요 버튼 (Secondary)") { }
+                        .buttonStyle(.secondButton) // ✅ 훨씬 깔끔함
+                    
+                    Divider()
 
                     Text("NoneButtonStyle (이제 .noneButton)")
                         .font(.headline)
@@ -180,6 +206,13 @@ extension ButtonStyle where Self == AppButtonStyle {
                         .font(.headline)
                     Button("외곽선 버튼 (Outline)") { }
                         .buttonStyle(.outlineButton) // ✅ 훨씬 깔끔함
+                    
+                    Divider()
+
+                    Text("OutlineSecondButtonStyle")
+                        .font(.headline)
+                    Button("외곽선 버튼 (Outline)") { }
+                        .buttonStyle(.outlineSecondButton) // ✅ 훨씬 깔끔함
                 }
                 .padding()
             }
