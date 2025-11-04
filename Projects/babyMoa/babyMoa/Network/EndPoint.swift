@@ -5,13 +5,6 @@
 //  Created by 한건희 on 10/30/25.
 //
 
-//
-//  EndPoint.swift
-//  Woorinara
-//
-//  Created by 한건희 on 1/23/25.
-//
-
 import Foundation
 
 protocol Endpoint {
@@ -30,7 +23,8 @@ extension Endpoint {
     }
     
     var host: String {
-        return "yesagile.shop"
+        // return "yesagile.shop"
+        return "localhost"
     }
 }
 
