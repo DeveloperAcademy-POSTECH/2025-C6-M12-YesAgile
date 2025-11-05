@@ -65,7 +65,7 @@ struct BabyListView: View {
                 }
             }
         }
-        .padding(.top, 20)
+        .padding(.top, 40)
         .background(
             GeometryReader {
                 Color.clear.preference(key: HeightPreferenceKey.self, value: $0.size.height)
@@ -78,7 +78,7 @@ struct BabyListView: View {
 struct HeightPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat = .zero
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
+        value = max(value, nextValue())
     }
 }
 
