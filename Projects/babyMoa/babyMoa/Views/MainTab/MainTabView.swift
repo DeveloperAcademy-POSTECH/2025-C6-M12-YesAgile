@@ -26,8 +26,8 @@ struct MainTabView: View {
                 .tag(0)
             EmptyView()
                 .tag(1)
-//            // 아기 탭
-//            BabyView()
+            // 아기 탭
+//            BabyMainView()
 //                .tabItem {
 //                    Image(systemName: "gift.fill")
 //                    Text("아기")
