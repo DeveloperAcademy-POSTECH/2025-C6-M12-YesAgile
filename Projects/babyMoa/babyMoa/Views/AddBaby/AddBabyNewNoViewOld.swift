@@ -337,7 +337,7 @@ struct AddBabyNewNoViewOld: View {
         }
         
         hasCompletedBabySetup = true
-        NotificationCenter.default.post(name: .babyDataDidChange, object: nil)
+//        NotificationCenter.default.post(name: .babyDataDidChange, object: nil)
         
         print("✅ 태명 아기 정보 저장 완료 (ID: \(babyId))")
         print("📝 이름: \(babyName.isEmpty ? "(없음)" : babyName)")
@@ -431,7 +431,7 @@ struct AddBabyNewNoViewOld: View {
             print("✅ 모든 아기 삭제됨 → 아기 추가 화면으로 전환")
         }
         
-        NotificationCenter.default.post(name: .babyDataDidChange, object: nil)
+//        NotificationCenter.default.post(name: .babyDataDidChange, object: nil)
         
         print("🗑️ 아기 정보 삭제 완료 (ID: \(babyToDelete.id))")
         

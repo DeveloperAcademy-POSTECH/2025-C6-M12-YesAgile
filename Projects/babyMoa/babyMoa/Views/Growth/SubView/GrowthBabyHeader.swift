@@ -1,11 +1,11 @@
-////
-////  GrowthBabyHeader.swift
-////  babyMoa
-////
-////  Created by Pherd on 10/26/25.
-////
-////  아기 선택 헤더 컴포넌트
-//// 이거는 데이터 받아야겠지. 아기 데이터
+//////
+//////  GrowthBabyHeader.swift
+//////  babyMoa
+//////
+//////  Created by Pherd on 10/26/25.
+//////
+//////  아기 선택 헤더 컴포넌트
+////// 이거는 데이터 받아야겠지. 아기 데이터
 //
 //import SwiftUI
 //
@@ -144,7 +144,7 @@
 //        currentBaby = baby
 //        
 //        // 4. 변경 사항 broadcast
-//        NotificationCenter.default.post(name: .babyDataDidChange, object: nil)
+//        // NotificationCenter.default.post(name: .babyDataDidChange, object: nil)
 //        
 //        print("✅ 아기 전환 완료: \(baby.name ?? baby.nickname) (ID: \(baby.id))")
 //    }
