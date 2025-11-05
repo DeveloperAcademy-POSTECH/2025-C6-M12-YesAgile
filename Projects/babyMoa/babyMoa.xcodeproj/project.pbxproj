@@ -64,7 +64,6 @@
 		478629082EB7201A004B9568 /* AuthRefreshReqModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478629062EB72001004B9568 /* AuthRefreshReqModel.swift */; };
 		4786290A2EB7206D004B9568 /* AuthRefreshResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478629092EB72069004B9568 /* AuthRefreshResModel.swift */; };
 		4786290B2EB7206D004B9568 /* AuthRefreshResModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478629092EB72069004B9568 /* AuthRefreshResModel.swift */; };
-		47DFD01A2EACCA4100E69E33 /* AddBabyNewNoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DFD0192EACCA4100E69E33 /* AddBabyNewNoView.swift */; };
 		47E2F9172EB0942800EAC721 /* GrowthDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E2F9162EB0942800EAC721 /* GrowthDataManager.swift */; };
 		47EB090F2EB2F61A00134E8D /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EB090E2EB2F61A00134E8D /* Date+Extensions.swift */; };
 		47EB09112EB2F63600134E8D /* FoodLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EB09102EB2F63600134E8D /* FoodLibrary.swift */; };
@@ -110,6 +109,34 @@
 		D4D413EC2EB7606E0093653E /* BabyMoaCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D474CF522EB62EAD00F02B26 /* BabyMoaCoordinator.swift */; };
 		D4D413ED2EB7606E0093653E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D474CF4F2EB62E1300F02B26 /* AppDelegate.swift */; };
 		D4D414C72EB877930093653E /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D414C62EB8778F0093653E /* ImageManager.swift */; };
+		D4D4179D2EBADE5D0093653E /* RelationshipPickerModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417922EBADE5D0093653E /* RelationshipPickerModal.swift */; };
+		D4D4179E2EBADE5D0093653E /* RelationshipSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417932EBADE5D0093653E /* RelationshipSelectionView.swift */; };
+		D4D4179F2EBADE5D0093653E /* BirthDateSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4178F2EBADE5D0093653E /* BirthDateSelectionView.swift */; };
+		D4D417A02EBADE5D0093653E /* AddBabyInvitationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417972EBADE5D0093653E /* AddBabyInvitationView.swift */; };
+		D4D417A12EBADE5D0093653E /* BabyInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4178D2EBADE5D0093653E /* BabyInputField.swift */; };
+		D4D417A22EBADE5D0093653E /* AddBabyNewNoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417982EBADE5D0093653E /* AddBabyNewNoView.swift */; };
+		D4D417A32EBADE5D0093653E /* DatePickerModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417902EBADE5D0093653E /* DatePickerModal.swift */; };
+		D4D417A42EBADE5D0093653E /* AddBabyNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417992EBADE5D0093653E /* AddBabyNewView.swift */; };
+		D4D417A52EBADE5D0093653E /* RelationshipType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4178B2EBADE5D0093653E /* RelationshipType.swift */; };
+		D4D417A62EBADE5D0093653E /* AddBabyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417952EBADE5D0093653E /* AddBabyViewModel.swift */; };
+		D4D417A72EBADE5D0093653E /* BabyProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4178E2EBADE5D0093653E /* BabyProfileImageView.swift */; };
+		D4D417A82EBADE5D0093653E /* GenderSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417912EBADE5D0093653E /* GenderSelectionView.swift */; };
+		D4D417A92EBADE5D0093653E /* AddBabyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4179B2EBADE5D0093653E /* AddBabyView.swift */; };
+		D4D417AA2EBADE5D0093653E /* AddBabyStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4179A2EBADE5D0093653E /* AddBabyStatusView.swift */; };
+		D4D417AB2EBADE5D0093653E /* RelationshipPickerModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417922EBADE5D0093653E /* RelationshipPickerModal.swift */; };
+		D4D417AC2EBADE5D0093653E /* RelationshipSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417932EBADE5D0093653E /* RelationshipSelectionView.swift */; };
+		D4D417AD2EBADE5D0093653E /* BirthDateSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4178F2EBADE5D0093653E /* BirthDateSelectionView.swift */; };
+		D4D417AE2EBADE5D0093653E /* AddBabyInvitationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417972EBADE5D0093653E /* AddBabyInvitationView.swift */; };
+		D4D417AF2EBADE5D0093653E /* BabyInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4178D2EBADE5D0093653E /* BabyInputField.swift */; };
+		D4D417B02EBADE5D0093653E /* AddBabyNewNoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417982EBADE5D0093653E /* AddBabyNewNoView.swift */; };
+		D4D417B12EBADE5D0093653E /* DatePickerModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417902EBADE5D0093653E /* DatePickerModal.swift */; };
+		D4D417B22EBADE5D0093653E /* AddBabyNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417992EBADE5D0093653E /* AddBabyNewView.swift */; };
+		D4D417B32EBADE5D0093653E /* RelationshipType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4178B2EBADE5D0093653E /* RelationshipType.swift */; };
+		D4D417B42EBADE5D0093653E /* AddBabyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417952EBADE5D0093653E /* AddBabyViewModel.swift */; };
+		D4D417B52EBADE5D0093653E /* BabyProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4178E2EBADE5D0093653E /* BabyProfileImageView.swift */; };
+		D4D417B62EBADE5D0093653E /* GenderSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D417912EBADE5D0093653E /* GenderSelectionView.swift */; };
+		D4D417B72EBADE5D0093653E /* AddBabyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4179B2EBADE5D0093653E /* AddBabyView.swift */; };
+		D4D417B82EBADE5D0093653E /* AddBabyStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D4179A2EBADE5D0093653E /* AddBabyStatusView.swift */; };
 		ECBF6B3F8FD64247A6BA05A9 /* PhotoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB4A36244B492F8B7DFA08 /* PhotoService.swift */; };
 /* End PBXBuildFile section */
 
@@ -165,7 +192,6 @@
 		478629062EB72001004B9568 /* AuthRefreshReqModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRefreshReqModel.swift; sourceTree = "<group>"; };
 		478629092EB72069004B9568 /* AuthRefreshResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRefreshResModel.swift; sourceTree = "<group>"; };
 		47C693B32EAF17ED004E5273 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		47DFD0192EACCA4100E69E33 /* AddBabyNewNoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyNewNoView.swift; sourceTree = "<group>"; };
 		47E2F9162EB0942800EAC721 /* GrowthDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthDataManager.swift; sourceTree = "<group>"; };
 		47EB090E2EB2F61A00134E8D /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		47EB09102EB2F63600134E8D /* FoodLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLibrary.swift; sourceTree = "<group>"; };
@@ -197,6 +223,20 @@
 		D4D413902EB754E30093653E /* SelectedBaby.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedBaby.swift; sourceTree = "<group>"; };
 		D4D413962EB7563B0093653E /* GetBabyResModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetBabyResModel.swift; sourceTree = "<group>"; };
 		D4D414C62EB8778F0093653E /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
+		D4D4178B2EBADE5D0093653E /* RelationshipType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationshipType.swift; sourceTree = "<group>"; };
+		D4D4178D2EBADE5D0093653E /* BabyInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabyInputField.swift; sourceTree = "<group>"; };
+		D4D4178E2EBADE5D0093653E /* BabyProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabyProfileImageView.swift; sourceTree = "<group>"; };
+		D4D4178F2EBADE5D0093653E /* BirthDateSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthDateSelectionView.swift; sourceTree = "<group>"; };
+		D4D417902EBADE5D0093653E /* DatePickerModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerModal.swift; sourceTree = "<group>"; };
+		D4D417912EBADE5D0093653E /* GenderSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderSelectionView.swift; sourceTree = "<group>"; };
+		D4D417922EBADE5D0093653E /* RelationshipPickerModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationshipPickerModal.swift; sourceTree = "<group>"; };
+		D4D417932EBADE5D0093653E /* RelationshipSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationshipSelectionView.swift; sourceTree = "<group>"; };
+		D4D417952EBADE5D0093653E /* AddBabyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyViewModel.swift; sourceTree = "<group>"; };
+		D4D417972EBADE5D0093653E /* AddBabyInvitationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyInvitationView.swift; sourceTree = "<group>"; };
+		D4D417982EBADE5D0093653E /* AddBabyNewNoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyNewNoView.swift; sourceTree = "<group>"; };
+		D4D417992EBADE5D0093653E /* AddBabyNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyNewView.swift; sourceTree = "<group>"; };
+		D4D4179A2EBADE5D0093653E /* AddBabyStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyStatusView.swift; sourceTree = "<group>"; };
+		D4D4179B2EBADE5D0093653E /* AddBabyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBabyView.swift; sourceTree = "<group>"; };
 		ECDC3BF28872420E9588A0D5 /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -302,9 +342,9 @@
 			path = GrowthDetail;
 			sourceTree = "<group>";
 		};
-		D4D4166B2EB9FD030093653E /* MilestoneDetail */ = {
+		D4D4166B2EB9FD030093653E /* AllMilestone */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MilestoneDetail;
+			path = AllMilestone;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -377,6 +417,7 @@
 				05CD80112EA5F81F008C0940 /* babyMoa */,
 				9FD7CDE82EB50EFF00508130 /* babyMoaTests */,
 				05CD80012EA5F5FF008C0940 /* Products */,
+				D4D417072EBADD420093653E /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -428,7 +469,8 @@
 		05CD801E2EA61EAF008C0940 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				D4D4166B2EB9FD030093653E /* MilestoneDetail */,
+				D4D4179C2EBADE5D0093653E /* AddBaby */,
+				D4D4166B2EB9FD030093653E /* AllMilestone */,
 				D4D4162C2EB988F90093653E /* GrowthDetail */,
 				D4D414CE2EB893C80093653E /* Teeth */,
 				D4D4138A2EB751D70093653E /* MainTab */,
@@ -441,7 +483,6 @@
 				47E2F9182EB0D38700EAC721 /* Baby */,
 				0588570F2EA8486000EAF72B /* Guardian */,
 				0588570C2EA8431C00EAF72B /* Settings */,
-				05CD80232EA61F03008C0940 /* AddBaby */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -638,6 +679,59 @@
 			path = BabyMoaRoot;
 			sourceTree = "<group>";
 		};
+		D4D417072EBADD420093653E /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				05DC83FB2EB9A58900B23A4D /* AddBaby */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		D4D4178C2EBADE5D0093653E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D4D4178B2EBADE5D0093653E /* RelationshipType.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D4D417942EBADE5D0093653E /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				D4D4178D2EBADE5D0093653E /* BabyInputField.swift */,
+				D4D4178E2EBADE5D0093653E /* BabyProfileImageView.swift */,
+				D4D4178F2EBADE5D0093653E /* BirthDateSelectionView.swift */,
+				D4D417902EBADE5D0093653E /* DatePickerModal.swift */,
+				D4D417912EBADE5D0093653E /* GenderSelectionView.swift */,
+				D4D417922EBADE5D0093653E /* RelationshipPickerModal.swift */,
+				D4D417932EBADE5D0093653E /* RelationshipSelectionView.swift */,
+			);
+			path = Subviews;
+			sourceTree = "<group>";
+		};
+		D4D417962EBADE5D0093653E /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				D4D417952EBADE5D0093653E /* AddBabyViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		D4D4179C2EBADE5D0093653E /* AddBaby */ = {
+			isa = PBXGroup;
+			children = (
+				D4D4178C2EBADE5D0093653E /* Models */,
+				D4D417942EBADE5D0093653E /* Subviews */,
+				D4D417962EBADE5D0093653E /* ViewModels */,
+				D4D417972EBADE5D0093653E /* AddBabyInvitationView.swift */,
+				D4D417982EBADE5D0093653E /* AddBabyNewNoView.swift */,
+				D4D417992EBADE5D0093653E /* AddBabyNewView.swift */,
+				D4D4179A2EBADE5D0093653E /* AddBabyStatusView.swift */,
+				D4D4179B2EBADE5D0093653E /* AddBabyView.swift */,
+			);
+			path = AddBaby;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -668,7 +762,7 @@
 				D4D4138A2EB751D70093653E /* MainTab */,
 				D4D414CE2EB893C80093653E /* Teeth */,
 				D4D4162C2EB988F90093653E /* GrowthDetail */,
-				D4D4166B2EB9FD030093653E /* MilestoneDetail */,
+				D4D4166B2EB9FD030093653E /* AllMilestone */,
 			);
 			name = babyMoa;
 			packageProductDependencies = (
@@ -823,6 +917,20 @@
 				058857132EA8581F00EAF72B /* GuardianAddSheetView.swift in Sources */,
 				478628202EB64524004B9568 /* GetBabyListResModel.swift in Sources */,
 				4786281B2EB638A6004B9568 /* GetGrowthDataReqModel.swift in Sources */,
+				D4D417AB2EBADE5D0093653E /* RelationshipPickerModal.swift in Sources */,
+				D4D417AC2EBADE5D0093653E /* RelationshipSelectionView.swift in Sources */,
+				D4D417AD2EBADE5D0093653E /* BirthDateSelectionView.swift in Sources */,
+				D4D417AE2EBADE5D0093653E /* AddBabyInvitationView.swift in Sources */,
+				D4D417AF2EBADE5D0093653E /* BabyInputField.swift in Sources */,
+				D4D417B02EBADE5D0093653E /* AddBabyNewNoView.swift in Sources */,
+				D4D417B12EBADE5D0093653E /* DatePickerModal.swift in Sources */,
+				D4D417B22EBADE5D0093653E /* AddBabyNewView.swift in Sources */,
+				D4D417B32EBADE5D0093653E /* RelationshipType.swift in Sources */,
+				D4D417B42EBADE5D0093653E /* AddBabyViewModel.swift in Sources */,
+				D4D417B52EBADE5D0093653E /* BabyProfileImageView.swift in Sources */,
+				D4D417B62EBADE5D0093653E /* GenderSelectionView.swift in Sources */,
+				D4D417B72EBADE5D0093653E /* AddBabyView.swift in Sources */,
+				D4D417B82EBADE5D0093653E /* AddBabyStatusView.swift in Sources */,
 				05DB6C312EAAEEF60043E76E /* KeyChainHelper.swift in Sources */,
 				D474CF552EB62F5F00F02B26 /* BabyMoaRootView.swift in Sources */,
 				05CD80142EA5F81F008C0940 /* ContentView.swift in Sources */,
@@ -845,6 +953,20 @@
 				478628432EB65475004B9568 /* GetJourniesAtMonthResModel.swift in Sources */,
 				9FD7CDF12EB50F8200508130 /* BabyMoaEndpoint.swift in Sources */,
 				9FD7CDFD2EB50FA300508130 /* HTTPClient.swift in Sources */,
+				D4D4179D2EBADE5D0093653E /* RelationshipPickerModal.swift in Sources */,
+				D4D4179E2EBADE5D0093653E /* RelationshipSelectionView.swift in Sources */,
+				D4D4179F2EBADE5D0093653E /* BirthDateSelectionView.swift in Sources */,
+				D4D417A02EBADE5D0093653E /* AddBabyInvitationView.swift in Sources */,
+				D4D417A12EBADE5D0093653E /* BabyInputField.swift in Sources */,
+				D4D417A22EBADE5D0093653E /* AddBabyNewNoView.swift in Sources */,
+				D4D417A32EBADE5D0093653E /* DatePickerModal.swift in Sources */,
+				D4D417A42EBADE5D0093653E /* AddBabyNewView.swift in Sources */,
+				D4D417A52EBADE5D0093653E /* RelationshipType.swift in Sources */,
+				D4D417A62EBADE5D0093653E /* AddBabyViewModel.swift in Sources */,
+				D4D417A72EBADE5D0093653E /* BabyProfileImageView.swift in Sources */,
+				D4D417A82EBADE5D0093653E /* GenderSelectionView.swift in Sources */,
+				D4D417A92EBADE5D0093653E /* AddBabyView.swift in Sources */,
+				D4D417AA2EBADE5D0093653E /* AddBabyStatusView.swift in Sources */,
 				D4D413922EB755080093653E /* SelectedBaby.swift in Sources */,
 				478629082EB7201A004B9568 /* AuthRefreshReqModel.swift in Sources */,
 				D4D413982EB756430093653E /* GetBabyResModel.swift in Sources */,

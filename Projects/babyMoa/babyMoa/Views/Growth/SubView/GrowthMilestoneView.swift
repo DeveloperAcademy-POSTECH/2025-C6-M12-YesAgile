@@ -31,8 +31,8 @@ struct GrowthMilestoneView: View {
     // Sheet
     @State private var showDatePicker = false
 
-    // 뒤로가기 확인 다이얼로그
-    @State private var showDiscardAlert = false
+    // 삭제 확인 다이얼로그
+    @State private var showDeleteDialog = false
 
     init(
         milestone: GrowthMilestone,
@@ -66,7 +66,33 @@ struct GrowthMilestoneView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            CustomNavigationBar(
+                title: milestone.title,
+                leading: {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.backward")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 13)
+                    }
+                    
+                },
+                trailing: {
+                    Button(action: {
+                        showDeleteDialog = true
+                    }) {
+                        Image(systemName: "trash")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 23)
+                    }
+                },
+                paddingTop: 0
+            )
+            .padding(.horizontal, 20)
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     // 사진 (가로 여백 20, 가로 꽉)
@@ -124,109 +150,83 @@ struct GrowthMilestoneView: View {
                     .padding(.bottom, 20)
                 }
             }
+            GrowthBottomButton(title: "저장", isEnabled: hasChanges) {
+                onSave?(
+                    milestone,
+                    selectedImage,
+                    memo.isEmpty ? nil : memo,
+                    selectedDate
+                )
+                dismiss()
+            }
             .background(Color("Background"))
-            .navigationTitle(milestone.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        // 변경사항이 있으면 확인 다이얼로그 표시
-                        if hasChanges {
-                            showDiscardAlert = true
-                        } else {
-                            dismiss()
-                        }
-                    }) {
-                        Image(systemName: "chevron.left")
-                            .foregroundColor(Color("Font"))
+        }
+        .background(Color("Background"))
+        .sheet(isPresented: $showDatePicker) {
+            VStack(spacing: 0) {
+                // 헤더
+                HStack {
+                    Button("취소") {
+                        showDatePicker = false
                     }
+                    .foregroundColor(.secondary)
+
+                    Spacer()
+
+                    Text("작성일 선택")
+                        .font(.system(size: 17, weight: .semibold))
+
+                    Spacer()
+
+                    Button("완료") {
+                        showDatePicker = false
+                    }
+                    .foregroundColor(Color("Brand-50"))
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    if onDelete != nil {
-                        Button(action: { onDelete?() }) {
-                            Image(systemName: "trash")
-                                .foregroundColor(Color("Brand-50"))
-                        }
+                .padding()
+
+                Divider()
+
+                // Wheel Picker
+                DatePicker(
+                    "작성일",
+                    selection: $selectedDate,
+                    displayedComponents: .date
+                )
+                .datePickerStyle(.wheel)
+                .labelsHidden()
+                .padding()
+            }
+            .presentationDetents([.height(320)])
+        }
+        // 사진 선택 모달 (레이아웃와 분리)
+        .photosPicker(
+            isPresented: $showPhotoPicker,
+            selection: $pickedItem,
+            matching: .images
+        )
+        .alert("성장 마일스톤", isPresented: $showDeleteDialog) {
+            Button("취소", role: .cancel) { }
+            Button("삭제", role: .destructive) {
+                Task {
+                    if let onDelete {
+                        onDelete()
                     }
                 }
             }
-            .confirmationDialog(
-                "",
-                isPresented: $showDiscardAlert,
-                titleVisibility: .hidden
-            ) {
-                Button("변경 사항 폐기", role: .destructive) {
-                    dismiss()
-                }
-                Button("계속 편집하기", role: .cancel) {}
-            }
-            .safeAreaInset(edge: .bottom) {
-                // ✅ 컴포넌트: 저장 버튼
-                GrowthBottomButton(title: "저장", isEnabled: hasChanges) {
-                    onSave?(
-                        milestone,
-                        selectedImage,
-                        memo.isEmpty ? nil : memo,
-                        selectedDate
-                    )
-                    dismiss()
-                }
-                .background(Color("Background"))
-            }
-            .sheet(isPresented: $showDatePicker) {
-                VStack(spacing: 0) {
-                    // 헤더
-                    HStack {
-                        Button("취소") {
-                            showDatePicker = false
-                        }
-                        .foregroundColor(.secondary)
-
-                        Spacer()
-
-                        Text("작성일 선택")
-                            .font(.system(size: 17, weight: .semibold))
-
-                        Spacer()
-
-                        Button("완료") {
-                            showDatePicker = false
-                        }
-                        .foregroundColor(Color("Brand-50"))
-                    }
-                    .padding()
-
-                    Divider()
-
-                    // Wheel Picker
-                    DatePicker(
-                        "작성일",
-                        selection: $selectedDate,
-                        displayedComponents: .date
-                    )
-                    .datePickerStyle(.wheel)
-                    .labelsHidden()
-                    .padding()
-                }
-                .presentationDetents([.height(320)])
-            }
-            // 사진 선택 모달 (레이아웃와 분리)
-            .photosPicker(
-                isPresented: $showPhotoPicker,
-                selection: $pickedItem,
-                matching: .images
-            )
-            // 선택 변경 시 이미지 갱신
-            .onChange(of: pickedItem) { _, newValue in
-                Task { @MainActor in
-                    guard let newValue else { return }
-                    if let data = try? await newValue.loadTransferable(
-                        type: Data.self
-                    ),
-                        let uiImage = UIImage(data: data)
-                    {
-                        selectedImage = uiImage
-                    }
+        } message: {
+            Text("삭제 하시겠습니까?")
+        }
+        // 선택 변경 시 이미지 갱신
+        .onChange(of: pickedItem) { _, newValue in
+            Task { @MainActor in
+                guard let newValue else { return }
+                if let data = try? await newValue.loadTransferable(
+                    type: Data.self
+                ),
+                    let uiImage = UIImage(data: data)
+                {
+                    selectedImage = uiImage
                 }
             }
         }

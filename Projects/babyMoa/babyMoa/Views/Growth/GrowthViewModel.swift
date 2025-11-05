@@ -11,7 +11,7 @@ import SwiftUI
 final class GrowthViewModel {
     var coordinator: BabyMoaCoordinator
     
-    // MARK: Properties
+    // MARK: - Properties
     // 좌측 상단 아기 정보 보여주기 위함
     var selectedBaby: BabySummary?
     
@@ -141,6 +141,12 @@ final class GrowthViewModel {
     // 서버에서 불러온 이빨 정보
     var teethList: [TeethData] = TeethData.mockData
     
+    // MARK: - Stored Properties
+    var selectedMilestone: GrowthMilestone {
+        allMilestones[selectedMilestoneAgeRangeIdx][selectedMilestoneIdxInAgeRange]
+    }
+    
+    
     init(coordinator: BabyMoaCoordinator) {
         self.coordinator = coordinator
     }
@@ -176,7 +182,7 @@ final class GrowthViewModel {
     func setMilestone(milestone: GrowthMilestone) async -> Bool {
         let result = await BabyMoaService.shared.postSetBabyMilestone(babyId: SelectedBaby.babyId!, milestoneName: milestone.id, milestoneImage: milestone.imageURL ?? "", date: DateFormatter.yyyyDashMMDashdd.string(from: milestone.completedDate ?? Date()), memo: milestone.description)
         switch result {
-        case .success(let success):
+        case .success:
             return true
         case .failure(let error):
             print(error)
@@ -210,6 +216,24 @@ final class GrowthViewModel {
         case .failure(let failure):
             print(failure)
         }
+    }
+    
+    func deleteBabyMilestone() async {
+        let result = await BabyMoaService.shared.deleteBabyMilestone(babyId: SelectedBaby.babyId!, milestoneName: selectedMilestone.id)
+        switch result {
+        case .success:
+            isMilestoneEditingViewPresented = false
+            initiateSelectedMilestone()
+        case .failure(let error):
+            print(error)
+        }
+    }
+    
+    func initiateSelectedMilestone() {
+        allMilestones[selectedMilestoneAgeRangeIdx][selectedMilestoneIdxInAgeRange].imageURL = nil
+        allMilestones[selectedMilestoneAgeRangeIdx][selectedMilestoneIdxInAgeRange].completedDate = nil
+        allMilestones[selectedMilestoneAgeRangeIdx][selectedMilestoneIdxInAgeRange].description = nil
+        allMilestones[selectedMilestoneAgeRangeIdx][selectedMilestoneIdxInAgeRange].isCompleted = false
     }
     
     func beforeMilestoneButtonTapped() {

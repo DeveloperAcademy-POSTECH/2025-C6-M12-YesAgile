@@ -17,59 +17,60 @@ struct GrowthView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            GrowthBabyHeader(showBabySelection: $isBabySelecting)
-                .padding(.bottom, 20)
-            HStack(spacing: 0) {
-                Text("24개월간의,")
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundStyle(.orange50)
-                Text(" 성장 마일스톤")
-                    .font(.system(size: 24))
-                    .foregroundStyle(.black)
-                Spacer()
-            }
-            .padding(.horizontal, 20)
-            Spacer()
-            MilestoneSummaryView(viewModel: $viewModel)
-//            Text("마일스톤 뷰 들어가는 자리입니다.. 마일스톤도 다 데이터를 넘겨주는식으로 되어있어서 수정이 필요해 보여요")
-            Spacer()
-            Button(action: {
-                viewModel.checkAllMilestonesButtonTapped()
-            }) {
-                RoundedRectangle(cornerRadius: 12)
-                    .overlay(
-                        Text("전체 성장 마일스톤 확인하기")
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundStyle(.white)
-                    )
-                    .foregroundStyle(.brand50)
-                    .frame(height: 60)
-            }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 30)
-            
-            HeightAndWeightView(
-                height: $viewModel.latestHeight,
-                weight: $viewModel.latestWeight,
-                heightTapAction: {
-                    viewModel.heightButtonTapped()
-                },
-                weightTapAction: {
-                    viewModel.weightButtonTapped()
+            BabySelectionHeader()
+            ScrollView {
+                HStack(spacing: 0) {
+                    Text("24개월간의,")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundStyle(.orange50)
+                    Text(" 성장 마일스톤")
+                        .font(.system(size: 24))
+                        .foregroundStyle(.black)
+                    Spacer()
                 }
-            )
-            .frame(height: 100)
-            .padding(.horizontal, 20)
-            .padding(.bottom, 20)
-            
-            Button(action: {
-                viewModel.toothButtonTapped()
-            }) {
-                TeethSummaryView(viewModel: $viewModel)
-                    .frame(height: 100)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
+                MilestoneSummaryView(viewModel: $viewModel)
+                    .frame(height: 500)
+                Spacer()
+                Button(action: {
+                    viewModel.checkAllMilestonesButtonTapped()
+                }) {
+                    RoundedRectangle(cornerRadius: 12)
+                        .overlay(
+                            Text("전체 성장 마일스톤 확인하기")
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundStyle(.white)
+                        )
+                        .foregroundStyle(.brand50)
+                        .frame(height: 60)
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 30)
+                
+                HeightAndWeightView(
+                    height: $viewModel.latestHeight,
+                    weight: $viewModel.latestWeight,
+                    heightTapAction: {
+                        viewModel.heightButtonTapped()
+                    },
+                    weightTapAction: {
+                        viewModel.weightButtonTapped()
+                    }
+                )
+                .frame(height: 100)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
+                
+                Button(action: {
+                    viewModel.toothButtonTapped()
+                }) {
+                    TeethSummaryView(viewModel: $viewModel)
+                        .frame(height: 100)
+                }
+                .buttonStyle(.plain)
+                Spacer().frame(height: 30)
             }
-            .buttonStyle(.plain)
-            Spacer().frame(height: 30)
         }
         .onAppear {
             Task {
@@ -91,39 +92,53 @@ struct MilestoneSummaryView: View {
                 }) {
                     Image(systemName: "chevron.left")
                         .resizable()
+                        .bold()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 8)
+                        .frame(width: 10)
                 }
                 
                 Spacer()
                 Text(viewModel.allMilestones[viewModel.selectedMonthIdx].first!.ageRange)
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(.orange50)
                 Spacer()
                 Button(action: {
                     viewModel.afterMilestoneButtonTapped()
                 }) {
                     Image(systemName: "chevron.right")
                         .resizable()
+                        .bold()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 8)
+                        .frame(width: 10)
                 }
             }
-            .padding(.bottom, 20)
+            .padding(.horizontal, 20)
             
             ScrollView(.horizontal) {
                 HStack {
+                    Spacer().frame(width: 20)
                     ForEach(0..<viewModel.allMilestones[viewModel.selectedMonthIdx].count, id: \.self) { milestoneColIdx in
-                        MilestoneCardView(milestone: viewModel.allMilestones[viewModel.selectedMonthIdx][milestoneColIdx], onTap: {
-                            viewModel.selectedMilestoneAgeRangeIdx = viewModel.selectedMonthIdx
-                            viewModel.selectedMilestoneIdxInAgeRange = milestoneColIdx
-                            viewModel.isMilestoneEditingViewPresented = true
-                        })
+                        MilestoneCardView(
+                            milestone: viewModel.allMilestones[viewModel.selectedMonthIdx][milestoneColIdx],
+                            cardWidth: 310,
+                            cardHeight: 414,
+                            cardType: .big,
+                            onTap: {
+                                viewModel.selectedMilestoneAgeRangeIdx = viewModel.selectedMonthIdx
+                                viewModel.selectedMilestoneIdxInAgeRange = milestoneColIdx
+                                viewModel.isMilestoneEditingViewPresented = true
+                            }
+                        )
+                        .padding(.vertical, 20)
+                        .padding(.trailing, 20)
                     }
                 }
             }
+            .scrollIndicators(.never)
         }
-        .sheet(isPresented: $viewModel.isMilestoneEditingViewPresented) {
+        .fullScreenCover(isPresented: $viewModel.isMilestoneEditingViewPresented) {
             GrowthMilestoneView(
-                milestone: viewModel.allMilestones[viewModel.selectedMilestoneAgeRangeIdx][viewModel.selectedMilestoneIdxInAgeRange],
+                milestone: viewModel.selectedMilestone,
                 onSave: { milestone, selectedImage, memo, selectedDate in
                     Task {
                         let editedMilestone = GrowthMilestone(id: milestone.id, title: milestone.title, ageRange: milestone.ageRange, completedDate: selectedDate, description: memo, illustrationName: milestone.illustrationName)
@@ -134,16 +149,20 @@ struct MilestoneSummaryView: View {
                     }
                 },
                 onDelete: {
-                    
+                    Task {
+                        await viewModel.deleteBabyMilestone()
+                    }
                 }
             )
-//            MilestoneEditingView(milestone: $viewModel.allMilestones[viewModel.selectedMilestoneAgeRangeIdx][viewModel.selectedMilestoneIdxInAgeRange])
         }
     }
 }
 
 struct MilestoneCardView: View {
     let milestone: GrowthMilestone
+    let cardWidth: CGFloat
+    let cardHeight: CGFloat
+    let cardType: MilestoneCardType
     var onTap: () -> Void
     
     var body: some View {
@@ -151,23 +170,50 @@ struct MilestoneCardView: View {
             Image(milestone.illustrationName!) // TODO: url 구현하면 이미지 가져오는 것으로 바꿔야 함
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 200)
+                .padding(.horizontal, 10)
             VStack {
+                Spacer().frame(height: cardType == .small ? 10 : 20)
                 Text(milestone.completedDate != nil ? DateFormatter.yyyyMMdd.string(from: milestone.completedDate!) : "저는 곧 할 수 있어요")
+                    .font(.system(size: cardType.dateFontSize, weight: .bold))
                 Spacer()
                 Text(milestone.title)
+                    .font(.system(size: cardType.titleFontSize, weight: .bold))
+                Spacer().frame(height: cardType == .small ? 10 : 20)
             }
+            .foregroundStyle(.orange70)
         }
+        .frame(width: cardWidth, height: cardHeight)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.white)
+                .shadow(color: .black.opacity(0.2), radius: 10)
+        )
         .onTapGesture {
             onTap()
         }
     }
 }
 
-struct MilestoneEditingView: View {
-    @Binding var milestone: GrowthMilestone
+/// 마일스톤 각 카드 항목 상 보여지는 폰트의 크기를 조절하기 위한 타입 값입니다.
+enum MilestoneCardType {
+    case small
+    case big
     
-    var body: some View {
-        
+    var dateFontSize: CGFloat {
+        switch self {
+        case .small:
+            return 8
+        case .big:
+            return 18
+        }
     }
-}// setMilestone 반환 true false 여부로 success 시 로컬도 업데이트 진행해야 함.
+    
+    var titleFontSize: CGFloat {
+        switch self {
+        case .small:
+            return 10
+        case .big:
+            return 30
+        }
+    }
+}
