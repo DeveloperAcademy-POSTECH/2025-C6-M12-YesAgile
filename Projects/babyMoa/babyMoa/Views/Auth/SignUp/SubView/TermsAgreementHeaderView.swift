@@ -19,6 +19,7 @@ struct TermsAgreementHeaderView: View {
                     .foregroundStyle(.black)
                 Spacer()
             }
+            
             HStack(spacing: 0) {
                 Button(action: {
                     cancelAction()
