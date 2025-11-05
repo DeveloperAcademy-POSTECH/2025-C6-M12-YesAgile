@@ -100,7 +100,7 @@ struct BabyView: View {
                 if baby.isPregnant == true {
                     // 태명 등록 (임신 중)
                     NavigationStack {
-                        AddBabyNewNoView(baby: baby)
+                        AddBabyNewNoViewOld(baby: baby)
                     }
                 } else {
                     // 출생 등록

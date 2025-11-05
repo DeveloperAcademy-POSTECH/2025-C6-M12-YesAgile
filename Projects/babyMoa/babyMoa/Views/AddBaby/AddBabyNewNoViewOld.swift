@@ -17,7 +17,7 @@ private enum BabyRelationship: String, CaseIterable, Identifiable {
 }
 
 
-struct AddBabyNewNoView: View {
+struct AddBabyNewNoViewOld: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage("hasCompletedBabySetup") private var hasCompletedBabySetup = false
     
@@ -439,5 +439,5 @@ struct AddBabyNewNoView: View {
 }
 
 #Preview {
-    AddBabyNewNoView()
+    AddBabyNewNoViewOld()
 }

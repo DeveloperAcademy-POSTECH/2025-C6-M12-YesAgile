@@ -12,7 +12,7 @@ struct AuthButtonTextStyle: ViewModifier {
     var fontSize: CGFloat = 14
     var bgColor: Color = .blue
     var fontColor: Color = .white
-    var borderColor: Color = .black
+    var borderColor: Color = .clear
     
     
     func body(content: Content) -> some View {
