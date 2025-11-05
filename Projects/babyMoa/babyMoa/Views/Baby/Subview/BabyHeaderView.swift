@@ -42,7 +42,6 @@ struct BabyHeaderView: View {
                     .font(.system(size: 22, weight: .bold))
             }
         }
-        .frame(height: 91)
     }
 }
 
