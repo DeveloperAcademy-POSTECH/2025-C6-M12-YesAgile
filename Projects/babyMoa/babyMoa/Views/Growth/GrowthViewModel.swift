@@ -165,11 +165,12 @@ final class GrowthViewModel {
         case .success(let success):
             guard let milestonesData = success.data else { return }
             for milestone in milestonesData {
-                print(milestone.memo)
                 let row = Int(milestone.milestoneName.split(separator: "_")[1])!
                 let col = Int(milestone.milestoneName.split(separator: "_")[2])!
                 
-                allMilestones[row][col].imageURL = milestone.imageUrl
+                let decodedImage = await ImageManager.shared.downloadImage(from: milestone.imageUrl)
+                
+                allMilestones[row][col].image = decodedImage
                 allMilestones[row][col].completedDate = DateFormatter.yyyyDashMMDashdd.date(from: milestone.date)
                 allMilestones[row][col].description = milestone.memo
             }
@@ -180,7 +181,11 @@ final class GrowthViewModel {
     }
     
     func setMilestone(milestone: GrowthMilestone) async -> Bool {
-        let result = await BabyMoaService.shared.postSetBabyMilestone(babyId: SelectedBaby.babyId!, milestoneName: milestone.id, milestoneImage: milestone.imageURL ?? "", date: DateFormatter.yyyyDashMMDashdd.string(from: milestone.completedDate ?? Date()), memo: milestone.description)
+        var base64EncodedImage: String?
+        if let image = milestone.image {
+            base64EncodedImage = ImageManager.shared.encodeToBase64(image)
+        }
+        let result = await BabyMoaService.shared.postSetBabyMilestone(babyId: SelectedBaby.babyId!, milestoneName: milestone.id, milestoneImage: base64EncodedImage ?? "", date: DateFormatter.yyyyDashMMDashdd.string(from: milestone.completedDate ?? Date()), memo: milestone.description)
         switch result {
         case .success:
             return true
@@ -210,7 +215,7 @@ final class GrowthViewModel {
         switch result {
         case .success(let success):
             guard let babySummary = success.data else { return }
-            let profileImage = ImageManager.shared.convertToUIImage(imageNameOrUrl: babySummary.avatarImageName)
+            let profileImage = await ImageManager.shared.downloadImage(from: babySummary.avatarImageName)
             self.selectedBaby = BabySummary(babyId: babyId, babyName: babySummary.name, babyProfileImage: profileImage)
             
         case .failure(let failure):
@@ -230,7 +235,7 @@ final class GrowthViewModel {
     }
     
     func initiateSelectedMilestone() {
-        allMilestones[selectedMilestoneAgeRangeIdx][selectedMilestoneIdxInAgeRange].imageURL = nil
+        allMilestones[selectedMilestoneAgeRangeIdx][selectedMilestoneIdxInAgeRange].image = nil
         allMilestones[selectedMilestoneAgeRangeIdx][selectedMilestoneIdxInAgeRange].completedDate = nil
         allMilestones[selectedMilestoneAgeRangeIdx][selectedMilestoneIdxInAgeRange].description = nil
         allMilestones[selectedMilestoneAgeRangeIdx][selectedMilestoneIdxInAgeRange].isCompleted = false

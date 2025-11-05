@@ -33,7 +33,14 @@ final class AllMilestoneViewModel {
     }
     
     func setMilestone(milestone: GrowthMilestone) async -> Bool {
-        let result = await BabyMoaService.shared.postSetBabyMilestone(babyId: SelectedBaby.babyId!, milestoneName: milestone.id, milestoneImage: milestone.imageURL ?? "", date: DateFormatter.yyyyDashMMDashdd.string(from: milestone.completedDate ?? Date()), memo: milestone.description)
+        var base64EncodedImage: String?
+        
+        if let image = milestone.image {
+            base64EncodedImage = ImageManager.shared.encodeToBase64(image)
+        }
+        
+        let result = await BabyMoaService.shared.postSetBabyMilestone(babyId: SelectedBaby.babyId!, milestoneName: milestone.id, milestoneImage: base64EncodedImage ?? "", date: DateFormatter.yyyyDashMMDashdd.string(from: milestone.completedDate ?? Date()), memo: milestone.description)
+        
         switch result {
         case .success:
             return true
@@ -55,7 +62,7 @@ final class AllMilestoneViewModel {
     }
     
     func initiateSelectedMilestone() {
-        allMilestones[selectedCardRowIdx][selectedCardColIdx].imageURL = nil
+        allMilestones[selectedCardRowIdx][selectedCardColIdx].image = nil
         allMilestones[selectedCardRowIdx][selectedCardColIdx].completedDate = nil
         allMilestones[selectedCardRowIdx][selectedCardColIdx].description = nil
         allMilestones[selectedCardRowIdx][selectedCardColIdx].isCompleted = false

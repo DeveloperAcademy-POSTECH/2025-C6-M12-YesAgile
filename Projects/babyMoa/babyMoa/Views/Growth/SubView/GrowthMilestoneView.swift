@@ -235,7 +235,7 @@ struct GrowthMilestoneView: View {
     // MARK: - Photo Section
     private var photoSection: some View {
         ZStack {
-            if selectedImage == nil && (milestone.imageURL?.isEmpty ?? true) {
+            if selectedImage == nil && milestone.image == nil {
                 // 일러스트가 있으면 일러스트 표시, 없으면 플레이스홀더
                 if let illustrationName = milestone.illustrationName {
                     Image(illustrationName)
@@ -287,20 +287,12 @@ struct GrowthMilestoneView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(maxWidth: .infinity)
-        } else if let urlString = milestone.imageURL,
-            let url = URL(string: urlString)
+        } else if let image = milestone.image
         {
-            AsyncImage(url: url) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxWidth: .infinity)
-                default:
-                    EmptyView()
-                }
-            }
+            Image(uiImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 250)
         }
     }
 
