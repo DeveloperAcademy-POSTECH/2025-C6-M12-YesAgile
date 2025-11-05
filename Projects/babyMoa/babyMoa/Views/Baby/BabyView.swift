@@ -22,7 +22,7 @@ struct BabyView: View {
     var body: some View {
         VStack(spacing: 0) {
             // GrowthBabyHeader (공통 헤더)
-            GrowthBabyHeader(showBabySelection: $showBabySelection)
+//            GrowthBabyHeader(showBabySelection: $showBabySelection)
             
             ScrollView {
                 VStack(spacing: 16) {
@@ -101,7 +101,7 @@ struct BabyView: View {
                 if baby.isPregnant == true {
                     // 태명 등록 (임신 중)
                     NavigationStack {
-                        AddBabyNewNoViewOld(baby: baby)
+                        // AddBabyNewNoViewOld(baby: baby)
                     }
                 } else {
                     // 출생 등록

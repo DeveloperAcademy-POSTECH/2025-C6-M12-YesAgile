@@ -6,8 +6,7 @@
 //
 
 import Testing
-
-@testable import babyMoa
+@testable import BabyMoa
 
 struct babyMoaTests {
     @Test func login() async {
@@ -255,3 +254,4 @@ struct babyMoaTests {
         print(error)
     }
 }
+
