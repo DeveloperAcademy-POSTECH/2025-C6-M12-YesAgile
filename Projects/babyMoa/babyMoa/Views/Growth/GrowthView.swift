@@ -30,7 +30,8 @@ struct GrowthView: View {
             }
             .padding(.horizontal, 20)
             Spacer()
-            Text("마일스톤 뷰 들어가는 자리입니다.. 마일스톤도 다 데이터를 넘겨주는식으로 되어있어서 수정이 필요해 보여요")
+            MilestoneSummaryView(viewModel: $viewModel)
+//            Text("마일스톤 뷰 들어가는 자리입니다.. 마일스톤도 다 데이터를 넘겨주는식으로 되어있어서 수정이 필요해 보여요")
             Spacer()
             Button(action: {
                 viewModel.checkAllMilestonesButtonTapped()
@@ -72,12 +73,101 @@ struct GrowthView: View {
         }
         .onAppear {
             Task {
-                SelectedBaby.babyId = 9
+                SelectedBaby.babyId = 1
                 await viewModel.fetchAllGrowthData()
             }
         }
     }
 }
 
+struct MilestoneSummaryView: View {
+    @Binding var viewModel: GrowthViewModel
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Button(action: {
+                    viewModel.beforeMilestoneButtonTapped()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 8)
+                }
+                
+                Spacer()
+                Text(viewModel.allMilestones[viewModel.selectedMonthIdx].first!.ageRange)
+                Spacer()
+                Button(action: {
+                    viewModel.afterMilestoneButtonTapped()
+                }) {
+                    Image(systemName: "chevron.right")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 8)
+                }
+            }
+            .padding(.bottom, 20)
+            
+            ScrollView(.horizontal) {
+                HStack {
+                    ForEach(0..<viewModel.allMilestones[viewModel.selectedMonthIdx].count, id: \.self) { milestoneColIdx in
+                        MilestoneCardView(milestone: viewModel.allMilestones[viewModel.selectedMonthIdx][milestoneColIdx], onTap: {
+                            viewModel.selectedMilestoneAgeRangeIdx = viewModel.selectedMonthIdx
+                            viewModel.selectedMilestoneIdxInAgeRange = milestoneColIdx
+                            viewModel.isMilestoneEditingViewPresented = true
+                        })
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $viewModel.isMilestoneEditingViewPresented) {
+            GrowthMilestoneView(
+                milestone: viewModel.allMilestones[viewModel.selectedMilestoneAgeRangeIdx][viewModel.selectedMilestoneIdxInAgeRange],
+                onSave: { milestone, selectedImage, memo, selectedDate in
+                    Task {
+                        let editedMilestone = GrowthMilestone(id: milestone.id, title: milestone.title, ageRange: milestone.ageRange, completedDate: selectedDate, description: memo, illustrationName: milestone.illustrationName)
+                        let isSaveCompleted = await viewModel.setMilestone(milestone: editedMilestone)
+                        if isSaveCompleted {
+                            viewModel.allMilestones[viewModel.selectedMilestoneAgeRangeIdx][viewModel.selectedMilestoneIdxInAgeRange] = editedMilestone
+                        }
+                    }
+                },
+                onDelete: {
+                    
+                }
+            )
+//            MilestoneEditingView(milestone: $viewModel.allMilestones[viewModel.selectedMilestoneAgeRangeIdx][viewModel.selectedMilestoneIdxInAgeRange])
+        }
+    }
+}
 
+struct MilestoneCardView: View {
+    let milestone: GrowthMilestone
+    var onTap: () -> Void
+    
+    var body: some View {
+        ZStack {
+            Image(milestone.illustrationName!) // TODO: url 구현하면 이미지 가져오는 것으로 바꿔야 함
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 200)
+            VStack {
+                Text(milestone.completedDate != nil ? DateFormatter.yyyyMMdd.string(from: milestone.completedDate!) : "저는 곧 할 수 있어요")
+                Spacer()
+                Text(milestone.title)
+            }
+        }
+        .onTapGesture {
+            onTap()
+        }
+    }
+}
 
+struct MilestoneEditingView: View {
+    @Binding var milestone: GrowthMilestone
+    
+    var body: some View {
+        
+    }
+}// setMilestone 반환 true false 여부로 success 시 로컬도 업데이트 진행해야 함.

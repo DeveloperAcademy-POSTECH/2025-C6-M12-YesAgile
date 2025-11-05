@@ -18,7 +18,12 @@ final class GrowthViewModel {
     var latestHeight: Double?
     var latestWeight: Double?
     
-    var selectedMonth: Int = 0
+    var selectedMonthIdx: Int = 0
+    
+    var selectedMilestoneAgeRangeIdx: Int = 0 // TODO: 네이밍 어떻게 할까요.. 네이밍하다가 머리 터질뻔했습니다.. -> allMilestones 2차원 배열의 row 인덱스입니다
+    var selectedMilestoneIdxInAgeRange: Int = 0 // TODO: 네이밍 어떻게 할까요.. 네이밍하다가 머리 터질뻔했습니다.. -> allMilestones 2차원 배열의 col 인덱스입니다
+    
+    var isMilestoneEditingViewPresented: Bool = false
     
     // 마일스톤 데이터 더 추가 예정
     var allMilestones: [[GrowthMilestone]] = [
@@ -132,14 +137,9 @@ final class GrowthViewModel {
         ],
     ]
     
+    
     // 서버에서 불러온 이빨 정보
     var teethList: [TeethData] = TeethData.mockData
-
-    // MARK: - Computed Properties
-    var currentMilestones: [GrowthMilestone] {
-        guard selectedMonth < allMilestones.count else { return [] }
-        return allMilestones[selectedMonth]
-    }
     
     init(coordinator: BabyMoaCoordinator) {
         self.coordinator = coordinator
@@ -154,6 +154,34 @@ final class GrowthViewModel {
     
     func fetchAllMilestones(babyId: Int) async {
         // let result = await BabyMoaService.shared.getMile
+        let result = await BabyMoaService.shared.getGetBabyMilestones(babyId: babyId)
+        switch result {
+        case .success(let success):
+            guard let milestonesData = success.data else { return }
+            for milestone in milestonesData {
+                print(milestone.memo)
+                let row = Int(milestone.milestoneName.split(separator: "_")[1])!
+                let col = Int(milestone.milestoneName.split(separator: "_")[2])!
+                
+                allMilestones[row][col].imageURL = milestone.imageUrl
+                allMilestones[row][col].completedDate = DateFormatter.yyyyDashMMDashdd.date(from: milestone.date)
+                allMilestones[row][col].description = milestone.memo
+            }
+        case .failure(let error):
+            print(error)
+            
+        }
+    }
+    
+    func setMilestone(milestone: GrowthMilestone) async -> Bool {
+        let result = await BabyMoaService.shared.postSetBabyMilestone(babyId: SelectedBaby.babyId!, milestoneName: milestone.id, milestoneImage: milestone.imageURL ?? "", date: DateFormatter.yyyyDashMMDashdd.string(from: milestone.completedDate ?? Date()), memo: milestone.description)
+        switch result {
+        case .success(let success):
+            return true
+        case .failure(let error):
+            print(error)
+            return false
+        }
     }
     
     func fetchGrowthData(babyId: Int) async {
@@ -182,6 +210,20 @@ final class GrowthViewModel {
         case .failure(let failure):
             print(failure)
         }
+    }
+    
+    func beforeMilestoneButtonTapped() {
+        if selectedMonthIdx <= 0 {
+            return
+        }
+        selectedMonthIdx -= 1
+    }
+    
+    func afterMilestoneButtonTapped() {
+        if selectedMonthIdx >= allMilestones.count - 1 {
+            return
+        }
+        selectedMonthIdx += 1
     }
     
     @MainActor

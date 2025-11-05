@@ -85,10 +85,10 @@ protocol BabyMoaServicable: HTTPClient {
     >
     func postSetBabyMilestone(
         babyId: Int,
-        milestoneIdx: Int,
+        milestoneName: String,
         milestoneImage: String,
         date: String,
-        memo: String
+        memo: String?
     ) async -> Result<
         BaseResponse<EmptyData>, RequestError
     >
@@ -164,15 +164,15 @@ class BabyMoaService: BabyMoaServicable {
     }
     func postSetBabyMilestone(
         babyId: Int,
-        milestoneIdx: Int,
+        milestoneName: String,
         milestoneImage: String,
         date: String,
-        memo: String
+        memo: String?
     ) async -> Result<BaseResponse<EmptyData>, RequestError> {
         let result = await request(
             endpoint: BabyMoaEndpoint.setBabyMilestone(
                 babyId: babyId,
-                milestoneIdx: milestoneIdx,
+                milestoneName: milestoneName,
                 milestoneImage: milestoneImage,
                 date: date,
                 memo: memo
@@ -189,7 +189,7 @@ class BabyMoaService: BabyMoaServicable {
                 await refreshToken()
                 return await self.postSetBabyMilestone(
                     babyId: babyId,
-                    milestoneIdx: milestoneIdx,
+                    milestoneName: milestoneName,
                     milestoneImage: milestoneImage,
                     date: date,
                     memo: memo
