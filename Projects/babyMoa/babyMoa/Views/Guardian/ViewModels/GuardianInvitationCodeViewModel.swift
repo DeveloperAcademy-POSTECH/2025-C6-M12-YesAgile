@@ -35,26 +35,24 @@ class GuardianInvitationCodeViewModel: ObservableObject {
     // MARK: - Relationship Picker
     @Published var showRelationshipPicker: Bool = false
     @Published var relationship: RelationshipType = .dad
-
-    // MARK: - Public Methods
+    
+    // MARK: - 함수 정의
     
     func generateInvitationCode() async {
         isLoading = true
         errorMessage = nil
         
         do {
-            // 1. Simulate network request
             try await Task.sleep(nanoseconds: 1_000_000_000)
             
-            // 2. On success, create GuardianInvitate model from server response
-            // Assuming server provides all necessary GuardianInvitate fields
+            
             self.generatedInvitation = GuardianInvitate(
                 id: UUID().uuidString,
-                code: "2025-ABCD-4404", // This code would come from the server
+                code: "2025-ABCD-4404",
                 babyName: babyName,
                 babyBirthday: birthDate,
-                babyId: UUID().uuidString, // This would come from the server
-                relationship: self.relationship.rawValue // This would come from the server or be selected by user
+                babyId: UUID().uuidString,
+                relationship: self.relationship.rawValue
             )
             self.shouldNavigateToCodeView = true
             
@@ -67,12 +65,10 @@ class GuardianInvitationCodeViewModel: ObservableObject {
     
     func copyCodeToClipboard() {
         guard let code = generatedInvitation?.code else { return }
-        
         // UIKit을 사용하여 클립보드에 복사
 #if canImport(UIKit)
         UIPasteboard.general.string = code
 #endif
-        
         withAnimation {
             isCodeCopied = true
         }

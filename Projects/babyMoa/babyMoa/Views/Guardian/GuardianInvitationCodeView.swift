@@ -38,7 +38,7 @@ struct GuardianInvitationCodeView: View {
                     Text(viewModel.babyName)
                         .font(.system(size: 18, weight: .medium))
                         .padding(.bottom, 13)
-                    Text(viewModel.birthDateLabel)
+                    Text("\(viewModel.birthDateLabel) 출생")
                         .font(.system(size: 14, weight: .medium))
                 }
                 
@@ -57,8 +57,6 @@ struct GuardianInvitationCodeView: View {
                     // 로딩 중일 때 버튼 비활성화
                     .disabled(viewModel.isLoading)
                 }
-                .padding(.top, 16)
-                
                 Spacer()
             }
             .backgroundPadding(.horizontal)

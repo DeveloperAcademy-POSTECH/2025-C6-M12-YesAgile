@@ -54,6 +54,7 @@ struct BabyMainView: View {
                     
                     Button("로그아웃", action: {
                         // TODO: 로그아웃 기능 구현
+                        viewModel.showSignOutAlert = true
                     })
                     .buttonStyle(.outlineThirdButton)
                     
@@ -83,6 +84,23 @@ struct BabyMainView: View {
         } message: {
             Text(viewModel.errorMessage ?? "알 수 없는 오류가 발생했습니다.")
         }
+        .alert("로그아웃할까요?", isPresented: $viewModel.showSignOutAlert, actions: {
+            Button("로그아웃", role: .destructive) {
+                
+                if viewModel.signOut() {
+                     // sessionManager.sessionState = .loggedOut 에서 로그아웃을 처리해야 되나 어떻게 해야 되나?
+                    // 서버와 이야기 해야 한다.
+                    print("로그인 버튼을 클릭했습니다.")
+                } else {
+                    print("Failed to sign out")
+                }
+                
+            }
+            Button("취소", role: .cancel) {
+                
+            }
+            
+        })
     }
 }
 
