@@ -44,7 +44,7 @@ struct BabyView: View {
                     } else {
                         // 여러 아기 카드 표시
                         ForEach(babies) { baby in
-                            BabyProfileCard(
+                            BabyProfileCardOld(
                                 babyName: baby.name,
                                 babyNickname: baby.nickname,
                                 ageText: calculateAgeText(for: baby),

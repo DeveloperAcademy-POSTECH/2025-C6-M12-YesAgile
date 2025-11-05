@@ -10,6 +10,7 @@ import Foundation
 class BabyMainViewModel: ObservableObject {
     
     @Published var babies : [Babies] = []
+    @Published var selectedBaby: Babies?
     @Published var isShowingSheet: Bool = false
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
@@ -20,6 +21,7 @@ class BabyMainViewModel: ObservableObject {
         }
     }
     
+    @MainActor
     func fetchBabies() async {
         isLoading = true
         
@@ -30,7 +32,9 @@ class BabyMainViewModel: ObservableObject {
             // let decodedData = try await NetworkService.fetch(...)
             
             // (3) 성공 시 (에러가 없었을 때)
-            self.babies = Babies.mockBabies
+            let fetchedBabies = Babies.mockBabies
+            self.babies = fetchedBabies
+            self.selectedBaby = fetchedBabies.first
             self.errorMessage = nil
             
         } catch {
@@ -40,6 +44,11 @@ class BabyMainViewModel: ObservableObject {
         }
         
         isLoading = false
+    }
+    
+    func selectBaby(_ baby: Babies) {
+        self.selectedBaby = baby
+        self.isShowingSheet = false
     }
     
     func showBabyListSheet(){
