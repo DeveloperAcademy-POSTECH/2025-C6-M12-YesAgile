@@ -21,14 +21,11 @@ struct AddBabyView: View {
                 Text("addBaby.new.description")
                     .subTitleTextStyle()
                 
-                Button(action: {
-                    // 이동하는 위치 : 어디파일로 가는것인가?
-                    
-                    
-                }) {
-                    Text("addBaby.new.button")
-                        .authButtonTextStyle(bgColor: .brand50)
-                }
+                
+                Button("addBaby.new.button", action: {
+                        // 어디로 가야 하는가?
+                })
+                .buttonStyle(.defaultButton)
             }
             
             // 초대코드 입력하기
@@ -39,13 +36,10 @@ struct AddBabyView: View {
                 Text("addBaby.connect.description")
                     .subTitleTextStyle()
                 
-                Button(action: {
-                    // 이동하는 위치 : 어디파일로 가는것인가?
-
-                }, label: {
-                    Text("addBaby.connect.button")
-                        .authButtonTextStyle(bgColor: .brand70)
+                Button("addBaby.new.button", action: {
+                        // 어디로 가야 하는가?
                 })
+                .buttonStyle(.secondButton)
             }
             
             Spacer()

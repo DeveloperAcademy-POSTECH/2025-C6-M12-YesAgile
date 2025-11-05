@@ -44,7 +44,7 @@ struct BabyView: View {
                     } else {
                         // 여러 아기 카드 표시
                         ForEach(babies) { baby in
-                            BabyProfileCard(
+                            BabyProfileCardOld(
                                 babyName: baby.name,
                                 babyNickname: baby.nickname,
                                 ageText: calculateAgeText(for: baby),
@@ -100,7 +100,7 @@ struct BabyView: View {
                 if baby.isPregnant == true {
                     // 태명 등록 (임신 중)
                     NavigationStack {
-                        AddBabyNewNoView(baby: baby)
+                        AddBabyNewNoViewOld(baby: baby)
                     }
                 } else {
                     // 출생 등록

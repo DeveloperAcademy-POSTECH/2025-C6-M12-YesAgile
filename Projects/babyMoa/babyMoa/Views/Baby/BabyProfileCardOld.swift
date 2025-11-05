@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BabyProfileCard: View {
+struct BabyProfileCardOld: View {
     let babyName: String?
     let babyNickname: String?
     let ageText: String
