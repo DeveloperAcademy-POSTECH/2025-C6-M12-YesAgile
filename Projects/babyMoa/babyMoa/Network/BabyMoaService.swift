@@ -104,9 +104,30 @@ protocol BabyMoaServicable: HTTPClient {
     func getGetBabyMilestones(
         babyId: Int
     ) async -> Result<BaseResponse<[GetBabyMilestonesResModel]>, RequestError>
+    
+    func deleteBabyMilestone(
+        babyId: Int,
+        milestoneName: String
+    ) async -> Result<BaseResponse<EmptyData>, RequestError>
 }
 
 class BabyMoaService: BabyMoaServicable {
+    func deleteBabyMilestone(babyId: Int, milestoneName: String) async -> Result<BaseResponse<EmptyData>, RequestError> {
+        let result = await request(endpoint: BabyMoaEndpoint.deleteBabyMilestone(babyId: babyId, milestoneName: milestoneName), responseModel: BaseResponse<EmptyData>.self)
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                await refreshToken()
+                return await request(endpoint: BabyMoaEndpoint.deleteBabyMilestone(babyId: babyId, milestoneName: milestoneName), responseModel: BaseResponse<EmptyData>.self)
+            default:
+                return result
+            }
+        }
+    }
+    
     func getGetBabyMilestones(babyId: Int) async -> Result<
         BaseResponse<[GetBabyMilestonesResModel]>, RequestError
     > {
