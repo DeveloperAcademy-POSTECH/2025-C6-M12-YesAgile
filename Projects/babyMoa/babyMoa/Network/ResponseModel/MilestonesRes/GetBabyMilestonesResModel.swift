@@ -8,5 +8,5 @@ struct GetBabyMilestonesResModel: Decodable {
     var milestoneName: String
     var imageUrl: String
     var date: String
-    var memo: String
+    var memo: String?
 }
