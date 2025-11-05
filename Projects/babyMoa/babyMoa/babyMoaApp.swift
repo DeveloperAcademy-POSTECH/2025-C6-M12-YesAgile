@@ -12,10 +12,8 @@ struct babyMoaApp: App {
     @AppStorage("hasCompletedBabySetup") private var hasCompletedBabySetup = false
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     var body: some Scene {
-        WindowGroup {
-            BabyMainView()
-            
-//            BabyMoaRootView()
+        WindowGroup {            
+            BabyMoaRootView()
 //            if hasCompletedBabySetup {
 //                MainTabView()  // 아기 등록 완료 → 메인 화면
 //            } else {
