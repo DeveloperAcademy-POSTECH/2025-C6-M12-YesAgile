@@ -11,6 +11,7 @@ struct BabyMainView: View {
     
     @StateObject private var viewModel = BabyMainViewModel()
     @State private var sheetHeight: CGFloat = .zero
+        
     
     var body: some View {
         ZStack {
@@ -71,6 +72,7 @@ struct BabyMainView: View {
             .onPreferenceChange(HeightPreferenceKey.self) { newHeight in
                 if newHeight > 0 {
                     sheetHeight = newHeight
+                    print("Calculated sheet height: \(newHeight)")
                 }
             }
             .presentationDetents(
