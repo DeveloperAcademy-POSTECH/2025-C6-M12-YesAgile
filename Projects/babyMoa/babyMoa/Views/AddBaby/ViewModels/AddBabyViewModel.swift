@@ -12,9 +12,10 @@ import PhotosUI // For PhotosPickerItem
 class AddBabyViewModel: ObservableObject {
 
     // MARK: - Baby Info
+    @Published var addBaby: [AddBabyModel] = []
     @Published var babyName: String = ""
     @Published var babyNickname: String = ""
-    @Published var selectedGender: String = "male" 
+    @Published var selectedGender: String = "male"
     @Published var birthDate: Date = Date()
     @Published var relationship: RelationshipType = .mom //
     // MARK: - UI State
