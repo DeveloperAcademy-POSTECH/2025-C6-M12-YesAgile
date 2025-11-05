@@ -14,18 +14,17 @@ class AddBabyViewModel: ObservableObject {
     // MARK: - Baby Info
     @Published var babyName: String = ""
     @Published var babyNickname: String = ""
-    @Published var selectedGender: String = "male" // Changed default to match Segment tags
+    @Published var selectedGender: String = "male" 
     @Published var birthDate: Date = Date()
-    @Published var relationship: RelationshipType = .mom // Assuming RelationshipType is defined and imported
-
+    @Published var relationship: RelationshipType = .mom //
     // MARK: - UI State
-    @Published var isBorn: Bool = true // Moved from AddBabyStatusView
+    @Published var isBorn: Bool = true //
     @Published var showDatePicker: Bool = false
     @Published var showRelationshipPicker: Bool = false
 
     // MARK: - Photo Picker
-    @Published var selectedPhotoItem: PhotosPickerItem? // Moved from AddBabyStatusView context
-    @Published var profileImage: UIImage? // Moved from AddBabyStatusView context
+    @Published var selectedPhotoItem: PhotosPickerItem?
+    @Published var profileImage: UIImage? //
 
     // MARK: - Static Data
     // Moved from AddBabyStatusView
