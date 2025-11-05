@@ -9,48 +9,71 @@ import SwiftUI
 
 struct GuardianInvitationCodeView: View {
     
-    @State var relationShip = ""
+    @StateObject private var viewModel: GuardianInvitationCodeViewModel
+    
+    init(viewModel: GuardianInvitationCodeViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
-        VStack{
-            Image(systemName: "person.crop.circle.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 100, height: 100)
-                .background(Color.gray.opacity(0.0))
-                .clipShape(Circle())
+        ZStack {
+            Color.background
             
-            
-            Text("응애자일 - Baby Name")
-                .padding(.top, 10)
-            Text("2025. 09. 01 출생")
-                .padding(.top, 10)
-            
-            VStack(alignment: .leading){
-                
-                Text("아이와의 관계")
-                // 아이와의 관계를 컴포넌트화 사용한다.
-                // 모델에서 데이터를 받아서 전달하는 형태가 되어야 한다.
-                TextField("아이와의 관계", text: $relationShip)
-                    .textFieldStyle(.basicForm)
-                    .padding(.bottom, 10)
-                
-                Button(action: {
-                    
-                }, label: {
-                    Text("공동양육자 초대 코드 생성")
-                        .authButtonTextStyle(bgColor: .blue)
+            VStack(spacing: 20){
+                CustomNavigationBar(title: "공동 육아자 초대", leading: {
+                    // TODO: 이전 화면으로 돌아가는 로직 구현
+                    // Button으로 구현하면 된다.
+                    Button(action: {
+                        
+                    }, label: {
+                        Image(systemName: "chevron.left")
+
+                    })
                 })
+                
+                // TODO: ViewModel에서 실제 아기 프로필 이미지 가져오기
+                BabyProfileImageView(profileImage: .constant(nil), selectedPhotoItem: .constant(nil))
+                
+                VStack{
+                    Text(viewModel.babyName)
+                        .font(.system(size: 18, weight: .medium))
+                        .padding(.bottom, 13)
+                    Text(viewModel.birthDateLabel)
+                        .font(.system(size: 14, weight: .medium))
+                }
+                
+                RelationshipSelectionView(
+                    relationship: $viewModel.relationship,
+                    showRelationshipPicker: $viewModel.showRelationshipPicker
+                )
+                
+                VStack(alignment: .leading){
+                    Button("공동 양육자 초대 코드 생성", action: {
+                        Task {
+                            await viewModel.generateInvitationCode()
+                        }
+                    })
+                    .buttonStyle(.defaultButton)
+                    // 로딩 중일 때 버튼 비활성화
+                    .disabled(viewModel.isLoading)
+                }
+                .padding(.top, 16)
+                
+                Spacer()
             }
-            .padding(.top, 16)
+            .backgroundPadding(.horizontal)
             
-            
-            Spacer()
         }
-        .padding(16)
+        .navigationBarBackButtonHidden(true)
+        .ignoresSafeArea()
+        .alert("오류", isPresented: Binding(get: { viewModel.errorMessage != nil }, set: { _ in viewModel.errorMessage = nil })) {
+            Button("확인") { }
+        } message: {
+            Text(viewModel.errorMessage ?? "알 수 없는 오류가 발생했습니다.")
+        }
     }
 }
 
 #Preview {
-    GuardianInvitationCodeView()
+    GuardianInvitationCodeView(viewModel: GuardianInvitationCodeViewModel())
 }

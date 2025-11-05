@@ -23,7 +23,7 @@ struct BabyMainView: View {
                     if let baby = viewModel.selectedBaby {
                         BabyHeaderView(
                             babyName: baby.name,
-                            buttonType: .navigate, // 기본값으로 설정 버튼 사용
+                            buttonType: .none, // 기본값으로 설정 버튼 사용
                             onButtonTap: {
                                 
                                 /* TODO: 설정 버튼 액션 구현 */

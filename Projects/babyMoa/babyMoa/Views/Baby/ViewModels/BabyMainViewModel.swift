@@ -28,10 +28,6 @@ class BabyMainViewModel: ObservableObject {
         do {
             try await Task.sleep(nanoseconds: 500_000_000)
             
-            // (2) 나중에 이 자리에 실제 네트워크 코드가 들어갑니다.
-            // let decodedData = try await NetworkService.fetch(...)
-            
-            // (3) 성공 시 (에러가 없었을 때)
             let fetchedBabies = Babies.mockBabies
             self.babies = fetchedBabies
             self.selectedBaby = fetchedBabies.first
