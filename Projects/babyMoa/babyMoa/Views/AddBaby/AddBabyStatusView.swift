@@ -11,9 +11,9 @@ struct AddBabyStatusView: View {
     @StateObject var viewModel = AddBabyViewModel()
     
     let genderSegments: [Segment] = [
-        Segment(tag: "MALE", title: "남아"),
-        Segment(tag: "FEMALE", title: "여아"),
-        Segment(tag: "NONE", title: "미정")
+        Segment(tag: "male", title: "남아"),
+        Segment(tag: "female", title: "여아"),
+        Segment(tag: "none", title: "미정")
     ]
     
     //MARK: - 뷰 스타트
