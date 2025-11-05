@@ -13,28 +13,31 @@ final class ImageManager {
     
     private init() { }
     
-    func convertToUIImage(imageNameOrUrl: String) -> UIImage? {
-        // 1. 로컬 이미지 먼저 시도
-        if let localImage = UIImage(named: imageNameOrUrl) {
-            return localImage
+    /// UIImage를 Base64 문자열로 인코딩
+    func encodeToBase64(_ image: UIImage, compressionQuality: CGFloat = 1.0) -> String? {
+        // UIImage를 JPEG 형식으로 Data 변환
+        guard let imageData = image.jpegData(compressionQuality: compressionQuality) else {
+            print("Failed to convert UIImage to Data")
+            return nil
         }
-        
-        // 2. URL 접근 시도
-        guard let url = URL(string: imageNameOrUrl) else {
-            print("잘못된 URL 형식: \(imageNameOrUrl)")
+        // Base64 인코딩
+        return imageData.base64EncodedString()
+    }
+    
+    /// URL에서 이미지를 다운로드하여 UIImage로 반환
+    func downloadImage(from urlString: String) async -> UIImage? {
+        // 유효한 URL인지 확인
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL: \(urlString)")
             return nil
         }
         
         do {
-            let imageData = try Data(contentsOf: url)
-            if let uiImage = UIImage(data: imageData) {
-                return uiImage
-            } else {
-                print("이미지 데이터를 UIImage로 변환 실패")
-                return nil
-            }
-        } catch {
-            print("URL에서 이미지 로드 실패: \(error.localizedDescription)")
+            let sessionResult = try await URLSession.shared.data(from: url)
+            // sessionResult.0: data
+            // sessionResult.1: URLResponse
+            return UIImage(data: sessionResult.0)
+        } catch(let e) {
             return nil
         }
     }

@@ -24,14 +24,15 @@ struct MainTabView: View {
                     Text("성장")
                 }
                 .tag(0)
-            
-            // 아기 탭
-            BabyView()
-                .tabItem {
-                    Image(systemName: "gift.fill")
-                    Text("아기")
-                }
-                .tag(2)
+            EmptyView()
+                .tag(1)
+//            // 아기 탭
+//            BabyView()
+//                .tabItem {
+//                    Image(systemName: "gift.fill")
+//                    Text("아기")
+//                }
+//                .tag(2)
         }
         .tint(.brand50)  // 선택된 탭 색상
         // 탭바 배경이 상황 따라 투명/유리로 바뀌지 않도록 "항상 보이게"

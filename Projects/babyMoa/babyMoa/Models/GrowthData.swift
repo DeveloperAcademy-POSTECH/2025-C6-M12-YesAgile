@@ -14,11 +14,11 @@ import SwiftUI
 
 /// 성장 마일스톤 항목
 /// 사용자가 사진, 메모를 입력하고 저장하면 [imageURL, description, completedDate] 가 추가됨.
-struct GrowthMilestone: Identifiable, Codable, Hashable {
+struct GrowthMilestone: Identifiable, Hashable {
     let id: String
     let title: String              // 마일스톤 제목 (예: "화내기", "기기")
     let ageRange: String           // 월령 범위 (예: "0~2개월") 2개월 단위, 3~4개월
-    var imageURL: String?          // 등록된 이미지 URL
+    var image: UIImage?          // 등록된 이미지 URL
     var isCompleted: Bool          // 완료 여부
     var completedDate: Date?       // 완료 날짜
     var description: String?       // 설명 (선택)
@@ -28,7 +28,7 @@ struct GrowthMilestone: Identifiable, Codable, Hashable {
         id: String = UUID().uuidString,
         title: String,
         ageRange: String,
-        imageURL: String? = nil,
+        image: UIImage? = nil,
         isCompleted: Bool = false,
         completedDate: Date? = nil,
         description: String? = nil,
@@ -37,13 +37,14 @@ struct GrowthMilestone: Identifiable, Codable, Hashable {
         self.id = id
         self.title = title
         self.ageRange = ageRange
-        self.imageURL = imageURL
+        self.image = image
         self.isCompleted = isCompleted
         self.completedDate = completedDate
         self.description = description
         self.illustrationName = illustrationName
     }
 }
+
 
 // MARK: - 키/몸무게 기록
 

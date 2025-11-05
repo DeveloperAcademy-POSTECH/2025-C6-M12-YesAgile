@@ -1,10 +1,11 @@
+////
+////  AddBabyNewNoView.swift
+////  babyMoa
+////
+////  Created by pherd on 10/25/25.
+////
+//// 프로필 고정으로 하기 아기로 
 //
-//  AddBabyNewNoView.swift
-//  babyMoa
-//
-//  Created by pherd on 10/25/25.
-//
-// 프로필 고정으로 하기 아기로 
 
 import SwiftUI
 

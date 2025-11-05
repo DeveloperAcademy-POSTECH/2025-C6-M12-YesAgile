@@ -13,12 +13,14 @@ struct CustomNavigationBar<Leading, Trailing>: View where Leading: View, Trailin
     let title: String
     let leading: Leading
     let trailing: Trailing
+    let paddingTop: CGFloat
 
     // 기본 생성자
-    init(title: String, @ViewBuilder leading: () -> Leading, @ViewBuilder trailing: () -> Trailing) {
+    init(title: String, @ViewBuilder leading: () -> Leading, @ViewBuilder trailing: () -> Trailing, paddingTop: CGFloat = 66) {
         self.title = title
         self.leading = leading()
         self.trailing = trailing()
+        self.paddingTop = paddingTop
     }
 
     var body: some View {
@@ -45,7 +47,7 @@ struct CustomNavigationBar<Leading, Trailing>: View where Leading: View, Trailin
             }
         }
         .frame(height: 44)
-        .padding(.top, 66)
+        .padding(.top, paddingTop)
     }
 }
 

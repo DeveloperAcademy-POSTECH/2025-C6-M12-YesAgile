@@ -81,6 +81,11 @@ enum BabyMoaEndpoint: Endpoint {
     case getBabyMilestones(
         babyId : Int
     )
+    /// milestoneName의 경우, GrowthMilestone 구조체에서 사용하는 "milestone_0_1" 형식인 milestoneId 를 의미합니다.
+    case deleteBabyMilestone(
+        babyId: Int,
+        milestoneName: String
+    )
 }
 
 extension BabyMoaEndpoint {
@@ -121,6 +126,8 @@ extension BabyMoaEndpoint {
             return "/api/journey/get_journies_at_month"
         case .getBabyMilestones:
             return "/api/milestones/get_baby_milestones"
+        case .deleteBabyMilestone:
+            return "/api/milestones/delete_milestone"
         }
     }
 
@@ -133,6 +140,9 @@ extension BabyMoaEndpoint {
 
         case .getGrowthData, .getBabyList, .getWeights, .getHeights, .getBaby, .getJourniesAtMonth, .getBabyMilestones:
             return .get
+        
+        case .deleteBabyMilestone:
+            return .delete
         }
     }
 
@@ -148,14 +158,12 @@ extension BabyMoaEndpoint {
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
             .setHeight, .getWeights, .getHeights, .addJourney,
             .setBabyMilestone, .getBaby, .getJourniesAtMonth,
-                .getBabyMilestones:
+            .getBabyMilestones, .deleteBabyMilestone:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
                 "Authorization": "Bearer \(UserToken.accessToken)",
             ]
-        default:
-            return nil
         }
     }
 
@@ -188,6 +196,14 @@ extension BabyMoaEndpoint {
         case .getBabyMilestones(let babyId):
             return [
                 "babyId" : String(babyId)
+            ]
+        case .deleteBabyMilestone(
+            let babyId,
+            let milestoneName
+        ):
+            return [
+                "babyId": String(babyId),
+                "milestoneName": milestoneName
             ]
         default:
             return nil

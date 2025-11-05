@@ -1,10 +1,11 @@
-//
-//  BabyView.swift
-//  babyMoa
-//
-//  Created by pherd on 10/28/25.
-//
-//
+////
+////  BabyView.swift
+////  babyMoa
+////
+////  Created by pherd on 10/28/25.
+////
+////
+
 import SwiftUI
 
 // MARK: - Baby View (아기 정보 및 설정)
