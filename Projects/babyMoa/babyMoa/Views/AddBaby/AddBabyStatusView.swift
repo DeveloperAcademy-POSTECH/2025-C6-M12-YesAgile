@@ -6,20 +6,11 @@
 //
 
 import SwiftUI
+import PhotosUI // For PhotosPicker
 
 struct AddBabyStatusView: View {
     @StateObject var viewModel = AddBabyViewModel()
     
-    let genderSegments: [Segment] = [
-        Segment(tag: "male", title: "남아"),
-        Segment(tag: "female", title: "여아"),
-        Segment(tag: "none", title: "미정")
-    ]
-    
-    //MARK: - 뷰 스타트
-    @State private var isBorn: Bool = true
-    @State private var isFormValid: Bool = false
-
     var body: some View {
         ZStack {
             VStack(spacing: 20) {
@@ -29,14 +20,14 @@ struct AddBabyStatusView: View {
                     }
                 })
                 
-                BabyProfileImageView(profileImage: .constant(nil), selectedPhotoItem: .constant(nil))
+                BabyProfileImageView(profileImage: $viewModel.profileImage, selectedPhotoItem: $viewModel.selectedPhotoItem)
                 
                 VStack(spacing: 20){
                     
-                    if isBorn {
+                    if viewModel.isBorn {
                         BabyInputField(label: "이름 (필수)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName)
                         BabyInputField(label: "태명 (선택)", placeholder: "태명을 입력해주세요", text: $viewModel.babyNickname)
-                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: genderSegments)
+                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: viewModel.genderSegments)
                     } else {
                         BabyInputField(label: "이름 (선택)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName)
                         BabyInputField(label: "태명 (필수)", placeholder: "태명을 입력해주세요", text: $viewModel.babyNickname)
@@ -55,9 +46,9 @@ struct AddBabyStatusView: View {
                 
                 
                 Button("저장", action: {
-                    
+                    // TODO: 저장 로직 구현
                 })
-                .buttonStyle(!isFormValid ? .noneButton : .defaultButton)
+                .buttonStyle(!viewModel.isFormValid ? .noneButton : .defaultButton)
                 
                 Spacer()
             }
