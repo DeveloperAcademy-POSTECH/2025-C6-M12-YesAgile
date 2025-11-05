@@ -6,32 +6,62 @@
 //
 
 import Foundation
-import Combine
+import SwiftUI // For Image
+import PhotosUI // For PhotosPickerItem
 
 class AddBabyViewModel: ObservableObject {
-    
+
+    // MARK: - Baby Info
+    @Published var addBaby: [AddBabyModel] = []
     @Published var babyName: String = ""
     @Published var babyNickname: String = ""
-    @Published var selectedGender: String = "MALE"
+    @Published var selectedGender: String = "male"
     @Published var birthDate: Date = Date()
+    @Published var relationship: RelationshipType = .mom //
+    // MARK: - UI State
+    @Published var isBorn: Bool = true //
     @Published var showDatePicker: Bool = false
-    @Published var relationship: RelationshipType = .mom
     @Published var showRelationshipPicker: Bool = false
-    
+
+    // MARK: - Photo Picker
+    @Published var selectedPhotoItem: PhotosPickerItem?
+    @Published var profileImage: UIImage? //
+
+    // MARK: - Static Data
+    // Moved from AddBabyStatusView
+    let genderSegments: [Segment] = [
+        Segment(tag: "male", title: "남아"),
+        Segment(tag: "female", title: "여아"),
+        Segment(tag: "none", title: "미정")
+    ]
+
+    // MARK: - Computed Properties
     var birthDateLabel: String {
-        return birthDate.yyyyMMddKorean
+        // Assuming Date+Extensions.swift is available
+        return isBorn ? birthDate.yyyyMMddKorean : "태어날 날짜" // Adjusted logic for birthDateLabel
     }
-    //MARK: - AddBabyInvitationView 관련 
+
+    var isFormValid: Bool {
+        if isBorn {
+            return !babyName.isEmpty
+        } else {
+            return !babyNickname.isEmpty
+        }
+    }
+
+    // MARK: - AddBabyInvitationView 관련 (Keep existing)
     @Published var invitationCode: String = "" {
-            didSet {
-                if invitationCode.count > 15 {
-                    invitationCode = String(invitationCode.prefix(15))
-                }
+        didSet {
+            if invitationCode.count > 15 {
+                invitationCode = String(invitationCode.prefix(15))
             }
         }
+    }
 
     var isInvitationCodeValid: Bool {
         invitationCode.count == 15
     }
+    
+    // TODO: PhotosPickerItem이 변경될 때 profileImage를 로드하는 로직 추가
+    // func loadImage() async { ... }
 }
-
