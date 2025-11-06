@@ -32,12 +32,25 @@ class AddBabyViewModel: ObservableObject {
     @Published var selectedPhotoItem: PhotosPickerItem?
     @Published var profileImage: UIImage? //
 
+    // MARK: - AddBaby Alert
+    @Published var alertTitle: String = ""
+    @Published var alertMessage: String = ""
+    @Published var showAlert: Bool = false
+    
     // MARK: - Static Data
     let genderSegments: [Segment] = [
         Segment(tag: "male", title: "남아"),
         Segment(tag: "female", title: "여아"),
         Segment(tag: "none", title: "미정")
     ]
+    
+    // MARK: - Alert Message : 추후에 별도 함수로 만들어서 사용해야 한다.
+    private func createAlert(title:String, message: String){
+        alertTitle = title
+        alertMessage = message
+        showAlert = true
+    }
+    
 
     // MARK: - Computed Properties
     var availableGenderSegments: [Segment] {
@@ -50,6 +63,10 @@ class AddBabyViewModel: ObservableObject {
     
     var birthDateLabel: String {
         return isBorn ? birthDate.yyyyMMddKorean : "태어날 날짜"
+    }
+
+    var navigationTitle: String {
+        return editingBaby == nil ? "아기 정보 입력하기" : "아기 정보 수정"
     }
 
     var isFormValid: Bool {

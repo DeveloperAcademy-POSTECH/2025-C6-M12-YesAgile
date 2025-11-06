@@ -19,13 +19,26 @@ struct AddBabyStatusView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 20) {
-                CustomNavigationBar(title: "아기 정보 입력하기", leading: {
-                    Button(action: { 
-                        viewModel.coordinator.pop()
-                    }) {
-                        Image(systemName: "chevron.left")
+                CustomNavigationBar(
+                    title: viewModel.navigationTitle,
+                    leading: {
+                        Button(action: { 
+                            viewModel.coordinator.pop()
+                        }) {
+                            Image(systemName: "chevron.left")
+                        }
+                    },
+                    trailing: {
+                        if viewModel.editingBaby != nil {
+                            Button(action: {
+                                viewModel.delete()
+                            }) {
+                                Image(systemName: "trash")
+                                    .foregroundColor(.red)
+                            }
+                        }
                     }
-                })
+                )
                 
                 BabyProfileImageView()
                 
@@ -98,3 +111,5 @@ struct AddBabyStatusView: View {
     // 2. 수정 모드 Preview
     AddBabyStatusView(coordinator: BabyMoaCoordinator(), baby: AddBabyModel.mockAddBabyModel.first!)
 }
+
+

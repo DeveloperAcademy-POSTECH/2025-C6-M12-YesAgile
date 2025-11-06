@@ -18,7 +18,7 @@ struct BabyMoaRootView: View {
             }
             .navigationBarBackButtonHidden()
             .onAppear {
-                coordinator.push(path: .addBaby)
+                coordinator.push(path: .babyMain)
 //                if viewModel.isUserAuthorized() {
 //                    coordinator.push(path: .mainTab)
 //                } else {
@@ -78,7 +78,7 @@ struct BabyMoaRootView: View {
                         .navigationBarBackButtonHidden()
                     // BabyMainView - 라우팅이 잘 되어야 한다.
                 case .babyMain:
-                    BabyMainView()
+                    BabyMainView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
                 case .guardain:
                     GuardianInvitationView(viewModel: GuardianInvitationCodeViewModel())

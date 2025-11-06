@@ -11,7 +11,9 @@ struct BabyMainView: View {
     
     @StateObject private var viewModel = BabyMainViewModel()
     @State private var sheetHeight: CGFloat = .zero
-        
+    
+    var coordinator: BabyMoaCoordinator // Add coordinator property
+
     
     var body: some View {
         ZStack {
@@ -35,7 +37,7 @@ struct BabyMainView: View {
                             viewModel.showBabyListSheet()
                         }
                      
-                        BabyProfileCard(baby: baby)
+                        BabyProfileCard(coordinator: coordinator, baby: baby) // Pass coordinator here
                         
                     } else {
                         // TODO: 아기가 없는 경우의 UI 처리
@@ -93,8 +95,6 @@ struct BabyMainView: View {
                      // sessionManager.sessionState = .loggedOut 에서 로그아웃을 처리해야 되나 어떻게 해야 되나?
                     // 서버와 이야기 해야 한다.
                     print("로그인 버튼을 클릭했습니다.")
-                } else {
-                    print("Failed to sign out")
                 }
                 
             }
@@ -109,5 +109,5 @@ struct BabyMainView: View {
 
 
 #Preview {
-    BabyMainView()
+    BabyMainView(coordinator: BabyMoaCoordinator())
 }
