@@ -19,12 +19,12 @@ struct BabyMoaRootView: View {
             }
             .navigationBarBackButtonHidden()
             .onAppear {
-                coordinator.push(path: .babyMain)
-//                if viewModel.isUserAuthorized() {
-//                    coordinator.push(path: .mainTab)
-//                } else {
-//                    coordinator.push(path: .startBabyMoa)
-//                }
+//                coordinator.push(path: .babyMain)
+                if viewModel.isUserAuthorized() {
+                    coordinator.push(path: .mainTab)
+                } else {
+                    coordinator.push(path: .startBabyMoa)
+                }
             }
             .navigationDestination(for: CoordinatorPath.self) { path in
                 switch path {
