@@ -12,6 +12,8 @@ struct AddBabyStatusView: View {
     
     @StateObject var viewModel: AddBabyViewModel
     
+    @StateObject private var imageLoaderViewModel = ImageLoaderViewModel()
+    
     init(coordinator: BabyMoaCoordinator, baby: AddBabyModel? = nil, isBorn: Bool? = nil) {
         self._viewModel = StateObject(wrappedValue: AddBabyViewModel(coordinator: coordinator, baby: baby, isBorn: isBorn))
     }
@@ -40,8 +42,25 @@ struct AddBabyStatusView: View {
                     }
                 )
                 
-                BabyProfileImageView()
-                
+                ZStack {
+                    // 1. 버튼을 제거하고 이미지를 표시하는 로직만 남깁니다.
+                    if let displayedImage = viewModel.displayedProfileImage {
+                        displayedImage
+                            .profileImageStyle()
+                    } else {
+                        // 2. 기본 이미지
+                        Image("baby_milestone_illustration")
+                            .profileImageStyle()
+                    }
+                }
+                .onTapGesture {
+                    // 3. 탭하면 showLibrary를 true로 설정합니다.
+                    //    (showImageOptions가 아님)
+                    viewModel.showLibrary = true
+                }
+//                Image("baby_milestone_illustration")
+//                    .profileImageStyle()
+//
                 VStack(spacing: 20){
                     
                     BabyInputField(label: "이름 (선택)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName)
@@ -94,6 +113,14 @@ struct AddBabyStatusView: View {
                 RelationshipPickerModal(relationship: $viewModel.relationship, showRelationshipPicker: $viewModel.showRelationshipPicker)
             }
         }
+        .photosPicker(isPresented: $viewModel.showLibrary, selection: $imageLoaderViewModel.imageSelection, matching: .images, photoLibrary: .shared())
+        .onChange(of: imageLoaderViewModel.imageToUpload) { _, newValue in
+            if let newValue = newValue {
+                viewModel.displayedProfileImage = Image(uiImage: newValue)
+                viewModel.profileImage = newValue
+                
+            }
+        }
         .alert("아기 정보를 삭제할까요?", isPresented: $viewModel.showDeleteConfirmation) {
             Button("삭제", role: .destructive) {
                 viewModel.executeDelete()
@@ -104,6 +131,8 @@ struct AddBabyStatusView: View {
         }
     }
 }
+
+
 
 #Preview("Create Mode - isBorn") {
     // 1. 생성 모드 Preview

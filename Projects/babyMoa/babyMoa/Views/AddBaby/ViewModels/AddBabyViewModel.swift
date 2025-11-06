@@ -30,8 +30,11 @@ class AddBabyViewModel: ObservableObject {
     @Published var showDeleteConfirmation: Bool = false
 
     // MARK: - Photo Picker
-    @Published var selectedPhotoItem: PhotosPickerItem?
-    @Published var profileImage: UIImage? //
+    @Published var showImageOptions: Bool = false
+    @Published var showLibrary: Bool = false // 사진 선택기 표시 여부
+    @Published var displayedProfileImage: Image? // 선택된 이미지를 저장할 변수
+    @Published var profileImage: UIImage?
+
 
     // MARK: - Static Data
     let genderSegments: [Segment] = [
