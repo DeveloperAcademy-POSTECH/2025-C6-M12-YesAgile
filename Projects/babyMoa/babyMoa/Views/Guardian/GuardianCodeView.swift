@@ -9,8 +9,9 @@ import SwiftUI
 
 struct GuardianCodeView: View {
     
-    // 상위 뷰에서 생성된 ViewModel 인스턴스를 전달받습니다.
-    @ObservedObject var viewModel: GuardianInvitationCodeViewModel
+    // ViewModel 인스턴스를 전달받습니다.
+    @StateObject var viewModel: GuardianInvitationCodeViewModel
+    @State private var isShowingCancelAlert = false
     
     var body: some View {
         ZStack {
@@ -18,10 +19,12 @@ struct GuardianCodeView: View {
             
             VStack(spacing: 20){
                 CustomNavigationBar(title: "공동 양육자 초대", leading: {
-                    // TODO: 이전 화면으로 돌아가는 로직 구현
-                    Button(action: {}) {
+                    Button(action: {
+                        viewModel.coordinator.pop()
+                    }, label: {
                         Image(systemName: "chevron.left")
-                    }
+
+                    })
                 })
                 
                 // TODO: ViewModel에서 실제 아기 프로필 이미지 가져오기
@@ -77,13 +80,26 @@ struct GuardianCodeView: View {
                 
                 Button("전달 완료", action: {
                     // TODO: Navigation 로직 구현
+                    // 어떤 로직이 들어가야 하는가?
+                    // 전달 완료 하면, 메인 화면으로 이동으로 구성한다.
+                    viewModel.coordinator.push(path: .babyMain)
+                    
                 })
                 .buttonStyle(.defaultButton)
                 
                 Button("초대 코드 취소", action: {
-                    // TODO: Navigation 로직 구현
+                    isShowingCancelAlert = true
                 })
                 .buttonStyle(.outlineThirdButton)
+                .alert("초대 코드를 취소할까요?", isPresented: $isShowingCancelAlert) {
+                    Button("취소", role: .cancel) { }
+                    Button("확인", role: .destructive) {
+                        // TODO: 서버와 통신하여 초대 코드 삭제 처리
+                        viewModel.coordinator.push(path: .babyMain)
+                    }
+                } message: {
+                    Text("초대 코드를 취소하면 더 이상 사용할 수 없어요.")
+                }
             }
             .backgroundPadding(.horizontal)
         }
@@ -95,7 +111,7 @@ struct GuardianCodeView: View {
 
 #Preview {
     // 1. 뷰모델 인스턴스 생성
-    let viewModel = GuardianInvitationCodeViewModel()
+    let viewModel = GuardianInvitationCodeViewModel(coordinator: BabyMoaCoordinator())
     
     // 2. 뷰모델의 `generatedInvitation` 속성에 목업 데이터 설정
     // GuardianInvitate.mockGuardianInvitateModel의 첫 번째 요소를 사용합니다.
@@ -104,3 +120,5 @@ struct GuardianCodeView: View {
     // 3. 설정된 뷰모델을 뷰에 전달
     return GuardianCodeView(viewModel: viewModel)
 }
+
+

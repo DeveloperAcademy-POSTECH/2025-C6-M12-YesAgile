@@ -46,12 +46,14 @@ struct BabyMainView: View {
                     // Components: 양육자 및 아기 관리 버튼
                     BabyMainRowView(title: "양육자", buttonLabel: "공동 양육자 초대") {
                         // print
-                        print("버튼클릭했어요")
+                        print("버튼클릭했어요 공동양육자 초대 코드 생성")
+                        coordinator.push(path: .guardain)
                     }
                     
                     BabyMainRowView(title: "아기", buttonLabel: "아기 추가") {
                         // print
                         print("버튼클릭했어요")
+                        coordinator.push(path: .addBabyCreate)
                     }
                     
                     Button("로그아웃", action: {

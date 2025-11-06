@@ -82,10 +82,10 @@ struct BabyMoaRootView: View {
                     BabyMainView(viewModel: BabyMainViewModel(alertManager: alertManager), coordinator: coordinator)
                         .navigationBarBackButtonHidden()
                 case .guardain:
-                    GuardianInvitationView(viewModel: GuardianInvitationCodeViewModel())
+                    GuardianInvitationView(viewModel: GuardianInvitationCodeViewModel(coordinator: coordinator))
                         .navigationBarBackButtonHidden()
                 case .guardiainCode:
-                    GuardianCodeView(viewModel: GuardianInvitationCodeViewModel())
+                    GuardianCodeView(viewModel: GuardianInvitationCodeViewModel(coordinator: coordinator))
                         .navigationBarBackButtonHidden()
 
                 }
