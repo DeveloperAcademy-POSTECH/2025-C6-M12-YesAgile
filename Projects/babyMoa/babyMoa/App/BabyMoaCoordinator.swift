@@ -31,4 +31,13 @@ enum CoordinatorPath: Hashable {
     case weight(babyId: Int)
     case teeth(teethList: [TeethData])
     case journey
+    // AddBaby and Guardian
+    case addBaby
+    case addBabyCreate
+    case addBabyInvitaion
+    case addBabyStatus
+    //BabyMainView
+    case babyMain
+    case guardain
+    case guardiainCode
 }

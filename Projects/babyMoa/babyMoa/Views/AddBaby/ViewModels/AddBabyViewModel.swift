@@ -10,6 +10,14 @@ import SwiftUI // For Image
 import PhotosUI // For PhotosPickerItem
 
 class AddBabyViewModel: ObservableObject {
+    
+    
+    //MARK: - 어디로 갈것인가? 정의한다.
+    var coordinator: BabyMoaCoordinator
+    
+    init(coordinator: BabyMoaCoordinator) {
+        self.coordinator = coordinator
+    }
 
     // MARK: - Baby Info
     @Published var addBaby: [AddBabyModel] = []

@@ -9,7 +9,12 @@ import SwiftUI
 import PhotosUI // For PhotosPicker
 
 struct AddBabyStatusView: View {
-    @StateObject var viewModel = AddBabyViewModel()
+    
+    @StateObject var viewModel: AddBabyViewModel
+    
+    init(coordinator: BabyMoaCoordinator) {
+        self._viewModel = StateObject(wrappedValue: AddBabyViewModel(coordinator: coordinator))
+    }
     
     var body: some View {
         ZStack {
@@ -68,5 +73,5 @@ struct AddBabyStatusView: View {
 }
 
 #Preview {
-    AddBabyStatusView()
+    AddBabyStatusView(coordinator: BabyMoaCoordinator())
 }

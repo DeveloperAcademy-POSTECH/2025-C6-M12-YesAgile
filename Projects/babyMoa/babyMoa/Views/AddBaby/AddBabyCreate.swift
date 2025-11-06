@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AddCreateBabyView: View {
+struct AddBabyCreate: View {
     var body: some View {
         VStack(spacing: 20) {
             
@@ -47,5 +47,5 @@ struct AddCreateBabyView: View {
 }
 
 #Preview {
-    AddCreateBabyView()
+    AddBabyCreate()
 }

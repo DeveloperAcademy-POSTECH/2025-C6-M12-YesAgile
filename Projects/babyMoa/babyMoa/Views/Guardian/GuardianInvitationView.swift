@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct GuardianInvitationCodeView: View {
+struct GuardianInvitationView: View {
     
     @StateObject private var viewModel: GuardianInvitationCodeViewModel
     
@@ -62,7 +62,6 @@ struct GuardianInvitationCodeView: View {
             .backgroundPadding(.horizontal)
             
         }
-        .navigationBarBackButtonHidden(true)
         .ignoresSafeArea()
         .alert("오류", isPresented: Binding(get: { viewModel.errorMessage != nil }, set: { _ in viewModel.errorMessage = nil })) {
             Button("확인") { }
@@ -73,5 +72,5 @@ struct GuardianInvitationCodeView: View {
 }
 
 #Preview {
-    GuardianInvitationCodeView(viewModel: GuardianInvitationCodeViewModel())
+    GuardianInvitationView(viewModel: GuardianInvitationCodeViewModel())
 }

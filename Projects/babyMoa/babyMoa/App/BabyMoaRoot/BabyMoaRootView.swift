@@ -62,6 +62,30 @@ struct BabyMoaRootView: View {
                         coordinator: coordinator,
                         teethList: teethList
                     )
+                    // Add Baby and Guardian - 라우팅 잘 되어야 한다.
+                case .addBaby:
+                    AddBabyView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
+                case .addBabyCreate:
+                    AddBabyCreate()
+                        .navigationBarBackButtonHidden()
+                case .addBabyInvitaion:
+                    AddBabyInvitationView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
+                case .addBabyStatus:
+                    AddBabyStatusView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
+                    // BabyMainView - 라우팅이 잘 되어야 한다.
+                case .babyMain:
+                    BabyMainView()
+                        .navigationBarBackButtonHidden()
+                case .guardain:
+                    GuardianInvitationView(viewModel: GuardianInvitationCodeViewModel())
+                        .navigationBarBackButtonHidden()
+                case .guardiainCode:
+                    GuardianCodeView(viewModel: GuardianInvitationCodeViewModel())
+                        .navigationBarBackButtonHidden()
+
                 }
             }
         }

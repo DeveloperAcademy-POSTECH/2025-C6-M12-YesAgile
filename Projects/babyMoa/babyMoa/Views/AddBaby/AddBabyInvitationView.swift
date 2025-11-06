@@ -9,7 +9,11 @@ import SwiftUI
 
 struct AddBabyInvitationView: View {
     
-    @StateObject private var viewModel = AddBabyViewModel()
+    @StateObject private var viewModel: AddBabyViewModel
+    
+    init(coordinator: BabyMoaCoordinator) {
+        self._viewModel = StateObject(wrappedValue: AddBabyViewModel(coordinator: coordinator))
+    }
     
     var body: some View {
         VStack{
@@ -56,5 +60,5 @@ struct AddBabyInvitationView: View {
 }
 
 #Preview {
-    AddBabyInvitationView()
+    AddBabyInvitationView(coordinator: BabyMoaCoordinator())
 }

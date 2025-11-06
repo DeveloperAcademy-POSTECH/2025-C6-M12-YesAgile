@@ -10,6 +10,14 @@
 import SwiftUI
 
 struct AddBabyView: View {
+    
+    @StateObject private var viewModel: AddBabyViewModel
+    
+    init(coordinator: BabyMoaCoordinator) {
+        self._viewModel = StateObject(wrappedValue: AddBabyViewModel(coordinator: coordinator))
+    }
+    
+    
     var body: some View {
         VStack(spacing: 20) {
             Spacer()
@@ -24,6 +32,7 @@ struct AddBabyView: View {
                 
                 Button("addBaby.new.button", action: {
                         // 어디로 가야 하는가?
+                
                 })
                 .buttonStyle(.defaultButton)
             }
@@ -51,5 +60,5 @@ struct AddBabyView: View {
 }
 
 #Preview {
-    AddBabyView()
+    AddBabyView(coordinator: BabyMoaCoordinator())
 }
