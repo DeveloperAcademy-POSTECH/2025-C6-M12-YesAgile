@@ -32,7 +32,7 @@ struct GuardianInvitationCodeView: View {
                 })
                 
                 // TODO: ViewModel에서 실제 아기 프로필 이미지 가져오기
-                BabyProfileImageView(profileImage: .constant(nil), selectedPhotoItem: .constant(nil))
+//                BabyProfileImageView(profileImage: .constant(nil), selectedPhotoItem: .constant(nil))
                 
                 VStack{
                     Text(viewModel.babyName)

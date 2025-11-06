@@ -74,7 +74,7 @@ struct AddBabyNewNoViewOld: View {
         ScrollView(showsIndicators: false) {
                 VStack(spacing: 24) {
                     // 고정 프로필 이미지
-                    profileImageView
+//                    profileImageView
                     
                     // 입력 필드들
                     VStack(alignment: .leading, spacing: 20) {
