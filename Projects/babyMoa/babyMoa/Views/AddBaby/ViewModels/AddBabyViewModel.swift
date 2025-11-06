@@ -27,30 +27,18 @@ class AddBabyViewModel: ObservableObject {
     @Published var isBorn: Bool = true
     @Published var showDatePicker: Bool = false
     @Published var showRelationshipPicker: Bool = false
+    @Published var showDeleteConfirmation: Bool = false
 
     // MARK: - Photo Picker
     @Published var selectedPhotoItem: PhotosPickerItem?
     @Published var profileImage: UIImage? //
 
-    // MARK: - AddBaby Alert
-    @Published var alertTitle: String = ""
-    @Published var alertMessage: String = ""
-    @Published var showAlert: Bool = false
-    
     // MARK: - Static Data
     let genderSegments: [Segment] = [
         Segment(tag: "male", title: "남아"),
         Segment(tag: "female", title: "여아"),
         Segment(tag: "none", title: "미정")
     ]
-    
-    // MARK: - Alert Message : 추후에 별도 함수로 만들어서 사용해야 한다.
-    private func createAlert(title:String, message: String){
-        alertTitle = title
-        alertMessage = message
-        showAlert = true
-    }
-    
 
     // MARK: - Computed Properties
     var availableGenderSegments: [Segment] {
@@ -124,6 +112,11 @@ class AddBabyViewModel: ObservableObject {
     }
 
     func delete() {
+        guard editingBaby != nil else { return }
+        showDeleteConfirmation = true
+    }
+    
+    func executeDelete() {
         guard let _ = editingBaby else { return }
         // 삭제 로직
         print("DEBUG: Deleting baby...")

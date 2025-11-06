@@ -10,6 +10,7 @@ import SwiftUI
 struct BabyMoaRootView: View {
     @StateObject var coordinator = BabyMoaCoordinator()
     @StateObject var viewModel = BabyMoaRootViewModel()
+    @StateObject var alertManager = AlertManager()
     
     var body: some View {
         NavigationStack(path: $coordinator.paths) {
@@ -78,7 +79,7 @@ struct BabyMoaRootView: View {
                         .navigationBarBackButtonHidden()
                     // BabyMainView - 라우팅이 잘 되어야 한다.
                 case .babyMain:
-                    BabyMainView(coordinator: coordinator)
+                    BabyMainView(viewModel: BabyMainViewModel(alertManager: alertManager), coordinator: coordinator)
                         .navigationBarBackButtonHidden()
                 case .guardain:
                     GuardianInvitationView(viewModel: GuardianInvitationCodeViewModel())
@@ -89,6 +90,13 @@ struct BabyMoaRootView: View {
 
                 }
             }
+        }
+        //MARK: - 경고창에 대해 사용하도로 해야 한다.
+        .environmentObject(alertManager)
+        .alert(alertManager.alertTitle, isPresented: $alertManager.showAlert) {
+            Button("확인") { }
+        } message: {
+            Text(alertManager.alertMessage)
         }
     }
 }

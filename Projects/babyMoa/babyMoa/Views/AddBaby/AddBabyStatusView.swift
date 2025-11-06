@@ -94,6 +94,14 @@ struct AddBabyStatusView: View {
                 RelationshipPickerModal(relationship: $viewModel.relationship, showRelationshipPicker: $viewModel.showRelationshipPicker)
             }
         }
+        .alert("아기 정보를 삭제할까요?", isPresented: $viewModel.showDeleteConfirmation) {
+            Button("삭제", role: .destructive) {
+                viewModel.executeDelete()
+            }
+            Button("취소", role: .cancel) { }
+        } message: {
+            Text("나에게만 아기 정보가 삭제돼요.")
+        }
     }
 }
 

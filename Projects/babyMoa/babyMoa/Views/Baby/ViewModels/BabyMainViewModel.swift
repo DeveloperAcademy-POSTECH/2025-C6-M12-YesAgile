@@ -15,17 +15,11 @@ class BabyMainViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     @Published var showSignOutAlert: Bool = false
-    @Published var showAlert: Bool = false
-    @Published var alertTitle: String = ""
-    @Published var alertMessage: String = ""
     
-    private func createAlert(title:String, message: String){
-        alertTitle = title
-        alertMessage = message
-        showAlert = true
-    }
+    private var alertManager: AlertManager
     
-    init(){
+    init(alertManager: AlertManager) {
+        self.alertManager = alertManager
         Task {
             await fetchBabies()
         }
@@ -57,7 +51,7 @@ class BabyMainViewModel: ObservableObject {
             
         } catch {
             print("아기 데이터를 가져오는데 실패했습니다 \(error.localizedDescription)")
-            createAlert(title: "네트워크 오류 발생", message: "아기 데이터를 가져오는데 실패했습니다.")
+            alertManager.showAlert(title: "네트워크 오류 발생", message: "아기 데이터를 가져오는데 실패했습니다.")
             self.errorMessage = "데이터를 불러오는데 실패 했습니다. "
         }
         

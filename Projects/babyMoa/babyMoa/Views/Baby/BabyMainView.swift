@@ -9,11 +9,10 @@ import SwiftUI
 
 struct BabyMainView: View {
     
-    @StateObject private var viewModel = BabyMainViewModel()
+    @ObservedObject var viewModel: BabyMainViewModel
     @State private var sheetHeight: CGFloat = .zero
     
-    var coordinator: BabyMoaCoordinator // Add coordinator property
-
+    var coordinator: BabyMoaCoordinator
     
     var body: some View {
         ZStack {
@@ -37,7 +36,7 @@ struct BabyMainView: View {
                             viewModel.showBabyListSheet()
                         }
                      
-                        BabyProfileCard(coordinator: coordinator, baby: baby) // Pass coordinator here
+                        BabyProfileCard(coordinator: coordinator, baby: baby)
                         
                     } else {
                         // TODO: 아기가 없는 경우의 UI 처리
@@ -109,5 +108,8 @@ struct BabyMainView: View {
 
 
 #Preview {
-    BabyMainView(coordinator: BabyMoaCoordinator())
+    BabyMainView(
+        viewModel: BabyMainViewModel(alertManager: AlertManager()),
+        coordinator: BabyMoaCoordinator()
+    )
 }
