@@ -20,7 +20,7 @@ struct AddBabyStatusView: View {
                     }
                 })
                 
-//                BabyProfileImageView(profileImage: $viewModel.profileImage, selectedPhotoItem: $viewModel.selectedPhotoItem)
+                BabyProfileImageView()
                 
                 VStack(spacing: 20){
                     
