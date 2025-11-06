@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct AddBabyCreate: View {
+    @StateObject private var viewModel: AddBabyViewModel
+
+    init(coordinator: BabyMoaCoordinator) {
+        _viewModel = StateObject(wrappedValue: AddBabyViewModel(coordinator: coordinator))
+    }
+
     var body: some View {
         VStack(spacing: 20) {
             
             CustomNavigationBar(title: "설정", leading: {
                 Button(action: {
-                    
-                    // 어디로 이동을 해야 되는가?
-                    
+                    viewModel.coordinator.pop()
                 }) {
                     Image(systemName: "chevron.left")
                 }
@@ -28,12 +32,12 @@ struct AddBabyCreate: View {
             
             // "예" 버튼 → AddBabyNewYesView
             Button("addBabyNew.question.yesButton") {
-                // Yes, Button
+                viewModel.coordinator.push(path: .addBabyStatus(baby: nil, isBorn: true))
             }
             .buttonStyle(.defaultButton)
             
             Button("addBabyNew.question.noButton") {
-                // No, Button
+                viewModel.coordinator.push(path: .addBabyStatus(baby: nil, isBorn: false))
             }
             .buttonStyle(.secondButton)
 
@@ -47,5 +51,5 @@ struct AddBabyCreate: View {
 }
 
 #Preview {
-    AddBabyCreate()
+    AddBabyCreate(coordinator: BabyMoaCoordinator())
 }

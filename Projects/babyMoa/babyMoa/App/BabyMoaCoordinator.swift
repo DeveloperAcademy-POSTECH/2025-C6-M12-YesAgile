@@ -35,7 +35,7 @@ enum CoordinatorPath: Hashable {
     case addBaby
     case addBabyCreate
     case addBabyInvitaion
-    case addBabyStatus
+    case addBabyStatus(baby: AddBabyModel?, isBorn: Bool)
     //BabyMainView
     case babyMain
     case guardain

@@ -18,11 +18,12 @@ struct BabyMoaRootView: View {
             }
             .navigationBarBackButtonHidden()
             .onAppear {
-                if viewModel.isUserAuthorized() {
-                    coordinator.push(path: .mainTab)
-                } else {
-                    coordinator.push(path: .startBabyMoa)
-                }
+                coordinator.push(path: .addBaby)
+//                if viewModel.isUserAuthorized() {
+//                    coordinator.push(path: .mainTab)
+//                } else {
+//                    coordinator.push(path: .startBabyMoa)
+//                }
             }
             .navigationDestination(for: CoordinatorPath.self) { path in
                 switch path {
@@ -67,13 +68,13 @@ struct BabyMoaRootView: View {
                     AddBabyView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
                 case .addBabyCreate:
-                    AddBabyCreate()
+                    AddBabyCreate(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
                 case .addBabyInvitaion:
                     AddBabyInvitationView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
-                case .addBabyStatus:
-                    AddBabyStatusView(coordinator: coordinator)
+                case .addBabyStatus(let baby, let isBorn):
+                    AddBabyStatusView(coordinator: coordinator, baby: baby, isBorn: isBorn)
                         .navigationBarBackButtonHidden()
                     // BabyMainView - 라우팅이 잘 되어야 한다.
                 case .babyMain:

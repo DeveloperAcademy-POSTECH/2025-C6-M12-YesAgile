@@ -29,10 +29,9 @@ struct AddBabyView: View {
                 Text("addBaby.new.description")
                     .subTitleTextStyle()
                 
-                
+                // 나중에 함수로 만들어서 사용할까???
                 Button("addBaby.new.button", action: {
-                        // 어디로 가야 하는가?
-                
+                    viewModel.coordinator.push(path: .addBabyCreate)
                 })
                 .buttonStyle(.defaultButton)
             }
@@ -45,8 +44,9 @@ struct AddBabyView: View {
                 Text("addBaby.connect.description")
                     .subTitleTextStyle()
                 
-                Button("addBaby.new.button", action: {
-                        // 어디로 가야 하는가?
+                // 나중에 함수로 만들어서 사용할까???
+                Button("addBaby.connect.button", action: {
+                    viewModel.coordinator.push(path: .addBabyInvitaion)
                 })
                 .buttonStyle(.secondButton)
             }
