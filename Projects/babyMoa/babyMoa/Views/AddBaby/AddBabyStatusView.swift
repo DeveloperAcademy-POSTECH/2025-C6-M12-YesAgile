@@ -85,19 +85,13 @@ struct AddBabyStatusView: View {
                     showRelationshipPicker: $viewModel.showRelationshipPicker
                 )
                 
-                HStack {
-                    if viewModel.editingBaby != nil {
-                        Button("삭제", action: {
-                            viewModel.delete()
-                        })
-                        .buttonStyle(.secondButton) // Or a new destructive style
-                    }
-                    
-                    Button("저장", action: {
-                        viewModel.save()
-                    })
-                    .buttonStyle(!viewModel.isFormValid ? .noneButton : .defaultButton)
-                }
+                
+                
+                Button("저장", action: {
+                    viewModel.save()
+                })
+                .buttonStyle(!viewModel.isFormValid ? .noneButton : .defaultButton)
+                
                 
                 Spacer()
             }

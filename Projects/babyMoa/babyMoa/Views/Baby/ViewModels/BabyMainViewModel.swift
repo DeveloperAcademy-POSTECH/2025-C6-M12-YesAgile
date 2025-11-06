@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 class BabyMainViewModel: ObservableObject {
     
     @Published var babies : [Babies] = []

@@ -71,6 +71,8 @@ struct BabyMainView: View {
         .sheet(isPresented: $viewModel.isShowingSheet) {
             BabyListView(babies: viewModel.babies, onSelectBaby: { baby in
                 viewModel.selectBaby(baby)
+            }, onAddBaby: {
+                coordinator.push(path: .addBabyCreate)
             })
             .onPreferenceChange(HeightPreferenceKey.self) { newHeight in
                 if newHeight > 0 {
