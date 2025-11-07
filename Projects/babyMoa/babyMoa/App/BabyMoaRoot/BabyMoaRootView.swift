@@ -14,16 +14,16 @@ struct BabyMoaRootView: View {
     
     var body: some View {
         NavigationStack(path: $coordinator.paths) {
-            VStack {
-                
-            }
-            .navigationBarBackButtonHidden()
-            .onAppear {
-//                coordinator.push(path: .babyMain)
-                if viewModel.isUserAuthorized() {
-                    coordinator.push(path: .mainTab)
+            // isReady 상태에 따라 로딩 뷰 또는 컨텐츠 뷰를 표시
+            Group {
+                if viewModel.isReady {
+                    VStack {
+                        // 초기 경로 설정이 완료된 후의 뷰 (현재는 비어 있음)
+                    }
+                    .navigationBarBackButtonHidden()
                 } else {
-                    coordinator.push(path: .startBabyMoa)
+                    // 앱 시작 시 데이터를 로드하는 동안 표시될 로딩 뷰
+                    ProgressView()
                 }
             }
             .navigationDestination(for: CoordinatorPath.self) { path in
@@ -89,6 +89,12 @@ struct BabyMoaRootView: View {
                         .navigationBarBackButtonHidden()
 
                 }
+            }
+        }
+        .onAppear {
+            // 뷰가 나타날 때 초기 화면 경로를 결정하는 로직을 실행
+            Task {
+                await viewModel.checkInitialScreen(coordinator: coordinator)
             }
         }
         //MARK: - 경고창에 대해 사용하도로 해야 한다.

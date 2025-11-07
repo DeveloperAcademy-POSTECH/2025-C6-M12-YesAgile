@@ -9,13 +9,13 @@ import SwiftUI
 
 struct BabyListView: View {
     
-    let babies: [Babies]
-    let onSelectBaby: (Babies) -> Void
+    let babies: [MainTabModel]
+    let onSelectBaby: (MainTabModel) -> Void
     let onAddBaby: () -> Void
     
     @Environment(\.dismiss) private var dismiss
     
-    init(babies: [Babies], onSelectBaby: @escaping (Babies) -> Void, onAddBaby: @escaping () -> Void) {
+    init(babies: [MainTabModel], onSelectBaby: @escaping (MainTabModel) -> Void, onAddBaby: @escaping () -> Void) {
         self.babies = babies
         self.onSelectBaby = onSelectBaby
         self.onAddBaby = onAddBaby
@@ -26,7 +26,8 @@ struct BabyListView: View {
             ForEach(babies) { baby in
                 Button(action: { onSelectBaby(baby) }) {
                     HStack(spacing: 20){
-                        Image(baby.image)
+                        // TODO: If profileImageUrl is a real URL, this needs to be AsyncImage
+                        Image(baby.profileImageUrl)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 50, height: 50)
@@ -85,7 +86,10 @@ struct HeightPreferenceKey: PreferenceKey {
 }
 
 #Preview {
-    BabyListView(babies: Babies.mockBabies, onSelectBaby: { baby in
+    BabyListView(babies: [
+        MainTabModel(id: 1, name: "아기1", profileImageUrl: "baby_milestone_illustration"),
+        MainTabModel(id: 2, name: "아기2", profileImageUrl: "baby_milestone_illustration")
+    ], onSelectBaby: { baby in
         print("\(baby.name) selected")
     }, onAddBaby: {
         print("Add Baby button tapped")
