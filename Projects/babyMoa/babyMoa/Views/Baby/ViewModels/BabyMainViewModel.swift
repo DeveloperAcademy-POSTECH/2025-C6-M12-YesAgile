@@ -4,6 +4,9 @@
 //
 //  Created by Baba on 11/5/25.
 //
+//  Babay관련 비즈니스 로직과 상태 관리를 담당하는 BabyMainViewModel입니다.
+//  여기서 분리를 해야 되는 것이 있는데 그것은 아기의 정보를 받아오는 것이다. 즉, MainTabViewModel에서 아기 정보를 받아오는 것이 맞다.
+//  BabyMainViewModel은 아기 정보를 받아온 후, 선택된 아기의 상태 관리와 관련된 로직을 담당합니다.
 
 import Foundation
 
@@ -17,13 +20,11 @@ class BabyMainViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var showSignOutAlert: Bool = false
     
-    private var alertManager: AlertManager
+    @Published var coordinator: BabyMoaCoordinator
+
     
-    init(alertManager: AlertManager) {
-        self.alertManager = alertManager
-        Task {
-            await fetchBabies()
-        }
+    init(coordinator: BabyMoaCoordinator) {
+        self.coordinator = coordinator
     }
     
     func signOut() -> Bool {
@@ -52,8 +53,7 @@ class BabyMainViewModel: ObservableObject {
             
         } catch {
             print("아기 데이터를 가져오는데 실패했습니다 \(error.localizedDescription)")
-            alertManager.showAlert(title: "네트워크 오류 발생", message: "아기 데이터를 가져오는데 실패했습니다.")
-            self.errorMessage = "데이터를 불러오는데 실패 했습니다. "
+            
         }
         
         isLoading = false

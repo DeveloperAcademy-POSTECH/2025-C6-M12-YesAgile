@@ -5,6 +5,8 @@
 //
 //  Created by Baba on 11/5/25.
 //
+// BabyProfileCard는 선택된 아기의 프로필 정보를 카드 형태로 보여주는 뷰입니다.
+
 
 import SwiftUI
 

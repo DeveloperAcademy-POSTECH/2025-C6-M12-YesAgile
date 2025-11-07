@@ -7,7 +7,7 @@ enum HeaderButtonType {
     case none // 버튼이 없는 경우 추가
 }
 
-struct BabyHeaderView: View {
+struct MainTopNavigtaionView: View {
     let babyName: String
     let buttonType: HeaderButtonType
     let onButtonTap: () -> Void
@@ -26,14 +26,17 @@ struct BabyHeaderView: View {
                     )
                     .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
                 
-                HStack(spacing: 5){
-                    Text(babyName)
-                        .font(.system(size: 16, weight: .bold))
-                    
-                    Image(systemName: "chevron.down")
-                        .foregroundStyle(Color.brand50)
-                        .font(.system(size: 14, weight: .bold))
+                Button(action: onButtonTap) {
+                    HStack(spacing: 5){
+                        Text(babyName)
+                            .font(.system(size: 16, weight: .bold))
+                        
+                        Image(systemName: "chevron.down")
+                            .foregroundStyle(Color.brand50)
+                            .font(.system(size: 14, weight: .bold))
+                    }
                 }
+                .foregroundStyle(.black)
                 
                 Spacer()
             }
@@ -65,16 +68,16 @@ struct BabyHeaderView: View {
 
 #Preview {
     VStack(spacing: 20) {
-        BabyHeaderView(babyName: "김아기", buttonType: .settings, onButtonTap: {
+        MainTopNavigtaionView(babyName: "김아기", buttonType: .settings, onButtonTap: {
             print("Settings button tapped")
         })
-        BabyHeaderView(babyName: "이아기", buttonType: .navigate, onButtonTap: {
+        MainTopNavigtaionView(babyName: "이아기", buttonType: .navigate, onButtonTap: {
             print("Navigate button tapped")
         })
-        BabyHeaderView(babyName: "박아기", buttonType: .delete, onButtonTap: {
+        MainTopNavigtaionView(babyName: "박아기", buttonType: .delete, onButtonTap: {
             print("Delete button tapped")
         })
-        BabyHeaderView(babyName: "최아기", buttonType: .none, onButtonTap: {
+        MainTopNavigtaionView(babyName: "최아기", buttonType: .none, onButtonTap: {
             print("This should not be called")
         })
     }

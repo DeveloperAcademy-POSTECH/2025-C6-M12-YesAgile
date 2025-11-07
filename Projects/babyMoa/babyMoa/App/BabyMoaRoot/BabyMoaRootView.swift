@@ -79,7 +79,7 @@ struct BabyMoaRootView: View {
                         .navigationBarBackButtonHidden()
                     // BabyMainView - 라우팅이 잘 되어야 한다.
                 case .babyMain:
-                    BabyMainView(viewModel: BabyMainViewModel(alertManager: alertManager), coordinator: coordinator)
+                    BabyMainView(viewModel: BabyMainViewModel(coordinator: coordinator), coordinator: coordinator)
                         .navigationBarBackButtonHidden()
                 case .guardain:
                     GuardianInvitationView(viewModel: GuardianInvitationCodeViewModel(coordinator: coordinator))
