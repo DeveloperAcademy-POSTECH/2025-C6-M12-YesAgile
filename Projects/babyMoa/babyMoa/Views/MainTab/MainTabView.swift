@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct MainTabView: View {
     @State var viewModel: MainTabViewModel
     @State private var selectedTab = 0
