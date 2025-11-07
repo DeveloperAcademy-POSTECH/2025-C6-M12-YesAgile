@@ -9,7 +9,7 @@ import Foundation
 
 // AddBabyModel은 아기 추가 화면에서 수집되는 핵심 데이터를 나타냅니다.
 // 이 모델은 UI 상태나 비즈니스 로직을 포함하지 않고 순수하게 데이터 구조만을 정의합니다.
-struct AddBabyModel: Codable, Identifiable {
+struct AddBabyModel: Codable, Identifiable, Hashable {
     let id: UUID // 고유 식별자
     let babyId: UUID
     var name: String

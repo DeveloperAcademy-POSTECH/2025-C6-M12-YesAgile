@@ -12,6 +12,8 @@ import UIKit
 
 class GuardianInvitationCodeViewModel: ObservableObject {
     
+    var coordinator: BabyMoaCoordinator
+    
     @Published var guardianInvite: [GuardianInvitate] = []
     
     // MARK: - State Properties
@@ -35,6 +37,10 @@ class GuardianInvitationCodeViewModel: ObservableObject {
     // MARK: - Relationship Picker
     @Published var showRelationshipPicker: Bool = false
     @Published var relationship: RelationshipType = .dad
+    
+    init(coordinator: BabyMoaCoordinator) {
+        self.coordinator = coordinator
+    }
     
     // MARK: - 함수 정의
     
@@ -81,3 +87,6 @@ class GuardianInvitationCodeViewModel: ObservableObject {
     }
     
 }
+
+
+

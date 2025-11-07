@@ -9,9 +9,10 @@ import SwiftUI
 
 struct BabyMainView: View {
     
-    @StateObject private var viewModel = BabyMainViewModel()
+    @ObservedObject var viewModel: BabyMainViewModel
     @State private var sheetHeight: CGFloat = .zero
-        
+    
+    var coordinator: BabyMoaCoordinator
     
     var body: some View {
         ZStack {
@@ -35,7 +36,7 @@ struct BabyMainView: View {
                             viewModel.showBabyListSheet()
                         }
                      
-                        BabyProfileCard(baby: baby)
+                        BabyProfileCard(coordinator: coordinator, baby: baby)
                         
                     } else {
                         // TODO: 아기가 없는 경우의 UI 처리
@@ -45,12 +46,14 @@ struct BabyMainView: View {
                     // Components: 양육자 및 아기 관리 버튼
                     BabyMainRowView(title: "양육자", buttonLabel: "공동 양육자 초대") {
                         // print
-                        print("버튼클릭했어요")
+                        print("버튼클릭했어요 공동양육자 초대 코드 생성")
+                        coordinator.push(path: .guardain)
                     }
                     
                     BabyMainRowView(title: "아기", buttonLabel: "아기 추가") {
                         // print
                         print("버튼클릭했어요")
+                        coordinator.push(path: .addBabyCreate)
                     }
                     
                     Button("로그아웃", action: {
@@ -68,6 +71,8 @@ struct BabyMainView: View {
         .sheet(isPresented: $viewModel.isShowingSheet) {
             BabyListView(babies: viewModel.babies, onSelectBaby: { baby in
                 viewModel.selectBaby(baby)
+            }, onAddBaby: {
+                coordinator.push(path: .addBabyCreate)
             })
             .onPreferenceChange(HeightPreferenceKey.self) { newHeight in
                 if newHeight > 0 {
@@ -93,8 +98,6 @@ struct BabyMainView: View {
                      // sessionManager.sessionState = .loggedOut 에서 로그아웃을 처리해야 되나 어떻게 해야 되나?
                     // 서버와 이야기 해야 한다.
                     print("로그인 버튼을 클릭했습니다.")
-                } else {
-                    print("Failed to sign out")
                 }
                 
             }
@@ -109,5 +112,8 @@ struct BabyMainView: View {
 
 
 #Preview {
-    BabyMainView()
+    BabyMainView(
+        viewModel: BabyMainViewModel(alertManager: AlertManager()),
+        coordinator: BabyMoaCoordinator()
+    )
 }

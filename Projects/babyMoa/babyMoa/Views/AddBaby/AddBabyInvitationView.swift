@@ -9,19 +9,23 @@ import SwiftUI
 
 struct AddBabyInvitationView: View {
     
-    @StateObject private var viewModel = AddBabyViewModel()
+    @StateObject private var viewModel: AddBabyViewModel
+    
+    init(coordinator: BabyMoaCoordinator) {
+        self._viewModel = StateObject(wrappedValue: AddBabyViewModel(coordinator: coordinator))
+    }
     
     var body: some View {
         VStack{
             // CustomeNavigation View
             CustomNavigationBar(title: "설정", leading: {
                 Button(action: {
-                    // 버튼 클릭                    
+                    // 버튼 클릭
                     print("뒤로가기 버튼을 클릭했습니다.")
-
+                    viewModel.coordinator.pop()
                 }) {
                     Image(systemName: "chevron.left")
-                        
+                    
                 }
             })
             
@@ -43,7 +47,9 @@ struct AddBabyInvitationView: View {
                 .textFieldStyle(.borderedForm)
                 .multilineTextAlignment(.center)
             
-            Button("보내기") { }
+            Button("보내기") { 
+                viewModel.coordinator.push(path: .growth)
+            }
                 .buttonStyle(viewModel.isInvitationCodeValid ? .defaultButton : .noneButton)
                 .disabled(!viewModel.isInvitationCodeValid)
             
@@ -56,5 +62,5 @@ struct AddBabyInvitationView: View {
 }
 
 #Preview {
-    AddBabyInvitationView()
+    AddBabyInvitationView(coordinator: BabyMoaCoordinator())
 }

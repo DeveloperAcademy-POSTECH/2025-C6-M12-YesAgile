@@ -10,6 +10,7 @@ import SwiftUI
 struct BabyMoaRootView: View {
     @StateObject var coordinator = BabyMoaCoordinator()
     @StateObject var viewModel = BabyMoaRootViewModel()
+    @StateObject var alertManager = AlertManager()
     
     var body: some View {
         NavigationStack(path: $coordinator.paths) {
@@ -18,6 +19,7 @@ struct BabyMoaRootView: View {
             }
             .navigationBarBackButtonHidden()
             .onAppear {
+//                coordinator.push(path: .babyMain)
                 if viewModel.isUserAuthorized() {
                     coordinator.push(path: .mainTab)
                 } else {
@@ -62,8 +64,39 @@ struct BabyMoaRootView: View {
                         coordinator: coordinator,
                         teethList: teethList
                     )
+                    // Add Baby and Guardian - 라우팅 잘 되어야 한다.
+                case .addBaby:
+                    AddBabyView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
+                case .addBabyCreate:
+                    AddBabyCreate(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
+                case .addBabyInvitaion:
+                    AddBabyInvitationView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
+                case .addBabyStatus(let baby, let isBorn):
+                    AddBabyStatusView(coordinator: coordinator, baby: baby, isBorn: isBorn)
+                        .navigationBarBackButtonHidden()
+                    // BabyMainView - 라우팅이 잘 되어야 한다.
+                case .babyMain:
+                    BabyMainView(viewModel: BabyMainViewModel(alertManager: alertManager), coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
+                case .guardain:
+                    GuardianInvitationView(viewModel: GuardianInvitationCodeViewModel(coordinator: coordinator))
+                        .navigationBarBackButtonHidden()
+                case .guardiainCode:
+                    GuardianCodeView(viewModel: GuardianInvitationCodeViewModel(coordinator: coordinator))
+                        .navigationBarBackButtonHidden()
+
                 }
             }
+        }
+        //MARK: - 경고창에 대해 사용하도로 해야 한다.
+        .environmentObject(alertManager)
+        .alert(alertManager.alertTitle, isPresented: $alertManager.showAlert) {
+            Button("확인") { }
+        } message: {
+            Text(alertManager.alertMessage)
         }
     }
 }
