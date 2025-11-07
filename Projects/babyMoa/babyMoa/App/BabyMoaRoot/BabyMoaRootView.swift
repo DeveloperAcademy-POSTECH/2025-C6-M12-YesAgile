@@ -92,9 +92,20 @@ struct BabyMoaRootView: View {
             }
         }
         .onAppear {
-            // 뷰가 나타날 때 초기 화면 경로를 결정하는 로직을 실행
-            Task {
-                await viewModel.checkInitialScreen(coordinator: coordinator)
+            // 뷰가 처음 나타날 때 초기 화면 경로를 결정하는 로직을 실행
+            if coordinator.paths.isEmpty {
+                Task {
+                    await viewModel.checkInitialScreen(coordinator: coordinator)
+                }
+            }
+        }
+        .onChange(of: coordinator.paths) { _, newValue in
+            // 로그인 성공 등으로 네비게이션 스택이 리셋되면(newValue.isEmpty) 초기 화면을 다시 결정합니다.
+            if newValue.isEmpty {
+                viewModel.isReady = false // 로딩 뷰를 다시 표시
+                Task {
+                    await viewModel.checkInitialScreen(coordinator: coordinator)
+                }
             }
         }
         //MARK: - 경고창에 대해 사용하도로 해야 한다.
