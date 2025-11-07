@@ -59,7 +59,7 @@ enum BabyMoaEndpoint: Endpoint {
         babyId: Int,
         journeyImage: String,
         latitude: Double,
-        longtitude: Double,
+        longitude: Double,
         date: String,
         memo: String
     )
