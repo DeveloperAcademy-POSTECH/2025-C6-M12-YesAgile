@@ -11,13 +11,25 @@ struct GrowthView: View {
     @State var viewModel: GrowthViewModel
     @State var isBabySelecting: Bool = false
     
+    // MARK: - 임시 ViewModel. GrowthViewModel에 기능이 구현되면 삭제되어야 합니다.
+    @StateObject private var babyMainViewModel = BabyMainViewModel(alertManager: AlertManager())
+    
+    let coordinator: BabyMoaCoordinator
+    @State private var sheetHeight: CGFloat = .zero
+    
     init(coordinator: BabyMoaCoordinator) {
-        viewModel = GrowthViewModel(coordinator: coordinator)
+        self.coordinator = coordinator
+        self.viewModel = GrowthViewModel(coordinator: coordinator)
     }
     
     var body: some View {
         VStack(spacing: 0) {
-            BabySelectionHeader()
+            // BabySelectionHeader를 BabyHeaderView로 교체했습니다.
+            // babyName 파라미터는 GrowthViewModel에 있는 실제 아기 이름 프로퍼티로 연결해야 합니다.
+            BabyHeaderView(babyName: "김아기", buttonType: .none, onButtonTap: {})
+                .onTapGesture {
+                    isBabySelecting = true
+                }
             ScrollView {
                 HStack(spacing: 0) {
                     Text("24개월간의,")
@@ -71,6 +83,34 @@ struct GrowthView: View {
                 .buttonStyle(.plain)
                 Spacer().frame(height: 30)
             }
+        }
+        .sheet(isPresented: $isBabySelecting) {
+            // MARK: - 임시 해결책
+            // GrowthViewModel에 babies 프로퍼티와 selectBaby(baby) 메소드가 없으므로,
+            // BabyMainViewModel을 임시로 사용하여 sheet를 표시합니다.
+            // 추후 GrowthViewModel에 해당 기능들이 구현되면 원래대로 복원해야 합니다.
+            BabyListView(babies: babyMainViewModel.babies, onSelectBaby: { baby in
+                babyMainViewModel.selectBaby(baby)
+                // TODO: 여기서 선택된 baby 정보를 GrowthViewModel에도 알려주어야 합니다.
+                // 예: viewModel.selectedBaby = babyMainViewModel.selectedBaby
+                isBabySelecting = false // 아기 선택 후 시트 닫기
+            }, onAddBaby: {
+                isBabySelecting = false // 시트 닫기
+                // 시트가 닫히는 애니메이션 후 화면을 전환하기 위해 약간의 딜레이를 줍니다.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    coordinator.push(path: .addBabyCreate)
+                }
+            })
+            .onPreferenceChange(HeightPreferenceKey.self) { newHeight in
+                if newHeight > 0 {
+                    sheetHeight = newHeight
+                }
+            }
+            .presentationDetents(
+                sheetHeight > 0 ? [.height(sheetHeight)] : [.medium]
+            )
+            .presentationCornerRadius(25)
+            .presentationDragIndicator(.visible)
         }
         .onAppear {
             Task {

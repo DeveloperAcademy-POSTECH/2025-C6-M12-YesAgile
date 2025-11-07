@@ -11,12 +11,14 @@ struct BabyListView: View {
     
     let babies: [Babies]
     let onSelectBaby: (Babies) -> Void
+    let onAddBaby: () -> Void
     
     @Environment(\.dismiss) private var dismiss
     
-    init(babies: [Babies], onSelectBaby: @escaping (Babies) -> Void) {
+    init(babies: [Babies], onSelectBaby: @escaping (Babies) -> Void, onAddBaby: @escaping () -> Void) {
         self.babies = babies
         self.onSelectBaby = onSelectBaby
+        self.onAddBaby = onAddBaby
     }
     
     var body: some View {
@@ -45,7 +47,7 @@ struct BabyListView: View {
             }
             
             Button(action: {
-                // TODO: viewModel.addBaby() 호출
+                onAddBaby()
             }) {
                 HStack(spacing: 20){
                     Image(systemName: "plus")
@@ -85,5 +87,7 @@ struct HeightPreferenceKey: PreferenceKey {
 #Preview {
     BabyListView(babies: Babies.mockBabies, onSelectBaby: { baby in
         print("\(baby.name) selected")
+    }, onAddBaby: {
+        print("Add Baby button tapped")
     })
 }

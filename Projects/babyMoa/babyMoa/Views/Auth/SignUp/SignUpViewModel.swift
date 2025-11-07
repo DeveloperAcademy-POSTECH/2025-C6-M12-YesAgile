@@ -60,8 +60,9 @@ final class SignUpViewModel {
                         guard let resModel = success.data else {
                             return
                         }
-                        UserToken.accessToken = resModel.accessToken
-                        UserToken.refreshToken = resModel.refreshToken
+                        let tokenResult = await resModel.toDomain()
+                        UserToken.accessToken = tokenResult.accessToken
+                        UserToken.refreshToken = tokenResult.refreshToken
                         await MainActor.run {
                             coordinator.push(path: .mainTab)
                         }

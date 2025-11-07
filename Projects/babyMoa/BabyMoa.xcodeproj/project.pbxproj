@@ -191,7 +191,7 @@
 					};
 				};
 			};
-			buildConfigurationList = D4110B632EBBC61100B0C783 /* Build configuration list for PBXProject "babyMoa" */;
+			buildConfigurationList = D4110B632EBBC61100B0C783 /* Build configuration list for PBXProject "BabyMoa" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -539,7 +539,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D4110B632EBBC61100B0C783 /* Build configuration list for PBXProject "babyMoa" */ = {
+		D4110B632EBBC61100B0C783 /* Build configuration list for PBXProject "BabyMoa" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D4110B872EBBC61200B0C783 /* Debug */,

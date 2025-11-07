@@ -1,3 +1,4 @@
+
 //
 //  BabyProfileCard.swift
 //  babyMoa
@@ -8,6 +9,8 @@
 import SwiftUI
 
 struct BabyProfileCard: View {
+    
+    var coordinator: BabyMoaCoordinator
     let baby: Babies
     
     private var ageText: String {
@@ -65,7 +68,19 @@ struct BabyProfileCard: View {
                 }
                 Spacer()
                 Button(action: {
-                    // TODO: Navigate to baby detail view
+                    let genderValue = baby.gender == "남아" ? "male" : "female"
+                    let babyToEdit = AddBabyModel(
+                        babyId: UUID(uuidString: baby.id) ?? UUID(),
+                        name: baby.name,
+                        nickname: baby.nickname,
+                        gender: genderValue,
+                        birthDate: baby.date,
+                        relationship: baby.relationship,
+                        profileImage: baby.image,
+                        isBorn: true
+                    )
+                    
+                    coordinator.push(path: .addBabyStatus(baby: babyToEdit, isBorn: true))
                 }, label: {
                     Image(systemName: "chevron.right")
                         .foregroundStyle(Color.gray40.opacity(0.3))
@@ -86,5 +101,6 @@ struct BabyProfileCard: View {
 
 
 #Preview {
-    BabyProfileCard(baby: Babies.mockBabies[0])
+    BabyProfileCard(coordinator: BabyMoaCoordinator(), baby: Babies.mockBabies[0])
 }
+
