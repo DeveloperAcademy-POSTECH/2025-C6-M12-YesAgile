@@ -9,62 +9,43 @@
 //  BabyMainViewModel은 아기 정보를 받아온 후, 선택된 아기의 상태 관리와 관련된 로직을 담당합니다.
 
 import Foundation
+import Combine
 
 @MainActor
 class BabyMainViewModel: ObservableObject {
     
-    @Published var babies : [Babies] = []
+    /// 현재 화면에 표시될 아기의 상세 정보입니다.
     @Published var selectedBaby: Babies?
-    @Published var isShowingSheet: Bool = false
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
-    @Published var showSignOutAlert: Bool = false
     
+    @Published var showSignOutAlert: Bool = false
     @Published var coordinator: BabyMoaCoordinator
 
+    private var cancellables = Set<AnyCancellable>()
     
     init(coordinator: BabyMoaCoordinator) {
         self.coordinator = coordinator
+        
+        // 공유 상태 객체인 SelectedBabyState.shared의 baby 프로퍼티 변경을 구독합니다.
+        SelectedBabyState.shared.$baby
+            .receive(on: DispatchQueue.main) // UI 업데이트는 메인 스레드에서 수행합니다.
+            .sink { [weak self] newBaby in
+                // 공유된 아기 정보가 변경되면, 이 뷰모델의 selectedBaby를 업데이트합니다.
+                self?.selectedBaby = newBaby
+                print("BabyMainViewModel: Received updated baby - \(newBaby?.name ?? "nil")")
+            }
+            .store(in: &cancellables)
     }
     
     func signOut() -> Bool {
         do {
             
             // SignOut 함수를 만들어야 한다.
-            // 어떻게 해야 되는지 서버와 이야기 해야 한다. 
+            // 어떻게 해야 되는지 서버와 이야기 해야 한다.
             
             return true
         } catch {
             print("Error signing out: \(error.localizedDescription)")
             return false
         }
-    }
-    
-    func fetchBabies() async {
-        isLoading = true
-        
-        do {
-            try await Task.sleep(nanoseconds: 500_000_000)
-            
-            let fetchedBabies = Babies.mockBabies
-            self.babies = fetchedBabies
-            self.selectedBaby = fetchedBabies.first
-            self.errorMessage = nil
-            
-        } catch {
-            print("아기 데이터를 가져오는데 실패했습니다 \(error.localizedDescription)")
-            
-        }
-        
-        isLoading = false
-    }
-    
-    func selectBaby(_ baby: Babies) {
-        self.selectedBaby = baby
-        self.isShowingSheet = false
-    }
-    
-    func showBabyListSheet(){
-        isShowingSheet  = true
     }
 }

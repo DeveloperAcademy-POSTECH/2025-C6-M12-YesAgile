@@ -33,15 +33,16 @@ final class MainTabViewModel {
     var coordinator: BabyMoaCoordinator
     private let babyMoaService: BabyMoaServicable
     
-    let babyMainViewModel: BabyMainViewModel
-    let growthViewModel: GrowthViewModel
+    // MainTabViewModel은 더 이상 하위 뷰모델을 직접 알 필요가 없습니다.
+    // let babyMainViewModel: BabyMainViewModel
+    // let growthViewModel: GrowthViewModel
     
     init(coordinator: BabyMoaCoordinator, babyMoaService: BabyMoaServicable = BabyMoaService.shared) {
         self.coordinator = coordinator
         self.babyMoaService = babyMoaService
         
-        self.babyMainViewModel = BabyMainViewModel(coordinator: coordinator)
-        self.growthViewModel = GrowthViewModel(coordinator: coordinator)
+        // self.babyMainViewModel = BabyMainViewModel(coordinator: coordinator)
+        // self.growthViewModel = GrowthViewModel(coordinator: coordinator)
         
         Task {
             await fetchBabies()
@@ -94,7 +95,16 @@ final class MainTabViewModel {
                         UserDefaults.standard.set(firstBaby.id, forKey: LAST_BABY_ID_KEY)
                     }
                 }
+                
                 // --- 로직 끝 ---
+                
+                // 공유 상태 업데이트: 앱 시작 시 선택된 아기의 상세 정보를 가져와 공유합니다.
+                if let selectedBaby = self.selectedBaby {
+                    Task {
+                        await fetchAndSetSharedBaby(id: selectedBaby.id)
+                    }
+                }
+                
             } else {
                 // RootViewModel에서 분기 처리를 했으므로, 이 경우는 거의 발생하지 않아야 합니다.
                 // 만약을 위해 로컬 목록을 비웁니다.
@@ -116,6 +126,37 @@ final class MainTabViewModel {
         
         // 2. 선택된 아기 ID를 UserDefaults에 저장합니다.
         UserDefaults.standard.set(baby.id, forKey: LAST_BABY_ID_KEY)
+        
+        // 3. 공유 상태 업데이트: 선택된 아기의 상세 정보를 가져와 공유합니다.
+        Task {
+            await fetchAndSetSharedBaby(id: baby.id)
+        }
+    }
+    
+    /// 특정 아기의 전체 상세 정보를 서버에서 가져와 `SelectedBabyState` 공유 객체를 업데이트합니다.
+    private func fetchAndSetSharedBaby(id: Int) async {
+        let result = await babyMoaService.getBaby(babyId: id)
+        switch result {
+        case .success(let response):
+            if let babyDetails = response.data {
+                // `GetBabyResModel`을 `Babies` 모델로 변환합니다.
+                let fullBabyObject = Babies(
+                    id: String(babyDetails.id),
+                    image: babyDetails.avatarImageName,
+                    name: babyDetails.name,
+                    nickname: babyDetails.alias,
+                    date: DateFormatter.backendDateTime.date(from: babyDetails.birthDate) ?? Date(),
+                    gender: babyDetails.gender,
+                    relationship: babyDetails.relationshipType
+                )
+                // 변환된 `Babies` 객체를 공유 상태에 업데이트합니다.
+                SelectedBabyState.shared.baby = fullBabyObject
+                print("✅ 공유 상태 업데이트 완료: \(fullBabyObject.name)")
+            }
+        case .failure(let error):
+            print("❌ 아기 상세 정보를 가져오는데 실패했습니다: \(error)")
+            SelectedBabyState.shared.baby = nil // 실패 시 공유 상태를 비웁니다.
+        }
     }
     
     func showBabyListSheet() {
