@@ -234,7 +234,7 @@ class BabyMoaService: BabyMoaServicable {
                 babyId: babyId,
                 journeyImage: journeyImage,
                 latitude: latitude,
-                longtitude: longitude,
+                longitude: longitude,
                 date: date,
                 memo: memo
             ),
