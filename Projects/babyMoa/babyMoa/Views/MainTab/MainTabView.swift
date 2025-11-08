@@ -18,7 +18,11 @@ struct MainTabView: View {
 
     var body: some View {
         
-        MainTopNavigtaionView(babyName: viewModel.selectedBaby?.name ?? "아기 선택", buttonType: .none) {
+        MainTopNavigtaionView(
+            babyName: viewModel.selectedBaby?.name ?? "아기 선택",
+            babyImage: viewModel.selectedBaby?.profileImageUrl,
+            buttonType: .none
+        ) {
             viewModel.showBabyListSheet()
         }
         

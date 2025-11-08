@@ -62,6 +62,9 @@ final class MainTabViewModel {
 
         switch result {
         case .success(let response):
+            // 디버깅 로그: 서버로부터 받은 전체 응답을 출력합니다.
+            print("✅ 아기 목록 응답 받음: \(response)")
+            
             // `BabyMoaRootViewModel`에서 이미 아기 목록이 있음을 확인했으므로,
             // 여기서는 데이터를 UI 모델로 변환하고 상태를 업데이트하는 데 집중합니다.
             if let babyList = response.data, !babyList.isEmpty {

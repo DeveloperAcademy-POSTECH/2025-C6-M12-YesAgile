@@ -9,15 +9,32 @@ enum HeaderButtonType {
 
 struct MainTopNavigtaionView: View {
     let babyName: String
+    let babyImage: String? // 이미지 URL 문자열을 받도록 수정
     let buttonType: HeaderButtonType
     let onButtonTap: () -> Void
     
     var body: some View {
         ZStack{
             HStack(spacing: 20){
-                Image("defaultAvata")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                // babyImage가 유효한 URL인지 확인하고 AsyncImage를 사용
+                if let imageUrlString = babyImage, let url = URL(string: imageUrlString) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView() // 로딩 중
+                                .frame(width: 50, height: 50)
+                        case .success(let image):
+                            image // 로딩 성공
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        case .failure:
+                            Image("defaultAvata") // 로딩 실패 시 기본 이미지
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
                     .frame(width: 50, height: 50)
                     .clipShape(Circle())
                     .overlay(
@@ -25,6 +42,19 @@ struct MainTopNavigtaionView: View {
                             .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
                     )
                     .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                } else {
+                    // URL이 없으면 기본 이미지 표시
+                    Image("defaultAvata")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 50, height: 50)
+                        .clipShape(Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+                        )
+                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                }
                 
                 Button(action: onButtonTap) {
                     HStack(spacing: 5){
@@ -67,17 +97,22 @@ struct MainTopNavigtaionView: View {
 }
 
 #Preview {
+    // 샘플 이미지 URL (실제 동작하는 URL로 교체하여 테스트 가능)
+    let sampleImageUrl = "https://yesagile-s3-bucket.s3.amazonaws.com/avatars/2025/11/08/38d90084-0fcd-4f34-bc25-471dc2d2f704.jpg"
+    
     VStack(spacing: 20) {
-        MainTopNavigtaionView(babyName: "김아기", buttonType: .settings, onButtonTap: {
+        // 이미지가 있는 경우
+        MainTopNavigtaionView(babyName: "김아기", babyImage: sampleImageUrl, buttonType: .settings, onButtonTap: {
             print("Settings button tapped")
         })
-        MainTopNavigtaionView(babyName: "이아기", buttonType: .navigate, onButtonTap: {
+        // 이미지가 없는 경우 (기본 이미지 표시)
+        MainTopNavigtaionView(babyName: "이아기", babyImage: nil, buttonType: .navigate, onButtonTap: {
             print("Navigate button tapped")
         })
-        MainTopNavigtaionView(babyName: "박아기", buttonType: .delete, onButtonTap: {
+        MainTopNavigtaionView(babyName: "박아기", babyImage: "defaultAvata", buttonType: .delete, onButtonTap: {
             print("Delete button tapped")
         })
-        MainTopNavigtaionView(babyName: "최아기", buttonType: .none, onButtonTap: {
+        MainTopNavigtaionView(babyName: "최아기", babyImage: "defaultAvata", buttonType: .none, onButtonTap: {
             print("This should not be called")
         })
     }
