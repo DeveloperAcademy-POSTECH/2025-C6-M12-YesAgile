@@ -64,7 +64,8 @@ class AddBabyViewModel: ObservableObject {
     var isFormValid: Bool {
         if isBorn {
             return !babyName.isEmpty
-        } else {
+        }
+        else {
             return !babyNickname.isEmpty
         }
     }
@@ -95,7 +96,11 @@ class AddBabyViewModel: ObservableObject {
             self.birthDate = baby.birthDate
             self.isBorn = baby.isBorn
             // self.relationship = baby.relationship // RelationshipType으로 변환 필요
-            // self.profileImage = ... // 이미지 로딩 필요
+            
+            // 이미지 로딩 로직 추가: 전달받은 이미지 URL을 사용하여 이미지 로드
+            Task {
+                await loadImage(from: baby.profileImage)
+            }
         } else if let isBorn = isBorn {
             // 생성 모드: isBorn 값으로 초기화
             self.isBorn = isBorn
@@ -104,78 +109,70 @@ class AddBabyViewModel: ObservableObject {
 
     // MARK: - CRUD Methods
     func save() {
-        // 수정 모드는 현재 로직에서 제외하고 생성 로직에 집중합니다.
-        guard editingBaby == nil else {
-            print("DEBUG: Updating baby... (not implemented)")
-            return
-        }
-        
         Task {
-            // 1. 아바타 이미지 준비 (Base64 인코딩)
-            let avatarImageData: Data?
-            if let userSelectedImage = self.profileImage {
-                // 사용자가 이미지를 선택한 경우, 해당 이미지를 사용
-                avatarImageData = userSelectedImage.jpegData(compressionQuality: 0.8)
-            } else {
-                // 사용자가 이미지를 선택하지 않은 경우, 기본 에셋 이미지를 사용
-                avatarImageData = UIImage(named: "defaultAvata")?.jpegData(compressionQuality: 0.8)
-            }
-            
-            guard let finalImageData = avatarImageData else {
-                print("❌ 아기 등록 실패: 이미지 데이터를 생성할 수 없습니다.")
-                return
-            }
-            
-            let avatarImageName = finalImageData.base64EncodedString()
-            
-            // 2. 서버에 보낼 나머지 파라미터를 준비합니다.
-            let genderToServer: String
-            switch selectedGender {
-            case "male": genderToServer = "M"
-            case "female": genderToServer = "F"
-            default: genderToServer = "N"
-            }
-            
-            let relationshipToServer: String
-            switch relationship {
-            case .mom: relationshipToServer = "MOTHER"
-            case .dad: relationshipToServer = "FATHER"
-            }
-            
-            let birthDateString = DateFormatter.yyyyDashMMDashdd.string(from: birthDate)
-
-            // 로그 추가: 서버에 보내는 파라미터 출력 (Base64 문자열은 너무 길어서 생략)
-            print("DEBUG: Registering baby with parameters:")
-            print("DEBUG: alias: \(babyNickname)")
-            print("DEBUG: name: \(babyName)")
-            print("DEBUG: birthDate: \(birthDateString)")
-            print("DEBUG: gender: \(genderToServer)")
-            print("DEBUG: avatarImageName: (Base64 data)")
-            print("DEBUG: relationshipType: \(relationshipToServer)")
-            
-            // 3. 서버에 아기 등록을 요청합니다.
-            let result = await BabyMoaService.shared.postRegisterBaby(
-                alias: babyNickname,
-                name: babyName,
-                birthDate: birthDateString,
-                gender: genderToServer,
-                avatarImageName: avatarImageName,
-                relationshipType: relationshipToServer
-            )
-            
-            // 4. 결과를 처리합니다.
-            switch result {
-            case .success(let response):
-                // 로그 추가: 성공 응답 출력
-                print("✅ 아기 등록 성공: \(response)")
-                // 등록 성공 후, 네비게이션 스택을 리셋하여 RootView에서 초기 경로를 다시 결정하도록 합니다.
-                // (아기가 생겼으므로 메인 화면으로 이동하게 됩니다.)
-                coordinator.paths.removeAll()
+            if let _ = editingBaby {
+                // --- 수정 로직 (임시) ---
+                print("DEBUG: Updating baby...")
+                // TODO: 추후 아기 정보 수정 API 호출 코드로 교체해야 합니다.
                 
-            case .failure(let error):
-                // 로그 추가: 실패 에러 출력
-                print("❌ 아기 등록 실패: \(error)")
-                // TODO: 사용자에게 에러 알림을 표시합니다.
+                // 수정 성공을 가정하고 이전 화면으로 돌아갑니다.
+                coordinator.pop()
+                
+            } else {
+                // --- 생성 로직 ---
+                // 1. 아바타 이미지 준비 (Base64 인코딩)
+                let avatarImageData: Data?
+                if let userSelectedImage = self.profileImage {
+                    avatarImageData = userSelectedImage.jpegData(compressionQuality: 0.8)
+                } else {
+                    avatarImageData = UIImage(named: "defaultAvata")?.jpegData(compressionQuality: 0.8)
+                }
+                
+                guard let finalImageData = avatarImageData else {
+                    print("❌ 아기 등록 실패: 이미지 데이터를 생성할 수 없습니다.")
+                    return
+                }
+                
+                let avatarImageName = finalImageData.base64EncodedString()
+                
+                // 2. 서버에 보낼 나머지 파라미터를 준비합니다.
+                let genderToServer: String
+                switch selectedGender {
+                case "male": genderToServer = "M"
+                case "female": genderToServer = "F"
+                default: genderToServer = "N"
+                }
+                
+                let relationshipToServer: String
+                switch relationship {
+                case .mom: relationshipToServer = "MOTHER"
+                case .dad: relationshipToServer = "FATHER"
+                }
+                
+                let birthDateString = DateFormatter.yyyyDashMMDashdd.string(from: birthDate)
+
+                print("DEBUG: Registering baby with parameters:")
+                print("DEBUG: alias: \(babyNickname), name: \(babyName), birthDate: \(birthDateString), gender: \(genderToServer), relationshipType: \(relationshipToServer)")
+                
+                // 3. 서버에 아기 등록을 요청합니다.
+                let result = await BabyMoaService.shared.postRegisterBaby(
+                    alias: babyNickname,
+                    name: babyName,
+                    birthDate: birthDateString,
+                    gender: genderToServer,
+                    avatarImageName: avatarImageName,
+                    relationshipType: relationshipToServer
+                )
+                
+                // 4. 결과를 처리합니다.
+                switch result {
+                case .success(let response):
+                    print("✅ 아기 등록 성공: \(response)")
+                    coordinator.paths.removeAll()
+                    
+                case .failure(let error):
+                    print("❌ 아기 등록 실패: \(error)")
+                }
             }
         }
     }
@@ -186,13 +183,39 @@ class AddBabyViewModel: ObservableObject {
     }
     
     func executeDelete() {
-        guard let _ = editingBaby else { return }
-        // 삭제 로직
-        print("DEBUG: Deleting baby...")
-        // TODO: API 호출 후 화면 전환
-        // coordinator.pop()
+        guard let babyToDelete = editingBaby else { return }
+        
+        // --- 삭제 로직 (임시) ---
+        print("DEBUG: Deleting baby with id: \(babyToDelete.id)...")
+        // TODO: 추후 아기 정보 삭제 API 호출 코드로 교체해야 합니다.
+        
+        // 삭제 성공을 가정하고 앱을 초기 상태로 되돌립니다.
+        coordinator.paths.removeAll()
     }
     
     // TODO: PhotosPickerItem이 변경될 때 profileImage를 로드하는 로직 추가
     // func loadImage() async { ... }
+    
+    /// 이미지 URL로부터 이미지를 다운로드하여 뷰모델의 이미지 속성을 업데이트합니다.
+    private func loadImage(from urlString: String) async {
+        guard let url = URL(string: urlString) else {
+            print("❌ 이미지 로드 실패: 유효하지 않은 URL - \(urlString)")
+            return
+        }
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            if let uiImage = UIImage(data: data) {
+                await MainActor.run {
+                    self.profileImage = uiImage
+                    self.displayedProfileImage = Image(uiImage: uiImage)
+                    print("✅ 이미지 로드 성공: \(urlString)")
+                }
+            } else {
+                print("❌ 이미지 로드 실패: 데이터로부터 UIImage 생성 불가")
+            }
+        } catch {
+            print("❌ 이미지 로드 실패: \(error.localizedDescription)")
+        }
+    }
 }

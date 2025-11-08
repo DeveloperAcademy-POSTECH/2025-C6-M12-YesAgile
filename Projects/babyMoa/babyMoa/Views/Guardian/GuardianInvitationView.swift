@@ -31,21 +31,57 @@ struct GuardianInvitationView: View {
                     })
                 })
                 
-                // TODO: ViewModel에서 실제 아기 프로필 이미지 가져오기
-                BabyProfileImageView()
+                // 아기 프로필 이미지 표시
+                if let imageUrlString = viewModel.selectedBabyImageURL, let url = URL(string: imageUrlString) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(width: 70, height: 70)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        case .failure:
+                            Image("defaultAvata")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .frame(width: 70, height: 70)
+                    .clipShape(Circle())
+                    .overlay(
+                        Circle()
+                            .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+                    )
+                    .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                } else {
+                    Image("defaultAvata")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 70, height: 70)
+                        .clipShape(Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+                        )
+                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                }
                 
                 VStack{
-                    Text(viewModel.babyName)
+                    Text(viewModel.selectedBabyName ?? "아기 이름")
                         .font(.system(size: 18, weight: .medium))
                         .padding(.bottom, 13)
                     Text("\(viewModel.birthDateLabel) 출생")
                         .font(.system(size: 14, weight: .medium))
                 }
                 
-                RelationshipSelectionView(
-                    relationship: $viewModel.relationship,
-                    showRelationshipPicker: $viewModel.showRelationshipPicker
-                )
+//                RelationshipSelectionView(
+//                    relationship: $viewModel.relationship,
+//                    showRelationshipPicker: $viewModel.showRelationshipPicker
+//                )
                 
                 VStack(alignment: .leading){
                     Button("공동 양육자 초대 코드 생성", action: {
