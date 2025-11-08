@@ -75,16 +75,25 @@ enum BabyMoaEndpoint: Endpoint {
     )
     case getJourniesAtMonth(
         babyId: Int,
-        year : Int,
-        month : Int
+        year: Int,
+        month: Int
     )
     case getBabyMilestones(
-        babyId : Int
+        babyId: Int
     )
     /// milestoneName의 경우, GrowthMilestone 구조체에서 사용하는 "milestone_0_1" 형식인 milestoneId 를 의미합니다.
     case deleteBabyMilestone(
         babyId: Int,
         milestoneName: String
+    )
+    case patchUpdateJourney(
+        babyId: Int,
+        journeyId: Int,
+        journeyImage: String,
+        latitude: Double,
+        longitude: Double,
+        date: String,  //"2025-11-08"
+        memo: String
     )
 }
 
@@ -128,6 +137,8 @@ extension BabyMoaEndpoint {
             return "/api/milestones/get_baby_milestones"
         case .deleteBabyMilestone:
             return "/api/milestones/delete_milestone"
+        case .patchUpdateJourney:
+            return "/api/journey/update_journey"
         }
     }
 
@@ -138,11 +149,14 @@ extension BabyMoaEndpoint {
             .authRefresh, .addJourney, .setBabyMilestone:
             return .post
 
-        case .getGrowthData, .getBabyList, .getWeights, .getHeights, .getBaby, .getJourniesAtMonth, .getBabyMilestones:
+        case .getGrowthData, .getBabyList, .getWeights, .getHeights, .getBaby,
+            .getJourniesAtMonth, .getBabyMilestones:
             return .get
-        
+
         case .deleteBabyMilestone:
             return .delete
+        case .patchUpdateJourney:
+            return .patch
         }
     }
 
@@ -158,7 +172,7 @@ extension BabyMoaEndpoint {
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
             .setHeight, .getWeights, .getHeights, .addJourney,
             .setBabyMilestone, .getBaby, .getJourniesAtMonth,
-            .getBabyMilestones, .deleteBabyMilestone:
+            .getBabyMilestones, .deleteBabyMilestone, .patchUpdateJourney:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -171,31 +185,33 @@ extension BabyMoaEndpoint {
         switch self {
         case .getHeights(let babyId):
             return [
-                "babyId" : String(babyId)
+                "babyId": String(babyId)
             ]
         case .getGrowthData(let babyId):
             return [
-                "babyId" : String(babyId)
+                "babyId": String(babyId)
             ]
         case .getWeights(let babyId):
             return [
-                "babyId" : String(babyId)
+                "babyId": String(babyId)
             ]
         case .getBaby(let babyId):
             return [
                 "babyId": String(babyId)
             ]
-        case .getJourniesAtMonth(let babyId,
-                                 let year,
-                                 let month):
+        case .getJourniesAtMonth(
+            let babyId,
+            let year,
+            let month
+        ):
             return [
-                "babyId" : String(babyId),
-                "year" : String(year),
-                "month" : String(month)
+                "babyId": String(babyId),
+                "year": String(year),
+                "month": String(month),
             ]
         case .getBabyMilestones(let babyId):
             return [
-                "babyId" : String(babyId)
+                "babyId": String(babyId)
             ]
         case .deleteBabyMilestone(
             let babyId,
@@ -203,7 +219,7 @@ extension BabyMoaEndpoint {
         ):
             return [
                 "babyId": String(babyId),
-                "milestoneName": milestoneName
+                "milestoneName": milestoneName,
             ]
         default:
             return nil
@@ -267,14 +283,14 @@ extension BabyMoaEndpoint {
                     "babyId": babyId,
                     "weight": weight,
                     "date": date,
-                    "memo": memo
+                    "memo": memo,
                 ]
             }
             return [
                 "babyId": babyId,
                 "weight": weight,
                 "date": date,
-                "memo": memo
+                "memo": memo,
             ]
         case .setHeight(
             let babyId,
@@ -287,13 +303,13 @@ extension BabyMoaEndpoint {
                     "babyId": babyId,
                     "height": height,
                     "date": date,
-                    "memo": memo
+                    "memo": memo,
                 ]
             }
             return [
                 "babyId": babyId,
                 "height": height,
-                "date": date
+                "date": date,
             ]
         case .authRefresh(
             let refreshToken
@@ -338,7 +354,25 @@ extension BabyMoaEndpoint {
                 "babyId": babyId,
                 "milestoneName": milestoneName,
                 "milestoneImage": milestoneImage,
-                "date": date
+                "date": date,
+            ]
+        case .patchUpdateJourney(
+            let babyId,
+            let journeyId,
+            let journeyImage,
+            let latitude,
+            let longitude,
+            let date,
+            let memo
+        ):
+            return [
+                "babyId": babyId,
+                "journeyId": journeyId,
+                "journeyImage": journeyImage,
+                "latitude": latitude,
+                "longitude": longitude,
+                "date": date,
+                "memo": memo,
             ]
 
         // case 없이도 가능

@@ -21,10 +21,10 @@ extension Endpoint {
     var scheme: String {
         return "http"
     }
-    
+
     var host: String {
         return "yesagile.shop"
-//        return "localhost"
+        //        return "localhost"
     }
 }
 
@@ -32,6 +32,7 @@ enum RequestMethod: String {
     case get = "GET"
     case post = "POST"
     case delete = "DELETE"
+    case patch = "PATCH"
 }
 
 enum RequestError: Error {
