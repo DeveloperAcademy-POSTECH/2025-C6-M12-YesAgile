@@ -25,6 +25,7 @@ struct MainTabView: View {
         ) {
             viewModel.showBabyListSheet()
         }
+        .backgroundPadding(.horizontal)
         
         TabView(selection: $selectedTab) {
 

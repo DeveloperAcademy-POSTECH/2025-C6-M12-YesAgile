@@ -29,9 +29,25 @@ struct BabyProfileCard: View {
     var body: some View {
         VStack(spacing: 8){
             HStack(spacing: 15){
-                Image(baby.image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                // baby.image가 유효한 URL인지 확인하고 AsyncImage를 사용
+                if let url = URL(string: baby.image) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView() // 로딩 중
+                                .frame(width: 70, height: 70)
+                        case .success(let image):
+                            image // 로딩 성공
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        case .failure:
+                            Image("defaultAvata") // 로딩 실패 시 기본 이미지
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
                     .frame(width: 70, height: 70)
                     .clipShape(Circle())
                     .overlay(
@@ -39,6 +55,19 @@ struct BabyProfileCard: View {
                             .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
                     )
                     .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                } else {
+                    // URL이 없으면 기본 이미지 표시
+                    Image("defaultAvata")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 70, height: 70)
+                        .clipShape(Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+                        )
+                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                }
                 
                 VStack(alignment:.leading, spacing: 0){
                     HStack{
@@ -46,7 +75,8 @@ struct BabyProfileCard: View {
                             .font(.system(size: 16, weight: .bold))
                         Text(baby.gender)
                             .font(.system(size: 14, weight: .medium))
-                            .frame(width: 50, height: 25)
+                            .frame(height: 25)
+                            .padding(.horizontal, 10)
                             .background(Color.white)
                             .clipShape(Capsule())
                             .overlay {
@@ -61,7 +91,8 @@ struct BabyProfileCard: View {
                         .padding(.bottom, 8)
                     
                     Text(baby.relationship)
-                        .frame(width: 41, height: 20)
+                        .frame(height: 20)
+                        .padding(.horizontal, 10)
                         .foregroundStyle(Color.brand50)
                         .font(.system(size: 11, weight: .medium))
                         .background(Color.brand40.opacity(0.1))
@@ -103,6 +134,15 @@ struct BabyProfileCard: View {
 
 
 #Preview {
-    BabyProfileCard(coordinator: BabyMoaCoordinator(), baby: Babies.mockBabies[0])
+    let sampleImageUrl = "https://yesagile-s3-bucket.s3.amazonaws.com/avatars/2025/11/08/38d90084-0fcd-4f34-bc25-471dc2d2f704.jpg"
+    
+    return BabyProfileCard(coordinator: BabyMoaCoordinator(), baby: Babies(
+        id: UUID().uuidString,
+        image: sampleImageUrl,
+        name: "김아기",
+        nickname: "튼튼이",
+        date: Date(),
+        gender: "남아",
+        relationship: "아빠"
+    ))
 }
-
