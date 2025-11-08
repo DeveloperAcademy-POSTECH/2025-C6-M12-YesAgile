@@ -15,7 +15,7 @@ struct MainTopNavigtaionView: View {
     var body: some View {
         ZStack{
             HStack(spacing: 20){
-                Image("baby_milestone_illustration")
+                Image("defaultAvata")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 50, height: 50)

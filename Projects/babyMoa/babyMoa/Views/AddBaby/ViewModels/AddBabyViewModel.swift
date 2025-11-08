@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI // For Image
 import PhotosUI // For PhotosPickerItem
 
+@MainActor
 class AddBabyViewModel: ObservableObject {
     
     // MARK: - Properties
@@ -103,15 +104,80 @@ class AddBabyViewModel: ObservableObject {
 
     // MARK: - CRUD Methods
     func save() {
-        if let _ = editingBaby {
-            // 수정 로직
-            print("DEBUG: Updating baby...")
-        } else {
-            // 생성 로직
-            print("DEBUG: Creating new baby...")
+        // 수정 모드는 현재 로직에서 제외하고 생성 로직에 집중합니다.
+        guard editingBaby == nil else {
+            print("DEBUG: Updating baby... (not implemented)")
+            return
         }
-        // TODO: API 호출 후 화면 전환
-        // coordinator.pop()
+        
+        Task {
+            // 1. 아바타 이미지 준비 (Base64 인코딩)
+            let avatarImageData: Data?
+            if let userSelectedImage = self.profileImage {
+                // 사용자가 이미지를 선택한 경우, 해당 이미지를 사용
+                avatarImageData = userSelectedImage.jpegData(compressionQuality: 0.8)
+            } else {
+                // 사용자가 이미지를 선택하지 않은 경우, 기본 에셋 이미지를 사용
+                avatarImageData = UIImage(named: "defaultAvata")?.jpegData(compressionQuality: 0.8)
+            }
+            
+            guard let finalImageData = avatarImageData else {
+                print("❌ 아기 등록 실패: 이미지 데이터를 생성할 수 없습니다.")
+                return
+            }
+            
+            let avatarImageName = finalImageData.base64EncodedString()
+            
+            // 2. 서버에 보낼 나머지 파라미터를 준비합니다.
+            let genderToServer: String
+            switch selectedGender {
+            case "male": genderToServer = "M"
+            case "female": genderToServer = "F"
+            default: genderToServer = "N"
+            }
+            
+            let relationshipToServer: String
+            switch relationship {
+            case .mom: relationshipToServer = "MOTHER"
+            case .dad: relationshipToServer = "FATHER"
+            }
+            
+            let birthDateString = DateFormatter.yyyyDashMMDashdd.string(from: birthDate)
+
+            // 로그 추가: 서버에 보내는 파라미터 출력 (Base64 문자열은 너무 길어서 생략)
+            print("DEBUG: Registering baby with parameters:")
+            print("DEBUG: alias: \(babyNickname)")
+            print("DEBUG: name: \(babyName)")
+            print("DEBUG: birthDate: \(birthDateString)")
+            print("DEBUG: gender: \(genderToServer)")
+            print("DEBUG: avatarImageName: (Base64 data)")
+            print("DEBUG: relationshipType: \(relationshipToServer)")
+            
+            // 3. 서버에 아기 등록을 요청합니다.
+            let result = await BabyMoaService.shared.postRegisterBaby(
+                alias: babyNickname,
+                name: babyName,
+                birthDate: birthDateString,
+                gender: genderToServer,
+                avatarImageName: avatarImageName,
+                relationshipType: relationshipToServer
+            )
+            
+            // 4. 결과를 처리합니다.
+            switch result {
+            case .success(let response):
+                // 로그 추가: 성공 응답 출력
+                print("✅ 아기 등록 성공: \(response)")
+                // 등록 성공 후, 네비게이션 스택을 리셋하여 RootView에서 초기 경로를 다시 결정하도록 합니다.
+                // (아기가 생겼으므로 메인 화면으로 이동하게 됩니다.)
+                coordinator.paths.removeAll()
+                
+            case .failure(let error):
+                // 로그 추가: 실패 에러 출력
+                print("❌ 아기 등록 실패: \(error)")
+                // TODO: 사용자에게 에러 알림을 표시합니다.
+            }
+        }
     }
 
     func delete() {
