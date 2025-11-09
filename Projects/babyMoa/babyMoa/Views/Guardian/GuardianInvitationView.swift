@@ -85,11 +85,10 @@ struct GuardianInvitationView: View {
                 
                 VStack(alignment: .leading){
                     Button("공동 양육자 초대 코드 생성", action: {
-                        // 네트워크 통신 없이 바로 GuardianCodeView로 이동
-                        // 추후 Task 함수를 이용해서 정상적으로 네트워크 통신이 이루어지면, 초대 코드를 받고 이동하는 화면을 구현해야 함
-                        // 즉, viewModel에서 구현이 필요한 부분으로 현재는 라우팅 되는것만 우선 만듬.
-                        // 내가 까먹을 수 있으니까.
-                        viewModel.coordinator.push(path: .guardiainCode)
+                        Task {
+                            await viewModel.generateInvitationCode()
+                            // TODO: 추후 실제 초대 코드 생성 API 호출 코드로 교체해야 합니다.
+                        }
                     })
                     .buttonStyle(.defaultButton)
                 }

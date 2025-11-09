@@ -70,6 +70,7 @@ class GuardianInvitationCodeViewModel: ObservableObject {
         }
         
         do {
+            // TODO: 추후 실제 초대 코드 생성 API 호출 코드로 교체해야 합니다.
             try await Task.sleep(nanoseconds: 1_000_000_000)
             
             
@@ -82,6 +83,7 @@ class GuardianInvitationCodeViewModel: ObservableObject {
                 relationship: self.relationship.rawValue
             )
             self.shouldNavigateToCodeView = true
+            self.coordinator.push(path: .guardiainCode) // 네비게이션 트리거
             
         } catch {
             errorMessage = "초대 코드 생성에 실패했습니다. 다시 시도해주세요."
