@@ -15,6 +15,15 @@ enum BabyMoaEndpoint: Endpoint {
         avatarImageName: String,
         relationshipType: String
     )
+    case updateBaby(
+        babyId: Int,
+        alias: String,
+        name: String,
+        birthDate: String,
+        gender: String,
+        avatarImageName: String,
+        relationshipType: String
+    )
     case registerBabyByCode(
         babyCode: String
     )
@@ -101,6 +110,8 @@ extension BabyMoaEndpoint {
             return "/api/auth/apple/login"
         case .registerBaby:
             return "/api/baby/register_baby"
+        case .updateBaby:
+            return "/api/baby/update_baby"
         case .registerBabyByCode:
             return "/api/baby/register_baby_by_code"
         case .setRelationshipWithBaby:
@@ -154,6 +165,9 @@ extension BabyMoaEndpoint {
         
         case .deleteBabyMilestone, .deleteBaby:
             return .delete
+            
+        case .updateBaby:
+            return .patch
         }
     }
 
@@ -169,7 +183,7 @@ extension BabyMoaEndpoint {
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
             .setHeight, .getWeights, .getHeights, .addJourney,
             .setBabyMilestone, .getBaby, .getJourniesAtMonth,
-            .getBabyMilestones, .deleteBabyMilestone, .getBabyInviteCode, .deleteBaby:
+            .getBabyMilestones, .deleteBabyMilestone, .getBabyInviteCode, .deleteBaby, .updateBaby:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -246,6 +260,24 @@ extension BabyMoaEndpoint {
             let relationshipType
         ):
             return [
+                "alias": alias,
+                "name": name,
+                "birthDate": birthDate,
+                "gender": gender,
+                "avatarImageName": avatarImageName,
+                "relationshipType": relationshipType,
+            ]
+        case .updateBaby(
+            let babyId,
+            let alias,
+            let name,
+            let birthDate,
+            let gender,
+            let avatarImageName,
+            let relationshipType
+        ):
+            return [
+                "babyId": babyId,
                 "alias": alias,
                 "name": name,
                 "birthDate": birthDate,

@@ -17,6 +17,15 @@ protocol BabyMoaServicable: HTTPClient {
         avatarImageName: String,
         relationshipType: String
     ) async -> Result<BaseResponse<RegisterBabyResModel>, RequestError>
+    func updateBaby(
+        babyId: Int,
+        alias: String,
+        name: String,
+        birthDate: String,
+        gender: String,
+        avatarImageName: String,
+        relationshipType: String
+    ) async -> Result<BaseResponse<EmptyData>, RequestError>
     func postRegisterBabyByCode(babyCode: String) async -> Result<
         BaseResponse<RegisterBabyByCodeResModel>, RequestError
     >
@@ -116,6 +125,22 @@ protocol BabyMoaServicable: HTTPClient {
 }
 
 class BabyMoaService: BabyMoaServicable {
+    func updateBaby(babyId: Int, alias: String, name: String, birthDate: String, gender: String, avatarImageName: String, relationshipType: String) async -> Result<BaseResponse<EmptyData>, RequestError> {
+        let result = await request(endpoint: BabyMoaEndpoint.updateBaby(babyId: babyId, alias: alias, name: name, birthDate: birthDate, gender: gender, avatarImageName: avatarImageName, relationshipType: relationshipType), responseModel: BaseResponse<EmptyData>.self)
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                await refreshToken()
+                return await request(endpoint: BabyMoaEndpoint.updateBaby(babyId: babyId, alias: alias, name: name, birthDate: birthDate, gender: gender, avatarImageName: avatarImageName, relationshipType: relationshipType), responseModel: BaseResponse<EmptyData>.self)
+            default:
+                return result
+            }
+        }
+    }
+    
     func deleteBaby(babyId: Int) async -> Result<BaseResponse<EmptyData>, RequestError> {
         let result = await request(endpoint: BabyMoaEndpoint.deleteBaby(babyId: babyId), responseModel: BaseResponse<EmptyData>.self)
         switch result {

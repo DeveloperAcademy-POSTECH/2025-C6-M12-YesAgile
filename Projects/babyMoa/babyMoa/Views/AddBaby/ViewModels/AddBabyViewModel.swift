@@ -110,16 +110,59 @@ class AddBabyViewModel: ObservableObject {
     // MARK: - CRUD Methods
     func save() {
         Task {
-            if let _ = editingBaby {
-                // --- 수정 로직 (임시) ---
-                print("DEBUG: Updating baby...")
-                // TODO: 추후 아기 정보 수정 API 호출 코드로 교체해야 합니다.
+            if let editingBaby = editingBaby {
+                // --- 수정 로직 ---
+                print("➡️ [UPDATE] 아기 정보 수정을 시작합니다. babyId: \(editingBaby.babyId)")
+                let avatarImageData: Data?
+                if let userSelectedImage = self.profileImage {
+                    avatarImageData = userSelectedImage.jpegData(compressionQuality: 0.8)
+                } else {
+                    avatarImageData = UIImage(named: "defaultAvata")?.jpegData(compressionQuality: 0.8)
+                }
                 
-                // 수정 성공을 가정하고 이전 화면으로 돌아갑니다.
-                coordinator.pop()
+                guard let finalImageData = avatarImageData else {
+                    print("❌ 아기 수정 실패: 이미지 데이터를 생성할 수 없습니다.")
+                    return
+                }
+                
+                let avatarImageName = finalImageData.base64EncodedString()
+                
+                let genderToServer: String
+                switch selectedGender {
+                case "male": genderToServer = "M"
+                case "female": genderToServer = "F"
+                default: genderToServer = "N"
+                }
+                
+                let relationshipToServer: String
+                switch relationship {
+                case .mom: relationshipToServer = "MOTHER"
+                case .dad: relationshipToServer = "FATHER"
+                }
+                
+                let birthDateString = DateFormatter.yyyyDashMMDashdd.string(from: birthDate)
+                
+                let result = await BabyMoaService.shared.updateBaby(
+                    babyId: editingBaby.babyId,
+                    alias: babyNickname,
+                    name: babyName,
+                    birthDate: birthDateString,
+                    gender: genderToServer,
+                    avatarImageName: avatarImageName,
+                    relationshipType: relationshipToServer
+                )
+                
+                switch result {
+                case .success:
+                    print("✅ [UPDATE] 아기 정보 수정 성공")
+                    coordinator.pop()
+                case .failure(let error):
+                    print("❌ [UPDATE] 아기 정보 수정 실패: \(error.localizedDescription)")
+                }
                 
             } else {
                 // --- 생성 로직 ---
+                print("➡️ [CREATE] 아기 등록을 시작합니다.")
                 // 1. 아바타 이미지 준비 (Base64 인코딩)
                 let avatarImageData: Data?
                 if let userSelectedImage = self.profileImage {
@@ -167,11 +210,11 @@ class AddBabyViewModel: ObservableObject {
                 // 4. 결과를 처리합니다.
                 switch result {
                 case .success(let response):
-                    print("✅ 아기 등록 성공: \(response)")
+                    print("✅ [CREATE] 아기 등록 성공: \(response)")
                     coordinator.paths.removeAll()
                     
                 case .failure(let error):
-                    print("❌ 아기 등록 실패: \(error)")
+                    print("❌ [CREATE] 아기 등록 실패: \(error)")
                 }
             }
         }
@@ -183,14 +226,29 @@ class AddBabyViewModel: ObservableObject {
     }
     
     func executeDelete() {
-        guard let babyToDelete = editingBaby else { return }
-        
-        // --- 삭제 로직 (임시) ---
-        print("DEBUG: Deleting baby with id: \(babyToDelete.id)...")
-        // TODO: 추후 아기 정보 삭제 API 호출 코드로 교체해야 합니다.
-        
-        // 삭제 성공을 가정하고 앱을 초기 상태로 되돌립니다.
-        coordinator.paths.removeAll()
+        Task {
+            guard let babyToDelete = editingBaby else {
+                print("Error: No baby selected for deletion.")
+                return
+            }
+            
+            let babyId = babyToDelete.babyId
+            print("➡️ [DELETE] 아기 삭제를 시작합니다. babyId: \(babyId)")
+            let result = await BabyMoaService.shared.deleteBaby(babyId: babyId)
+            
+            switch result {
+            case .success:
+                print("✅ [DELETE] 아기 삭제 성공. babyId: \(babyId)")
+                // If the deleted baby was the currently selected one, clear it
+                if SelectedBabyState.shared.baby?.babyId == babyId {
+                    SelectedBabyState.shared.baby = nil
+                }
+                coordinator.popToRoot() // Go back to the root view after deletion
+            case .failure(let error):
+                print("❌ [DELETE] 아기 삭제 실패: \(error.localizedDescription)")
+                // Optionally, show an error alert to the user
+            }
+        }
     }
     
     // TODO: PhotosPickerItem이 변경될 때 profileImage를 로드하는 로직 추가
