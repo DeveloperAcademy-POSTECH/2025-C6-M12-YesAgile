@@ -48,7 +48,6 @@ extension HTTPClient {
             }
             
 //            if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-//                // WLogger.log("\(json)")
 //                print(json)
 //            }
             

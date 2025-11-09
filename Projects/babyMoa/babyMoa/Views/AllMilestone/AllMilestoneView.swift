@@ -27,7 +27,14 @@ struct AllMilestoneView: View {
                 milestone: viewModel.selectedMilestone,
                 onSave: { milestone, selectedImage, memo, selectedDate in
                     Task {
-                        let editedMilestone = GrowthMilestone(id: milestone.id, title: milestone.title, ageRange: milestone.ageRange, completedDate: selectedDate, description: memo, illustrationName: milestone.illustrationName)
+                        let editedMilestone = GrowthMilestone(
+                            id: milestone.id,
+                            title: milestone.title,
+                            ageRange: milestone.ageRange,
+                            completedDate: selectedDate,
+                            description: memo,
+                            illustrationName: milestone.illustrationName
+                        )
                         let isSaveCompleted = await viewModel.setMilestone(milestone: editedMilestone)
                         if isSaveCompleted {
                             viewModel.allMilestones[viewModel.selectedCardRowIdx][viewModel.selectedCardColIdx] = editedMilestone

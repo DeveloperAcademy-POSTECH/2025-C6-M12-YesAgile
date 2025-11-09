@@ -6,7 +6,7 @@
 // GET /array<object>
 struct GetBabyMilestonesResModel: Decodable {
     var milestoneName: String
-    var imageUrl: String
+    var imageUrl: String?
     var date: String
     var memo: String?
 }

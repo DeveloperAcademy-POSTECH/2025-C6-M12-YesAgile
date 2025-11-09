@@ -173,10 +173,17 @@ struct MilestoneCardView: View {
     
     var body: some View {
         ZStack {
-            Image(milestone.illustrationName!) // TODO: url 구현하면 이미지 가져오는 것으로 바꿔야 함
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .padding(.horizontal, 10)
+            if let image = milestone.image {
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            } else {
+                Image(milestone.illustrationName!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .opacity(milestone.completedDate == nil ? 0.7 : 1)
+                    .padding(.horizontal, 10)
+            }
             VStack {
                 Spacer().frame(height: cardType == .small ? 10 : 20)
                 Text(milestone.completedDate != nil ? DateFormatter.yyyyMMdd.string(from: milestone.completedDate!) : "저는 곧 할 수 있어요")
@@ -186,14 +193,17 @@ struct MilestoneCardView: View {
                     .font(.system(size: cardType.titleFontSize, weight: .bold))
                 Spacer().frame(height: cardType == .small ? 10 : 20)
             }
-            .foregroundStyle(.orange70)
+            .foregroundStyle(milestone.completedDate == nil ? .orange70 : milestone.image == nil ? .orange50 : .white)
         }
         .frame(width: cardWidth, height: cardHeight)
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(.white)
-                .shadow(color: .black.opacity(0.2), radius: 10)
         )
+        .clipShape(
+            RoundedRectangle(cornerRadius: 16)
+        )
+        .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 5)
         .onTapGesture {
             onTap()
         }
