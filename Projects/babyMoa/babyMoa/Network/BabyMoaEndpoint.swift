@@ -95,6 +95,11 @@ enum BabyMoaEndpoint: Endpoint {
         date: String,  //"2025-11-08"
         memo: String
     )
+    case deleteJourney(
+        babyId: Int,
+        journeyId: Int
+        
+    )
 }
 
 extension BabyMoaEndpoint {
@@ -139,6 +144,8 @@ extension BabyMoaEndpoint {
             return "/api/milestones/delete_milestone"
         case .patchUpdateJourney:
             return "/api/journey/update_journey"
+        case .deleteJourney:
+            return "/api/journey/delete_journey"
         }
     }
 
@@ -153,7 +160,7 @@ extension BabyMoaEndpoint {
             .getJourniesAtMonth, .getBabyMilestones:
             return .get
 
-        case .deleteBabyMilestone:
+        case .deleteBabyMilestone, .deleteJourney:
             return .delete
         case .patchUpdateJourney:
             return .patch
@@ -172,7 +179,7 @@ extension BabyMoaEndpoint {
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
             .setHeight, .getWeights, .getHeights, .addJourney,
             .setBabyMilestone, .getBaby, .getJourniesAtMonth,
-            .getBabyMilestones, .deleteBabyMilestone, .patchUpdateJourney:
+            .getBabyMilestones, .deleteBabyMilestone, .patchUpdateJourney, .deleteJourney:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -220,6 +227,14 @@ extension BabyMoaEndpoint {
             return [
                 "babyId": String(babyId),
                 "milestoneName": milestoneName,
+            ]
+        case .deleteJourney(
+            let babyId,
+            let journeyId
+        ):
+            return [
+                "babyId": String(babyId),
+                "journeyId": String(journeyId),
             ]
         default:
             return nil

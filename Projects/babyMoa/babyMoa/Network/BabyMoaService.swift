@@ -119,9 +119,46 @@ protocol BabyMoaServicable: HTTPClient {
         date: String,
         memo: String
     ) async -> Result<BaseResponse<EmptyData>, RequestError>
+    func deleteJourney(
+        babyId: Int,
+        journeyId: Int
+    ) async -> Result<BaseResponse<EmptyData>, RequestError>
 }
 
 class BabyMoaService: BabyMoaServicable {
+    func deleteJourney(
+        babyId: Int,
+        journeyId: Int)
+    async -> Result<BaseResponse<EmptyData>, RequestError> {
+        let result = await request(
+            endpoint:
+                BabyMoaEndpoint.deleteJourney(
+                    babyId: babyId,
+                    journeyId: journeyId
+                ),
+            responseModel: BaseResponse<EmptyData>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                await refreshToken()
+                return await request(
+                    endpoint: BabyMoaEndpoint.deleteJourney(
+                        babyId: <#T##Int#>,
+                        journeyId: <#T##Int#>
+                        
+                    ),
+                    responseModel: BaseResponse<EmptyData>.self
+                )
+            default:
+                return result
+            }
+        }
+    }
+    
     func patchUpdateJourney(
         babyId: Int,
         journeyId: Int,
