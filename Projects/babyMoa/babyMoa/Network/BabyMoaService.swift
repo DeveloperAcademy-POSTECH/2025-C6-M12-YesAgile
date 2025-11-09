@@ -81,7 +81,7 @@ protocol BabyMoaServicable: HTTPClient {
         date: String,
         memo: String
     ) async -> Result<
-        BaseResponse<EmptyData>, RequestError
+        BaseResponse<AddJourneyResModel>, RequestError
     >
     func postSetBabyMilestone(
         babyId: Int,
@@ -301,7 +301,7 @@ class BabyMoaService: BabyMoaServicable {
         longitude: Double,
         date: String,
         memo: String
-    ) async -> Result<BaseResponse<EmptyData>, RequestError> {
+    ) async -> Result<BaseResponse<AddJourneyResModel>, RequestError> {
         let result = await request(
             endpoint: BabyMoaEndpoint.addJourney(
                 babyId: babyId,
@@ -311,7 +311,7 @@ class BabyMoaService: BabyMoaServicable {
                 date: date,
                 memo: memo
             ),
-            responseModel: BaseResponse<EmptyData>.self
+            responseModel: BaseResponse<AddJourneyResModel>.self
         )
         switch result {
         case .success:
