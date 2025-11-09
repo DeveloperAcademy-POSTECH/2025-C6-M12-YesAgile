@@ -110,10 +110,28 @@ protocol BabyMoaServicable: HTTPClient {
         milestoneName: String
     ) async -> Result<BaseResponse<EmptyData>, RequestError>
 
-    func getBabyInviteCode(babyId: String) async -> Result<BaseResponse<String>, RequestError>
+    func getBabyInviteCode(babyId: Int) async -> Result<BaseResponse<String>, RequestError>
+    
+    func deleteBaby(babyId: Int) async -> Result<BaseResponse<EmptyData>, RequestError>
 }
 
 class BabyMoaService: BabyMoaServicable {
+    func deleteBaby(babyId: Int) async -> Result<BaseResponse<EmptyData>, RequestError> {
+        let result = await request(endpoint: BabyMoaEndpoint.deleteBaby(babyId: babyId), responseModel: BaseResponse<EmptyData>.self)
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                await refreshToken()
+                return await request(endpoint: BabyMoaEndpoint.deleteBaby(babyId: babyId), responseModel: BaseResponse<EmptyData>.self)
+            default:
+                return result
+            }
+        }
+    }
+    
     func deleteBabyMilestone(babyId: Int, milestoneName: String) async -> Result<BaseResponse<EmptyData>, RequestError> {
         let result = await request(endpoint: BabyMoaEndpoint.deleteBabyMilestone(babyId: babyId, milestoneName: milestoneName), responseModel: BaseResponse<EmptyData>.self)
         switch result {
@@ -133,7 +151,7 @@ class BabyMoaService: BabyMoaServicable {
     /// 아기 초대 코드를 가져오는 API 호출 메서드
     /// - Parameter babyId: 초대 코드를 가져올 아기의 ID
     /// - Returns: 초대 코드 문자열 또는 에러
-    func getBabyInviteCode(babyId: String) async -> Result<BaseResponse<String>, RequestError> {
+    func getBabyInviteCode(babyId: Int) async -> Result<BaseResponse<String>, RequestError> {
         let result = await request(endpoint: BabyMoaEndpoint.getBabyInviteCode(babyId: babyId), responseModel: BaseResponse<String>.self)
         switch result {
         case .success:
@@ -141,11 +159,9 @@ class BabyMoaService: BabyMoaServicable {
         case .failure(let error):
             switch error {
             case .unauthorized:
-                // 토큰 만료 시, 토큰 갱신 후 요청 재시도
                 await refreshToken()
                 return await request(endpoint: BabyMoaEndpoint.getBabyInviteCode(babyId: babyId), responseModel: BaseResponse<String>.self)
             default:
-                // 그 외 에러는 그대로 반환
                 return result
             }
         }
@@ -615,4 +631,3 @@ class BabyMoaService: BabyMoaServicable {
     }
 
 }
-

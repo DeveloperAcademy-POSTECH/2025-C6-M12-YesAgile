@@ -84,8 +84,8 @@ struct BabyMoaRootView: View {
                 case .guardain:
                     GuardianInvitationView(viewModel: GuardianInvitationCodeViewModel(coordinator: coordinator))
                         .navigationBarBackButtonHidden()
-                case .guardiainCode:
-                    GuardianCodeView(viewModel: GuardianInvitationCodeViewModel(coordinator: coordinator))
+                case .guardiainCode(let viewModel):
+                    GuardianCodeView(viewModel: viewModel)
                         .navigationBarBackButtonHidden()
 
                 }

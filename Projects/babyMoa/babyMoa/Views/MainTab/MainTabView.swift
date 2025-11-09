@@ -26,6 +26,7 @@ struct MainTabView: View {
             viewModel.showBabyListSheet()
         }
         .backgroundPadding(.horizontal)
+
         
         TabView(selection: $selectedTab) {
 
@@ -36,6 +37,8 @@ struct MainTabView: View {
                     Text("성장")
                 }
                 .tag(0)
+
+                
             EmptyView()
                 .tag(1)
             // 아기 탭

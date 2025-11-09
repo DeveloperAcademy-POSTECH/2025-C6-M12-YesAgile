@@ -1,13 +1,3 @@
-
-//
-//  BabyProfileCard.swift
-//  babyMoa
-//
-//  Created by Baba on 11/5/25.
-//
-// BabyProfileCard는 선택된 아기의 프로필 정보를 카드 형태로 보여주는 뷰입니다.
-
-
 import SwiftUI
 
 struct BabyProfileCard: View {
@@ -17,7 +7,10 @@ struct BabyProfileCard: View {
     
     private var ageText: String {
         let calendar = Calendar.current
-        let components = calendar.dateComponents([.month, .day], from: baby.date, to: Date())
+        guard let birthDate = DateFormatter.yyyyDashMMDashdd.date(from: baby.birthDate) else {
+            return ""
+        }
+        let components = calendar.dateComponents([.month, .day], from: birthDate, to: Date())
         if let month = components.month, month > 0 {
             return "\(month)개월 \(components.day ?? 0)일"
         } else if let day = components.day, day >= 0 {
@@ -29,19 +22,18 @@ struct BabyProfileCard: View {
     var body: some View {
         VStack(spacing: 8){
             HStack(spacing: 15){
-                // baby.image가 유효한 URL인지 확인하고 AsyncImage를 사용
-                if let url = URL(string: baby.image) {
+                if let url = URL(string: baby.avatarImageName) {
                     AsyncImage(url: url) { phase in
                         switch phase {
                         case .empty:
-                            ProgressView() // 로딩 중
+                            ProgressView()
                                 .frame(width: 70, height: 70)
                         case .success(let image):
-                            image // 로딩 성공
+                            image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                         case .failure:
-                            Image("defaultAvata") // 로딩 실패 시 기본 이미지
+                            Image("defaultAvata")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                         @unknown default:
@@ -56,7 +48,6 @@ struct BabyProfileCard: View {
                     )
                     .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
                 } else {
-                    // URL이 없으면 기본 이미지 표시
                     Image("defaultAvata")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -71,7 +62,7 @@ struct BabyProfileCard: View {
                 
                 VStack(alignment:.leading, spacing: 0){
                     HStack{
-                        Text("\(baby.name)(\(baby.nickname))")
+                        Text("\(baby.name)(\(baby.alias))")
                             .font(.system(size: 16, weight: .bold))
                         Text(baby.gender)
                             .font(.system(size: 14, weight: .medium))
@@ -90,26 +81,23 @@ struct BabyProfileCard: View {
                         .font(.system(size: 14, weight: .medium))
                         .padding(.bottom, 8)
                     
-                    Text(baby.relationship)
-                        .frame(height: 20)
-                        .padding(.horizontal, 10)
-                        .foregroundStyle(Color.brand50)
-                        .font(.system(size: 11, weight: .medium))
-                        .background(Color.brand40.opacity(0.1))
-                        .clipShape(Capsule())
-                    
                 }
                 Spacer()
                 Button(action: {
-                    let genderValue = baby.gender == "남아" ? "male" : "female"
+                    // Note: `AddBabyModel`'s relationship is not available in `Babies` model.
+                    // A default or placeholder value might be needed.
+                    guard let birthDate = DateFormatter.yyyyDashMMDashdd.date(from: baby.birthDate) else {
+                        return
+                    }
                     let babyToEdit = AddBabyModel(
-                        babyId: UUID(uuidString: baby.id) ?? UUID(),
+                        id: baby.babyId,
+                        babyId: baby.babyId,
                         name: baby.name,
-                        nickname: baby.nickname,
-                        gender: genderValue,
-                        birthDate: baby.date,
-                        relationship: baby.relationship,
-                        profileImage: baby.image,
+                        nickname: baby.alias,
+                        gender: baby.gender,
+                        birthDate: birthDate,
+                        relationship: "", // Placeholder, as it's not in Babies model
+                        profileImage: baby.avatarImageName,
                         isBorn: true
                     )
                     
@@ -137,12 +125,11 @@ struct BabyProfileCard: View {
     let sampleImageUrl = "https://yesagile-s3-bucket.s3.amazonaws.com/avatars/2025/11/08/38d90084-0fcd-4f34-bc25-471dc2d2f704.jpg"
     
     return BabyProfileCard(coordinator: BabyMoaCoordinator(), baby: Babies(
-        id: UUID().uuidString,
-        image: sampleImageUrl,
+        babyId: 1,
+        alias: "튼튼이",
         name: "김아기",
-        nickname: "튼튼이",
-        date: Date(),
-        gender: "남아",
-        relationship: "아빠"
+        birthDate: "2025-11-09",
+        gender: "M",
+        avatarImageName: sampleImageUrl
     ))
 }

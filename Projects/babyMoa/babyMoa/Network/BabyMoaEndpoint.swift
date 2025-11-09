@@ -88,7 +88,9 @@ enum BabyMoaEndpoint: Endpoint {
     )
     
     // 아기 초대 코드를 생성하기 위해 요청한다.
-    case getBabyInviteCode(babyId: String)
+    case getBabyInviteCode(babyId: Int)
+    // 아기를 삭제하기 위해 요청한다.
+    case deleteBaby(babyId: Int)
 }
 
 extension BabyMoaEndpoint {
@@ -135,6 +137,8 @@ extension BabyMoaEndpoint {
         // getbabyInviteCode 추가
         case .getBabyInviteCode:
             return "/api/baby/get_baby_invite_code"
+        case .deleteBaby:
+            return "/api/baby/delete_baby"
         }
     }
 
@@ -148,7 +152,7 @@ extension BabyMoaEndpoint {
         case .getGrowthData, .getBabyList, .getWeights, .getHeights, .getBaby, .getJourniesAtMonth, .getBabyMilestones, .getBabyInviteCode:
             return .get
         
-        case .deleteBabyMilestone:
+        case .deleteBabyMilestone, .deleteBaby:
             return .delete
         }
     }
@@ -165,7 +169,7 @@ extension BabyMoaEndpoint {
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
             .setHeight, .getWeights, .getHeights, .addJourney,
             .setBabyMilestone, .getBaby, .getJourniesAtMonth,
-            .getBabyMilestones, .deleteBabyMilestone, .getBabyInviteCode:   //.getBabyInviteCode추가
+            .getBabyMilestones, .deleteBabyMilestone, .getBabyInviteCode, .deleteBaby:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -214,6 +218,10 @@ extension BabyMoaEndpoint {
             ]
         // getBabyInviteCode
         case .getBabyInviteCode(let babyId):
+            return [
+                "babyId": String(babyId)
+            ]
+        case .deleteBaby(let babyId):
             return [
                 "babyId": String(babyId)
             ]

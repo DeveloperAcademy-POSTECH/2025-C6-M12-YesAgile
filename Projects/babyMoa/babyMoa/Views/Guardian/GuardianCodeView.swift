@@ -115,10 +115,8 @@ struct GuardianCodeView: View {
                 Spacer()
                 
                 Button("전달 완료", action: {
-                    // TODO: Navigation 로직 구현
-                    // 어떤 로직이 들어가야 하는가?
-                    // 전달 완료 하면, 메인 화면으로 이동으로 구성한다.
-                    viewModel.coordinator.push(path: .babyMain)
+                    // 네비게이션 스택을 리셋하고 메인 화면으로 돌아갑니다.
+                    viewModel.coordinator.pop(count: 2)
                     
                 })
                 .buttonStyle(.defaultButton)
@@ -131,7 +129,7 @@ struct GuardianCodeView: View {
                     Button("취소", role: .cancel) { }
                     Button("확인", role: .destructive) {
                         // TODO: 서버와 통신하여 초대 코드 삭제 처리
-                        viewModel.coordinator.push(path: .babyMain)
+                        viewModel.coordinator.popToRoot()
                     }
                 } message: {
                     Text("초대 코드를 취소하면 더 이상 사용할 수 없어요.")

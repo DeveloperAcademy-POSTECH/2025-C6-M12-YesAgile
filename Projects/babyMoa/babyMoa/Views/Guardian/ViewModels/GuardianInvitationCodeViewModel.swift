@@ -10,7 +10,16 @@ import Combine
 import SwiftUI
 import UIKit
 
-class GuardianInvitationCodeViewModel: ObservableObject {
+class GuardianInvitationCodeViewModel: ObservableObject, Hashable {
+    static func == (lhs: GuardianInvitationCodeViewModel, rhs: GuardianInvitationCodeViewModel) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    let id = UUID()
     
     var coordinator: BabyMoaCoordinator
     
@@ -49,9 +58,12 @@ class GuardianInvitationCodeViewModel: ObservableObject {
             .receive(on: DispatchQueue.main) // UI 업데이트는 메인 스레드에서 수행합니다.
             .sink { [weak self] newBaby in
                 // 공유된 아기 정보가 변경되면, 이 뷰모델의 관련 속성을 업데이트합니다.
-                self?.selectedBabyImageURL = newBaby?.image
+                self?.selectedBabyImageURL = newBaby?.avatarImageName
                 self?.selectedBabyName = newBaby?.name
-                self?.selectedBabyBirthDate = newBaby?.date
+                // `birthDate`가 String이므로 Date로 변환합니다.
+                if let birthDateString = newBaby?.birthDate {
+                    self?.selectedBabyBirthDate = DateFormatter.yyyyDashMMDashdd.date(from: birthDateString)
+                }
                 print("GuardianInvitationCodeViewModel: Received updated baby - \(newBaby?.name ?? "nil")")
             }
             .store(in: &cancellables)
@@ -62,15 +74,19 @@ class GuardianInvitationCodeViewModel: ObservableObject {
     func generateInvitationCode() async {
         isLoading = true
         errorMessage = nil
-        
-        guard let babyName = selectedBabyName, let birthDate = selectedBabyBirthDate else {
+
+        guard let baby = SelectedBabyState.shared.baby else {
             errorMessage = "아기 정보가 없습니다. 먼저 아기를 선택해주세요."
             isLoading = false
             return
         }
-        
-        guard let babyId = SelectedBabyState.shared.baby?.id else {
-            errorMessage = "아기 정보가 올바르지 않습니다."
+
+        let babyId = baby.babyId // Int 타입
+        let babyName = baby.name
+
+        // birthDate(String)를 Date로 변환
+        guard let birthDate = DateFormatter.yyyyDashMMDashdd.date(from: baby.birthDate) else {
+            errorMessage = "아기의 생년월일 형식이 올바르지 않습니다."
             isLoading = false
             return
         }
@@ -79,31 +95,29 @@ class GuardianInvitationCodeViewModel: ObservableObject {
 
         switch result {
         case .success(let response):
-            // API 응답으로 받은 초대 코드를 안전하게 언래핑합니다.
+            print("Received invitation code response: \(response.data ?? "nil")")
             guard let inviteCode = response.data else {
                 errorMessage = "초대 코드를 받지 못했습니다."
                 isLoading = false
                 return
             }
 
-            // API 응답 성공 시, 받은 코드로 초대 객체 생성
             self.generatedInvitation = GuardianInvitate(
-                id: UUID().uuidString, // 임시 ID, 필요 시 서버 응답값으로 교체
-                code: inviteCode,
+                id: UUID().uuidString,
+                code: inviteCode, // 직접 String 사용
                 babyName: babyName,
                 babyBirthday: birthDate,
-                babyId: babyId,
+                babyId: String(babyId), // GuardianInvitate는 String을 기대하므로 변환
                 relationship: self.relationship.rawValue
             )
             self.shouldNavigateToCodeView = true
-            // 코디네이터를 통해 다음 화면으로 이동
-            await self.coordinator.push(path: .guardiainCode)
+            await self.coordinator.push(path: .guardiainCode(viewModel: self))
 
         case .failure(let error):
-            // API 응답 실패 시, 에러 메시지 설정
+            print("GuardianInvitationCodeViewModel API Error: \(error)")
             errorMessage = "초대 코드 생성에 실패했습니다: \(error.localizedDescription)"
         }
-        
+
         isLoading = false
     }
     

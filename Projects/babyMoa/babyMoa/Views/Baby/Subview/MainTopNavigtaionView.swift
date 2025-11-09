@@ -67,9 +67,9 @@ struct MainTopNavigtaionView: View {
                     }
                 }
                 .foregroundStyle(.black)
-                
                 Spacer()
             }
+
             
             HStack{
                 Spacer()

@@ -141,13 +141,12 @@ final class MainTabViewModel {
             if let babyDetails = response.data {
                 // `GetBabyResModel`을 `Babies` 모델로 변환합니다.
                 let fullBabyObject = Babies(
-                    id: String(babyDetails.id),
-                    image: babyDetails.avatarImageName,
+                    babyId: babyDetails.id, // .babyId -> .id로 수정
+                    alias: babyDetails.alias,
                     name: babyDetails.name,
-                    nickname: babyDetails.alias,
-                    date: DateFormatter.backendDateTime.date(from: babyDetails.birthDate) ?? Date(),
+                    birthDate: babyDetails.birthDate,
                     gender: babyDetails.gender,
-                    relationship: babyDetails.relationshipType
+                    avatarImageName: babyDetails.avatarImageName
                 )
                 // 변환된 `Babies` 객체를 공유 상태에 업데이트합니다.
                 SelectedBabyState.shared.baby = fullBabyObject
