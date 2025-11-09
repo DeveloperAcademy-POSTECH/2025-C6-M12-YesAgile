@@ -88,7 +88,7 @@ enum BabyMoaEndpoint: Endpoint {
     )
     
     // 아기 초대 코드를 생성하기 위해 요청한다.
-    case getBabyInviteCode(babyId: Int)
+    case getBabyInviteCode(babyId: String)
 }
 
 extension BabyMoaEndpoint {

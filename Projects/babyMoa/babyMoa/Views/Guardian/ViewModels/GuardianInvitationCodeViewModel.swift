@@ -75,7 +75,7 @@ class GuardianInvitationCodeViewModel: ObservableObject {
             return
         }
 
-        let result = await BabyMoaService.shared.getBabyInviteCode(babyId: Int(babyId)!) // babyId가 String이므로 Int로 변환
+        let result = await BabyMoaService.shared.getBabyInviteCode(babyId: babyId)
 
         switch result {
         case .success(let response):
@@ -92,7 +92,7 @@ class GuardianInvitationCodeViewModel: ObservableObject {
                 code: inviteCode,
                 babyName: babyName,
                 babyBirthday: birthDate,
-                babyId: babyId, // String 타입이므로 그대로 사용
+                babyId: babyId,
                 relationship: self.relationship.rawValue
             )
             self.shouldNavigateToCodeView = true

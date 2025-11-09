@@ -110,7 +110,7 @@ protocol BabyMoaServicable: HTTPClient {
         milestoneName: String
     ) async -> Result<BaseResponse<EmptyData>, RequestError>
 
-    func getBabyInviteCode(babyId: Int) async -> Result<BaseResponse<String>, RequestError>
+    func getBabyInviteCode(babyId: String) async -> Result<BaseResponse<String>, RequestError>
 }
 
 class BabyMoaService: BabyMoaServicable {
@@ -133,7 +133,7 @@ class BabyMoaService: BabyMoaServicable {
     /// 아기 초대 코드를 가져오는 API 호출 메서드
     /// - Parameter babyId: 초대 코드를 가져올 아기의 ID
     /// - Returns: 초대 코드 문자열 또는 에러
-    func getBabyInviteCode(babyId: Int) async -> Result<BaseResponse<String>, RequestError> {
+    func getBabyInviteCode(babyId: String) async -> Result<BaseResponse<String>, RequestError> {
         let result = await request(endpoint: BabyMoaEndpoint.getBabyInviteCode(babyId: babyId), responseModel: BaseResponse<String>.self)
         switch result {
         case .success:
@@ -150,7 +150,6 @@ class BabyMoaService: BabyMoaServicable {
             }
         }
     }
-
     
     func getGetBabyMilestones(babyId: Int) async -> Result<
         BaseResponse<[GetBabyMilestonesResModel]>, RequestError
@@ -616,3 +615,4 @@ class BabyMoaService: BabyMoaServicable {
     }
 
 }
+
