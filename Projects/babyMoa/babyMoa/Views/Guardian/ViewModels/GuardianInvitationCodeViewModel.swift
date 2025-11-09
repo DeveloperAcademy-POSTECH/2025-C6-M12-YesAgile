@@ -69,24 +69,39 @@ class GuardianInvitationCodeViewModel: ObservableObject {
             return
         }
         
-        do {
-            // TODO: 추후 실제 초대 코드 생성 API 호출 코드로 교체해야 합니다.
-            try await Task.sleep(nanoseconds: 1_000_000_000)
-            
-            
+        guard let babyId = SelectedBabyState.shared.baby?.id else {
+            errorMessage = "아기 정보가 올바르지 않습니다."
+            isLoading = false
+            return
+        }
+
+        let result = await BabyMoaService.shared.getBabyInviteCode(babyId: Int(babyId)!) // babyId가 String이므로 Int로 변환
+
+        switch result {
+        case .success(let response):
+            // API 응답으로 받은 초대 코드를 안전하게 언래핑합니다.
+            guard let inviteCode = response.data else {
+                errorMessage = "초대 코드를 받지 못했습니다."
+                isLoading = false
+                return
+            }
+
+            // API 응답 성공 시, 받은 코드로 초대 객체 생성
             self.generatedInvitation = GuardianInvitate(
-                id: UUID().uuidString,
-                code: "2025-ABCD-4404",
+                id: UUID().uuidString, // 임시 ID, 필요 시 서버 응답값으로 교체
+                code: inviteCode,
                 babyName: babyName,
                 babyBirthday: birthDate,
-                babyId: UUID().uuidString, // TODO: 실제 babyId 사용
+                babyId: babyId, // String 타입이므로 그대로 사용
                 relationship: self.relationship.rawValue
             )
             self.shouldNavigateToCodeView = true
-            self.coordinator.push(path: .guardiainCode) // 네비게이션 트리거
-            
-        } catch {
-            errorMessage = "초대 코드 생성에 실패했습니다. 다시 시도해주세요."
+            // 코디네이터를 통해 다음 화면으로 이동
+            await self.coordinator.push(path: .guardiainCode)
+
+        case .failure(let error):
+            // API 응답 실패 시, 에러 메시지 설정
+            errorMessage = "초대 코드 생성에 실패했습니다: \(error.localizedDescription)"
         }
         
         isLoading = false

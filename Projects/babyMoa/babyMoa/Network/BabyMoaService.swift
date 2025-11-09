@@ -109,6 +109,8 @@ protocol BabyMoaServicable: HTTPClient {
         babyId: Int,
         milestoneName: String
     ) async -> Result<BaseResponse<EmptyData>, RequestError>
+
+    func getBabyInviteCode(babyId: Int) async -> Result<BaseResponse<String>, RequestError>
 }
 
 class BabyMoaService: BabyMoaServicable {
@@ -127,6 +129,28 @@ class BabyMoaService: BabyMoaServicable {
             }
         }
     }
+
+    /// 아기 초대 코드를 가져오는 API 호출 메서드
+    /// - Parameter babyId: 초대 코드를 가져올 아기의 ID
+    /// - Returns: 초대 코드 문자열 또는 에러
+    func getBabyInviteCode(babyId: Int) async -> Result<BaseResponse<String>, RequestError> {
+        let result = await request(endpoint: BabyMoaEndpoint.getBabyInviteCode(babyId: babyId), responseModel: BaseResponse<String>.self)
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                // 토큰 만료 시, 토큰 갱신 후 요청 재시도
+                await refreshToken()
+                return await request(endpoint: BabyMoaEndpoint.getBabyInviteCode(babyId: babyId), responseModel: BaseResponse<String>.self)
+            default:
+                // 그 외 에러는 그대로 반환
+                return result
+            }
+        }
+    }
+
     
     func getGetBabyMilestones(babyId: Int) async -> Result<
         BaseResponse<[GetBabyMilestonesResModel]>, RequestError
