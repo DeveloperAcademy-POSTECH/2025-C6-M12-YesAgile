@@ -29,13 +29,13 @@ struct GrowthBottomButton: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 56)
                 .background(
-                    isEnabled ? .brand50 : Color.gray.opacity(0.3)
+                    isEnabled ? .brand50 : Color.gray.opacity(0.8)
                 )
                 .cornerRadius(12)
         }
         .disabled(!isEnabled)
+        .background(.clear)
         .padding(.horizontal, 20)
-        .padding(.bottom, 34)
     }
 }
 
