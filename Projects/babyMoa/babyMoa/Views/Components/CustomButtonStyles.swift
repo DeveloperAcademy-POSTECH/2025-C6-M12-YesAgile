@@ -57,6 +57,9 @@ struct AppButtonStyle: ButtonStyle {
     var fontSize: CGFloat?
     var fontWeight: Font.Weight?
     
+    var height: CGFloat? = nil
+    
+    
     
     // 2. _body 함수
     func makeBody(configuration: Configuration) -> some View {
@@ -70,6 +73,7 @@ struct AppButtonStyle: ButtonStyle {
             .foregroundColor(foregroundColor)
             .frame(maxWidth: .infinity)
             .padding(16)
+            .frame(height: height)
             .background(configuration.isPressed ? (pressedBackgroundColor ?? backgroundColor) : backgroundColor)
             .cornerRadius(12)
             .overlay {
@@ -157,6 +161,16 @@ extension ButtonStyle where Self == AppButtonStyle {
             borderWidth: 1,         // 👈 테두리 두께 설정
             fontSize: 14,
             fontWeight: .regular
+
+        )
+    }
+    
+    static var fixedHeightButton: AppButtonStyle {
+        AppButtonStyle(
+            backgroundColor: .brand50,
+            foregroundColor: .white,
+            pressedBackgroundColor: .brand70,
+            height: 60
 
         )
     }

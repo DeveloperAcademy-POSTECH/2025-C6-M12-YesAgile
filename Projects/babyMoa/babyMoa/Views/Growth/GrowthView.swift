@@ -37,7 +37,8 @@ struct GrowthView: View {
                 .padding(.bottom, 20)
                 MilestoneSummaryView(viewModel: $viewModel)
                     .frame(height: 500)
-                Spacer()
+                // Spacer()
+                
                 //                Button(action: {
                 //                    viewModel.checkAllMilestonesButtonTapped()
                 //                }) {
@@ -58,7 +59,7 @@ struct GrowthView: View {
                 Button("전체 성장 마일스콘 확인하기", action: {
                     viewModel.checkAllMilestonesButtonTapped()
                 })
-                .buttonStyle(.defaultButton)
+                .buttonStyle(.fixedHeightButton)
                 
                 HeightAndWeightView(
                     height: $viewModel.latestHeight,
