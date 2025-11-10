@@ -40,7 +40,7 @@ struct JourneyAddView: View {
                                     .scaledToFit()
                                     .clipShape(RoundedRectangle(cornerRadius: 16))
                             } else {
-                                Text("아이와 함께한 소중한 추억 사진을 등록 해주세요")
+                                Text("아이와 함께한 소중한 여정 사진을 등록 해주세요")
                                     .foregroundColor(.gray)
                                     .multilineTextAlignment(.center)
                                     .padding()

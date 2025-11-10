@@ -12,6 +12,8 @@ import SwiftUI
 final class CalendarViewModel {
     var coordinator: BabyMoaCoordinator
     
+    var journies: [Journey] = []
+    
     // MARK: - Properties
     
     /// 현재 표시 중인 월
@@ -27,6 +29,7 @@ final class CalendarViewModel {
     
     init(coordinator: BabyMoaCoordinator) {
         self.coordinator = coordinator
+        self.journies = journies
         updateMonthDates()
         print("✅ CalendarViewModel init 호출됨")
     }
@@ -55,6 +58,12 @@ final class CalendarViewModel {
         monthDates = dates
         print("✅ CalendarViewModel: \(monthDates.count)개 날짜 생성 (\(formatMonth(currentMonth)))")
     }
+    
+    // TODO: 테스트 코드, 삭제 필요 (Ted 맘대로 추가한 거)
+//    func addJourney() async {
+//        // api 결과라 생각
+//        journies = Journey.mockData
+//    }
     
     // MARK: - 월 네비게이션
     

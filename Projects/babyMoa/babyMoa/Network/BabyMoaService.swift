@@ -147,8 +147,8 @@ class BabyMoaService: BabyMoaServicable {
                 await refreshToken()
                 return await request(
                     endpoint: BabyMoaEndpoint.deleteJourney(
-                        babyId: <#T##Int#>,
-                        journeyId: <#T##Int#>
+                        babyId: babyId,
+                        journeyId: journeyId
                         
                     ),
                     responseModel: BaseResponse<EmptyData>.self

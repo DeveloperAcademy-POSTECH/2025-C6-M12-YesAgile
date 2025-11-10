@@ -122,10 +122,11 @@ struct CalendarGrid: View {
         LazyVGrid(columns: columns, spacing: 8) {
             //  직접 접근, Helper 함수 없음
             ForEach(viewModel.monthDates, id: \.self) { date in
+                let dateJournies = viewModel.journies.filter({ $0.date.yyyyMMdd == date.yyyyMMdd })
                 DateCellView(
                     date: date,
                     isCurrentMonth: viewModel.isInCurrentMonth(date),  // ViewModel 호출
-                    hasJourney: viewModel.hasJourney(date, journies: journies),  // ViewModel 호출
+                    journies: dateJournies,
                     isSelected: viewModel.isSelected(date)  // ViewModel 호출
                 )
                 .onTapGesture {
@@ -143,7 +144,7 @@ struct CalendarGrid: View {
 struct DateCellView: View {
     let date: Date
     let isCurrentMonth: Bool
-    let hasJourney: Bool
+    let journies: [Journey]?
     let isSelected: Bool  // 선택 상태 추가
     
     var body: some View {
@@ -165,6 +166,9 @@ struct DateCellView: View {
             Text("\(day)")
                 .font(.system(size: 16, weight: isSelected ? .bold : .regular))  // 선택 시 볼드
                 .foregroundColor(textColor)
+            
+            // TODO: 삭제 필요, journey 가 잘들어왔나 테스트하기 위한 코드 (Ted 맘대로 추가한 거)
+            Text(journies?.first?.memo ?? "")
         }
         .frame(height: 50)
         .opacity(isCurrentMonth ? 1.0 : 0.3)
@@ -184,18 +188,19 @@ struct DateCellView: View {
 
 // MARK: - Preview
 
-#Preview {
-    let coordinator = BabyMoaCoordinator()
-    let viewModel = CalendarViewModel(coordinator: coordinator)
-    
-    return VStack {
-        CalendarCard(
-            viewModel: .constant(viewModel),  // .constant() 사용
-            journies: Journey.mockData
-        )
-        .padding(.horizontal, 20)
-        Spacer()
-    }
-    .background(Color(.systemGroupedBackground))
-}
+// TODO: 테스트로 잠시 주석처리
+//#Preview {
+//    let coordinator = BabyMoaCoordinator()
+//    let viewModel = CalendarViewModel(coordinator: coordinator)
+//
+//    return VStack {
+//        CalendarCard(
+//            viewModel: .constant(viewModel),  // .constant() 사용
+//            journies: Journey.mockData
+//        )
+//        .padding(.horizontal, 20)
+//        Spacer()
+//    }
+//    .background(Color(.systemGroupedBackground))
+//}
 

@@ -4,6 +4,7 @@ import CoreLocation
 /// 여정 도메인 모델
 /// 서버 ResponseModel과 달리 UI에 최적화된 형태로 데이터 보관
 struct Journey: Entity, Hashable {
+    var journeyId : Int
     var journeyImage: UIImage?
     var latitude: Double
     var longitude: Double
@@ -52,6 +53,7 @@ extension Journey {
     static var mockData: [Journey] {
         [
             Journey(
+                journeyId: 1,
                 journeyImage: createSampleImage(systemName: "star.fill", color: .systemYellow),
                 latitude: 37.5665,
                 longitude: 126.9780,
@@ -59,6 +61,7 @@ extension Journey {
                 memo: "서울 나들이"
             ),
             Journey(
+                journeyId: 1,
                 journeyImage: createSampleImage(systemName: "heart.fill", color: .systemPink),
                 latitude: 37.5642,
                 longitude: 126.9770,
@@ -66,6 +69,7 @@ extension Journey {
                 memo: "공원 산책"
             ),
             Journey(
+                journeyId: 1,
                 journeyImage: createSampleImage(systemName: "leaf.fill", color: .systemGreen),
                 latitude: 37.5700,
                 longitude: 126.9800,

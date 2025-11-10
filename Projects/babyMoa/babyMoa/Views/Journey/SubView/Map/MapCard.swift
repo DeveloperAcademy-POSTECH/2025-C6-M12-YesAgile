@@ -123,9 +123,10 @@ struct JourneyAnnotation: Identifiable {
     let date: Date
     
     init(from journey: Journey) {
-        self.id = journey.id
+        // ✅ Journey에 id가 없으므로 latitude, longitude, date로 고유 id 생성
+        self.id = "\(journey.latitude)_\(journey.longitude)_\(journey.date.timeIntervalSince1970)"
         self.coordinate = journey.coordinate
-        self.image = journey.image
+        self.image = journey.journeyImage  // ✅ journeyImage로 수정
         self.date = journey.date
     }
 }

@@ -9,11 +9,13 @@ import SwiftUI
 
 struct JourneyView: View {
     let coordinator: BabyMoaCoordinator
+    @State var viewModel: JourneyViewModel
     @State var calendarViewModel: CalendarViewModel  //  ViewModel 추가
     
     init(coordinator: BabyMoaCoordinator) {
         self.coordinator = coordinator
-        self.calendarViewModel = CalendarViewModel(coordinator: coordinator)
+        self.viewModel = JourneyViewModel(coordinator: coordinator)
+        calendarViewModel = CalendarViewModel(coordinator: coordinator)
         print("✅ JourneyView init 호출됨")
     }
     
@@ -35,6 +37,12 @@ struct JourneyView: View {
                     Spacer().frame(height: 30)
                 }
                 .padding(.top, 20)
+            }
+        }
+        .onAppear { // MARK: 테스트 코드입니다. 삭제 필요 (Ted 맘대로 추가한 거)
+            Task {
+                await viewModel.fetchJournies(year: 2025, month: 11)
+                calendarViewModel.journies = viewModel.journies
             }
         }
     }
