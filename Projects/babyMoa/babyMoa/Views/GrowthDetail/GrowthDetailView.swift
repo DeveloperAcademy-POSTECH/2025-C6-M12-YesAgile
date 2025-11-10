@@ -245,6 +245,7 @@ struct ChartView<T: GrowthData>: View {
                     .symbolSize(25)
                 }
             }
+            .padding(.top, 20)
             .chartXAxis {
                 AxisMarks(values: Array(0..<viewModel.growthDataList.count)) { value in
                     AxisGridLine()
@@ -263,68 +264,9 @@ struct ChartView<T: GrowthData>: View {
             .chartYAxis {
                 AxisMarks(position: .leading)
             }
-            .chartOverlay { proxy in
-                OverlayView(viewModel: $viewModel,proxy: proxy)
-            }
-            // ✅ 일정한 간격이므로, 데이터 개수에 따라 폭 계산
+            // 일정한 간격이므로, 데이터 개수에 따라 폭 계산
             .frame(width: CGFloat(viewModel.growthDataList.count) * 70 < UIScreen.main.bounds.width ? UIScreen.main.bounds.width - 40 : CGFloat(viewModel.growthDataList.count) * 70, height: 300)
             .padding(.horizontal)
-        }
-    }
-}
-
-struct OverlayView<T: GrowthData>: View {
-    @Binding var viewModel: GrowthDetailViewModel<T>
-    @State var selectedData: T? = nil
-    var proxy: ChartProxy
-    
-    // 탭으로 간주할 최대 이동 거리 (포인트)
-    private let tapThreshold: CGFloat = 10.0
-
-    var body: some View {
-        GeometryReader { geometry in
-            Rectangle()
-                .fill(Color.clear)
-                .contentShape(Rectangle())
-                // simultaneousGesture로 ScrollView 제스처와 같이 동작하게 함
-                .simultaneousGesture(
-                    DragGesture(minimumDistance: 0)
-                        .onEnded { gestureValue in
-                            // 전체 이동량: 스크롤 판정에 사용
-                            let translation = gestureValue.translation
-                            let moved = hypot(translation.width, translation.height)
-
-                            // '거의 움직이지 않았다'면 탭으로 간주
-                            guard moved <= tapThreshold else {
-                                // 스크롤로 판단 -> 아무것도 하지 않음 (ScrollView가 처리)
-                                return
-                            }
-
-                            // 탭처럼 처리: 터치 위치
-                            let location = gestureValue.location
-
-                            // proxy로 x값(여기서는 인덱스)을 얻어오기
-                            if let index: Int = proxy.value(atX: location.x, as: Int.self) {
-                                // 현재 Chart에서 index가 어떻게 매핑되는지에 따라 보정 필요
-                                // (당신 코드에서 역순 처리를 하고 있으므로 동일한 보정 적용)
-                                let mappedIndex = viewModel.growthDataList.count - (index + 1)
-                                guard mappedIndex >= 0 && mappedIndex < viewModel.growthDataList.count else {
-                                    withAnimation { selectedData = nil }
-                                    return
-                                }
-
-                                let selected = viewModel.growthDataList[mappedIndex]
-                                withAnimation {
-                                    selectedData = selected
-                                }
-                                print("Selected index:", mappedIndex, "value:", selected.value)
-                            } else {
-                                withAnimation {
-                                    selectedData = nil
-                                }
-                            }
-                        }
-                )
         }
     }
 }
