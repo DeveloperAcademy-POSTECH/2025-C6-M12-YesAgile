@@ -64,7 +64,8 @@ final class SignUpViewModel {
                         UserToken.accessToken = tokenResult.accessToken
                         UserToken.refreshToken = tokenResult.refreshToken
                         await MainActor.run {
-                            coordinator.push(path: .mainTab)
+                            // 네비게이션 스택을 리셋하여 RootView에서 초기 경로를 다시 결정하도록 합니다.
+                            coordinator.paths.removeAll()
                         }
                     case .failure(let error):
                         print(error)

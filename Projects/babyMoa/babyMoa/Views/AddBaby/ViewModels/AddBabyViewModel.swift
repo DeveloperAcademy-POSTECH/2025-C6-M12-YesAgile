@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI // For Image
 import PhotosUI // For PhotosPickerItem
 
+@MainActor
 class AddBabyViewModel: ObservableObject {
     
     // MARK: - Properties
@@ -63,7 +64,8 @@ class AddBabyViewModel: ObservableObject {
     var isFormValid: Bool {
         if isBorn {
             return !babyName.isEmpty
-        } else {
+        }
+        else {
             return !babyNickname.isEmpty
         }
     }
@@ -94,7 +96,11 @@ class AddBabyViewModel: ObservableObject {
             self.birthDate = baby.birthDate
             self.isBorn = baby.isBorn
             // self.relationship = baby.relationship // RelationshipType으로 변환 필요
-            // self.profileImage = ... // 이미지 로딩 필요
+            
+            // 이미지 로딩 로직 추가: 전달받은 이미지 URL을 사용하여 이미지 로드
+            Task {
+                await loadImage(from: baby.profileImage)
+            }
         } else if let isBorn = isBorn {
             // 생성 모드: isBorn 값으로 초기화
             self.isBorn = isBorn
@@ -103,15 +109,115 @@ class AddBabyViewModel: ObservableObject {
 
     // MARK: - CRUD Methods
     func save() {
-        if let _ = editingBaby {
-            // 수정 로직
-            print("DEBUG: Updating baby...")
-        } else {
-            // 생성 로직
-            print("DEBUG: Creating new baby...")
+        Task {
+            if let editingBaby = editingBaby {
+                // --- 수정 로직 ---
+                print("➡️ [UPDATE] 아기 정보 수정을 시작합니다. babyId: \(editingBaby.babyId)")
+                let avatarImageData: Data?
+                if let userSelectedImage = self.profileImage {
+                    avatarImageData = userSelectedImage.jpegData(compressionQuality: 0.8)
+                } else {
+                    avatarImageData = UIImage(named: "defaultAvata")?.jpegData(compressionQuality: 0.8)
+                }
+                
+                guard let finalImageData = avatarImageData else {
+                    print("❌ 아기 수정 실패: 이미지 데이터를 생성할 수 없습니다.")
+                    return
+                }
+                
+                let avatarImageName = finalImageData.base64EncodedString()
+                
+                let genderToServer: String
+                switch selectedGender {
+                case "male": genderToServer = "M"
+                case "female": genderToServer = "F"
+                default: genderToServer = "N"
+                }
+                
+                let relationshipToServer: String
+                switch relationship {
+                case .mom: relationshipToServer = "MOTHER"
+                case .dad: relationshipToServer = "FATHER"
+                }
+                
+                let birthDateString = DateFormatter.yyyyDashMMDashdd.string(from: birthDate)
+                
+                let result = await BabyMoaService.shared.updateBaby(
+                    babyId: editingBaby.babyId,
+                    alias: babyNickname,
+                    name: babyName,
+                    birthDate: birthDateString,
+                    gender: genderToServer,
+                    avatarImageName: avatarImageName,
+                    relationshipType: relationshipToServer
+                )
+                
+                switch result {
+                case .success:
+                    print("✅ [UPDATE] 아기 정보 수정 성공")
+                    coordinator.pop()
+                case .failure(let error):
+                    print("❌ [UPDATE] 아기 정보 수정 실패: \(error.localizedDescription)")
+                }
+                
+            } else {
+                // --- 생성 로직 ---
+                print("➡️ [CREATE] 아기 등록을 시작합니다.")
+                // 1. 아바타 이미지 준비 (Base64 인코딩)
+                let avatarImageData: Data?
+                if let userSelectedImage = self.profileImage {
+                    avatarImageData = userSelectedImage.jpegData(compressionQuality: 0.8)
+                } else {
+                    avatarImageData = UIImage(named: "defaultAvata")?.jpegData(compressionQuality: 0.8)
+                }
+                
+                guard let finalImageData = avatarImageData else {
+                    print("❌ 아기 등록 실패: 이미지 데이터를 생성할 수 없습니다.")
+                    return
+                }
+                
+                let avatarImageName = finalImageData.base64EncodedString()
+                
+                // 2. 서버에 보낼 나머지 파라미터를 준비합니다.
+                let genderToServer: String
+                switch selectedGender {
+                case "male": genderToServer = "M"
+                case "female": genderToServer = "F"
+                default: genderToServer = "N"
+                }
+                
+                let relationshipToServer: String
+                switch relationship {
+                case .mom: relationshipToServer = "MOTHER"
+                case .dad: relationshipToServer = "FATHER"
+                }
+                
+                let birthDateString = DateFormatter.yyyyDashMMDashdd.string(from: birthDate)
+
+                print("DEBUG: Registering baby with parameters:")
+                print("DEBUG: alias: \(babyNickname), name: \(babyName), birthDate: \(birthDateString), gender: \(genderToServer), relationshipType: \(relationshipToServer)")
+                
+                // 3. 서버에 아기 등록을 요청합니다.
+                let result = await BabyMoaService.shared.postRegisterBaby(
+                    alias: babyNickname,
+                    name: babyName,
+                    birthDate: birthDateString,
+                    gender: genderToServer,
+                    avatarImageName: avatarImageName,
+                    relationshipType: relationshipToServer
+                )
+                
+                // 4. 결과를 처리합니다.
+                switch result {
+                case .success(let response):
+                    print("✅ [CREATE] 아기 등록 성공: \(response)")
+                    coordinator.paths.removeAll()
+                    
+                case .failure(let error):
+                    print("❌ [CREATE] 아기 등록 실패: \(error)")
+                }
+            }
         }
-        // TODO: API 호출 후 화면 전환
-        // coordinator.pop()
     }
 
     func delete() {
@@ -120,13 +226,54 @@ class AddBabyViewModel: ObservableObject {
     }
     
     func executeDelete() {
-        guard let _ = editingBaby else { return }
-        // 삭제 로직
-        print("DEBUG: Deleting baby...")
-        // TODO: API 호출 후 화면 전환
-        // coordinator.pop()
+        Task {
+            guard let babyToDelete = editingBaby else {
+                print("Error: No baby selected for deletion.")
+                return
+            }
+            
+            let babyId = babyToDelete.babyId
+            print("➡️ [DELETE] 아기 삭제를 시작합니다. babyId: \(babyId)")
+            let result = await BabyMoaService.shared.deleteBaby(babyId: babyId)
+            
+            switch result {
+            case .success:
+                print("✅ [DELETE] 아기 삭제 성공. babyId: \(babyId)")
+                // If the deleted baby was the currently selected one, clear it
+                if SelectedBabyState.shared.baby?.babyId == babyId {
+                    SelectedBabyState.shared.baby = nil
+                }
+                coordinator.popToRoot() // Go back to the root view after deletion
+            case .failure(let error):
+                print("❌ [DELETE] 아기 삭제 실패: \(error.localizedDescription)")
+                // Optionally, show an error alert to the user
+            }
+        }
     }
     
     // TODO: PhotosPickerItem이 변경될 때 profileImage를 로드하는 로직 추가
     // func loadImage() async { ... }
+    
+    /// 이미지 URL로부터 이미지를 다운로드하여 뷰모델의 이미지 속성을 업데이트합니다.
+    private func loadImage(from urlString: String) async {
+        guard let url = URL(string: urlString) else {
+            print("❌ 이미지 로드 실패: 유효하지 않은 URL - \(urlString)")
+            return
+        }
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            if let uiImage = UIImage(data: data) {
+                await MainActor.run {
+                    self.profileImage = uiImage
+                    self.displayedProfileImage = Image(uiImage: uiImage)
+                    print("✅ 이미지 로드 성공: \(urlString)")
+                }
+            } else {
+                print("❌ 이미지 로드 실패: 데이터로부터 UIImage 생성 불가")
+            }
+        } catch {
+            print("❌ 이미지 로드 실패: \(error.localizedDescription)")
+        }
+    }
 }

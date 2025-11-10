@@ -27,11 +27,47 @@ struct GuardianCodeView: View {
                     })
                 })
                 
-                // TODO: ViewModel에서 실제 아기 프로필 이미지 가져오기
-                BabyProfileImageView()
+                // 아기 프로필 이미지 표시
+                if let imageUrlString = viewModel.selectedBabyImageURL, let url = URL(string: imageUrlString) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(width: 70, height: 70)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        case .failure:
+                            Image("defaultAvata")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .frame(width: 70, height: 70)
+                    .clipShape(Circle())
+                    .overlay(
+                        Circle()
+                            .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+                    )
+                    .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                } else {
+                    Image("defaultAvata")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 70, height: 70)
+                        .clipShape(Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+                        )
+                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                }
                 
                 VStack(alignment: .center, spacing: 11){
-                    Text(viewModel.babyName)
+                    Text(viewModel.selectedBabyName ?? "아기 이름")
                         .font(.system(size: 18, weight: .medium))
                         .multilineTextAlignment(.center)
                     Text("초대할 양육자에게 \n 초대 코드를 전달해 주세요.")
@@ -79,10 +115,8 @@ struct GuardianCodeView: View {
                 Spacer()
                 
                 Button("전달 완료", action: {
-                    // TODO: Navigation 로직 구현
-                    // 어떤 로직이 들어가야 하는가?
-                    // 전달 완료 하면, 메인 화면으로 이동으로 구성한다.
-                    viewModel.coordinator.push(path: .babyMain)
+                    // 네비게이션 스택을 리셋하고 메인 화면으로 돌아갑니다.
+                    viewModel.coordinator.pop(count: 2)
                     
                 })
                 .buttonStyle(.defaultButton)
@@ -95,7 +129,7 @@ struct GuardianCodeView: View {
                     Button("취소", role: .cancel) { }
                     Button("확인", role: .destructive) {
                         // TODO: 서버와 통신하여 초대 코드 삭제 처리
-                        viewModel.coordinator.push(path: .babyMain)
+                        viewModel.coordinator.popToRoot()
                     }
                 } message: {
                     Text("초대 코드를 취소하면 더 이상 사용할 수 없어요.")
@@ -114,11 +148,11 @@ struct GuardianCodeView: View {
     let viewModel = GuardianInvitationCodeViewModel(coordinator: BabyMoaCoordinator())
     
     // 2. 뷰모델의 `generatedInvitation` 속성에 목업 데이터 설정
-    // GuardianInvitate.mockGuardianInvitateModel의 첫 번째 요소를 사용합니다.
     viewModel.generatedInvitation = GuardianInvitate.mockGuardianInvitateModel.first
+    viewModel.selectedBabyName = "김아기"
+    viewModel.selectedBabyBirthDate = Date()
+    viewModel.selectedBabyImageURL = "https://yesagile-s3-bucket.s3.amazonaws.com/avatars/2025/11/08/38d90084-0fcd-4f34-bc25-471dc2d2f704.jpg"
     
     // 3. 설정된 뷰모델을 뷰에 전달
     return GuardianCodeView(viewModel: viewModel)
 }
-
-

@@ -14,16 +14,16 @@ struct BabyMoaRootView: View {
     
     var body: some View {
         NavigationStack(path: $coordinator.paths) {
-            VStack {
-                
-            }
-            .navigationBarBackButtonHidden()
-            .onAppear {
-//                coordinator.push(path: .babyMain)
-                if viewModel.isUserAuthorized() {
-                    coordinator.push(path: .mainTab)
+            // isReady 상태에 따라 로딩 뷰 또는 컨텐츠 뷰를 표시
+            Group {
+                if viewModel.isReady {
+                    VStack {
+                        // 초기 경로 설정이 완료된 후의 뷰 (현재는 비어 있음)
+                    }
+                    .navigationBarBackButtonHidden()
                 } else {
-                    coordinator.push(path: .startBabyMoa)
+                    // 앱 시작 시 데이터를 로드하는 동안 표시될 로딩 뷰
+                    ProgressView()
                 }
             }
             .navigationDestination(for: CoordinatorPath.self) { path in
@@ -79,15 +79,32 @@ struct BabyMoaRootView: View {
                         .navigationBarBackButtonHidden()
                     // BabyMainView - 라우팅이 잘 되어야 한다.
                 case .babyMain:
-                    BabyMainView(viewModel: BabyMainViewModel(alertManager: alertManager), coordinator: coordinator)
+                    BabyMainView(viewModel: BabyMainViewModel(coordinator: coordinator), coordinator: coordinator)
                         .navigationBarBackButtonHidden()
                 case .guardain:
                     GuardianInvitationView(viewModel: GuardianInvitationCodeViewModel(coordinator: coordinator))
                         .navigationBarBackButtonHidden()
-                case .guardiainCode:
-                    GuardianCodeView(viewModel: GuardianInvitationCodeViewModel(coordinator: coordinator))
+                case .guardiainCode(let viewModel):
+                    GuardianCodeView(viewModel: viewModel)
                         .navigationBarBackButtonHidden()
 
+                }
+            }
+        }
+        .onAppear {
+            // 뷰가 처음 나타날 때 초기 화면 경로를 결정하는 로직을 실행
+            if coordinator.paths.isEmpty {
+                Task {
+                    await viewModel.checkInitialScreen(coordinator: coordinator)
+                }
+            }
+        }
+        .onChange(of: coordinator.paths) { _, newValue in
+            // 로그인 성공 등으로 네비게이션 스택이 리셋되면(newValue.isEmpty) 초기 화면을 다시 결정합니다.
+            if newValue.isEmpty {
+                viewModel.isReady = false // 로딩 뷰를 다시 표시
+                Task {
+                    await viewModel.checkInitialScreen(coordinator: coordinator)
                 }
             }
         }

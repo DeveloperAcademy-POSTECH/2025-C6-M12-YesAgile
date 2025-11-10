@@ -15,8 +15,20 @@ class BabyMoaCoordinator: ObservableObject {
         paths.append(path)
     }
     
+    @MainActor
+    public func popToRoot() {
+        paths.removeAll()
+    }
+    
     public func pop() {
         paths.removeLast()
+    }
+    
+    @MainActor
+    public func pop(count: Int) {
+        guard count > 0 else { return }
+        let popCount = min(count, paths.count)
+        paths.removeLast(popCount)
     }
 }
 
@@ -39,5 +51,5 @@ enum CoordinatorPath: Hashable {
     //BabyMainView
     case babyMain
     case guardain
-    case guardiainCode
+    case guardiainCode(viewModel: GuardianInvitationCodeViewModel)
 }

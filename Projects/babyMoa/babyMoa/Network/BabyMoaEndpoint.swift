@@ -15,6 +15,15 @@ enum BabyMoaEndpoint: Endpoint {
         avatarImageName: String,
         relationshipType: String
     )
+    case updateBaby(
+        babyId: Int,
+        alias: String,
+        name: String,
+        birthDate: String,
+        gender: String,
+        avatarImageName: String,
+        relationshipType: String
+    )
     case registerBabyByCode(
         babyCode: String
     )
@@ -86,6 +95,11 @@ enum BabyMoaEndpoint: Endpoint {
         babyId: Int,
         milestoneName: String
     )
+    
+    // 아기 초대 코드를 생성하기 위해 요청한다.
+    case getBabyInviteCode(babyId: Int)
+    // 아기를 삭제하기 위해 요청한다.
+    case deleteBaby(babyId: Int)
 }
 
 extension BabyMoaEndpoint {
@@ -96,6 +110,8 @@ extension BabyMoaEndpoint {
             return "/api/auth/apple/login"
         case .registerBaby:
             return "/api/baby/register_baby"
+        case .updateBaby:
+            return "/api/baby/update_baby"
         case .registerBabyByCode:
             return "/api/baby/register_baby_by_code"
         case .setRelationshipWithBaby:
@@ -128,6 +144,12 @@ extension BabyMoaEndpoint {
             return "/api/milestones/get_baby_milestones"
         case .deleteBabyMilestone:
             return "/api/milestones/delete_milestone"
+            
+        // getbabyInviteCode 추가
+        case .getBabyInviteCode:
+            return "/api/baby/get_baby_invite_code"
+        case .deleteBaby:
+            return "/api/baby/delete_baby"
         }
     }
 
@@ -138,11 +160,14 @@ extension BabyMoaEndpoint {
             .authRefresh, .addJourney, .setBabyMilestone:
             return .post
 
-        case .getGrowthData, .getBabyList, .getWeights, .getHeights, .getBaby, .getJourniesAtMonth, .getBabyMilestones:
+        case .getGrowthData, .getBabyList, .getWeights, .getHeights, .getBaby, .getJourniesAtMonth, .getBabyMilestones, .getBabyInviteCode:
             return .get
         
-        case .deleteBabyMilestone:
+        case .deleteBabyMilestone, .deleteBaby:
             return .delete
+            
+        case .updateBaby:
+            return .patch
         }
     }
 
@@ -158,7 +183,7 @@ extension BabyMoaEndpoint {
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
             .setHeight, .getWeights, .getHeights, .addJourney,
             .setBabyMilestone, .getBaby, .getJourniesAtMonth,
-            .getBabyMilestones, .deleteBabyMilestone:
+            .getBabyMilestones, .deleteBabyMilestone, .getBabyInviteCode, .deleteBaby, .updateBaby:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -205,6 +230,16 @@ extension BabyMoaEndpoint {
                 "babyId": String(babyId),
                 "milestoneName": milestoneName
             ]
+        // getBabyInviteCode
+        case .getBabyInviteCode(let babyId):
+            return [
+                "babyId": String(babyId)
+            ]
+        case .deleteBaby(let babyId):
+            return [
+                "babyId": String(babyId)
+            ]
+            
         default:
             return nil
         }
@@ -225,6 +260,24 @@ extension BabyMoaEndpoint {
             let relationshipType
         ):
             return [
+                "alias": alias,
+                "name": name,
+                "birthDate": birthDate,
+                "gender": gender,
+                "avatarImageName": avatarImageName,
+                "relationshipType": relationshipType,
+            ]
+        case .updateBaby(
+            let babyId,
+            let alias,
+            let name,
+            let birthDate,
+            let gender,
+            let avatarImageName,
+            let relationshipType
+        ):
+            return [
+                "babyId": babyId,
                 "alias": alias,
                 "name": name,
                 "birthDate": birthDate,

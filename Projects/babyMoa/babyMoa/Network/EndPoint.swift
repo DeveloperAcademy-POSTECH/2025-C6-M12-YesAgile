@@ -32,6 +32,7 @@ enum RequestMethod: String {
     case get = "GET"
     case post = "POST"
     case delete = "DELETE"
+    case patch = "PATCH"
 }
 
 enum RequestError: Error {

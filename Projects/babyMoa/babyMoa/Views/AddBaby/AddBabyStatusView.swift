@@ -49,7 +49,7 @@ struct AddBabyStatusView: View {
                             .profileImageStyle()
                     } else {
                         // 2. 기본 이미지
-                        Image("baby_milestone_illustration")
+                        Image("defaultAvata")
                             .profileImageStyle()
                     }
                 }

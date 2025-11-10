@@ -31,29 +31,64 @@ struct GuardianInvitationView: View {
                     })
                 })
                 
-                // TODO: ViewModel에서 실제 아기 프로필 이미지 가져오기
-                BabyProfileImageView()
+                // 아기 프로필 이미지 표시
+                if let imageUrlString = viewModel.selectedBabyImageURL, let url = URL(string: imageUrlString) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(width: 70, height: 70)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        case .failure:
+                            Image("defaultAvata")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .frame(width: 70, height: 70)
+                    .clipShape(Circle())
+                    .overlay(
+                        Circle()
+                            .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+                    )
+                    .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                } else {
+                    Image("defaultAvata")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 70, height: 70)
+                        .clipShape(Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+                        )
+                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                }
                 
                 VStack{
-                    Text(viewModel.babyName)
+                    Text(viewModel.selectedBabyName ?? "아기 이름")
                         .font(.system(size: 18, weight: .medium))
                         .padding(.bottom, 13)
                     Text("\(viewModel.birthDateLabel) 출생")
                         .font(.system(size: 14, weight: .medium))
                 }
                 
-                RelationshipSelectionView(
-                    relationship: $viewModel.relationship,
-                    showRelationshipPicker: $viewModel.showRelationshipPicker
-                )
+//                RelationshipSelectionView(
+//                    relationship: $viewModel.relationship,
+//                    showRelationshipPicker: $viewModel.showRelationshipPicker
+//                )
                 
                 VStack(alignment: .leading){
                     Button("공동 양육자 초대 코드 생성", action: {
-                        // 네트워크 통신 없이 바로 GuardianCodeView로 이동
-                        // 추후 Task 함수를 이용해서 정상적으로 네트워크 통신이 이루어지면, 초대 코드를 받고 이동하는 화면을 구현해야 함
-                        // 즉, viewModel에서 구현이 필요한 부분으로 현재는 라우팅 되는것만 우선 만듬.
-                        // 내가 까먹을 수 있으니까.
-                        viewModel.coordinator.push(path: .guardiainCode)
+                        Task {
+                            await viewModel.generateInvitationCode()
+                            // TODO: 추후 실제 초대 코드 생성 API 호출 코드로 교체해야 합니다.
+                        }
                     })
                     .buttonStyle(.defaultButton)
                 }
