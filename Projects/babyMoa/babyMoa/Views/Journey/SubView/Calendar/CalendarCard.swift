@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CalendarCard: View {
-    @Binding var viewModel: CalendarViewModel  //  @Binding
+    var viewModel: CalendarViewModel // 옵저버블 써서 var 로도 가능! 
     let journies: [Journey]
     
     var body: some View {
@@ -31,7 +31,7 @@ struct CalendarCard: View {
             
             // 날짜 그리드
             CalendarGrid(
-                viewModel: $viewModel,  // @Binding 전달
+                viewModel: viewModel,
                 journies: journies
             )
         }
@@ -47,7 +47,7 @@ struct CalendarCard: View {
 // MARK: - Month Navigation
 
 struct MonthNavigationView: View {
-    let currentMonth: Date  //
+    let currentMonth: Date
     let onPrevious: () -> Void
     let onNext: () -> Void
     
@@ -64,7 +64,7 @@ struct MonthNavigationView: View {
             
             // 년월 표시
             Text(monthYearString)
-                .font(.system(size: 20, weight: .bold))
+                .font(.system(size: 16, weight: .bold))
                 .foregroundColor(.black)
             
             Spacer()
@@ -95,7 +95,7 @@ struct DaysOfWeekHeader: View {
         HStack(spacing: 0) {
             ForEach(0..<7) { index in
                 Text(days[index])
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: 12, weight: .medium))
                     .foregroundColor(dayColor(for: index))
                     .frame(maxWidth: .infinity)
             }
@@ -113,7 +113,7 @@ struct DaysOfWeekHeader: View {
 
 /// 날짜 그리드 - 심플하게 ViewModel 데이터만 표시
 struct CalendarGrid: View {
-    @Binding var viewModel: CalendarViewModel  //  @Binding 사용
+    var viewModel: CalendarViewModel // 옵저버블 덕분에 var로도 가능
     let journies: [Journey]
     
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 7)
@@ -158,7 +158,7 @@ struct DateCellView: View {
             // 점선 원 테두리
             Circle()
                 .strokeBorder(
-                    style: StrokeStyle(lineWidth: 1, dash: [3, 3])
+                    style: StrokeStyle(lineWidth: 1, dash: [2, 2])
                 )
                 .foregroundColor(.gray.opacity(0.3))
             
@@ -170,7 +170,7 @@ struct DateCellView: View {
             // TODO: 삭제 필요, journey 가 잘들어왔나 테스트하기 위한 코드 (Ted 맘대로 추가한 거)
             Text(journies?.first?.memo ?? "")
         }
-        .frame(height: 50)
+        .frame(height: 44)
         .opacity(isCurrentMonth ? 1.0 : 0.3)
     }
     
@@ -186,21 +186,14 @@ struct DateCellView: View {
     }
 }
 
-// MARK: - Preview
+#Preview {
+    let coordinator = BabyMoaCoordinator()
+    let mockViewModel = CalendarViewModel(coordinator: coordinator)
 
-// TODO: 테스트로 잠시 주석처리
-//#Preview {
-//    let coordinator = BabyMoaCoordinator()
-//    let viewModel = CalendarViewModel(coordinator: coordinator)
-//
-//    return VStack {
-//        CalendarCard(
-//            viewModel: .constant(viewModel),  // .constant() 사용
-//            journies: Journey.mockData
-//        )
-//        .padding(.horizontal, 20)
-//        Spacer()
-//    }
-//    .background(Color(.systemGroupedBackground))
-//}
-
+    return CalendarCard(
+        viewModel: mockViewModel,
+        journies: Journey.mockData
+    )
+    .padding()
+    .background(Color(.systemGroupedBackground))
+}

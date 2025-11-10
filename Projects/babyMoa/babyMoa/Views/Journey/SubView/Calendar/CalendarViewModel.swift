@@ -9,7 +9,7 @@ import SwiftUI
 
 /// 달력 화면의 비즈니스 로직 관리
 @Observable
-final class CalendarViewModel {
+class CalendarViewModel {
     var coordinator: BabyMoaCoordinator
     var journies: [Journey] = []
     

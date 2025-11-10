@@ -9,15 +9,18 @@ import SwiftUI
 
 struct JourneyView: View {
     let coordinator: BabyMoaCoordinator
-    @State var viewModel: JourneyViewModel
-    @State var calendarViewModel: CalendarViewModel  //  ViewModel 추가
+    @State private var viewModel: JourneyViewModel
+    @State private var calendarViewModel: CalendarViewModel
+    //@Observable 쓰면서 @StateObject 가 ->  @State로 바뀜 재생성 안됨 해당 뷰 인스턴스의 수명동안 저장소 유지 다른 뷰로 간주될 떄만 초기화 일어남 부모가 id를 바꾸거나.. 전혀 다른 라우팅으로 동일타입의 뷰를 생성한다면. 새로운 아이덴티가 일어나서 초기화됨
     
+    // ToDo : 저니뷰모델에 중복호출 방지만 해주자
     init(coordinator: BabyMoaCoordinator) {
         self.coordinator = coordinator
-        self.viewModel = JourneyViewModel(coordinator: coordinator)
-        calendarViewModel = CalendarViewModel(coordinator: coordinator)
+        _viewModel = State(initialValue: JourneyViewModel(coordinator: coordinator))
+        _calendarViewModel = State(initialValue: CalendarViewModel(coordinator: coordinator))
         print("✅ JourneyView init 호출됨")
     }
+        
     
     var body: some View {
         VStack(spacing: 0) {
@@ -25,7 +28,7 @@ struct JourneyView: View {
                 VStack(spacing: 20) {
                     // 달력 카드
                     CalendarCard(
-                        viewModel: $calendarViewModel,  //  @Binding 전달
+                        viewModel: calendarViewModel,  //  @ObservedObject 전달
                         journies: []  // TODO: JourneyViewModel에서 받을 예정
                     )
                     .padding(.horizontal, 20)

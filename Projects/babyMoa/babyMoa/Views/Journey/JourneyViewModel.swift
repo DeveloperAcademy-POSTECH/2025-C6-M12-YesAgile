@@ -9,8 +9,7 @@ import Foundation
 import SwiftUI
 
 /// Journey 비즈니스 로직을 관리하는 ViewModel
-@Observable
-final class JourneyViewModel {
+@Observable class JourneyViewModel {
     var coordinator: BabyMoaCoordinator
     
     // MARK: - Properties

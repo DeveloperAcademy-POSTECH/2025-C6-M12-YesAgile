@@ -10,7 +10,7 @@ import MapKit
 
 /// 지도 카드 컴포넌트
 struct MapCard: View {
-    // Journey 데이터 (나중에 ViewModel에서 받을 예정)
+    // Journey 데이터 (나중에 JourneyViewModel에서 받을 예정)
     let journies: [Journey] = []
     
     //  MapCameraPosition 공부 17+
@@ -114,7 +114,7 @@ struct PhotoMarkerView: View {
     }
 }
 
-// MARK: - Journey Annotation
+// MARK: - Journey Annotation 뷰에 표시하기 위한 가벼운 모델
 
 struct JourneyAnnotation: Identifiable {
     let id: Int
