@@ -11,7 +11,6 @@ import SwiftUI
 @Observable
 final class CalendarViewModel {
     var coordinator: BabyMoaCoordinator
-    
     var journies: [Journey] = []
     
     // MARK: - Properties

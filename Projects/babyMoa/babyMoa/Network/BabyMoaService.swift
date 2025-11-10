@@ -17,6 +17,15 @@ protocol BabyMoaServicable: HTTPClient {
         avatarImageName: String,
         relationshipType: String
     ) async -> Result<BaseResponse<RegisterBabyResModel>, RequestError>
+    func updateBaby(
+        babyId: Int,
+        alias: String,
+        name: String,
+        birthDate: String,
+        gender: String,
+        avatarImageName: String,
+        relationshipType: String
+    ) async -> Result<BaseResponse<EmptyData>, RequestError>
     func postRegisterBabyByCode(babyCode: String) async -> Result<
         BaseResponse<RegisterBabyByCodeResModel>, RequestError
     >
@@ -123,9 +132,17 @@ protocol BabyMoaServicable: HTTPClient {
         babyId: Int,
         journeyId: Int
     ) async -> Result<BaseResponse<EmptyData>, RequestError>
+
+    func getBabyInviteCode(babyId: Int) async -> Result<BaseResponse<String>, RequestError>
+    
+    func deleteBaby(babyId: Int) async -> Result<BaseResponse<EmptyData>, RequestError>
 }
 
 class BabyMoaService: BabyMoaServicable {
+    public static let shared = BabyMoaService()
+
+    private init() {}
+    
     func deleteJourney(
         babyId: Int,
         journeyId: Int)
@@ -149,10 +166,79 @@ class BabyMoaService: BabyMoaServicable {
                     endpoint: BabyMoaEndpoint.deleteJourney(
                         babyId: babyId,
                         journeyId: journeyId
-                        
                     ),
                     responseModel: BaseResponse<EmptyData>.self
                 )
+            default:
+                return result
+            }
+        }
+    }
+    
+    func updateBaby(babyId: Int, alias: String, name: String, birthDate: String, gender: String, avatarImageName: String, relationshipType: String) async -> Result<BaseResponse<EmptyData>, RequestError> {
+        let result = await request(endpoint: BabyMoaEndpoint.updateBaby(babyId: babyId, alias: alias, name: name, birthDate: birthDate, gender: gender, avatarImageName: avatarImageName, relationshipType: relationshipType), responseModel: BaseResponse<EmptyData>.self)
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                await refreshToken()
+                return await request(endpoint: BabyMoaEndpoint.updateBaby(babyId: babyId, alias: alias, name: name, birthDate: birthDate, gender: gender, avatarImageName: avatarImageName, relationshipType: relationshipType), responseModel: BaseResponse<EmptyData>.self)
+            default:
+                return result
+            }
+        }
+    }
+    
+    func deleteBaby(babyId: Int) async -> Result<BaseResponse<EmptyData>, RequestError> {
+        let result = await request(endpoint: BabyMoaEndpoint.deleteBaby(babyId: babyId), responseModel: BaseResponse<EmptyData>.self)
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                await refreshToken()
+                return await request(endpoint: BabyMoaEndpoint.deleteBaby(babyId: babyId), responseModel: BaseResponse<EmptyData>.self)
+            default:
+                return result
+            }
+        }
+    }
+    
+    func deleteBabyMilestone(babyId: Int, milestoneName: String) async -> Result<BaseResponse<EmptyData>, RequestError> {
+        let result = await request(endpoint: BabyMoaEndpoint.deleteBabyMilestone(babyId: babyId, milestoneName: milestoneName), responseModel: BaseResponse<EmptyData>.self)
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                await refreshToken()
+                return await request(
+                    endpoint: BabyMoaEndpoint.deleteBabyMilestone(babyId: babyId, milestoneName: milestoneName),
+                    responseModel: BaseResponse<EmptyData>.self
+                )
+            default:
+                return result
+            }
+        }
+    }
+    
+    /// 아기 초대 코드를 가져오는 API 호출 메서드
+    /// - Parameter babyId: 초대 코드를 가져올 아기의 ID
+    /// - Returns: 초대 코드 문자열 또는 에러
+    func getBabyInviteCode(babyId: Int) async -> Result<BaseResponse<String>, RequestError> {
+        let result = await request(endpoint: BabyMoaEndpoint.getBabyInviteCode(babyId: babyId), responseModel: BaseResponse<String>.self)
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                await refreshToken()
+                return await request(endpoint: BabyMoaEndpoint.getBabyInviteCode(babyId: babyId), responseModel: BaseResponse<String>.self)
             default:
                 return result
             }
@@ -168,7 +254,7 @@ class BabyMoaService: BabyMoaServicable {
         date: String,
         memo: String
     )
-        async -> Result<BaseResponse<EmptyData>, RequestError>
+    async -> Result<BaseResponse<EmptyData>, RequestError>
     {
         let result = await request(
             endpoint:
@@ -207,37 +293,8 @@ class BabyMoaService: BabyMoaServicable {
             }
         }
     }
-
-    func deleteBabyMilestone(babyId: Int, milestoneName: String) async
-        -> Result<BaseResponse<EmptyData>, RequestError>
-    {
-        let result = await request(
-            endpoint: BabyMoaEndpoint.deleteBabyMilestone(
-                babyId: babyId,
-                milestoneName: milestoneName
-            ),
-            responseModel: BaseResponse<EmptyData>.self
-        )
-        switch result {
-        case .success:
-            return result
-        case .failure(let error):
-            switch error {
-            case .unauthorized:
-                await refreshToken()
-                return await request(
-                    endpoint: BabyMoaEndpoint.deleteBabyMilestone(
-                        babyId: babyId,
-                        milestoneName: milestoneName
-                    ),
-                    responseModel: BaseResponse<EmptyData>.self
-                )
-            default:
-                return result
-            }
-        }
-    }
-
+    
+    
     func getGetBabyMilestones(babyId: Int) async -> Result<
         BaseResponse<[GetBabyMilestonesResModel]>, RequestError
     > {
@@ -310,7 +367,7 @@ class BabyMoaService: BabyMoaServicable {
             ),
             responseModel: BaseResponse<EmptyData>.self
         )
-
+        
         switch result {
         case .success:
             return result
@@ -330,7 +387,7 @@ class BabyMoaService: BabyMoaServicable {
             }
         }
     }
-
+    
     func postAddJourney(
         babyId: Int,
         journeyImage: String,
@@ -370,7 +427,7 @@ class BabyMoaService: BabyMoaServicable {
             }
         }
     }
-
+    
     func postAuthRefresh(refreshToken: String) async -> Result<
         BaseResponse<AuthRefreshResModel>, RequestError
     > {
@@ -386,7 +443,7 @@ class BabyMoaService: BabyMoaServicable {
             return result
         }
     }
-
+    
     func getGetHeights(babyId: Int) async -> Result<
         BaseResponse<[GetHeightsResModel]>, RequestError
     > {
@@ -435,10 +492,10 @@ class BabyMoaService: BabyMoaServicable {
             }
         }
     }
-
+    
     func postSetHeight(babyId: Int, height: Double, date: String, memo: String?)
-        async
-        -> Result<BaseResponse<EmptyData>, RequestError>
+    async
+    -> Result<BaseResponse<EmptyData>, RequestError>
     {
         let result = await request(
             endpoint: BabyMoaEndpoint.setHeight(
@@ -467,10 +524,10 @@ class BabyMoaService: BabyMoaServicable {
             }
         }
     }
-
+    
     func postSetWeight(babyId: Int, weight: Double, date: String, memo: String?)
-        async
-        -> Result<BaseResponse<EmptyData>, RequestError>
+    async
+    -> Result<BaseResponse<EmptyData>, RequestError>
     {
         let result = await request(
             endpoint: BabyMoaEndpoint.setWeight(
@@ -519,7 +576,7 @@ class BabyMoaService: BabyMoaServicable {
             }
         }
     }
-
+    
     func getBaby(babyId: Int) async -> Result<
         BaseResponse<GetBabyResModel>, RequestError
     > {
@@ -528,7 +585,7 @@ class BabyMoaService: BabyMoaServicable {
             responseModel: BaseResponse<GetBabyResModel>.self
         )
     }
-
+    
     func getGetGrowthData(babyId: Int) async -> Result<
         BaseResponse<GetGrowthDataResModel>, RequestError
     > {
@@ -586,7 +643,7 @@ class BabyMoaService: BabyMoaServicable {
             }
         }
     }
-
+    
     func postSetRelationshipWithBaby(
         babyId: Int,
         relationshipType: String
@@ -678,11 +735,9 @@ class BabyMoaService: BabyMoaServicable {
             }
         }
     }
-
-    public static let shared = BabyMoaService()
-
-    private init() {}
-
+    
+    
+    
     func postAppleLogin(idToken: String) async -> Result<
         BaseResponse<AppleLoginResModel>, RequestError
     > {
@@ -691,8 +746,8 @@ class BabyMoaService: BabyMoaServicable {
             responseModel: BaseResponse<AppleLoginResModel>.self
         )
     }
-
-    private func refreshToken() async {
+    
+    func refreshToken() async {
         let authResult = await postAuthRefresh(
             refreshToken: UserToken.refreshToken
         )
@@ -704,5 +759,4 @@ class BabyMoaService: BabyMoaServicable {
             print(failure)
         }
     }
-
 }

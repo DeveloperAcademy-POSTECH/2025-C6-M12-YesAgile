@@ -1,4 +1,10 @@
-import UIKit
+//
+//  Journey.swift
+//  babyMoa
+//
+//  Created by pherd on 11/7/25.
+//
+import SwiftUI
 import CoreLocation
 
 /// 여정 도메인 모델

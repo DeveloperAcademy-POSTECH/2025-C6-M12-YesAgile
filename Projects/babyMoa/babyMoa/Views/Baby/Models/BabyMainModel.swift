@@ -9,14 +9,15 @@ import Foundation
 
 
 struct Babies: Identifiable, Codable {
-    
-    let id: String
-    let image: String
+    let babyId: Int
+    let alias: String
     let name: String
-    let nickname: String
-    let date: Date
-    let gender : String
-    let relationship: String
+    let birthDate: String
+    let gender: String
+    let avatarImageName: String
+
+    // Identifiable 프로토콜 준수를 위해 id 프로퍼티 추가
+    var id: Int { babyId }
 }
 
 
@@ -24,31 +25,28 @@ extension Babies {
     /// 아기 3명 목록 목업 데이터
     static var mockBabies: [Babies] = [
         Babies(
-            id: UUID().uuidString,
-            image: "baby_milestone_illustration", // UIKIT 임포트해서 서버스 URL - DTO로 마
+            babyId: 1,
+            alias: "씩씩이",
             name: "정우성",
-            nickname: "씩씩이",
-            date: Calendar.current.date(byAdding: .day, value: -30, to: Date())!,
-            gender: "남아",
-            relationship: "아빠"
+            birthDate: "2025-10-10",
+            gender: "M",
+            avatarImageName: "baby_milestone_illustration"
         ),
         Babies(
-            id: UUID().uuidString,
-            image: "baby_milestone_illustration",
+            babyId: 2,
+            alias: "공주님",
             name: "정서아",
-            nickname: "공주님",
-            date: Calendar.current.date(byAdding: .month, value: -6, to: Date())!,
-            gender: "여아",
-            relationship: "엄마"
+            birthDate: "2025-05-10",
+            gender: "F",
+            avatarImageName: "baby_milestone_illustration"
         ),
         Babies(
-            id: UUID().uuidString,
-            image: "baby_milestone_illustration",
+            babyId: 3,
+            alias: "왕자님",
             name: "정시우",
-            nickname: "왕자님",
-            date: Calendar.current.date(byAdding: .year, value: -1, to: Date())!,
-            gender: "여아",
-            relationship: "엄마"
+            birthDate: "2024-11-10",
+            gender: "F",
+            avatarImageName: "baby_milestone_illustration"
         )
     ]
 }

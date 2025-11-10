@@ -159,7 +159,6 @@ final class GrowthViewModel {
     }
     
     func fetchAllMilestones(babyId: Int) async {
-        // let result = await BabyMoaService.shared.getMile
         let result = await BabyMoaService.shared.getGetBabyMilestones(babyId: babyId)
         switch result {
         case .success(let success):
@@ -168,7 +167,10 @@ final class GrowthViewModel {
                 let row = Int(milestone.milestoneName.split(separator: "_")[1])!
                 let col = Int(milestone.milestoneName.split(separator: "_")[2])!
                 
-                let decodedImage = await ImageManager.shared.downloadImage(from: milestone.imageUrl)
+                var decodedImage: UIImage?
+                if let imageUrl = milestone.imageUrl {
+                    decodedImage = await ImageManager.shared.downloadImage(from: imageUrl)
+                }
                 
                 allMilestones[row][col].image = decodedImage
                 allMilestones[row][col].completedDate = DateFormatter.yyyyDashMMDashdd.date(from: milestone.date)
@@ -176,7 +178,6 @@ final class GrowthViewModel {
             }
         case .failure(let error):
             print(error)
-            
         }
     }
     

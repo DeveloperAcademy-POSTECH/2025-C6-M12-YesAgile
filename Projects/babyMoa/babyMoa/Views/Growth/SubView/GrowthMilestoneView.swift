@@ -42,6 +42,7 @@ struct GrowthMilestoneView: View {
         self.milestone = milestone
         self.onSave = onSave
         self.onDelete = onDelete
+        selectedImage = milestone.image
         _selectedDate = State(initialValue: milestone.completedDate ?? Date())
         _memo = State(initialValue: milestone.description ?? "")
     }
@@ -66,88 +67,91 @@ struct GrowthMilestoneView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            CustomNavigationBar(
-                title: milestone.title,
-                leading: {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "chevron.backward")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 13)
-                    }
-                    
-                },
-                trailing: {
-                    Button(action: {
-                        showDeleteDialog = true
-                    }) {
-                        Image(systemName: "trash")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 23)
-                    }
-                },
-                paddingTop: 0
-            )
-            .padding(.horizontal, 20)
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    // 사진 (가로 여백 20, 가로 꽉)
-                    photoSection
-                        .padding(.horizontal, 20)
-                        .padding(.top, 8)
-
-                    // 작성일
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("작성일")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.primary)
-
-                        Button(action: { showDatePicker = true }) {
-                            HStack {
-                                Text(formattedDate(selectedDate))
-                                    .foregroundColor(.primary)
-                                Spacer()
-                            }
-                            .padding(16)
-                            .background(Color(.systemBackground))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.orange, lineWidth: 1.5)
-                            )
+        ZStack(alignment: .bottom) {
+            VStack(spacing: 0) {
+                CustomNavigationBar(
+                    title: milestone.title,
+                    leading: {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Image(systemName: "chevron.backward")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 13)
                         }
-                    }
-                    .padding(.horizontal, 20)
-
-                    // 메모
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("메모")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.primary)
-
-                        ZStack(alignment: .topLeading) {
-                            if memo.isEmpty {
-                                Text("아이와 함께한 소중한 추억 메모를 입력 해주세요")
-                                    .foregroundColor(.secondary)
-                                    .padding(.top, 18)
-                                    .padding(.leading, 22)
-                            }
-                            TextEditor(text: $memo)
-                                .focused($memoFocused)
-                                .frame(minHeight: 120)
-                                .padding(12)
-                                .background(Color(.systemBackground))
-                                .overlay(
+                        
+                    },
+                    trailing: {
+                        Button(action: {
+                            showDeleteDialog = true
+                        }) {
+                            Image(systemName: "trash")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 23)
+                        }
+                    },
+                    paddingTop: 0
+                )
+                .padding(.horizontal, 20)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        // 사진 (가로 여백 20, 가로 꽉)
+                        photoSection
+                            .padding(.horizontal, 20)
+                            .padding(.top, 8)
+                        
+                        // 작성일
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("작성일")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(.primary)
+                            
+                            Button(action: { showDatePicker = true }) {
+                                HStack {
+                                    Text(formattedDate(selectedDate))
+                                        .foregroundColor(.primary)
+                                    Spacer()
+                                }
+                                .padding(16)
+                                .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color.orange, lineWidth: 1.5)
+                                        .stroke(.orange, lineWidth: 1.5)
+                                        .fill(.white)
                                 )
+                            }
                         }
+                        .padding(.horizontal, 20)
+                        
+                        // 메모
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("메모")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(.primary)
+                            
+                            ZStack(alignment: .topLeading) {
+                                if memo.isEmpty {
+                                    Text("아이와 함께한 소중한 추억 메모를 입력 해주세요")
+                                        .foregroundColor(.secondary)
+                                        .padding(.top, 18)
+                                        .padding(.leading, 22)
+                                }
+                                TextEditor(text: $memo)
+                                    .focused($memoFocused)
+                                    .frame(minHeight: 120)
+                                    .padding(12)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .stroke(.orange, lineWidth: 1.5)
+                                            .fill(.white)
+                                    )
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 90)
+                        
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
                 }
             }
             GrowthBottomButton(title: "저장", isEnabled: hasChanges) {
@@ -159,8 +163,9 @@ struct GrowthMilestoneView: View {
                 )
                 dismiss()
             }
-            .background(Color("Background"))
         }
+        .animation(.spring, value: milestone.image)
+        .animation(.spring, value: selectedImage)
         .background(Color("Background"))
         .sheet(isPresented: $showDatePicker) {
             VStack(spacing: 0) {
@@ -238,13 +243,9 @@ struct GrowthMilestoneView: View {
             if selectedImage == nil && milestone.image == nil {
                 // 일러스트가 있으면 일러스트 표시, 없으면 플레이스홀더
                 if let illustrationName = milestone.illustrationName {
-                    Image(illustrationName)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxWidth: .infinity)
-                        .clipShape(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        )
+                    MilestoneCardView(milestone: milestone, cardWidth: 353, cardHeight: 471, cardType: .big, onTap: {
+                        showPhotoPicker = true
+                    })
                 } else {
                     // 이미지가 없을 때만 플레이스홀더 박스 표시
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -274,10 +275,12 @@ struct GrowthMilestoneView: View {
                     .clipShape(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
                     )
+                    .onTapGesture {
+                        showPhotoPicker = true
+                    }
             }
         }
         .contentShape(Rectangle())
-        .onTapGesture { showPhotoPicker = true }
     }
 
     @ViewBuilder
@@ -291,8 +294,8 @@ struct GrowthMilestoneView: View {
         {
             Image(uiImage: image)
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 250)
+                .scaledToFit()
+                .frame(maxWidth: .infinity)
         }
     }
 

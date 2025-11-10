@@ -10,8 +10,8 @@ import Foundation
 // AddBabyModel은 아기 추가 화면에서 수집되는 핵심 데이터를 나타냅니다.
 // 이 모델은 UI 상태나 비즈니스 로직을 포함하지 않고 순수하게 데이터 구조만을 정의합니다.
 struct AddBabyModel: Codable, Identifiable, Hashable {
-    let id: UUID // 고유 식별자
-    let babyId: UUID
+    let id: Int // 고유 식별자
+    let babyId: Int
     var name: String
     var nickname: String? // 태명은 선택 사항
     var gender: String // "male", "female", "none" 중 하나
@@ -21,8 +21,7 @@ struct AddBabyModel: Codable, Identifiable, Hashable {
     var isBorn: Bool
 
     // 초기화 메서드
-    // ✨ [수정] 'init'에 self.babyId와 self.isBorn 할당 코드를 추가했습니다.
-    init(id: UUID = UUID(), babyId: UUID = UUID(), name: String, nickname: String? = nil, gender: String, birthDate: Date, relationship: String, profileImage: String, isBorn: Bool = true) {
+    init(id: Int = 0, babyId: Int = 0, name: String, nickname: String? = nil, gender: String, birthDate: Date, relationship: String, profileImage: String, isBorn: Bool = true) {
         self.id = id
         self.babyId = babyId
         self.name = name
@@ -42,6 +41,8 @@ extension AddBabyModel {
         
         // 1. 태어난 아기 (모든 정보 포함)
         AddBabyModel(
+            id: 1,
+            babyId: 1,
             name: "정우성",
             nickname: "쑥쑥이", // 태명
             gender: "male",
@@ -53,6 +54,8 @@ extension AddBabyModel {
         
         // 2. 태어나지 않은 아기 (예정일, 태명만 있음)
         AddBabyModel(
+            id: 2,
+            babyId: 2,
             name: "튼튼이", // (태어나기 전이라 태명을 이름으로 사용)
             nickname: "튼튼이",
             gender: "none", // (성별 아직 모름)
@@ -64,6 +67,8 @@ extension AddBabyModel {
         
         // 3. 태어난 아기 (태명 없음)
         AddBabyModel(
+            id: 3,
+            babyId: 3,
             name: "정서아",
             nickname: nil, // 태명 없음
             gender: "female",

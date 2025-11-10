@@ -117,14 +117,14 @@ struct PhotoMarkerView: View {
 // MARK: - Journey Annotation
 
 struct JourneyAnnotation: Identifiable {
-    let id: String
+    let id: Int
     let coordinate: CLLocationCoordinate2D
     let image: UIImage?
     let date: Date
     
     init(from journey: Journey) {
-        // ✅ Journey에 id가 없으므로 latitude, longitude, date로 고유 id 생성
-        self.id = "\(journey.latitude)_\(journey.longitude)_\(journey.date.timeIntervalSince1970)"
+        // ✅ Journey에 id가 생기므로 넣어줬음.
+        self.id = journey.journeyId
         self.coordinate = journey.coordinate
         self.image = journey.journeyImage  // ✅ journeyImage로 수정
         self.date = journey.date
