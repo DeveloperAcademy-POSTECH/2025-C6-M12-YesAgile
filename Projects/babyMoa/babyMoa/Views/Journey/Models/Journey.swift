@@ -38,16 +38,14 @@ struct Journey: Entity, Hashable {
     
     // MARK: - Hashable
     
-    /// ForEach(journies, id: \.self) 사용을 위한 Hashable 구현
+    /// ForEach(journies, id: \.self) 사용을 위한 Hashable 구현 journeyId + 날짜 동일 여정
     static func == (lhs: Journey, rhs: Journey) -> Bool {
-        lhs.latitude == rhs.latitude &&
-        lhs.longitude == rhs.longitude &&
+        lhs.journeyId == rhs.journeyId &&
         lhs.date == rhs.date
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(latitude)
-        hasher.combine(longitude)
+        hasher.combine(journeyId)
         hasher.combine(date)
     }
 }
