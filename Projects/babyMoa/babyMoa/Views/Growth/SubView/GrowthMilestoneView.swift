@@ -15,25 +15,25 @@ struct GrowthMilestoneView: View {
     let milestone: GrowthMilestone
     let onSave: ((GrowthMilestone, UIImage?, String?, Date) -> Void)?
     let onDelete: (() -> Void)?
-
+    
     @Environment(\.dismiss) private var dismiss
-
+    
     // Image
     @State private var pickedItem: PhotosPickerItem? = nil
     @State private var selectedImage: UIImage? = nil
     @State private var showPhotoPicker: Bool = false
-
+    
     // Date & memo
     @State private var selectedDate: Date
     @State private var memo: String
     @FocusState private var memoFocused: Bool
-
+    
     // Sheet
     @State private var showDatePicker = false
-
+    
     // 삭제 확인 다이얼로그
     @State private var showDeleteDialog = false
-
+    
     init(
         milestone: GrowthMilestone,
         onSave: ((GrowthMilestone, UIImage?, String?, Date) -> Void)? = nil,
@@ -46,26 +46,26 @@ struct GrowthMilestoneView: View {
         _selectedDate = State(initialValue: milestone.completedDate ?? Date())
         _memo = State(initialValue: milestone.description ?? "")
     }
-
+    
     // 변경 여부
     private var hasChanges: Bool {
         // 사진 변경 체크
         let imgChanged = selectedImage != nil
-
+        
         // 날짜 변경 체크 (같은 날짜인지 비교)
         let originalDate = milestone.completedDate ?? Date()
         let dateChanged = !Calendar.current.isDate(
             originalDate,
             inSameDayAs: selectedDate
         )
-
+        
         // 메모 변경 체크
         let originalMemo = milestone.description ?? ""
         let memoChanged = originalMemo != memo
-
+        
         return imgChanged || dateChanged || memoChanged
     }
-
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack(spacing: 0) {
@@ -76,9 +76,7 @@ struct GrowthMilestoneView: View {
                             dismiss()
                         }) {
                             Image(systemName: "chevron.backward")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 13)
+                               
                         }
                         
                     },
@@ -87,9 +85,7 @@ struct GrowthMilestoneView: View {
                             showDeleteDialog = true
                         }) {
                             Image(systemName: "trash")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 23)
+                            
                         }
                     },
                     paddingTop: 0
@@ -133,10 +129,12 @@ struct GrowthMilestoneView: View {
                                     .focused($memoFocused)
                                     .frame(minHeight: 120)
                                     .padding(12)
-                                    .background(
+                                    .background(Color.white)
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.white)                // 안쪽 흰색
+                                    .overlay(
                                         RoundedRectangle(cornerRadius: 12)
-                                            .stroke(.orange, lineWidth: 1.5)
-                                            .fill(.white)
+                                            .stroke(.orange, lineWidth: 1.5) // 바깥 테두리
                                     )
                             }
                         }
@@ -167,23 +165,23 @@ struct GrowthMilestoneView: View {
                         showDatePicker = false
                     }
                     .foregroundColor(.secondary)
-
+                    
                     Spacer()
-
+                    
                     Text("작성일 선택")
                         .font(.system(size: 17, weight: .semibold))
-
+                    
                     Spacer()
-
+                    
                     Button("완료") {
                         showDatePicker = false
                     }
                     .foregroundColor(Color("Brand-50"))
                 }
                 .padding()
-
+                
                 Divider()
-
+                
                 // Wheel Picker
                 DatePicker(
                     "작성일",
@@ -221,14 +219,14 @@ struct GrowthMilestoneView: View {
                 if let data = try? await newValue.loadTransferable(
                     type: Data.self
                 ),
-                    let uiImage = UIImage(data: data)
+                   let uiImage = UIImage(data: data)
                 {
                     selectedImage = uiImage
                 }
             }
         }
     }
-
+    
     // MARK: - Photo Section
     private var photoSection: some View {
         ZStack {
@@ -274,7 +272,7 @@ struct GrowthMilestoneView: View {
         }
         .contentShape(Rectangle())
     }
-
+    
     @ViewBuilder
     private var aspectFilledImage: some View {
         if let uiImage = selectedImage {
@@ -290,7 +288,7 @@ struct GrowthMilestoneView: View {
                 .frame(maxWidth: .infinity)
         }
     }
-
+    
     private func formattedDate(_ date: Date) -> String {
         let f = DateFormatter()
         f.dateFormat = "yyyy. MM. dd."

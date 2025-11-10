@@ -29,6 +29,7 @@ struct AllMilestoneView: View {
                         Image(systemName: "chevron.left")
                     }
                 })
+                .backgroundPadding(.horizontal)
                 
                 ScrollView(.vertical) {
                     ForEach(0..<viewModel.allMilestones.count, id: \.self) { row in
@@ -69,26 +70,5 @@ struct AllMilestoneView: View {
 
         }
         .ignoresSafeArea()
-    }
-}
-
-struct AllMilestoneView_Previews: PreviewProvider {
-    static var previews: some View {
-        // Create a mock coordinator
-        let coordinator = BabyMoaCoordinator()
-
-        // Create mock GrowthMilestone data
-        let mockMilestones: [[GrowthMilestone]] = [
-            [
-                GrowthMilestone(id: "milestone_0_0", title: "누워있기", ageRange: "0~2개월", isCompleted: false, completedDate: nil, illustrationName: "Baby01"),
-                GrowthMilestone(id: "milestone_0_1", title: "손발 움직이기", ageRange: "0~2개월", isCompleted: false, completedDate: nil, illustrationName: "Baby02")
-            ],
-            [
-                GrowthMilestone(id: "milestone_1_0", title: "목가누기", ageRange: "3~4개월", isCompleted: false, completedDate: nil, illustrationName: "Baby07"),
-                GrowthMilestone(id: "milestone_1_1", title: "머리들기", ageRange: "3~4개월", isCompleted: false, completedDate: nil, illustrationName: "Baby08")
-            ]
-        ]
-
-        AllMilestoneView(coordinator: coordinator, allMilestones: mockMilestones)
     }
 }
