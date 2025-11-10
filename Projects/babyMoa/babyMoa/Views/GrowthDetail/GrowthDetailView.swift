@@ -33,7 +33,7 @@ struct GrowthDetailView<T: GrowthData>: View {
             case .record:
                 GrowthRecordListView(viewModel: $viewModel)
             case .chart:
-                EmptyView()
+                ChartView(viewModel: $viewModel)
             }
             Spacer()
             Button(action: {
@@ -50,6 +50,7 @@ struct GrowthDetailView<T: GrowthData>: View {
             }
             .padding(.horizontal, 20)
         }
+        .background(.gray.opacity(0.1))
         .onAppear {
             Task {
                 await viewModel.fetchSingleGrowthDetailData()
@@ -76,9 +77,17 @@ struct GrowthRecordListView<T: GrowthData>: View {
     var body: some View {
         VStack {
             if viewModel.growthDataList.count == 0 {
-                Image(viewModel.growthDetailType == .height ? "" : "") // MARK: 각각 이미지 넣기
+                Image(systemName: viewModel.growthDetailType == .height ? "ruler" : "powermeter") // MARK: 각각 이미지 넣기
+                    .resizable()
+                    .foregroundStyle(.gray)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: viewModel.growthDetailType == .height ? 87 : 70)
+                    .padding(.bottom, 10)
                 Text("아직 기록이 없어요")
+                    .font(.system(size: 18, weight: .medium))
+                    .padding(.bottom, 10)
                 Text("아래 버튼을 눌러 첫 기록을 추가해보세요")
+                    .font(.system(size: 14))
             }
             else {
                 ScrollView {
@@ -107,8 +116,8 @@ struct GrowthDataRow<T: GrowthData>: View {
         HStack {
             VStack(alignment: .leading) {
                 // TODO: 아기 태어난 날짜 로컬에 저장하도록 해서 개월 수 계산 가능하도록 해야함
-                Text("n개월")
-                Text(DateFormatter.yyyyDashMMDashdd.string(from: growthData.date).replacingOccurrences(of: "-", with: "."))
+                Text("n개월") // 저장된 birthDay
+                Text(DateFormatter.yyyyMMdd.string(from: growthData.date))
             }
             .padding(.leading, 10)
             Spacer()
@@ -189,10 +198,75 @@ struct RecordGrowthView<T: GrowthData>: View {
     }
 }
 
+import Charts
 
-//#Preview {
-//    @Previewable @StateObject var coordinator = BabyMoaCoordinator()
-//    
-//    // MARK: 예시, [키, 몸무게] 통일해 뷰 구현하였고, 인자로 넘겨주는 ViewModel에 제너릭 타입 명시, 그리고 명시한 타입과 growthDetailType 은 동일하게 맞춰 보내주어야 합니다.
-//    GrowthDetailView(viewModel: GrowthDetailViewModel<Height>(coordinator: coordinator, growthDetailType: .height, babyId: 9))
-//}
+struct ChartView<T: GrowthData>: View {
+    @Binding var viewModel: GrowthDetailViewModel<T>
+    
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            Chart {
+                ForEach(Array(viewModel.growthDataList.sorted { $0.date < $1.date }.enumerated()), id: \.element.id) { index, data in
+                    // 영역 (그라데이션)
+                    AreaMark(
+                        x: .value("Index", index),
+                        y: .value("Value", data.value)
+                    )
+                    .interpolationMethod(.linear)
+                    .foregroundStyle(
+                        .linearGradient(
+                            colors: T.self == Height.self ? [
+                                Color.orange.opacity(0.5),
+                                Color.orange.opacity(0.1),
+                                .clear
+                            ] : [
+                                Color.green.opacity(0.5),
+                                Color.green.opacity(0.1),
+                                .clear
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    
+                    // 선
+                    LineMark(
+                        x: .value("Index", index),
+                        y: .value("Value", data.value)
+                    )
+                    .interpolationMethod(.linear)
+                    .foregroundStyle(T.self == Height.self ? .orange : .green)
+                    
+                    PointMark(
+                        x: .value("Index", index),
+                        y: .value("Value", data.value)
+                    )
+                    .foregroundStyle(T.self == Height.self ? .orange : .green)
+                    .symbolSize(25)
+                }
+            }
+            .padding(.top, 20)
+            .chartXAxis {
+                AxisMarks(values: Array(0..<viewModel.growthDataList.count)) { value in
+                    AxisGridLine()
+                    AxisTick()
+                    AxisValueLabel {
+                        if let intValue = value.as(Int.self),
+                           intValue < viewModel.growthDataList.count {
+                            let date = viewModel.growthDataList[viewModel.growthDataList.count - (intValue + 1)].date
+                            Text(date.yyyyMMdd)
+                                .font(.caption2)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+            }
+            .chartYAxis {
+                AxisMarks(position: .leading)
+            }
+            // 일정한 간격이므로, 데이터 개수에 따라 폭 계산
+            .frame(width: CGFloat(viewModel.growthDataList.count) * 70 < UIScreen.main.bounds.width ? UIScreen.main.bounds.width - 40 : CGFloat(viewModel.growthDataList.count) * 70, height: 300)
+            .padding(.horizontal)
+        }
+    }
+}
