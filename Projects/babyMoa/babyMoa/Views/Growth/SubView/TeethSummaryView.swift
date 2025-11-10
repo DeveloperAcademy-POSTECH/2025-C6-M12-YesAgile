@@ -34,7 +34,6 @@ struct TeethSummaryView: View {
                     .frame(width: 40)
                     .offset(x: 105, y: -3)
             )
-            .padding(.horizontal, 20)
             .clipped()
     }
 }

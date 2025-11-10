@@ -34,25 +34,31 @@ struct GrowthView: View {
                         .foregroundStyle(.black)
                     Spacer()
                 }
-                .padding(.horizontal, 20)
                 .padding(.bottom, 20)
                 MilestoneSummaryView(viewModel: $viewModel)
                     .frame(height: 500)
                 Spacer()
-                Button(action: {
+                //                Button(action: {
+                //                    viewModel.checkAllMilestonesButtonTapped()
+                //                }) {
+                //                    RoundedRectangle(cornerRadius: 12)
+                //                        .overlay(
+                //                            Text("전체 성장 마일스톤 확인하기")
+                //                                .font(.system(size: 18, weight: .bold))
+                //                                .foregroundStyle(.white)
+                //                        )
+                //                        .foregroundStyle(.brand50)
+                //                        .frame(height: 60)
+                //                }
+                //                .padding(.horizontal, 20)
+                //                .padding(.bottom, 30)
+                
+                // Button Stytle 교체작업
+                
+                Button("전체 성장 마일스콘 확인하기", action: {
                     viewModel.checkAllMilestonesButtonTapped()
-                }) {
-                    RoundedRectangle(cornerRadius: 12)
-                        .overlay(
-                            Text("전체 성장 마일스톤 확인하기")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundStyle(.white)
-                        )
-                        .foregroundStyle(.brand50)
-                        .frame(height: 60)
-                }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 30)
+                })
+                .buttonStyle(.defaultButton)
                 
                 HeightAndWeightView(
                     height: $viewModel.latestHeight,
@@ -65,7 +71,6 @@ struct GrowthView: View {
                     }
                 )
                 .frame(height: 100)
-                .padding(.horizontal, 20)
                 .padding(.bottom, 20)
                 
                 Button(action: {
@@ -77,7 +82,10 @@ struct GrowthView: View {
                 .buttonStyle(.plain)
                 Spacer().frame(height: 30)
             }
+            .scrollIndicators(.hidden)
         }
+        .backgroundPadding(.horizontal)
+        .background(Color.background)
         .onAppear {
             Task {
                 SelectedBaby.babyId = 1
@@ -118,11 +126,11 @@ struct MilestoneSummaryView: View {
                         .frame(width: 10)
                 }
             }
-            .padding(.horizontal, 20)
             
             ScrollView(.horizontal) {
                 HStack {
-                    Spacer().frame(width: 20)
+                    //                    Spacer().frame(width: 10)
+                    Spacer()
                     ForEach(0..<viewModel.allMilestones[viewModel.selectedMonthIdx].count, id: \.self) { milestoneColIdx in
                         MilestoneCardView(
                             milestone: viewModel.allMilestones[viewModel.selectedMonthIdx][milestoneColIdx],
@@ -140,7 +148,7 @@ struct MilestoneSummaryView: View {
                     }
                 }
             }
-            .scrollIndicators(.never)
+            .scrollIndicators(.hidden)
         }
         .fullScreenCover(isPresented: $viewModel.isMilestoneEditingViewPresented) {
             GrowthMilestoneView(
@@ -196,7 +204,9 @@ struct MilestoneCardView: View {
             .frame(width: cardWidth, height: cardHeight)
             .foregroundStyle(milestone.completedDate == nil ? .orange70 : milestone.image == nil ? .orange50 : .white)
         }
-        .frame(width: cardWidth, height: cardHeight)
+        //        .frame(width: cardWidth, height: cardHeight)
+        .frame(width: cardWidth)
+        .frame(height: cardHeight)
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(.white)
