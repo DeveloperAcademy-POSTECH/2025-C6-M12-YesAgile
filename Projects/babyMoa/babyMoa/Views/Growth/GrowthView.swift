@@ -56,7 +56,7 @@ struct GrowthView: View {
                 
                 // Button Stytle 교체작업
                 
-                Button("전체 성장 마일스콘 확인하기", action: {
+                Button("전체 성장 마일스톤 확인하기", action: {
                     viewModel.checkAllMilestonesButtonTapped()
                 })
                 .buttonStyle(.fixedHeightButton)

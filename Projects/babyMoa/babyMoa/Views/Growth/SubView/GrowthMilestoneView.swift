@@ -94,12 +94,10 @@ struct GrowthMilestoneView: View {
                     },
                     paddingTop: 0
                 )
-                .padding(.horizontal, 20)
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
                         // 사진 (가로 여백 20, 가로 꽉)
                         photoSection
-                            .padding(.horizontal, 20)
                             .padding(.top, 8)
                         
                         // 작성일
@@ -114,15 +112,9 @@ struct GrowthMilestoneView: View {
                                         .foregroundColor(.primary)
                                     Spacer()
                                 }
-                                .padding(16)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(.orange, lineWidth: 1.5)
-                                        .fill(.white)
-                                )
+                                .buttonStyle(.outlineFourButton)
                             }
                         }
-                        .padding(.horizontal, 20)
                         
                         // 메모
                         VStack(alignment: .leading, spacing: 8) {
@@ -148,12 +140,12 @@ struct GrowthMilestoneView: View {
                                     )
                             }
                         }
-                        .padding(.horizontal, 20)
                         .padding(.bottom, 90)
                         
                     }
                 }
             }
+            .backgroundPadding(.horizontal)
             GrowthBottomButton(title: "저장", isEnabled: hasChanges) {
                 onSave?(
                     milestone,
