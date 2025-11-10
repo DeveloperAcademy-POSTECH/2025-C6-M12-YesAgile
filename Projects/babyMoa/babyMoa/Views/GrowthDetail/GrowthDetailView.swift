@@ -33,7 +33,7 @@ struct GrowthDetailView<T: GrowthData>: View {
             case .record:
                 GrowthRecordListView(viewModel: $viewModel)
             case .chart:
-                EmptyView()
+                ChartView(viewModel: $viewModel)
             }
             Spacer()
             Button(action: {
@@ -50,6 +50,7 @@ struct GrowthDetailView<T: GrowthData>: View {
             }
             .padding(.horizontal, 20)
         }
+        .background(.gray.opacity(0.1))
         .onAppear {
             Task {
                 await viewModel.fetchSingleGrowthDetailData()
@@ -76,9 +77,17 @@ struct GrowthRecordListView<T: GrowthData>: View {
     var body: some View {
         VStack {
             if viewModel.growthDataList.count == 0 {
-                Image(viewModel.growthDetailType == .height ? "" : "") // MARK: 각각 이미지 넣기
+                Image(systemName: viewModel.growthDetailType == .height ? "ruler" : "powermeter") // MARK: 각각 이미지 넣기
+                    .resizable()
+                    .foregroundStyle(.gray)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: viewModel.growthDetailType == .height ? 87 : 70)
+                    .padding(.bottom, 10)
                 Text("아직 기록이 없어요")
+                    .font(.system(size: 18, weight: .medium))
+                    .padding(.bottom, 10)
                 Text("아래 버튼을 눌러 첫 기록을 추가해보세요")
+                    .font(.system(size: 14))
             }
             else {
                 ScrollView {
@@ -107,8 +116,8 @@ struct GrowthDataRow<T: GrowthData>: View {
         HStack {
             VStack(alignment: .leading) {
                 // TODO: 아기 태어난 날짜 로컬에 저장하도록 해서 개월 수 계산 가능하도록 해야함
-                Text("n개월")
-                Text(DateFormatter.yyyyDashMMDashdd.string(from: growthData.date).replacingOccurrences(of: "-", with: "."))
+                Text("n개월") // 저장된 birthDay
+                Text(DateFormatter.yyyyMMdd.string(from: growthData.date))
             }
             .padding(.leading, 10)
             Spacer()
@@ -189,10 +198,133 @@ struct RecordGrowthView<T: GrowthData>: View {
     }
 }
 
+import Charts
 
-//#Preview {
-//    @Previewable @StateObject var coordinator = BabyMoaCoordinator()
-//    
-//    // MARK: 예시, [키, 몸무게] 통일해 뷰 구현하였고, 인자로 넘겨주는 ViewModel에 제너릭 타입 명시, 그리고 명시한 타입과 growthDetailType 은 동일하게 맞춰 보내주어야 합니다.
-//    GrowthDetailView(viewModel: GrowthDetailViewModel<Height>(coordinator: coordinator, growthDetailType: .height, babyId: 9))
-//}
+struct ChartView<T: GrowthData>: View {
+    @Binding var viewModel: GrowthDetailViewModel<T>
+    
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            Chart {
+                ForEach(Array(viewModel.growthDataList.sorted { $0.date < $1.date }.enumerated()), id: \.element.id) { index, data in
+                    // 영역 (그라데이션)
+                    AreaMark(
+                        x: .value("Index", index),
+                        y: .value("Value", data.value)
+                    )
+                    .interpolationMethod(.linear)
+                    .foregroundStyle(
+                        .linearGradient(
+                            colors: T.self == Height.self ? [
+                                Color.orange.opacity(0.5),
+                                Color.orange.opacity(0.1),
+                                .clear
+                            ] : [
+                                Color.green.opacity(0.5),
+                                Color.green.opacity(0.1),
+                                .clear
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    
+                    // 선
+                    LineMark(
+                        x: .value("Index", index),
+                        y: .value("Value", data.value)
+                    )
+                    .interpolationMethod(.linear)
+                    .foregroundStyle(T.self == Height.self ? .orange : .green)
+                    
+                    PointMark(
+                        x: .value("Index", index),
+                        y: .value("Value", data.value)
+                    )
+                    .foregroundStyle(T.self == Height.self ? .orange : .green)
+                    .symbolSize(25)
+                }
+            }
+            .chartXAxis {
+                AxisMarks(values: Array(0..<viewModel.growthDataList.count)) { value in
+                    AxisGridLine()
+                    AxisTick()
+                    AxisValueLabel {
+                        if let intValue = value.as(Int.self),
+                           intValue < viewModel.growthDataList.count {
+                            let date = viewModel.growthDataList[viewModel.growthDataList.count - (intValue + 1)].date
+                            Text(date.yyyyMMdd)
+                                .font(.caption2)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+            }
+            .chartYAxis {
+                AxisMarks(position: .leading)
+            }
+            .chartOverlay { proxy in
+                OverlayView(viewModel: $viewModel,proxy: proxy)
+            }
+            // ✅ 일정한 간격이므로, 데이터 개수에 따라 폭 계산
+            .frame(width: CGFloat(viewModel.growthDataList.count) * 70 < UIScreen.main.bounds.width ? UIScreen.main.bounds.width - 40 : CGFloat(viewModel.growthDataList.count) * 70, height: 300)
+            .padding(.horizontal)
+        }
+    }
+}
+
+struct OverlayView<T: GrowthData>: View {
+    @Binding var viewModel: GrowthDetailViewModel<T>
+    @State var selectedData: T? = nil
+    var proxy: ChartProxy
+    
+    // 탭으로 간주할 최대 이동 거리 (포인트)
+    private let tapThreshold: CGFloat = 10.0
+
+    var body: some View {
+        GeometryReader { geometry in
+            Rectangle()
+                .fill(Color.clear)
+                .contentShape(Rectangle())
+                // simultaneousGesture로 ScrollView 제스처와 같이 동작하게 함
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 0)
+                        .onEnded { gestureValue in
+                            // 전체 이동량: 스크롤 판정에 사용
+                            let translation = gestureValue.translation
+                            let moved = hypot(translation.width, translation.height)
+
+                            // '거의 움직이지 않았다'면 탭으로 간주
+                            guard moved <= tapThreshold else {
+                                // 스크롤로 판단 -> 아무것도 하지 않음 (ScrollView가 처리)
+                                return
+                            }
+
+                            // 탭처럼 처리: 터치 위치
+                            let location = gestureValue.location
+
+                            // proxy로 x값(여기서는 인덱스)을 얻어오기
+                            if let index: Int = proxy.value(atX: location.x, as: Int.self) {
+                                // 현재 Chart에서 index가 어떻게 매핑되는지에 따라 보정 필요
+                                // (당신 코드에서 역순 처리를 하고 있으므로 동일한 보정 적용)
+                                let mappedIndex = viewModel.growthDataList.count - (index + 1)
+                                guard mappedIndex >= 0 && mappedIndex < viewModel.growthDataList.count else {
+                                    withAnimation { selectedData = nil }
+                                    return
+                                }
+
+                                let selected = viewModel.growthDataList[mappedIndex]
+                                withAnimation {
+                                    selectedData = selected
+                                }
+                                print("Selected index:", mappedIndex, "value:", selected.value)
+                            } else {
+                                withAnimation {
+                                    selectedData = nil
+                                }
+                            }
+                        }
+                )
+        }
+    }
+}

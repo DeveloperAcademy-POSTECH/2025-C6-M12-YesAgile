@@ -103,19 +103,21 @@ enum GrowthDetailType {
     case weight
 }
 
-protocol GrowthData: Hashable {
+protocol GrowthData: Hashable, Identifiable {
     var value: Double { get set }
     var date: Date { get set }
     var memo: String? { get set }
 }
 
 struct Height: GrowthData {
+    var id = UUID()
     var value: Double
     var date: Date
     var memo: String?
 }
 
 struct Weight: GrowthData {
+    var id = UUID()
     var value: Double
     var date: Date
     var memo: String?

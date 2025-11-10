@@ -227,6 +227,7 @@ struct MilestoneCardView: View {
                     .font(.system(size: cardType.titleFontSize, weight: .bold))
                 Spacer().frame(height: cardType == .small ? 10 : 20)
             }
+            .frame(width: cardWidth, height: cardHeight)
             .foregroundStyle(milestone.completedDate == nil ? .orange70 : milestone.image == nil ? .orange50 : .white)
         }
         .frame(width: cardWidth, height: cardHeight)

@@ -31,6 +31,7 @@ struct AllMilestoneView: View {
                             id: milestone.id,
                             title: milestone.title,
                             ageRange: milestone.ageRange,
+                            image: selectedImage,
                             completedDate: selectedDate,
                             description: memo,
                             illustrationName: milestone.illustrationName
