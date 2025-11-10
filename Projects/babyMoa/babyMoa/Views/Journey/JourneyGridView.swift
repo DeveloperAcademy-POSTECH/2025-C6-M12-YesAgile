@@ -10,15 +10,15 @@ import SwiftUI
 struct JourneyGridView: View {
     // 3열 그리드
     private let columns = [
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
+        GridItem(.flexible(), spacing: 26),
+        GridItem(.flexible(), spacing: 26),
+        GridItem(.flexible(), spacing: 26)
     ]
     
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
-                LazyVGrid(columns: columns, spacing: 16) {
+                LazyVGrid(columns: columns, spacing: 20) {
                     // 예시: 6개 아이템
                     ForEach(0..<6, id: \.self) { index in
                         CirclePhotoItem()
@@ -30,12 +30,14 @@ struct JourneyGridView: View {
             }
         }
         .navigationTitle("여정 리스트")
+        .font(.system(size: 16, weight: .bold))
         .navigationBarTitleDisplayMode(.inline)
-        .background(Color(red: 0.95, green: 0.95, blue: 0.97))
+        .background(Color.background)
     }
 }
 
 // MARK: - 원형 사진 아이템
+
 
 struct CirclePhotoItem: View {
     var body: some View {

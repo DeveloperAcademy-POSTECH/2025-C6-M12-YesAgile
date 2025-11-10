@@ -27,8 +27,8 @@ struct JourneyAddView: View {
                     // 사진 영역
                     Button(action: { showImagePicker = true }) {
                         ZStack {
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(Color.blue, lineWidth: 2)
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.white, lineWidth: 2)
                                 .background(
                                     RoundedRectangle(cornerRadius: 16)
                                         .fill(Color.white)
@@ -46,7 +46,7 @@ struct JourneyAddView: View {
                                     .padding()
                             }
                         }
-                        .frame(height: 450)
+                        .frame(width: 353, height: 265)
                     }
                     .padding(.horizontal, 20)
                     
@@ -61,16 +61,16 @@ struct JourneyAddView: View {
                             axis: .vertical
                         )
                         .padding(16)
-                        .frame(minHeight: 150, alignment: .top)
+                        .frame(width: 353,height: 100, alignment: .top)
                         .background(Color.white)
                         .overlay(
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(Color.orange, lineWidth: 2)
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.brand40, lineWidth: 2) //BrandLight 이 없어서 40 대체
                         )
                     }
                     .padding(.horizontal, 20)
                 }
-                .padding(.bottom, 100)
+               
             }
             
             Spacer()
@@ -87,13 +87,13 @@ struct JourneyAddView: View {
                     .frame(height: 56)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(Color(red: 1.0, green: 0.3, blue: 0.2))
+                            .fill(Color.brandMain)
                     )
             }
             .padding(.horizontal, 20)
-            .padding(.bottom, 30)
+            .padding(.bottom, 227)
         }
-        .background(Color(red: 0.95, green: 0.95, blue: 0.97))
+        .background(Color.background)
         .sheet(isPresented: $showImagePicker) {
             // TODO: ImagePicker
         }
