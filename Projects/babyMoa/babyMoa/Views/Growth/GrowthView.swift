@@ -96,7 +96,7 @@ struct GrowthView: View {
     }
 }
 
-struct MilestoneSummaryView: View {
+fileprivate struct MilestoneSummaryView: View {
     @Binding var viewModel: GrowthViewModel
     
     var body: some View {
@@ -173,7 +173,7 @@ struct MilestoneSummaryView: View {
     }
 }
 
-struct MilestoneCardView: View {
+fileprivate struct MilestoneCardView: View {
     let milestone: GrowthMilestone
     let cardWidth: CGFloat
     let cardHeight: CGFloat
