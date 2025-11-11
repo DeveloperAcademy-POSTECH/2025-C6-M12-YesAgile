@@ -12,6 +12,7 @@ struct JourneyView: View {
     @State private var viewModel: JourneyViewModel
     @State private var calendarViewModel: CalendarViewModel
     //@Observable 쓰면서 @StateObject 가 ->  @State로 바뀜 재생성 안됨 해당 뷰 인스턴스의 수명동안 저장소 유지 다른 뷰로 간주될 떄만 초기화 일어남 부모가 id를 바꾸거나.. 전혀 다른 라우팅으로 동일타입의 뷰를 생성한다면. 새로운 아이덴티가 일어나서 초기화됨
+    //하워드께 여쭤보기 @StateObject 쓰는게 나은지? 
     
     // ToDo : 저니뷰모델에 중복호출 방지만 해주자
     init(coordinator: BabyMoaCoordinator) {

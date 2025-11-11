@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct CalendarCard: View {
-    var viewModel: CalendarViewModel // 옵저버블 써서 var 로도 가능! 
+    var viewModel: CalendarViewModel
+    // 옵저버블 써서 var 로도 가능하지만 괜찮은지 하워드께 여쭤보기
     let journies: [Journey]
     
     var body: some View {

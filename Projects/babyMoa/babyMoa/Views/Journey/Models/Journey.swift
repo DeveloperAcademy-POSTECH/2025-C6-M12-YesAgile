@@ -4,7 +4,7 @@
 //
 //  Created by pherd on 11/7/25.
 //
-import SwiftUI
+import SwiftUI // UIKit UIImage 때문에 사용해도 되는건지? 체크 
 import CoreLocation
 
 /// 여정 도메인 모델
