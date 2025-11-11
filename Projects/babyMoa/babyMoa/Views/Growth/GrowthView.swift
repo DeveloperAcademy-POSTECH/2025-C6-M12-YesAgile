@@ -37,29 +37,46 @@ struct GrowthView: View {
                 .padding(.bottom, 20)
                 MilestoneSummaryView(viewModel: $viewModel)
                     .frame(height: 500)
-                // Spacer()
                 
-                //                Button(action: {
-                //                    viewModel.checkAllMilestonesButtonTapped()
-                //                }) {
-                //                    RoundedRectangle(cornerRadius: 12)
-                //                        .overlay(
-                //                            Text("전체 성장 마일스톤 확인하기")
-                //                                .font(.system(size: 18, weight: .bold))
-                //                                .foregroundStyle(.white)
-                //                        )
-                //                        .foregroundStyle(.brand50)
-                //                        .frame(height: 60)
-                //                }
-                //                .padding(.horizontal, 20)
-                //                .padding(.bottom, 30)
-                
-                // Button Stytle 교체작업
                 
                 Button("전체 성장 마일스톤 확인하기", action: {
                     viewModel.checkAllMilestonesButtonTapped()
                 })
                 .buttonStyle(.fixedHeightButton)
+                
+                HStack(spacing: 20){
+                    Button(action: {
+                        
+                    }, label: {
+                        // 1. 기린 카드
+                        CardItemView(title: "키", value: "37.5cm", backgroundColor: Color.orange50) {
+                            // 👇 기린의 고유한 레이아웃 전달
+                            Image("GiraffeNeck")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxHeight: .infinity)
+                                .padding(.trailing, 18)
+                        }
+                    })
+                    
+                    Button(action: {
+                        
+                    }, label: {
+                        // 2. 코끼리 카드
+                        CardItemView(title: "몸무게", value: "10.2kg", backgroundColor: Color.green80) {
+                            // 👇 코끼리의 고유한 레이아웃(VStack+Spacer) 전달
+                            VStack {
+                                Spacer()
+                                Image("elephantCropImg")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxHeight: 72)
+                                    .padding(.trailing, 11)
+                            }
+                        }
+                    })
+                }
+                
                 
                 HeightAndWeightView(
                     height: $viewModel.latestHeight,
