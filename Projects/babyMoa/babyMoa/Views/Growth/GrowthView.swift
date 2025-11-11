@@ -34,25 +34,32 @@ struct GrowthView: View {
                         .foregroundStyle(.black)
                     Spacer()
                 }
-                .padding(.horizontal, 20)
                 .padding(.bottom, 20)
                 MilestoneSummaryView(viewModel: $viewModel)
                     .frame(height: 500)
-                Spacer()
-                Button(action: {
+                // Spacer()
+                
+                //                Button(action: {
+                //                    viewModel.checkAllMilestonesButtonTapped()
+                //                }) {
+                //                    RoundedRectangle(cornerRadius: 12)
+                //                        .overlay(
+                //                            Text("전체 성장 마일스톤 확인하기")
+                //                                .font(.system(size: 18, weight: .bold))
+                //                                .foregroundStyle(.white)
+                //                        )
+                //                        .foregroundStyle(.brand50)
+                //                        .frame(height: 60)
+                //                }
+                //                .padding(.horizontal, 20)
+                //                .padding(.bottom, 30)
+                
+                // Button Stytle 교체작업
+                
+                Button("전체 성장 마일스톤 확인하기", action: {
                     viewModel.checkAllMilestonesButtonTapped()
-                }) {
-                    RoundedRectangle(cornerRadius: 12)
-                        .overlay(
-                            Text("전체 성장 마일스톤 확인하기")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundStyle(.white)
-                        )
-                        .foregroundStyle(.brand50)
-                        .frame(height: 60)
-                }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 30)
+                })
+                .buttonStyle(.fixedHeightButton)
                 
                 HeightAndWeightView(
                     height: $viewModel.latestHeight,
@@ -65,7 +72,6 @@ struct GrowthView: View {
                     }
                 )
                 .frame(height: 100)
-                .padding(.horizontal, 20)
                 .padding(.bottom, 20)
                 
                 Button(action: {
@@ -77,7 +83,10 @@ struct GrowthView: View {
                 .buttonStyle(.plain)
                 Spacer().frame(height: 30)
             }
+            .scrollIndicators(.hidden)
         }
+        .backgroundPadding(.horizontal)
+        .background(Color.background)
         .onAppear {
             Task {
                 SelectedBaby.babyId = 1
@@ -87,7 +96,7 @@ struct GrowthView: View {
     }
 }
 
-struct MilestoneSummaryView: View {
+fileprivate struct MilestoneSummaryView: View {
     @Binding var viewModel: GrowthViewModel
     
     var body: some View {
@@ -118,11 +127,11 @@ struct MilestoneSummaryView: View {
                         .frame(width: 10)
                 }
             }
-            .padding(.horizontal, 20)
             
             ScrollView(.horizontal) {
                 HStack {
-                    Spacer().frame(width: 20)
+                    //                    Spacer().frame(width: 10)
+                    Spacer()
                     ForEach(0..<viewModel.allMilestones[viewModel.selectedMonthIdx].count, id: \.self) { milestoneColIdx in
                         MilestoneCardView(
                             milestone: viewModel.allMilestones[viewModel.selectedMonthIdx][milestoneColIdx],
@@ -140,7 +149,7 @@ struct MilestoneSummaryView: View {
                     }
                 }
             }
-            .scrollIndicators(.never)
+            .scrollIndicators(.hidden)
         }
         .fullScreenCover(isPresented: $viewModel.isMilestoneEditingViewPresented) {
             GrowthMilestoneView(
@@ -164,73 +173,3 @@ struct MilestoneSummaryView: View {
     }
 }
 
-struct MilestoneCardView: View {
-    let milestone: GrowthMilestone
-    let cardWidth: CGFloat
-    let cardHeight: CGFloat
-    let cardType: MilestoneCardType
-    var onTap: () -> Void
-    
-    var body: some View {
-        ZStack {
-            if let image = milestone.image {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } else {
-                Image(milestone.illustrationName!)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .opacity(milestone.completedDate == nil ? 0.7 : 1)
-                    .padding(.horizontal, 10)
-            }
-            VStack {
-                Spacer().frame(height: cardType == .small ? 10 : 20)
-                Text(milestone.completedDate != nil ? DateFormatter.yyyyMMdd.string(from: milestone.completedDate!) : "저는 곧 할 수 있어요")
-                    .font(.system(size: cardType.dateFontSize, weight: .bold))
-                Spacer()
-                Text(milestone.title)
-                    .font(.system(size: cardType.titleFontSize, weight: .bold))
-                Spacer().frame(height: cardType == .small ? 10 : 20)
-            }
-            .frame(width: cardWidth, height: cardHeight)
-            .foregroundStyle(milestone.completedDate == nil ? .orange70 : milestone.image == nil ? .orange50 : .white)
-        }
-        .frame(width: cardWidth, height: cardHeight)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(.white)
-        )
-        .clipShape(
-            RoundedRectangle(cornerRadius: 16)
-        )
-        .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 5)
-        .onTapGesture {
-            onTap()
-        }
-    }
-}
-
-/// 마일스톤 각 카드 항목 상 보여지는 폰트의 크기를 조절하기 위한 타입 값입니다.
-enum MilestoneCardType {
-    case small
-    case big
-    
-    var dateFontSize: CGFloat {
-        switch self {
-        case .small:
-            return 8
-        case .big:
-            return 18
-        }
-    }
-    
-    var titleFontSize: CGFloat {
-        switch self {
-        case .small:
-            return 10
-        case .big:
-            return 30
-        }
-    }
-}

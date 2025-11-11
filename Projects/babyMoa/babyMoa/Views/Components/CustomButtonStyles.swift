@@ -57,6 +57,9 @@ struct AppButtonStyle: ButtonStyle {
     var fontSize: CGFloat?
     var fontWeight: Font.Weight?
     
+    var height: CGFloat? = nil
+    
+    
     
     // 2. _body 함수
     func makeBody(configuration: Configuration) -> some View {
@@ -70,6 +73,7 @@ struct AppButtonStyle: ButtonStyle {
             .foregroundColor(foregroundColor)
             .frame(maxWidth: .infinity)
             .padding(16)
+            .frame(height: height)
             .background(configuration.isPressed ? (pressedBackgroundColor ?? backgroundColor) : backgroundColor)
             .cornerRadius(12)
             .overlay {
@@ -149,6 +153,15 @@ extension ButtonStyle where Self == AppButtonStyle {
         )
     }
     
+    static var outlineFourButton: AppButtonStyle {
+        AppButtonStyle(
+            backgroundColor: .clear,
+            foregroundColor: .brand50,
+            borderColor: .orange70, // 👈 테두리 색상 설정
+            borderWidth: 1         // 👈 테두리 두께 설정
+        )
+    }
+    
     static var outlinelessButton: AppButtonStyle {
         AppButtonStyle(
             backgroundColor: .white,
@@ -157,6 +170,16 @@ extension ButtonStyle where Self == AppButtonStyle {
             borderWidth: 1,         // 👈 테두리 두께 설정
             fontSize: 14,
             fontWeight: .regular
+
+        )
+    }
+    
+    static var fixedHeightButton: AppButtonStyle {
+        AppButtonStyle(
+            backgroundColor: .brand50,
+            foregroundColor: .white,
+            pressedBackgroundColor: .brand70,
+            height: 60
 
         )
     }
@@ -244,6 +267,13 @@ extension ButtonStyle where Self == AppButtonStyle {
                         .font(.headline)
                     Button("외곽선 버튼 (Outline)") { }
                         .buttonStyle(.outlineThirdButton) // ✅ 훨씬 깔끔함
+                    
+                    Divider()
+
+                    Text("OutlineFourButtonStyle")
+                        .font(.headline)
+                    Button("외곽선 버튼 (Outline)") { }
+                        .buttonStyle(.outlineFourButton) // ✅ 훨씬 깔끔함
                     
                     Divider()
 
