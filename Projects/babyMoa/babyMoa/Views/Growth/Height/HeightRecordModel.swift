@@ -14,9 +14,32 @@ struct HeightRecordModel: Identifiable {
     let dateText: String        // "2025. 10. 21."
     let diffText: String?       // "+0.1" 또는 nil
     let valueText: String       // "73.1cm"
+    let date: Date // New property
+    let value: Double // New property
+
+    // Custom initializer to parse dateText and valueText
+    init(monthLabel: String, dateText: String, diffText: String?, valueText: String) {
+        self.monthLabel = monthLabel
+        self.dateText = dateText
+        self.diffText = diffText
+        self.valueText = valueText
+
+        // Parse date
+        self.date = dateFormatter.date(from: dateText) ?? Date() // Fallback to current date if parsing fails
+
+        // Parse value
+        let cleanedValueText = valueText.replacingOccurrences(of: "cm", with: "").trimmingCharacters(in: .whitespaces)
+        self.value = Double(cleanedValueText) ?? 0.0 // Fallback to 0.0 if parsing fails
+    }
 }
 
-
+// Helper for parsing dates
+private let dateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy. MM. dd." // Matches "2025. 10. 21."
+    formatter.locale = Locale(identifier: "ko_KR") // Korean locale for consistency
+    return formatter
+}()
 
 
 extension HeightRecordModel {

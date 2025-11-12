@@ -24,9 +24,7 @@ struct HeightDetailView: View {
         case .record:
             HeightRecordListView(viewModel: viewModel)
         case .chart:
-            Spacer()
-            Text("차트 뷰가 여기에 표시됩니다.")
-            Spacer()
+            HeightChartView(viewModel: viewModel)
         }
     }
 }
