@@ -44,7 +44,6 @@ struct BabyMoaRootView: View {
                     EmptyView()
                 case .privacyConsent:
                     PrivacyConsentView(coordinator: coordinator)
-                        .navigationBarBackButtonHidden()
                 case .allMilestones(let allMilestones):
                     AllMilestoneView(coordinator: coordinator, allMilestones: allMilestones)
                         .navigationBarBackButtonHidden()

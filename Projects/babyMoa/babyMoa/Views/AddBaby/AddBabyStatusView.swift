@@ -95,6 +95,9 @@ struct AddBabyStatusView: View {
                 
                 Spacer()
             }
+            .onTapGesture { // Add this onTapGesture to dismiss the keyboard
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            }
             .ignoresSafeArea()
             .navigationBarBackButtonHidden(true)
             .backgroundPadding(.horizontal)

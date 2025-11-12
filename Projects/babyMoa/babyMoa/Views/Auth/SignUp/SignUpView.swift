@@ -41,6 +41,9 @@ struct SignUpView: View {
             }
             Spacer()
         }
+        .sheet(isPresented: $viewModel.isShowingPrivacySheet) {
+            PrivacyConsentView(coordinator: viewModel.coordinator)
+        }
         .presentationDetents([.height(370)])
         .presentationCornerRadius(25)
         .presentationDragIndicator(.visible)
