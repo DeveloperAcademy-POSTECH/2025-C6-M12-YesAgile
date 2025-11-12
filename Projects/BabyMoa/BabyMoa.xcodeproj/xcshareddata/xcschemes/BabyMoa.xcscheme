@@ -18,7 +18,7 @@
                BlueprintIdentifier = "D4110B672EBBC61100B0C783"
                BuildableName = "BabyMoa.app"
                BlueprintName = "BabyMoa"
-               ReferencedContainer = "container:BabyMoa.xcodeproj">
+               ReferencedContainer = "container:babyMoa.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -38,7 +38,7 @@
                BlueprintIdentifier = "D4110B7E2EBBC61200B0C783"
                BuildableName = "BabyMoaUITests.xctest"
                BlueprintName = "BabyMoaUITests"
-               ReferencedContainer = "container:BabyMoa.xcodeproj">
+               ReferencedContainer = "container:babyMoa.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -49,7 +49,7 @@
                BlueprintIdentifier = "D4EEA8CB2EBBCFF90006A51F"
                BuildableName = "BabyMoaTests.xctest"
                BlueprintName = "BabyMoaTests"
-               ReferencedContainer = "container:BabyMoa.xcodeproj">
+               ReferencedContainer = "container:babyMoa.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -71,7 +71,7 @@
             BlueprintIdentifier = "D4110B672EBBC61100B0C783"
             BuildableName = "BabyMoa.app"
             BlueprintName = "BabyMoa"
-            ReferencedContainer = "container:BabyMoa.xcodeproj">
+            ReferencedContainer = "container:babyMoa.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -88,7 +88,7 @@
             BlueprintIdentifier = "D4110B672EBBC61100B0C783"
             BuildableName = "BabyMoa.app"
             BlueprintName = "BabyMoa"
-            ReferencedContainer = "container:BabyMoa.xcodeproj">
+            ReferencedContainer = "container:babyMoa.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

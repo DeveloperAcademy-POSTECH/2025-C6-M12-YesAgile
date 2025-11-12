@@ -18,11 +18,26 @@ struct DatePickerModal: View {
     @Binding var birthDate: Date
     @Binding var showDatePicker: Bool
     
+    @State private var selectedDate: Date
+    
     // style 프로퍼티 (기본값 .graphical)
     var style: ModalDatePickerStyle = .graphical
     // components 프로퍼티를 추가합니다.
     // 기본값을 .date로 설정합니다.
     var components: DatePickerComponents = .date
+    
+    init(
+        birthDate: Binding<Date>,
+        showDatePicker: Binding<Bool>,
+        style: ModalDatePickerStyle = .graphical,
+        components: DatePickerComponents = .date
+    ) {
+        self._birthDate = birthDate
+        self._showDatePicker = showDatePicker
+        self.style = style
+        self.components = components
+        self._selectedDate = State(initialValue: birthDate.wrappedValue)
+    }
 
     var body: some View {
         ZStack{
@@ -38,8 +53,14 @@ struct DatePickerModal: View {
                 DatePickerViews
                     .labelsHidden()
                     .padding()
+                    .onChange(of: selectedDate) { _, newValue in
+                        print("DatePicker new value: \(newValue)")
+                    }
                 
-                Button("완료") { showDatePicker = false }
+                Button("완료") {
+                    birthDate = selectedDate
+                    showDatePicker = false
+                }
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
                     .font(.headline)
@@ -50,9 +71,6 @@ struct DatePickerModal: View {
             .cornerRadius(12)
             .shadow(radius: 10)
             .padding(.horizontal, 30)
-            .onTapGesture {
-                // 모달 컨텐츠 탭 시 닫히지 않도록 함
-            }
         }
         .ignoresSafeArea()
     }
@@ -63,10 +81,10 @@ struct DatePickerModal: View {
     private var DatePickerViews: some View {
         switch style {
         case .graphical:
-            DatePicker("", selection: $birthDate, displayedComponents: components)
+            DatePicker("", selection: $selectedDate, displayedComponents: components)
                 .datePickerStyle(.graphical)
         case .wheel:
-            DatePicker("", selection: $birthDate, displayedComponents: components)
+            DatePicker("", selection: $selectedDate, displayedComponents: components)
                 .datePickerStyle(.wheel)
         }
     }
