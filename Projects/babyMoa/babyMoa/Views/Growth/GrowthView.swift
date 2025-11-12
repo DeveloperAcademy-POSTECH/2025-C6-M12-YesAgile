@@ -78,18 +78,18 @@ struct GrowthView: View {
                 }
                 
                 
-                HeightAndWeightView(
-                    height: $viewModel.latestHeight,
-                    weight: $viewModel.latestWeight,
-                    heightTapAction: {
-                        viewModel.heightButtonTapped()
-                    },
-                    weightTapAction: {
-                        viewModel.weightButtonTapped()
-                    }
-                )
-                .frame(height: 100)
-                .padding(.bottom, 20)
+//                HeightAndWeightView(
+//                    height: $viewModel.latestHeight,
+//                    weight: $viewModel.latestWeight,
+//                    heightTapAction: {
+//                        viewModel.heightButtonTapped()
+//                    },
+//                    weightTapAction: {
+//                        viewModel.weightButtonTapped()
+//                    }
+//                )
+//                .frame(height: 100)
+//                .padding(.bottom, 20)
                 
                 Button(action: {
                     viewModel.toothButtonTapped()
