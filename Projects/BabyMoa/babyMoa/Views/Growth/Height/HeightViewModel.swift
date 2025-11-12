@@ -15,8 +15,14 @@ enum HeightTab: String, CaseIterable {
 @Observable
 final class HeightViewModel {
     var records: [HeightRecordModel] = []
+    let babyId: Int
     
-    init() {
+    init(babyId: Int) {
+        self.babyId = babyId
+    }
+    
+    @MainActor
+    func fetchHeights() async {
         // TODO: 나중에는 babyId를 받아서 API 통신을 통해 데이터를 가져와야 합니다.
         self.records = HeightRecordModel.mockData
     }
