@@ -13,6 +13,7 @@ struct GenderSelectionView: View {
     let segments: [Segment]
     
     var isBorn: Bool = false
+    var onTap: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -23,6 +24,7 @@ struct GenderSelectionView: View {
             HStack(spacing: 10) {
                 ForEach(segments.filter { $0.tag != "none" }) { segment in
                     Button(segment.title) {
+                        onTap?()
                         withAnimation(.easeInOut(duration: 0.2)) {
                             selectedGender = segment.tag
                         }
@@ -36,6 +38,7 @@ struct GenderSelectionView: View {
             } else {
                 
                 Button(action: {
+                    onTap?()
                     // When tapped, set the gender to "none"
                     withAnimation(.easeInOut(duration: 0.2)) {
                         selectedGender = "none"

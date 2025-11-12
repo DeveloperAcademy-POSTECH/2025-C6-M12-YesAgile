@@ -14,6 +14,13 @@ struct AddBabyStatusView: View {
     
     @StateObject private var imageLoaderViewModel = ImageLoaderViewModel()
     
+    enum FocusField: Hashable {
+        case babyName
+        case babyNickname
+    }
+    
+    @FocusState private var focusedField: FocusField?
+    
     init(coordinator: BabyMoaCoordinator, baby: AddBabyModel? = nil, isBorn: Bool? = nil) {
         self._viewModel = StateObject(wrappedValue: AddBabyViewModel(coordinator: coordinator, baby: baby, isBorn: isBorn))
     }
@@ -63,14 +70,14 @@ struct AddBabyStatusView: View {
 //
                 VStack(spacing: 20){
                     
-                    BabyInputField(label: "이름 (선택)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName)
-                    BabyInputField(label: "태명 (필수)", placeholder: "태명을 입력해주세요", text: $viewModel.babyNickname)
+                    BabyInputField(label: "이름 (선택)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName, focus: $focusedField, field: .babyName)
+                    BabyInputField(label: "태명 (필수)", placeholder: "태명을 입력해주세요", text: $viewModel.babyNickname, focus: $focusedField, field: .babyNickname)
                     
                     if viewModel.isBorn {
-                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: viewModel.availableGenderSegments, isBorn: true)
+                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: viewModel.availableGenderSegments, isBorn: true, onTap: { focusedField = nil })
 
                     } else {
-                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: viewModel.availableGenderSegments, isBorn: false)
+                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: viewModel.availableGenderSegments, isBorn: false, onTap: { focusedField = nil })
 
                     }
                 }
@@ -95,8 +102,8 @@ struct AddBabyStatusView: View {
                 
                 Spacer()
             }
-            .onTapGesture { // Add this onTapGesture to dismiss the keyboard
-                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            .onTapGesture {
+                focusedField = nil
             }
             .ignoresSafeArea()
             .navigationBarBackButtonHidden(true)
