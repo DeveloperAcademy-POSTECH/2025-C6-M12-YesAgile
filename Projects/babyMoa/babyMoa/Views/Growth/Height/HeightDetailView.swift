@@ -10,8 +10,14 @@ import SwiftUI
 struct HeightDetailView: View {
     
     @State private var selectedTab: HeightTab = .record
-    @State private var viewModel = HeightViewModel()
+    @State private var viewModel: HeightViewModel
     
+    let babyId: Int
+    
+    init(babyId: Int) {
+        self.babyId = babyId
+        _viewModel = State(initialValue: HeightViewModel(babyId: babyId))
+    }
     
     var body: some View {
         switch selectedTab {
@@ -27,5 +33,5 @@ struct HeightDetailView: View {
 
 
 #Preview {
-    HeightDetailView()
+    HeightDetailView(babyId: 1)
 }

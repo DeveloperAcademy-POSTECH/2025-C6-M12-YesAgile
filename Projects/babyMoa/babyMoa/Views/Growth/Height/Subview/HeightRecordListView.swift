@@ -62,5 +62,5 @@ struct HeightRecordListView: View {
 }
 
 #Preview {
-    HeightRecordListView(viewModel: HeightViewModel())
+    HeightRecordListView(viewModel: HeightViewModel(babyId: 1))
 }

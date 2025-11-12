@@ -53,6 +53,9 @@ struct BabyMoaRootView: View {
                         growthDetailType: .height,
                         babyId: babyId
                     )
+                case .newHeight(let babyId):
+                    HeightView(babyId: babyId)
+                        .navigationBarBackButtonHidden()
                 case .weight(let babyId):
                     GrowthDetailView<Weight>(
                         coordinator: coordinator,

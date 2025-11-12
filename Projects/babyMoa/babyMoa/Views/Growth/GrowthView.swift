@@ -46,7 +46,9 @@ struct GrowthView: View {
                 
                 HStack(spacing: 20){
                     Button(action: {
-                        
+                        if let babyId = SelectedBaby.babyId {
+                            coordinator.push(path: .newHeight(babyId: babyId))
+                        }
                     }, label: {
                         // 1. 기린 카드
                         CardItemView(title: "키", value: "37.5cm", backgroundColor: Color.orange50) {
@@ -60,7 +62,9 @@ struct GrowthView: View {
                     })
                     
                     Button(action: {
-                        
+                        if let babyId = SelectedBaby.babyId {
+                            coordinator.push(path: .weight(babyId: babyId))
+                        }
                     }, label: {
                         // 2. 코끼리 카드
                         CardItemView(title: "몸무게", value: "10.2kg", backgroundColor: Color.green80) {
@@ -107,7 +111,7 @@ struct GrowthView: View {
         .onAppear {
             Task {
                 SelectedBaby.babyId = 1
-                await viewModel.fetchAllGrowthData()
+//                await viewModel.fetchAllGrowthData()
             }
         }
     }
