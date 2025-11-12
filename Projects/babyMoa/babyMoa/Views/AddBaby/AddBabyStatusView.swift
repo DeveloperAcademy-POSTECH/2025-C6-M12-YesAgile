@@ -70,7 +70,7 @@ struct AddBabyStatusView: View {
 //
                 VStack(spacing: 20){
                     
-                    BabyInputField(label: "이름 (선택)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName, focus: $focusedField, field: .babyName)
+                    BabyInputField(label: "이름 (필수)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName, focus: $focusedField, field: .babyName)
                     BabyInputField(label: "태명 (필수)", placeholder: "태명을 입력해주세요", text: $viewModel.babyNickname, focus: $focusedField, field: .babyNickname)
                     
                     if viewModel.isBorn {
