@@ -190,3 +190,10 @@ fileprivate struct MilestoneSummaryView: View {
     }
 }
 
+#Preview {
+    // Create a mock coordinator for the preview
+    let mockCoordinator = BabyMoaCoordinator()
+    
+    // Initialize GrowthView with the mock coordinator
+    GrowthView(coordinator: mockCoordinator)
+}
