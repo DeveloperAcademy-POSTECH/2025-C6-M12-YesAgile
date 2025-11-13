@@ -30,7 +30,7 @@ struct BabyMainView: View {
             BabyMainRowView(title: "아기", buttonLabel: "아기 추가") {
                 // print
                 print("버튼클릭했어요")
-                coordinator.push(path: .addBabyCreate)
+                coordinator.push(path: .addBaby)
             }
             
             Button("로그아웃", action: {
