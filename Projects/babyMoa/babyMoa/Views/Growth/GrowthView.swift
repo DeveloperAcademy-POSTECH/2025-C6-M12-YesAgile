@@ -112,7 +112,7 @@ struct GrowthView: View {
         .background(Color.background)
         .onAppear {
             Task {
-                SelectedBaby.babyId = 1
+//                SelectedBaby.babyId = 1
 //                await viewModel.fetchAllGrowthData()
             }
         }

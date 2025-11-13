@@ -108,11 +108,26 @@ struct EruptedTeethRow: View {
         
         init() {
             let mockEruptedTeeth: [TeethData] = [
-                TeethData(teethId: 4, eruptedDate: "2025-10-20", erupted: true),
-                TeethData(teethId: 5, eruptedDate: "2025-10-25", erupted: true),
-                TeethData(teethId: 14, eruptedDate: "2025-11-01", erupted: true),
-                TeethData(teethId: 0, erupted: false),
-                TeethData(teethId: 1, erupted: false),
+                TeethData(teethId: 0, eruptedDate: "2025-01-15", erupted: true),
+                TeethData(teethId: 1, eruptedDate: "2025-01-20", erupted: true),
+                TeethData(teethId: 2, eruptedDate: "2025-02-01", erupted: true),
+                TeethData(teethId: 3, eruptedDate: "2025-02-10", erupted: true),
+                TeethData(teethId: 4, eruptedDate: "2025-03-05", erupted: true),
+                TeethData(teethId: 5, eruptedDate: "2025-03-12", erupted: true),
+                TeethData(teethId: 6, eruptedDate: "2025-04-01", erupted: true),
+                TeethData(teethId: 7, eruptedDate: "2025-04-10", erupted: true),
+                TeethData(teethId: 8, eruptedDate: "2025-05-01", erupted: true),
+                TeethData(teethId: 9, eruptedDate: "2025-05-15", erupted: true),
+                TeethData(teethId: 10, eruptedDate: "2025-06-01", erupted: true),
+                TeethData(teethId: 11, eruptedDate: "2025-06-10", erupted: true),
+                TeethData(teethId: 12, eruptedDate: "2025-07-01", erupted: true),
+                TeethData(teethId: 13, eruptedDate: "2025-07-15", erupted: true),
+                TeethData(teethId: 14, eruptedDate: "2025-08-01", erupted: true),
+                TeethData(teethId: 15, eruptedDate: "2025-08-10", erupted: true),
+                TeethData(teethId: 16, eruptedDate: "2025-09-01", erupted: true),
+                TeethData(teethId: 17, eruptedDate: "2025-09-15", erupted: true),
+                TeethData(teethId: 18, eruptedDate: "2025-10-01", erupted: true),
+                TeethData(teethId: 19, eruptedDate: "2025-10-10", erupted: true),
             ]
             
             _viewModel = State(initialValue: TeethViewModel(coordinator: BabyMoaCoordinator(), teethList: mockEruptedTeeth))

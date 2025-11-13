@@ -35,7 +35,6 @@ struct GrowthBottomButton: View {
         }
         .disabled(!isEnabled)
         .background(.clear)
-        .padding(.horizontal, 20)
     }
 }
 

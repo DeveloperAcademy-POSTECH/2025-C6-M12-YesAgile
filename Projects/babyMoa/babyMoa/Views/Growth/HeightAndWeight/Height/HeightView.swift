@@ -17,7 +17,7 @@ struct HeightView: View {
     
     var body: some View {
         ZStack{
-            Color.white
+            Color.background
             VStack(spacing: 0) {
                 
                 CustomNavigationBar(title: "키", leading: {

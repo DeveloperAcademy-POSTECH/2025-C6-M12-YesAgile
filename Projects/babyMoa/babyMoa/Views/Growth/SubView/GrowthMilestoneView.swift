@@ -67,8 +67,13 @@ struct GrowthMilestoneView: View {
     }
     
     var body: some View {
-        ZStack(alignment: .bottom) {
+        ZStack {
+            Color.background
             VStack(spacing: 0) {
+                // Create 일때 삭제(휴지통)을 클릭하면 취소되게 해야 한다.
+                // 이미지를 불러와서 휴지통을 클릭하면 삭제되어야 한다.
+                // 삭제 함수 찾아서 구현해야 한다.
+                // 해야 될 것 많다.
                 CustomNavigationBar(
                     title: milestone.title,
                     leading: {
@@ -88,9 +93,9 @@ struct GrowthMilestoneView: View {
                             
                         }
                     },
-                    paddingTop: 0
                 )
-                ScrollView {
+                
+                ScrollView(.vertical, showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 20) {
                         // 사진 (가로 여백 20, 가로 꽉)
                         photoSection
@@ -100,16 +105,14 @@ struct GrowthMilestoneView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("작성일")
                                 .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(.primary)
+                                .foregroundColor(Color.font)
                             
-                            Button(action: { showDatePicker = true }) {
-                                HStack {
-                                    Text(formattedDate(selectedDate))
-                                        .foregroundColor(.primary)
-                                    Spacer()
-                                }
-                                .buttonStyle(.outlineFourButton)
-                            }
+                            
+                            Button(formattedDate(selectedDate), action: {
+                                showDatePicker = true
+                            })
+                            .buttonStyle(.outlineMileButton)
+
                         }
                         
                         // 메모
@@ -117,46 +120,59 @@ struct GrowthMilestoneView: View {
                             Text("메모")
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(.primary)
-                            
+
                             ZStack(alignment: .topLeading) {
-                                if memo.isEmpty {
-                                    Text("아이와 함께한 소중한 추억 메모를 입력 해주세요")
-                                        .foregroundColor(.secondary)
-                                        .padding(.top, 18)
-                                        .padding(.leading, 22)
-                                }
+                                // 1) 실제 입력 영역
                                 TextEditor(text: $memo)
                                     .focused($memoFocused)
                                     .frame(minHeight: 120)
-                                    .padding(12)
-                                    .background(Color.white)
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.white)                // 안쪽 흰색
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .stroke(.orange, lineWidth: 1.5) // 바깥 테두리
-                                    )
+                                    .scrollContentBackground(.hidden)   // iOS 16+: 기본 배경 제거
+                                    .background(Color.clear)
+
+                                // 2) placeholder
+                                if memo.isEmpty {
+                                    Text("아이와 함께한 소중한 추억 메모를 입력 해주세요")
+                                        .foregroundColor(.secondary)
+                                        .padding(.top, 12)
+                                        .padding(.leading, 16)
+                                }
                             }
+                            // 🔹 border 안쪽 여백 (텍스트와 테두리 사이)
+                            .padding(12)
+                            // ↳ 여기까지가 "내용 + 안쪽 여백"
+
+                            // 🔹 둥근 흰 배경
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.white)
+                            )
+                            // 🔹 주황 외곽선 (안쪽으로만 그리기)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .strokeBorder(.orange, lineWidth: 1.5)
+                            )
                         }
-                        .padding(.bottom, 90)
                         
+                        
+                        GrowthBottomButton(title: "저장", isEnabled: hasChanges) {
+                            onSave?(
+                                milestone,
+                                selectedImage,
+                                memo.isEmpty ? nil : memo,
+                                selectedDate
+                            )
+                            dismiss()
+                        }
                     }
+                    .padding(.bottom, 44)
                 }
             }
             .backgroundPadding(.horizontal)
-            GrowthBottomButton(title: "저장", isEnabled: hasChanges) {
-                onSave?(
-                    milestone,
-                    selectedImage,
-                    memo.isEmpty ? nil : memo,
-                    selectedDate
-                )
-                dismiss()
-            }
+
         }
+        .ignoresSafeArea()
         .animation(.spring, value: milestone.image)
         .animation(.spring, value: selectedImage)
-        .background(Color("Background"))
         .sheet(isPresented: $showDatePicker) {
             VStack(spacing: 0) {
                 // 헤더
@@ -176,7 +192,7 @@ struct GrowthMilestoneView: View {
                     Button("완료") {
                         showDatePicker = false
                     }
-                    .foregroundColor(Color("Brand-50"))
+                    .foregroundColor(Color.brand50)
                 }
                 .padding()
                 

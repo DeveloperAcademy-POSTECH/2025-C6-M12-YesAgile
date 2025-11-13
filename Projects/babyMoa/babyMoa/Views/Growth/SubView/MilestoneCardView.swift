@@ -79,3 +79,37 @@ enum MilestoneCardType {
         }
     }
 }
+
+#Preview("Completed Milestone") {
+    MilestoneCardView(
+        milestone: GrowthMilestone(
+            id: "milestone_0_0",
+            title: "목가누기",
+            ageRange: "3~4개월",
+            isCompleted: true,
+            completedDate: Date(),
+            illustrationName: "Baby07"
+        ),
+        cardWidth: 150,
+        cardHeight: 200,
+        cardType: .big,
+        onTap: {}
+    )
+}
+
+#Preview("Incomplete Milestone") {
+    MilestoneCardView(
+        milestone: GrowthMilestone(
+            id: "milestone_0_1",
+            title: "혼자 앉기",
+            ageRange: "7~8개월",
+            isCompleted: false,
+            completedDate: nil,
+            illustrationName: "Baby19"
+        ),
+        cardWidth: 150,
+        cardHeight: 200,
+        cardType: .big,
+        onTap: {}
+    )
+}

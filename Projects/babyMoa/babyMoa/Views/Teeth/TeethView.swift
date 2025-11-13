@@ -57,10 +57,11 @@ struct TeethView: View {
                     )
                     .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 4)
 
-                
-                EruptedTeethListView(viewModel: $viewModel)
-                    .padding(.top, 25)
-                Spacer()
+                ScrollView(.vertical, showsIndicators: false) {
+                    EruptedTeethListView(viewModel: $viewModel)
+                        .padding(.top, 25)
+                    Spacer()
+                }
             }
             .backgroundPadding(.horizontal)
 

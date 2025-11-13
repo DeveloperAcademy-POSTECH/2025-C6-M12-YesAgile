@@ -17,7 +17,7 @@ struct WeightView: View {
     
     var body: some View {
         ZStack{
-            Color.white
+            Color.background
             VStack(spacing: 0) {
                 
                 CustomNavigationBar(title: "몸무게", leading: {
