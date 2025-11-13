@@ -13,6 +13,10 @@ struct TeethSummaryView: View {
             .foregroundStyle(.pink.opacity(0.5))
             .frame(height: 100)
             .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(.white.opacity(0.3), lineWidth: 3)   // ← 두께 추가
+            )
+            .overlay(
                 VStack {
                     // 윗줄(10개) + 아랫줄(10개)
                     ForEach(0..<2, id: \.self) { rowIdx in
@@ -36,4 +40,17 @@ struct TeethSummaryView: View {
             )
             .clipped()
     }
+}
+
+
+#Preview {
+    struct Preview: View {
+        @State var viewModel = GrowthViewModel(coordinator: BabyMoaCoordinator())
+        
+        var body: some View {
+            TeethSummaryView(viewModel: $viewModel)
+        }
+    }
+    
+    return Preview()
 }
