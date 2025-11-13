@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HeightAddView: View {
     
+    
+    let coordinator: BabyMoaCoordinator
     // 측정일
     @State private var measuredDate: Date = Date()
     // 키 값 (cm)
@@ -36,7 +38,7 @@ struct HeightAddView: View {
                 // 상단 네비게이션 바
                 CustomNavigationBar(title: "키 기록", leading: {
                     Button {
-                        // 뒤로가기 액션
+                        coordinator.pop() // 뒤로가기 액션 구현
                     } label: {
                         Image(systemName: "chevron.left")
                     }
@@ -157,5 +159,5 @@ struct HeightScaleView: View {
 }
 
 #Preview {
-    HeightAddView()
+    HeightAddView(coordinator: BabyMoaCoordinator())
 }

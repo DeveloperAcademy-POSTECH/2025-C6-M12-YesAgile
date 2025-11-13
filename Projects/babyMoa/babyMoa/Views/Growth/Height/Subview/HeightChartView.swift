@@ -26,7 +26,7 @@ struct HeightChartView: View {
                     .foregroundStyle(.gray)
                 
                 HStack {
-                    Text(selectedRecord?.dateText ?? lastRecord?.dateText ?? "N/A")
+                    Text(selectedRecord?.date ?? lastRecord?.date ?? "N/A")
                         .font(.title2)
                         .fontWeight(.bold)
                     Spacer()
@@ -74,7 +74,7 @@ struct HeightChartView: View {
                                         let location = value.location
                                         if let date: Date = proxy.value(atX: location.x) {
                                             let closestRecord = viewModel.records.min(by: {
-                                                abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
+                                                abs($0.dateValue.timeIntervalSince(date)) < abs($1.dateValue.timeIntervalSince(date))
                                             })
                                             selectedRecord = closestRecord
                                         }
@@ -109,7 +109,8 @@ struct HeightChartView: View {
 }
 
 #Preview {
-    let viewModel = HeightViewModel(babyId: 1)
+    let coordinator = BabyMoaCoordinator()
+    let viewModel = HeightViewModel(coordinator: coordinator)
     viewModel.records = HeightRecordModel.mockData
     return HeightChartView(viewModel: viewModel)
 }

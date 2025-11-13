@@ -46,9 +46,7 @@ struct GrowthView: View {
                 
                 HStack(spacing: 20){
                     Button(action: {
-                        if let babyId = SelectedBaby.babyId {
-                            coordinator.push(path: .newHeight(babyId: babyId))
-                        }
+                        coordinator.push(path: .newHeight)
                     }, label: {
                         // 1. 기린 카드
                         CardItemView(title: "키", value: "37.5cm", backgroundColor: Color.orange50) {
