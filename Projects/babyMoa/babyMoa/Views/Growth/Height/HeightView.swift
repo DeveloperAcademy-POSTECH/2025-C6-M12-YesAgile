@@ -8,15 +8,12 @@
 import SwiftUI
 
 struct HeightView: View {
-    @EnvironmentObject var coordinator: BabyMoaCoordinator
+    
     @State private var selectedTab: HeightTab = .record
     @State private var viewModel: HeightViewModel
     
-    let babyId: Int
-    
-    init(babyId: Int) {
-        self.babyId = babyId
-        _viewModel = State(initialValue: HeightViewModel(babyId: babyId))
+    init(viewModel: HeightViewModel) {
+        _viewModel = State(initialValue: viewModel)
     }
     
     var body: some View {
@@ -26,7 +23,7 @@ struct HeightView: View {
                 
                 CustomNavigationBar(title: "키", leading: {
                     Button(action: {
-                        coordinator.pop()
+                        
                     }) {
                         Image(systemName: "chevron.left")
                     }
@@ -56,17 +53,15 @@ struct HeightView: View {
             .backgroundPadding(.horizontal)
         }
         .ignoresSafeArea()
-        .onAppear {
-            Task {
-                await viewModel.fetchHeights()
-            }
-        }
        
     }
     
 }
 
 #Preview {
-    HeightView(babyId: 1)
-        .environmentObject(BabyMoaCoordinator())
+    let viewModel = HeightViewModel(babyId: 1)
+    return HeightView(viewModel: viewModel)
+        .task {
+            await viewModel.fetchHeights()
+        }
 }

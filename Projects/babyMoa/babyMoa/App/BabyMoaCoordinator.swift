@@ -40,7 +40,6 @@ enum CoordinatorPath: Hashable {
     case growth
     case allMilestones([[GrowthMilestone]])
     case height(babyId: Int)
-    case newHeight(babyId: Int)
     case weight(babyId: Int)
     case teeth(teethList: [TeethData])
     case journey
@@ -53,4 +52,7 @@ enum CoordinatorPath: Hashable {
     case babyMain
     case guardain
     case guardiainCode(viewModel: GuardianInvitationCodeViewModel)
+    
+//    // 신규 키,몸무게 만드릭
+//    case newHeight
 }

@@ -53,9 +53,6 @@ struct BabyMoaRootView: View {
                         growthDetailType: .height,
                         babyId: babyId
                     )
-                case .newHeight(let babyId):
-                    HeightView(babyId: babyId)
-                        .navigationBarBackButtonHidden()
                 case .weight(let babyId):
                     GrowthDetailView<Weight>(
                         coordinator: coordinator,
@@ -90,7 +87,11 @@ struct BabyMoaRootView: View {
                 case .guardiainCode(let viewModel):
                     GuardianCodeView(viewModel: viewModel)
                         .navigationBarBackButtonHidden()
-
+                    
+//                    // 신규 추가 해야 한다. newHeightView
+//                case .newHeight(let babyId):
+//                    HeightView(coordinator: coordinator, babyId: babyId)
+//                        .navigationBarBackButtonHidden()
                 }
             }
         }
