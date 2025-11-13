@@ -58,7 +58,7 @@ struct MainTabView: View {
                 BabyListView(babies: viewModel.babies, onSelectBaby: { baby in
                     viewModel.selectBaby(baby)
                 }, onAddBaby: {
-                    viewModel.coordinator.push(path: .addBabyCreate)
+                    viewModel.coordinator.push(path: .addBaby)
                     viewModel.isShowingSheet = false
                 })
                 .onPreferenceChange(HeightPreferenceKey.self) { newHeight in
