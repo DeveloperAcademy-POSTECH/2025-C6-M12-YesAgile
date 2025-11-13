@@ -37,22 +37,29 @@ struct EruptedTeethRow: View {
     var body: some View {
         VStack(spacing: 10) {
             HStack {
-                Text("\(TeethInfo.teethNumber[teeth.teethId]) \(TeethInfo.teethName[TeethInfo.teethNumber[teeth.teethId]])")
+                Text("\(TeethInfo.teethNumber[teeth.teethId])")
+                    .frame(width: 20)
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(Color.memoryPink)
+                    .multilineTextAlignment(.leading)
+                Text(TeethInfo.teethName[TeethInfo.teethNumber[teeth.teethId]])
+                    .font(.system(size: 17, weight: .semibold))
+
+                    
                 Spacer()
                 Button(action: {
                     isCalendarPresented = true
                 }) {
-                    RoundedRectangle(cornerRadius: 16)
+                    RoundedRectangle(cornerRadius: 6)
                         .frame(width: 120, height: 34)
                         .overlay(
                             Text(teeth.eruptedDate!.replacingOccurrences(of: "-", with: "."))
                                 .font(.system(size: 17))
-                                .foregroundStyle(.brand50)
+                                .foregroundStyle(.brandMain)
                         )
-                        .foregroundStyle(.gray80)
+                        .foregroundStyle(Color.gray45.opacity(0.12))
                 }
             }
-            .padding(.horizontal, 20)
             RoundedRectangle(cornerRadius: 999)
                 .frame(height: 1)
                 .foregroundStyle(.gray80)
@@ -86,9 +93,35 @@ struct EruptedTeethRow: View {
             }
             .presentationDetents([.medium])
         }
+        .ignoresSafeArea()
         .onChange(of: selectedDate) {
             isCalendarPresented = false
             dateSelectAction(DateFormatter.yyyyDashMMDashdd.string(from: selectedDate))
         }
     }
+        
+}
+
+#Preview {
+    struct Preview: View {
+        @State var viewModel: TeethViewModel
+        
+        init() {
+            let mockEruptedTeeth: [TeethData] = [
+                TeethData(teethId: 4, eruptedDate: "2025-10-20", erupted: true),
+                TeethData(teethId: 5, eruptedDate: "2025-10-25", erupted: true),
+                TeethData(teethId: 14, eruptedDate: "2025-11-01", erupted: true),
+                TeethData(teethId: 0, erupted: false),
+                TeethData(teethId: 1, erupted: false),
+            ]
+            
+            _viewModel = State(initialValue: TeethViewModel(coordinator: BabyMoaCoordinator(), teethList: mockEruptedTeeth))
+        }
+        
+        var body: some View {
+            EruptedTeethListView(viewModel: $viewModel)
+        }
+    }
+    
+    return Preview()
 }
