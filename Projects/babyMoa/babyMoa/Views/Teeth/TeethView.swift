@@ -23,10 +23,10 @@ struct TeethView: View {
     }
 
     var body: some View {
-        ZStack{
-            Color.white
+        ZStack {
+            Color.white.ignoresSafeArea()
+            
             VStack(spacing: 0) {
-                
                 CustomNavigationBar(title: "차아", leading: {
                     Button(action: {
                         viewModel.coordinator.pop()
@@ -59,20 +59,16 @@ struct TeethView: View {
                 EruptedTeethListView(viewModel: $viewModel)
                 Spacer()
             }
-            .sheet(isPresented: $isDatePickerPresented) {
-                VStack(spacing: 20) {
-                    DatePicker(
-                        "날짜 선택",
-                        selection: $selectedDate,
-                        displayedComponents: [.date]
-                    )
-                    .datePickerStyle(GraphicalDatePickerStyle())
-                    .padding()
-                    
-                    Button("확인") {
+            .backgroundPadding(.horizontal)
+
+            if isDatePickerPresented {
+                CustomDatePicker(
+                    selectedDate: $selectedDate,
+                    isPresented: $isDatePickerPresented,
+                    onConfirm: { newDate in
                         if let teethId = selectedTeethId {
                             Task {
-                                let dateStr = DateFormatter.yyyyDashMMDashdd.string(from: selectedDate)
+                                let dateStr = DateFormatter.yyyyDashMMDashdd.string(from: newDate)
                                 await viewModel.setTeethStatus(
                                     teethId: teethId,
                                     deletion: false,
@@ -80,15 +76,9 @@ struct TeethView: View {
                                 )
                             }
                         }
-                        isDatePickerPresented = false
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.pink)
-                    .padding(.bottom, 40)
-                }
-                .presentationDetents([.medium])
+                )
             }
-            .backgroundPadding(.horizontal)
         }
         .ignoresSafeArea()
     }

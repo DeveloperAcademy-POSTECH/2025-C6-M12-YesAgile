@@ -64,6 +64,8 @@ struct BabyMoaRootView: View {
                         coordinator: coordinator,
                         teethList: teethList
                     )
+                    .navigationBarBackButtonHidden()
+
                     // Add Baby and Guardian - 라우팅 잘 되어야 한다.
                 case .addBaby:
                     AddBabyView(coordinator: coordinator)
