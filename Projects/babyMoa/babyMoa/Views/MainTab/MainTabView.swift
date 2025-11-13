@@ -18,9 +18,8 @@ struct MainTabView: View {
 
     var body: some View {
         
-        
         VStack(spacing: 0) {
-            
+
             MainTopNavigtaionView(
                 babyName: viewModel.selectedBaby?.name ?? "아기 선택",
                 babyImage: viewModel.selectedBaby?.profileImageUrl,
@@ -31,15 +30,13 @@ struct MainTabView: View {
             
             
             TabView(selection: $selectedTab) {
-                
                 // 성장 탭
                 GrowthView(coordinator: viewModel.coordinator)
                     .tabItem {
-                        Image(systemName: "book.closed.fill")
+                        Image(systemName: "book.pages.fill")
                         Text("성장")
                     }
                     .tag(0)
-                
                 
                 EmptyView()
                     .tag(1)
@@ -51,11 +48,11 @@ struct MainTabView: View {
                     }
                     .tag(2)
             }
-            .tint(.brand50)  // 선택된 탭 색상
+            .tint(.orange50)  // 선택된 탭 색상
             // 탭바 배경이 상황 따라 투명/유리로 바뀌지 않도록 "항상 보이게"
             .toolbarBackground(.visible, for: .tabBar)
             // 시스템 배경색을 강제 (유리감/플로팅 인상 제거)
-            .toolbarBackground(Color(.systemBackground), for: .tabBar)
+            .toolbarBackground(Color.white, for: .tabBar)
             //  Sheet View을 통해서 ListView가 올라와야 한다.
             .sheet(isPresented: $viewModel.isShowingSheet) {
                 BabyListView(babies: viewModel.babies, onSelectBaby: { baby in
