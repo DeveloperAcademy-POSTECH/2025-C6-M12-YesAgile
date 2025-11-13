@@ -55,4 +55,5 @@ enum CoordinatorPath: Hashable {
     
 //    // 신규 키,몸무게 만드릭
 //    case newHeight
+    case heightAdd
 }

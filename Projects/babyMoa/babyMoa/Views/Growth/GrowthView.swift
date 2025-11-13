@@ -62,9 +62,7 @@ struct GrowthView: View {
                     })
                     
                     Button(action: {
-                        if let babyId = SelectedBaby.babyId {
-                            coordinator.push(path: .weight(babyId: babyId))
-                        }
+
                     }, label: {
                         // 2. 코끼리 카드
                         CardItemView(title: "몸무게", value: "10.2kg", backgroundColor: Color.green80) {

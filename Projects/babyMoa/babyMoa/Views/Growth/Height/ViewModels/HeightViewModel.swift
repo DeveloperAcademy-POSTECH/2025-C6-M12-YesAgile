@@ -15,14 +15,16 @@ enum HeightTab: String, CaseIterable {
 @Observable
 final class HeightViewModel {
     var records: [HeightRecordModel] = []
+    var coordinator: BabyMoaCoordinator
     var babyId: Int
     
     // 아기 생년월일 (서버 API 문제로 인해 임시로 하드코딩)
     // 실제 API 연동 시에는 API를 통해 가져와야 합니다.
     let babyBirthDate: Date = DateFormatter.yyyyDashMMDashdd.date(from: "2024-09-01")! // 예시: 2024년 9월 1일
     
-    init(babyId: Int) {
-        self.babyId = babyId
+    init (babyId: Int, coordinator: BabyMoaCoordinator) {
+        self.coordinator = coordinator
+        self.babyId = 1
     }
     
     @MainActor

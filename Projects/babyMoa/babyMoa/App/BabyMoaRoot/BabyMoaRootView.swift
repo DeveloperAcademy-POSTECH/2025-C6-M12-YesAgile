@@ -92,6 +92,10 @@ struct BabyMoaRootView: View {
 //                case .newHeight(let babyId):
 //                    HeightView(coordinator: coordinator, babyId: babyId)
 //                        .navigationBarBackButtonHidden()
+                    
+                case .heightAdd:
+                    HeightAddView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
                 }
             }
         }

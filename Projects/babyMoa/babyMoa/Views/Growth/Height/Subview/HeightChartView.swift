@@ -108,8 +108,3 @@ struct HeightChartView: View {
     }
 }
 
-#Preview {
-    let viewModel = HeightViewModel(babyId: 1)
-    viewModel.records = HeightRecordModel.mockData
-    return HeightChartView(viewModel: viewModel)
-}

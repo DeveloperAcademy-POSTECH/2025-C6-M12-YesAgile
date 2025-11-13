@@ -45,7 +45,7 @@ struct HeightView: View {
                 }
                 
                 Button("기록 추가", action: {
-                    
+                    viewModel.coordinator.push(path: .heightAdd)
                 })
                 .buttonStyle(.defaultButton)
                 .padding(.bottom, 40)
@@ -56,12 +56,4 @@ struct HeightView: View {
        
     }
     
-}
-
-#Preview {
-    let viewModel = HeightViewModel(babyId: 1)
-    return HeightView(viewModel: viewModel)
-        .task {
-            await viewModel.fetchHeights()
-        }
 }
