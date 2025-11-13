@@ -36,18 +36,38 @@ struct HeightView: View {
                 .pickerStyle(.segmented)
                 .padding(.top, 8)
                 
-                switch selectedTab {
-                case .record:
-                    HeightRecordListView(viewModel: viewModel)
-                case .chart:
-                    HeightChartView(viewModel: viewModel)
+                if viewModel.isLoading {
+                    Spacer()
+                    ProgressView("데이터 로딩 중...")
+                    Spacer()
+                } else if let error = viewModel.errorMessage {
+                    Spacer()
+                    Text(error)
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                    Spacer()
+                } else if viewModel.records.isEmpty {
+                    EmptyRecordView(
+                        title: "아직 키 기록이 없어요.",
+                        description: "첫 키 기록을 추가하고 아이의 성장을 기록해보세요.",
+                        imageSystemName: "ruler.fill",
+                        
+                    )
+                } else {
+                    switch selectedTab {
+                    case .record:
+                        HeightRecordListView(viewModel: viewModel)
+                    case .chart:
+                        HeightChartView(viewModel: viewModel)
+                    }
+                    // 기록 추가 버튼
+                    Button("기록 추가", action: {
+                        viewModel.coordinator.push(path: .newHeightAdd)
+                    })
+                    .buttonStyle(.defaultButton)
+                    .padding(.bottom, 40)
                 }
-                // 기록 추가 버튼
-                Button("기록 추가", action: {
-                    viewModel.coordinator.push(path: .newHeightAdd)
-                })
-                .buttonStyle(.defaultButton)
-                .padding(.bottom, 40)
             }
             .backgroundPadding(.horizontal)
         }
@@ -63,6 +83,9 @@ struct HeightView: View {
 }
 
 #Preview {
-    HeightView(coordinator: BabyMoaCoordinator())
-        .environmentObject(BabyMoaCoordinator())
+    let coordinator = BabyMoaCoordinator()
+    let viewModel = HeightViewModel(coordinator: coordinator)
+    viewModel.records = HeightRecordModel.mockData
+    return HeightView(coordinator: coordinator)
+        .environmentObject(coordinator)
 }
