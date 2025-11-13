@@ -17,7 +17,7 @@ struct HeightRecordListView: View {
             List(viewModel.records) { record in
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(record.monthLabel)
+                        Text(record.monthLabel ?? "")
                             .font(.system(size: 17, weight: .regular))
                             .foregroundStyle(.font)
                         Text(record.dateText)
