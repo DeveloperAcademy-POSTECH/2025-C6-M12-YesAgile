@@ -40,7 +40,7 @@ final class HeightViewModel: ObservableObject {
             print("Fetching heights (using mock data)")
             // Simulate network delay
             try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
-            self.records = HeightRecordModel.mockData
+//            self.records = HeightRecordModel.mockData
         } catch {
             errorMessage = "Failed to fetch heights: \(error.localizedDescription)"
             print(errorMessage!)

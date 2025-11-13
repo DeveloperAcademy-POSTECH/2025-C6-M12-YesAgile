@@ -55,6 +55,6 @@ enum CoordinatorPath: Hashable {
     // New Height and Weight
     case newHeight
     case newHeightAdd
-
-    
+    case newWeight
+    case newWeightAdd
 }

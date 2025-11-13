@@ -88,6 +88,7 @@ struct BabyMoaRootView: View {
                     GuardianCodeView(viewModel: viewModel)
                         .navigationBarBackButtonHidden()
                     
+                    // New Weight and Height View
                 case .newHeight:
                     HeightView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
@@ -95,7 +96,14 @@ struct BabyMoaRootView: View {
                 case .newHeightAdd:
                     HeightAddView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
-
+                    
+                case .newWeight:
+                    WeightView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
+                    
+                case .newWeightAdd:
+                    WeightAddView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
                 }
             }
         }
