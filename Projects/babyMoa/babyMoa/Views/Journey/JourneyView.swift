@@ -5,22 +5,37 @@
 //  Created by pherd on 11/6/25.
 //
 
+// JourneyView.swift
 import SwiftUI
 
 struct JourneyView: View {
     let coordinator: BabyMoaCoordinator
     @State private var viewModel: JourneyViewModel
+    @State private var calendarCardViewModel: CalendarCardViewModel
 
+    // MARK: - Sheet State (여정 추가 화면 표시용)
 
-    @State private var calendarViewModel: CalendarViewModel
-    //@Observable 쓰면서 @StateObject 가 ->  @State로 바뀜 재생성 안됨 해당 뷰 인스턴스의 수명동안 저장소 유지 다른 뷰로 간주될 떄만 초기화 일어남 부모가 id를 바꾸거나.. 전혀 다른 라우팅으로 동일타입의 뷰를 생성한다면. 새로운 아이덴티가 일어나서 초기화됨
-    //하워드께 여쭤보기 @StateObject 쓰는게 나은지? 
-    
-    // ToDo : 저니뷰모델에 중복호출 방지만 해주자
+    /// 여정 추가 화면 표시 여부
+    @State private var showAddJourney = false
+
+    /// 선택된 날짜 (여정 추가 시 사용)
+    @State private var selectedDateForAdd: Date?
+
     init(coordinator: BabyMoaCoordinator) {
         self.coordinator = coordinator
-        _viewModel = State(initialValue: JourneyViewModel(coordinator: coordinator))
-        _calendarViewModel = State(initialValue: CalendarViewModel(coordinator: coordinator))
+
+        // JourneyViewModel 객체 생성
+        let journeyViewModel = JourneyViewModel(coordinator: coordinator)
+        _viewModel = State(initialValue: journeyViewModel)
+
+        // CalendarViewModel에 주소 전달
+        _calendarCardViewModel = State(
+            initialValue: CalendarCardViewModel(
+                coordinator: coordinator,
+                journeyViewModel: journeyViewModel
+            )
+        )
+
         print("✅ JourneyView init 호출됨")
     }
 
@@ -30,8 +45,9 @@ struct JourneyView: View {
                 VStack(spacing: 20) {
                     // 달력 카드
                     CalendarCard(
-                        viewModel: calendarViewModel,  //  @ObservedObject 전달
-                        journies: []  // TODO: JourneyViewModel에서 받을 예정
+                        viewModel: calendarCardViewModel,
+                        showAddJourney: $showAddJourney,
+                        selectedDateForAdd: $selectedDateForAdd
                     )
                     .padding(.horizontal, 20)
 
@@ -44,20 +60,54 @@ struct JourneyView: View {
                 .padding(.top, 20)
             }
         }
-        .onAppear { // MARK: 테스트 코드입니다. 삭제 필요 (Ted 맘대로 추가한 거)
+        .onAppear {
             Task {
                 await viewModel.fetchJournies(year: 2025, month: 11)
+                calendarCardViewModel.updateMonthDates()
+            }
+        }
+        // MARK: - 여정 추가 (Full Screen) 자꾸 흰화면이나와서
+        .fullScreenCover(
+            isPresented: Binding(
+                get: { showAddJourney && selectedDateForAdd != nil },
+                set: { newValue in
+                    showAddJourney = newValue
+                    if !newValue {
+                        selectedDateForAdd = nil
+                    }
+                }
+            )
+        ) {
+            if let date = selectedDateForAdd {
+                JourneyAddView(
+                    coordinator: nil,
+                    selectedDate: date,
+                    onSave: { image, memo in
+                        Task {
+                            let newJourney = Journey(
+                                journeyId: Int.random(in: 100...999),
+                                journeyImage: image,
+                                latitude: 37.5665,
+                                longitude: 126.9780,
+                                date: date,
+                                memo: memo.isEmpty ? "메모 없음" : memo
+                            )
 
-                calendarViewModel.journies = viewModel.journies
-
+                            await viewModel.addJourney(newJourney)
+                        }
+                    }
+                )
+                .onDisappear {
+                    selectedDateForAdd = nil
+                    showAddJourney = false
+                }
+            } else {
+                Color.clear
             }
         }
     }
 }
 
-// MARK: - Preview
-
 #Preview {
     JourneyView(coordinator: BabyMoaCoordinator())
 }
-
