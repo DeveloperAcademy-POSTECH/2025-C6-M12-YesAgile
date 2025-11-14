@@ -20,6 +20,7 @@ class BabyMoaCoordinator: ObservableObject {
         paths.removeAll()
     }
     
+    @MainActor
     public func pop() {
         paths.removeLast()
     }

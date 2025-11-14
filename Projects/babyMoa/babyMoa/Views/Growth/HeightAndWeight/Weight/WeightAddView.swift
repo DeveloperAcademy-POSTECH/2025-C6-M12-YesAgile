@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct WeightAddView: View {
+    
     let coordinator: BabyMoaCoordinator
     // 측정일
     @State private var measuredDate: Date = Date()
@@ -20,8 +21,11 @@ struct WeightAddView: View {
     // 메모
     @State private var memo: String = ""
     
-    //
+    // 날짜 피커 표시 여부
     @State private var showDatePicker: Bool = false
+
+    // 메모 TextEditor 포커스 상태
+    @FocusState private var isFocused: Bool
     
     // 키 범위 (예: 40cm ~ 120cm)
     private let minWeight: Double = 2.0
@@ -46,23 +50,25 @@ struct WeightAddView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     
                     // MARK: - 측정일
-                    
                     VStack(alignment: .leading, spacing: 8) {
                         Text("측정일")
                             .font(.system(size: 14, weight: .regular))
-                            .foregroundStyle(Color.black)
-                        
-                        Button(action: { showDatePicker = true }) {
+                            .foregroundStyle(.black)
+
+                        Button(action: {
+                            showDatePicker = true
+                        }) {
                             HStack {
                                 Spacer()
-                                Text("2025.10.21")
+
+                                Text(measuredDate, formatter: DateFormatter.yyyyMMdd)
                                     .font(.system(size: 16, weight: .medium))
                                     .foregroundColor(Color("Font"))
+
                                 Spacer()
-                                
                             }
                         }
-                        .buttonStyle(.outlineDefaultButton)
+                        .buttonStyle(.outlineDefaultLightButton)
                     }
                     
                     //MARK: - 키
@@ -92,18 +98,13 @@ struct WeightAddView: View {
                     HorizontalDialPicker(value: $weightValue, range: 0.0...100.0, step: 0.1)
                     
                     // MARK: - 메모
-                    
-                    
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("메모")
-                            .font(.system(size: 15, weight: .regular))
-                        
-                        TextField("", text: $memo, prompt: Text("").foregroundStyle(.black))
-                            .textFieldStyle(.borderedBrandLightForm)
-                    }
-                    
-                    Spacer(minLength: 40)
+                    MemoTextEditor(
+                        memo: $memo,
+                        limit: 300,
+                        isFocused: $isFocused
+                    )
+
+                    Spacer()
                 }
                 
                 Button("저장", action: {
@@ -115,46 +116,27 @@ struct WeightAddView: View {
             }
             .backgroundPadding(.horizontal)
             .padding(.bottom, 44)
+            
+            // 날짜 피커 모달
+            if showDatePicker {
+                DatePickerModal(
+                    birthDate: $measuredDate,
+                    showDatePicker: $showDatePicker,
+                    style: .graphical,
+                    components: .date
+                )
+            }
         }
         .ignoresSafeArea()
+        .simultaneousGesture(   // ✅ 버튼 동작 + 키보드 내리기 둘 다 가능
+            TapGesture().onEnded {
+                isFocused = false
+            }
+        )
     }
     
 }
 
-// MARK: - 눈금 뷰
-struct WeightScaleView: View {
-    let currentValue: Double
-    let minValue: Double
-    let maxValue: Double
-    
-    private let majorStep: Double = 5   // 큰 눈금 간격
-    private let minorStep: Double = 1   // 작은 눈금 간격
-    
-    var body: some View {
-        let totalRange = Int(maxValue - minValue)
-        
-        HStack(spacing: 4) {
-            ForEach(0...totalRange, id: \.self) { index in
-                let value = minValue + Double(index)
-                let isMajor = value.truncatingRemainder(dividingBy: majorStep) == 0
-                let isCurrent = abs(value - roundedCurrent) < 0.5
-                
-                Rectangle()
-                    .fill(isCurrent ? Color.orange : Color.gray.opacity(0.4))
-                    .frame(
-                        width: isMajor ? 2 : 1,
-                        height: isMajor ? 28 : 16
-                    )
-            }
-        }
-        .frame(height: 32)
-        .clipped()
-    }
-    
-    private var roundedCurrent: Double {
-        (currentValue * 1).rounded() / 1
-    }
-}
 
 
 #Preview {

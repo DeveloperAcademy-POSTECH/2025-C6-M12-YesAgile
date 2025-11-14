@@ -176,6 +176,15 @@ extension ButtonStyle where Self == AppButtonStyle {
         )
     }
     
+    static var outlineDefaultLightButton: AppButtonStyle {
+        AppButtonStyle(
+            backgroundColor: .clear,
+            foregroundColor: .font,
+            borderColor: .brandLight, // 👈 테두리 색상 설정
+            borderWidth: 1         // 👈 테두리 두께 설정
+        )
+    }
+    
     static var outlineMileButton: AppButtonStyle {
         AppButtonStyle(
             backgroundColor: .white,

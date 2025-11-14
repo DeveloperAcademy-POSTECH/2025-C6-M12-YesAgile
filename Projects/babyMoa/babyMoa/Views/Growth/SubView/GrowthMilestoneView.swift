@@ -156,6 +156,7 @@ struct GrowthMilestoneView: View {
                                         .foregroundStyle(Color.gray70)
                                         .padding(.top, 12)
                                         .padding(.horizontal, 14)
+                                        .allowsHitTesting(false)
                                         
                                 }
                             }
@@ -173,6 +174,9 @@ struct GrowthMilestoneView: View {
                                 RoundedRectangle(cornerRadius: 12)
                                     .strokeBorder(.orange, lineWidth: 1.5)
                             )
+                            .onTapGesture {
+                                // TextEditor 영역을 탭할 때 부모 제스처가 실행되는 것을 막음
+                            }
                         }
                         
                         
@@ -184,7 +188,10 @@ struct GrowthMilestoneView: View {
 //                        } else {
 //                            .buttonStyle(.outlinelessButton)
 //                        }
-//                        
+//
+  
+                        Spacer()
+                        
                         GrowthBottomButton(title: "저장", isEnabled: hasChanges) {
                             onSave?(
                                 milestone,
@@ -196,6 +203,9 @@ struct GrowthMilestoneView: View {
                         }
                     }
                     .padding(.bottom, 44)
+                }
+                .onTapGesture {
+                    memoFocused = false
                 }
             }
             .backgroundPadding(.horizontal)
