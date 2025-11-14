@@ -3,48 +3,50 @@
 //  babyMoa
 //
 //  Created by pherd on 11/11/25.
-//
 import SwiftUI
 
 struct JourneyListView: View {
+    let coordinator: BabyMoaCoordinator
+    let selectedDate: Date
+    let journies: [Journey]
+
     var body: some View {
         VStack(spacing: 0) {
-            // 날짜 헤더 Date 주입예정
-            Text("2025.11.10")
-                .font(.system(size: 18, weight: .semibold))
-                .padding(.vertical, 20)
-            
+            // ✅ CustomNavigationBar 추가 (Milestone 방식)
+            CustomNavigationBar(
+                title: formattedDate,
+                leading: {
+                    Button(action: {
+                        coordinator.pop()
+                    }) {
+                        Image(systemName: "chevron.left")
+                    }
+                }
+            )
+            .padding(.horizontal, 20)
+
             ScrollView {
                 VStack(spacing: 20) {
-                    // 샘플 카드 1
-                    JourneyCard(
-                        imageUrl: nil,
-                        memo: "오늘 아기와 공원에서 즐거운 시간을 보냈어요! 날씨도 좋고 아기도 기분이 좋아 보였습니다."
-                    )
-                    
-                    // 샘플 카드 2
-                    JourneyCard(
-                        imageUrl: nil,
-                        memo: "첫 이유식 도전! 조금 먹었어요 😊"
-                    )
-                    
-                    // 샘플 카드 3
-                    JourneyCard(
-                        imageUrl: nil,
-                        memo: "낮잠 시간"
-                    )
+                    ForEach(journies, id: \.journeyId) { journey in
+                        JourneyCard(
+                            journey: journey,
+                            onDelete: {
+                                print("삭제: \(journey.journeyId)")
+                                // TODO: JourneyViewModel.removeJourney() 호출
+                            }
+                        )
+                    }
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
                 .padding(.bottom, 100)
             }
-            
+
             Spacer()
-            
+
             // 여정 추가 버튼
             Button(action: {
-                // 버튼 동작 없음
-                print("여정 추가 버튼 클릭")
+                coordinator.push(path: .journeyAdd(date: selectedDate))
             }) {
                 Text("여정 추가")
                     .font(.system(size: 18, weight: .semibold))
@@ -61,30 +63,49 @@ struct JourneyListView: View {
         }
         .background(Color(red: 0.95, green: 0.95, blue: 0.97))
     }
+
+    // MARK: - Helpers
+
+    /// 날짜를 "yyyy.MM.dd" 형식으로 변환
+    private var formattedDate: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy.MM.dd"
+        return formatter.string(from: selectedDate)
+    }
 }
 
 // MARK: - Journey Card
 
 struct JourneyCard: View {
-    let imageUrl: String?
-    let memo: String
+    let journey: Journey
+    let onDelete: () -> Void
     @State private var showDeleteAlert = false
-    
+
     var body: some View {
         ZStack(alignment: .topTrailing) {
             VStack(alignment: .leading, spacing: 12) {
-                // 사진 영역 (placeholder)
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.gray.opacity(0.2))
-                    .frame(height: 450)
-                    .overlay(
-                        Image(systemName: "photo")
-                            .font(.system(size: 60))
-                            .foregroundColor(.gray)
-                    )
-                
+                // 사진 영역
+                if let image = journey.journeyImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 450)
+                        .clipped()
+                        .cornerRadius(16)
+                } else {
+                    // 이미지 없을 때 placeholder
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 450)
+                        .overlay(
+                            Image(systemName: "photo")
+                                .font(.system(size: 60))
+                                .foregroundColor(.gray)
+                        )
+                }
+
                 // 메모 텍스트
-                Text(memo)
+                Text(journey.memo)
                     .font(.system(size: 16))
                     .foregroundColor(.black)
                     .lineLimit(nil)
@@ -94,7 +115,7 @@ struct JourneyCard: View {
             .background(Color.background)
             .cornerRadius(16)
             .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
-            
+
             // 삭제 버튼 (우측 상단)
             Button(action: {
                 showDeleteAlert = true
@@ -110,9 +131,9 @@ struct JourneyCard: View {
             .padding(12)
         }
         .alert("아이와 함께한 소중한 추억", isPresented: $showDeleteAlert) {
-            Button("취소", role: .cancel) { }
+            Button("취소", role: .cancel) {}
             Button("삭제", role: .destructive) {
-                print("삭제 버튼 클릭")
+                onDelete()
             }
         } message: {
             Text("추억을 삭제 하시겠습니까?")
@@ -123,5 +144,9 @@ struct JourneyCard: View {
 // MARK: - Preview
 
 #Preview {
-    JourneyListView()
+    JourneyListView(
+        coordinator: BabyMoaCoordinator(),
+        selectedDate: Date(),
+        journies: Journey.mockData
+    )
 }

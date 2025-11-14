@@ -1,12 +1,12 @@
-
 //
 //  Journey.swift
 //  babyMoa
 //
 //  Created by pherd on 11/7/25.
 //
-import UIKit  // UIKit 이 낫다고 결론 내어주심
+
 import CoreLocation
+import UIKit  // UIKit 이 낫다고 결론 내어주심
 
 /// 여정 도메인 모델
 /// 서버 ResponseModel과 달리 UI에 최적화된 형태로 데이터 보관
@@ -97,6 +97,22 @@ struct Journey: Entity, Hashable {
                     ) ?? Date(),
                     memo: "한강 피크닉"
                 ),
+                Journey(
+                    journeyId: 1,
+                    journeyImage: createSampleImage(
+                        systemName: "leaf.fill",
+                        color: .systemGreen
+                    ),
+                    latitude: 37.5700,
+                    longitude: 126.0000,
+                    date: Calendar.current.date(
+                        byAdding: .day,
+                        value: -5,
+                        to: Date()
+                    ) ?? Date(),
+                    memo: "한강 피크닉0"
+                ),
+
             ]
         }
 

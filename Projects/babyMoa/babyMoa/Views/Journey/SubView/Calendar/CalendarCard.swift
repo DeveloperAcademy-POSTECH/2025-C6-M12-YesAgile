@@ -8,7 +8,15 @@
 import SwiftUI
 
 struct CalendarCard: View {
-    var viewModel: CalendarViewModel
+    var viewModel: CalendarCardViewModel
+
+    // MARK: - Binding (부모로부터 받음)
+
+    /// 여정 추가 Sheet 표시 여부
+    @Binding var showAddJourney: Bool
+
+    /// 선택된 날짜 (여정 추가용)
+    @Binding var selectedDateForAdd: Date?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -28,10 +36,11 @@ struct CalendarCard: View {
             DaysOfWeekHeader()
                 .padding(.bottom, 10)
 
-            // 날짜 그리드
+            // 날짜 그리드 (Binding 전달)
             CalendarGrid(
                 viewModel: viewModel,
-                journies: []  // ← journies 추가 (CalendarGrid가 viewModel.journies를 사용하므로 빈 배열
+                showAddJourney: $showAddJourney,
+                selectedDateForAdd: $selectedDateForAdd
             )
         }
         .padding(20)
@@ -39,8 +48,6 @@ struct CalendarCard: View {
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
     }
-
-    // moveMonth 함수 제거 (ViewModel로 이동)
 }
 
 // MARK: - Month Navigation
@@ -112,8 +119,15 @@ struct DaysOfWeekHeader: View {
 
 /// 날짜 그리드 - 심플하게 ViewModel 데이터만 표시
 struct CalendarGrid: View {
-    var viewModel: CalendarViewModel  // 옵저버블 덕분에 var로도 가능
-    let journies: [Journey]
+    var viewModel: CalendarCardViewModel
+
+    // MARK: - Binding (CalendarCard로부터 받음)
+
+    /// 여정 추가 Sheet 표시 여부
+    @Binding var showAddJourney: Bool
+
+    /// 선택된 날짜 (여정 추가용)
+    @Binding var selectedDateForAdd: Date?
 
     private let columns = Array(
         repeating: GridItem(.flexible(), spacing: 8),
@@ -122,25 +136,27 @@ struct CalendarGrid: View {
 
     var body: some View {
         LazyVGrid(columns: columns, spacing: 8) {
-            //  직접 접근, Helper 함수 없음
             ForEach(viewModel.monthDates, id: \.self) { date in
                 let dateJournies = viewModel.journies.filter({
                     $0.date.yyyyMMdd == date.yyyyMMdd
                 })
                 DateCellView(
                     date: date,
-                    isCurrentMonth: viewModel.isInCurrentMonth(date),  // ViewModel 호출
+                    isCurrentMonth: viewModel.isInCurrentMonth(date),
                     journies: dateJournies,
-                    isSelected: viewModel.isSelected(date)  // ViewModel 호출
+                    isSelected: viewModel.isSelected(date)
                 )
                 .onTapGesture {
-                    viewModel.dateTapped(date)  // ViewModel 호출
+                    // Binding 전달
+                    viewModel.dateTapped(
+                        date,
+                        showAddJourney: $showAddJourney,
+                        selectedDateForAdd: $selectedDateForAdd
+                    )
                 }
             }
         }
     }
-
-    // Helper 함수 없음! (ViewModel로 이동)
 }
 
 // MARK: - Date Cell
@@ -148,7 +164,7 @@ struct CalendarGrid: View {
 struct DateCellView: View {
     let date: Date
     let isCurrentMonth: Bool
-    let journies: [Journey]?
+    let journies: [Journey]  //ourney 인스턴스를 “데려오는 코드”가 아니야.그냥 “나는 이런 타입의 값을 받을 거야”라고 타입만 선언 이건 저장 프로퍼티임
     let isSelected: Bool  // 선택 상태 추가
 
     var body: some View {
@@ -175,7 +191,9 @@ struct DateCellView: View {
 
             // TODO: 삭제 필요, journey 가 잘들어왔나 테스트하기 위한 코드 (Ted 맘대로 추가한 거)
 
-            if let first = journies?.first, let uiImage = first.journeyImage {
+            if let first = journies.first,
+                let uiImage = first.journeyImage
+            {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFill()
@@ -209,15 +227,25 @@ struct DateCellView: View {
 }
 
 #Preview {
-    let coordinator = BabyMoaCoordinator()
-    let journeyViewModel = JourneyViewModel(coordinator: coordinator)
-    journeyViewModel.journies = Journey.mockData
-    let calendarViewModel = CalendarViewModel(
-        coordinator: coordinator,
-        journeyViewModel: journeyViewModel
-    )  // ← 수정
+    PreviewWrapper()
+}
 
-    return CalendarCard(viewModel: calendarViewModel)  // ← journies 파라미터 제거
-        .padding()
-        .background(Color(.systemGroupedBackground))
+private struct PreviewWrapper: View {
+    @State private var showAdd = false
+    @State private var date: Date? = nil
+
+    var body: some View {
+        let coordinator = BabyMoaCoordinator()
+        let journeyVM = JourneyViewModel(coordinator: coordinator)
+        journeyVM.journies = Journey.mockData  // ✨ Mock 데이터 추가!
+
+        return CalendarCard(
+            viewModel: CalendarCardViewModel(
+                coordinator: coordinator,
+                journeyViewModel: journeyVM
+            ),
+            showAddJourney: $showAdd,
+            selectedDateForAdd: $date
+        )
+    }
 }
