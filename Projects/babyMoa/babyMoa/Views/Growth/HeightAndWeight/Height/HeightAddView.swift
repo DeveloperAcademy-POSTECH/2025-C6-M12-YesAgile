@@ -69,7 +69,7 @@ struct HeightAddView: View {
                                 Spacer()
                             }
                         }
-                        .buttonStyle(.outlineDefaultLightButton)
+                        .buttonStyle(.outlineMileButton)
                     }
 
                     // MARK: - 키
@@ -91,7 +91,7 @@ struct HeightAddView: View {
                                 Spacer()
                             }
                         }
-                        .buttonStyle(.outlineDefaultLightButton)
+                        .buttonStyle(.outlineMileButton)
                     }
 
 

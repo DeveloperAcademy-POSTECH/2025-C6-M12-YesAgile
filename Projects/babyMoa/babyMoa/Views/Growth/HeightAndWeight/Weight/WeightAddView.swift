@@ -35,6 +35,7 @@ struct WeightAddView: View {
     
     var body: some View {
         ZStack{
+            Color.background
             VStack(spacing: 0) {
                 
                 // 상단 네비게이션 바
@@ -68,7 +69,7 @@ struct WeightAddView: View {
                                 Spacer()
                             }
                         }
-                        .buttonStyle(.outlineDefaultLightButton)
+                        .buttonStyle(.outlineMileButton)
                     }
                     
                     //MARK: - 키
@@ -91,7 +92,7 @@ struct WeightAddView: View {
                                 
                             }
                         })
-                        .buttonStyle(.outlineDefaultButton)
+                        .buttonStyle(.outlineMileButton)
                     }
                     
                     // MARK: - 눈금 + 슬라이더

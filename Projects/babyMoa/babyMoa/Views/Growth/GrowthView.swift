@@ -36,6 +36,7 @@ struct GrowthView: View {
                             .foregroundStyle(.black)
                         Spacer()
                     }
+                    .backgroundPadding(.horizontal)
                     .padding(.bottom, 18)
                 
                     MilestoneSummaryView(viewModel: $viewModel)
@@ -46,7 +47,13 @@ struct GrowthView: View {
                         viewModel.checkAllMilestonesButtonTapped()
                     })
                     .buttonStyle(.fixedHeightButton)
-                    .padding(.bottom, 40)
+                    .backgroundPadding(.horizontal)
+                    .padding(.bottom, 0)
+                    
+                    Rectangle()
+                        .fill(Color.gray90)
+                        .frame(height: 0.5)
+                        .padding(.vertical, 20)
                     
                     HStack(spacing: 20){
                         Button(action: {
@@ -81,6 +88,7 @@ struct GrowthView: View {
                         })
                     }
                     .padding(.bottom, 20)
+                    .backgroundPadding(.horizontal)
                     
                     
                     //                HeightAndWeightView(
@@ -103,12 +111,13 @@ struct GrowthView: View {
                             .frame(height: 100)
                     }
                     .buttonStyle(.plain)
+                    .backgroundPadding(.horizontal)
+
                     Spacer().frame(height: 30)
                 }
             }
             .scrollIndicators(.hidden)
         }
-        .backgroundPadding(.horizontal)
         .background(Color.background)
         .onAppear {
             //MARK: - 데이터 확인 작업 찾기
@@ -125,6 +134,7 @@ fileprivate struct MilestoneSummaryView: View {
     
     var body: some View {
         VStack {
+            //MARK: - 좌우 이동 버튼 영역
             HStack {
                 Button(action: {
                     viewModel.beforeMilestoneButtonTapped()
@@ -151,7 +161,9 @@ fileprivate struct MilestoneSummaryView: View {
                         .frame(width: 10)
                 }
             }
-            
+            .backgroundPadding(.horizontal)
+
+            //MARK: - 아기 사진 입력하는 부분
             ScrollView(.horizontal) {
                 HStack {
                     //                    Spacer().frame(width: 10)
@@ -172,6 +184,7 @@ fileprivate struct MilestoneSummaryView: View {
                         .padding(.trailing, 20)
                     }
                 }
+                .padding(.leading, 15)
             }
             .scrollIndicators(.hidden)
         }
