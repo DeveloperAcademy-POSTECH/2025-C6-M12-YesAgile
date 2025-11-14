@@ -37,9 +37,12 @@ struct MainTabView: View {
                     Text("성장")
                 }
                 .tag(0)
-
-                
-            EmptyView()
+            // 여정 탭
+            JourneyView(coordinator: viewModel.coordinator)
+                .tabItem {
+                    Image(systemName: "map.fill")
+                    Text("여정")
+                }
                 .tag(1)
             // 아기 탭
             BabyMainView(viewModel: BabyMainViewModel(coordinator: viewModel.coordinator), coordinator: viewModel.coordinator)

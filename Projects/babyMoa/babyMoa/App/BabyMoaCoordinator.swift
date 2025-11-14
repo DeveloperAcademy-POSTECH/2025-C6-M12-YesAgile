@@ -42,7 +42,9 @@ enum CoordinatorPath: Hashable {
     case height(babyId: Int)
     case weight(babyId: Int)
     case teeth(teethList: [TeethData])
-    case journey
+    case journey // 나중에 안쓰는게 확인되면 삭제 예정이나 아마 JourenyView가 붙어있을듯.
+    case journeyList(date: Date, journies: [Journey])
+    case journeyAdd(date: Date)
     // AddBaby and Guardian
     case addBaby
     case addBabyCreate

@@ -88,6 +88,39 @@ struct BabyMoaRootView: View {
                 case .guardiainCode(let viewModel):
                     GuardianCodeView(viewModel: viewModel)
                         .navigationBarBackButtonHidden()
+                case .journeyList(let date, let journies): //0 다음 1번쨰 let date: enum에서 Date를 꺼냄 (상자에서 꺼내기)
+                    //let journies: enum에서 [Journey] 배열을 꺼냄
+                    //왜 필요?: 1단계에서 정의한 associated value를 사용하기 위해
+                                    JourneyListView(
+                                        coordinator: coordinator,
+                                        selectedDate: date,
+                                        journies: journies
+                                    )
+                                    .navigationBarBackButtonHidden()
+                                
+                                case .journeyAdd(let date):
+                                    JourneyAddView(
+                                        coordinator: coordinator,
+                                        selectedDate: date,
+                                        onSave: { image, memo in
+                                            // Coordinator 경로: ViewModel 접근 불가 (print만)
+                                            print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                                            print("✅ 여정 저장 요청 (Coordinator 경로)")
+                                            print("  📅 날짜: \(date.formatted(date: .numeric, time: .omitted))")
+                                            print("  📝 메모: \(memo.isEmpty ? "(없음)" : memo)")
+                                            print("  📸 이미지: \(image != nil ? "있음" : "없음")")
+                                            if let image = image {
+                                                print("     크기: \(image.size.width) x \(image.size.height)")
+                                            }
+                                            print("  ⚠️ Mock 모드: 배열 추가 안 됨 (BabyMoaRootView는 JourneyViewModel 접근 불가)")
+                                            print("  💡 나중에 API 연동 시:")
+                                            print("     1. API POST 호출")
+                                            print("     2. 성공 시 화면 pop()")
+                                            print("     3. JourneyView.onAppear에서 다시 조회")
+                                            print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                                        }
+                                    )
+                                    .navigationBarBackButtonHidden()
 
                 }
             }
