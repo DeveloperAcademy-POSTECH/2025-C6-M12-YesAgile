@@ -26,8 +26,8 @@ struct GrowthMilestoneView: View {
     // Date & memo
     @State private var selectedDate: Date
     @State private var memo: String
-    @FocusState private var memoFocused: Bool
-    
+    @FocusState private var isFocused: Bool
+
     // Sheet
     @State private var showDatePicker = false
     
@@ -69,6 +69,8 @@ struct GrowthMilestoneView: View {
     var body: some View {
         ZStack {
             Color.background
+                .ignoresSafeArea()
+
             VStack(spacing: 0) {
                 // Create 일때 삭제(휴지통)을 클릭하면 취소되게 해야 한다.
                 // 이미지를 불러와서 휴지통을 클릭하면 삭제되어야 한다.
@@ -94,124 +96,75 @@ struct GrowthMilestoneView: View {
                         }
                     },
                 )
-                
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 20) {
-                        // 사진 (가로 여백 20, 가로 꽉)
-                        photoSection
-                            .padding(.top, 8)
-                        
-                        // 작성일
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("작성일")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(Color.font)
+                ScrollViewReader { proxy in
+                    
+                    ScrollView(.vertical, showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: 20) {
+                            // 사진 (가로 여백 20, 가로 꽉)
+                            photoSection
+                                .padding(.top, 8)
                             
-                            
-                            Button(formattedDate(selectedDate), action: {
-                                showDatePicker = true
-                            })
-                            .buttonStyle(.outlineMileButton)
-
-                        }
-                        
-                        // 메모
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("메모")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(.primary)
-                            
-//                            TextEditor(text: $memo)
-//                                .focused($memoFocused)
-//                                .frame(height: 100)
-//                                .scrollContentBackground(.hidden)
-//                                .padding(12) // 내부 여백
-//                                .background(
-//                                    RoundedRectangle(cornerRadius: 12)
-//                                        .fill(Color.gray10)    // 원하는 배경색
-//                                )
-//                                .overlay(
-//                                    RoundedRectangle(cornerRadius: 12)
-//                                        .stroke(Color.gray50, lineWidth: 2) // 두께 2 라운드 테두리
-//                                )
-//                                .overlay(alignment: .topLeading) {
-//                                    if memo.isEmpty {
-//                                        Text("아이와 함꼐한 소중한 추억 메몰르 입력해 주세요.")
-//                                            .font(.system(size: 12 , weight: .regular))
-//                                            .foregroundStyle(Color.gray70)
-//                                    }
-//                                }
-
-                            ZStack(alignment: .topLeading) {
-                                // 1) 실제 입력 영역
-                                TextEditor(text: $memo)
-                                    .focused($memoFocused)
-                                    .frame(minHeight: 100)
-                                    .scrollContentBackground(.hidden)   // iOS 16+: 기본 배경 제거
-
-                                // 2) placeholder
-                                if memo.isEmpty {
-                                    Text("아이와 함께한 소중한 추억 메모를 입력 해주세요")
-                                        .font(.system(size: 12, weight: .regular))
-                                        .foregroundStyle(Color.gray70)
-                                        .padding(.top, 12)
-                                        .padding(.horizontal, 14)
-                                        .allowsHitTesting(false)
-                                        
-                                }
+                            // 작성일
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("작성일")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(Color.font)
+                                
+                                
+                                Button(formattedDate(selectedDate), action: {
+                                    showDatePicker = true
+                                })
+                                .buttonStyle(.outlineMileButton)
+                                
                             }
-                            // 🔹 border 안쪽 여백 (텍스트와 테두리 사이)
-                            .padding(12)
-                            // ↳ 여기까지가 "내용 + 안쪽 여백"
-
-                            // 🔹 둥근 흰 배경
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.white)
+                            
+                            // 메모
+                            MemoTextEditor(
+                                memo: $memo,
+                                limit: 300,
+                                isFocused: $isFocused,
+                                placeholder: "아이와 함께한 소중한 추억 메모를 입력 해주세요"
                             )
-                            // 🔹 주황 외곽선 (안쪽으로만 그리기)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .strokeBorder(.orange, lineWidth: 1.5)
-                            )
-                            .onTapGesture {
-                                // TextEditor 영역을 탭할 때 부모 제스처가 실행되는 것을 막음
+                            
+                            Spacer()
+                            
+                            GrowthBottomButton(title: "저장", isEnabled: hasChanges) {
+                                onSave?(
+                                    milestone,
+                                    selectedImage,
+                                    memo.isEmpty ? nil : memo,
+                                    selectedDate
+                                )
+                                dismiss()
                             }
+                            .id("bottom") 
                         }
-                        
-                        
-//                        Button("저장", action: {
-//                            
-//                        })
-//                        if hasChanges{
-//                            .buttonStyle(.defaultButton)
-//                        } else {
-//                            .buttonStyle(.outlinelessButton)
-//                        }
-//
-  
-                        Spacer()
-                        
-                        GrowthBottomButton(title: "저장", isEnabled: hasChanges) {
-                            onSave?(
-                                milestone,
-                                selectedImage,
-                                memo.isEmpty ? nil : memo,
-                                selectedDate
-                            )
-                            dismiss()
+                        .padding(.bottom, 44)
+                    }
+                    .scrollDismissesKeyboard(.interactively)  //
+                    
+                    .onChange(of: isFocused) {_, focused in
+                        guard focused else { return }
+                        // 키보드 애니메이션 타이밍 맞추기 위해 약간 딜레이
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            withAnimation {
+                                proxy.scrollTo("bottom", anchor: .bottom)
+                            }
                         }
                     }
-                    .padding(.bottom, 44)
-                }
-                .onTapGesture {
-                    memoFocused = false
                 }
             }
             .backgroundPadding(.horizontal)
+            
+            Spacer()
 
         }
-        .ignoresSafeArea()
+        .ignoresSafeArea(edges: .top)
+        .simultaneousGesture(   // ✅ 버튼 동작 + 키보드 내리기 둘 다 가능
+            TapGesture().onEnded {
+                isFocused = false
+            }
+        )
         .animation(.spring, value: milestone.image)
         .animation(.spring, value: selectedImage)
         .sheet(isPresented: $showDatePicker) {

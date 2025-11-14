@@ -193,7 +193,9 @@ fileprivate struct MilestoneSummaryView: View {
                     }
                 }
             )
+
         }
+
     }
 }
 
