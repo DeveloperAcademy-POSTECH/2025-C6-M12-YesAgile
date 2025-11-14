@@ -9,7 +9,7 @@ import SwiftUI
 
 /// 달력 화면의 비즈니스 로직 관리
 @Observable
-class CalendarViewModel {
+class CalendarCardViewModel {
     var coordinator: BabyMoaCoordinator
     var journeyViewModel: JourneyViewModel  // 참조만 하게끔 수정
 
@@ -117,11 +117,38 @@ class CalendarViewModel {
     // MARK: - 날짜 선택
 
     /// 날짜 셀 탭 이벤트
-    func dateTapped(_ date: Date) {
+    /// - Parameter date: 사용자가 선택한 날짜
+    /// - Parameter showAddJourney: 부모(JourneyView)의 Sheet 표시 State (Binding)
+    /// - Parameter selectedDateForAdd: 부모(JourneyView)의 선택 날짜 State (Binding)
+    @MainActor
+    func dateTapped(
+        _ date: Date,
+        showAddJourney: Binding<Bool>,
+        selectedDateForAdd: Binding<Date?>
+    ) {
         selectedDate = date
         print("📅 날짜 선택: \(formatDate(date))")
-        // TODO: 상세 화면 이동
-        // coordinator.push(path: .journeyList(date: date))
+
+        // 선택된 날짜의 여정 필터링
+        let journiesForDate = journies.filter { journey in
+            Calendar.current.isDate(journey.date, inSameDayAs: date)
+        }
+
+        // 여정 존재 여부에 따라 화면 분기
+        if journiesForDate.isEmpty {
+            // 여정 없음 → 추가 화면 (Sheet)
+            selectedDateForAdd.wrappedValue = date  // 날짜 설정
+            showAddJourney.wrappedValue = true  // Sheet 표시
+            print("➕ 여정 추가 Sheet 표시: \(formatDate(date))")
+        } else {
+            // 여정 있음 → 리스트 화면 (Coordinator)
+            coordinator.push(
+                path: .journeyList(date: date, journies: journiesForDate)
+            )
+            print(
+                "📋 여정 리스트 화면 이동: \(formatDate(date)), \(journiesForDate.count)개"
+            )
+        }
     }
 
     // MARK: - Helper Methods (View에서 이동함)
