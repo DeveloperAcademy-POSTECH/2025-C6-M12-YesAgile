@@ -20,7 +20,7 @@ struct SingleTeethView: View {
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundColor(teeth.erupted ? .pink : .white)
                 )
-                .cornerRadius(4)
+//                .cornerRadius(4)
                 .onTapGesture {
                     onTap()
                 }

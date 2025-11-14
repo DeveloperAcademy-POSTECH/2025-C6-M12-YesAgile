@@ -120,21 +120,43 @@ struct GrowthMilestoneView: View {
                             Text("메모")
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(.primary)
+                            
+//                            TextEditor(text: $memo)
+//                                .focused($memoFocused)
+//                                .frame(height: 100)
+//                                .scrollContentBackground(.hidden)
+//                                .padding(12) // 내부 여백
+//                                .background(
+//                                    RoundedRectangle(cornerRadius: 12)
+//                                        .fill(Color.gray10)    // 원하는 배경색
+//                                )
+//                                .overlay(
+//                                    RoundedRectangle(cornerRadius: 12)
+//                                        .stroke(Color.gray50, lineWidth: 2) // 두께 2 라운드 테두리
+//                                )
+//                                .overlay(alignment: .topLeading) {
+//                                    if memo.isEmpty {
+//                                        Text("아이와 함꼐한 소중한 추억 메몰르 입력해 주세요.")
+//                                            .font(.system(size: 12 , weight: .regular))
+//                                            .foregroundStyle(Color.gray70)
+//                                    }
+//                                }
 
                             ZStack(alignment: .topLeading) {
                                 // 1) 실제 입력 영역
                                 TextEditor(text: $memo)
                                     .focused($memoFocused)
-                                    .frame(minHeight: 120)
+                                    .frame(minHeight: 100)
                                     .scrollContentBackground(.hidden)   // iOS 16+: 기본 배경 제거
-                                    .background(Color.clear)
 
                                 // 2) placeholder
                                 if memo.isEmpty {
                                     Text("아이와 함께한 소중한 추억 메모를 입력 해주세요")
-                                        .foregroundColor(.secondary)
+                                        .font(.system(size: 12, weight: .regular))
+                                        .foregroundStyle(Color.gray70)
                                         .padding(.top, 12)
-                                        .padding(.leading, 16)
+                                        .padding(.horizontal, 14)
+                                        
                                 }
                             }
                             // 🔹 border 안쪽 여백 (텍스트와 테두리 사이)
@@ -154,6 +176,15 @@ struct GrowthMilestoneView: View {
                         }
                         
                         
+//                        Button("저장", action: {
+//                            
+//                        })
+//                        if hasChanges{
+//                            .buttonStyle(.defaultButton)
+//                        } else {
+//                            .buttonStyle(.outlinelessButton)
+//                        }
+//                        
                         GrowthBottomButton(title: "저장", isEnabled: hasChanges) {
                             onSave?(
                                 milestone,

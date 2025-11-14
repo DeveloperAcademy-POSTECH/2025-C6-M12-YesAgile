@@ -27,7 +27,7 @@ struct TeethView: View {
             Color.white.ignoresSafeArea()
             
             VStack(spacing: 0) {
-                CustomNavigationBar(title: "차아", leading: {
+                CustomNavigationBar(title: "치아", leading: {
                     Button(action: {
                         viewModel.coordinator.pop()
                     }, label: {

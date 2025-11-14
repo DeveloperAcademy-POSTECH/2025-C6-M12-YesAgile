@@ -45,9 +45,10 @@ struct WeightRecordListView: View {
                         })
                     }
                     .listRowInsets(EdgeInsets())
-                    .background(Color.clear)
+                    .background(Color.background)
                     .padding(.vertical, 10)
                 }
+                .background(Color.background)
             }
             .listStyle(.plain)
             .scrollIndicators(.hidden)

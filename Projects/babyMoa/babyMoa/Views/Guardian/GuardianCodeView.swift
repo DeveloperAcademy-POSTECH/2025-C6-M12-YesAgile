@@ -120,26 +120,28 @@ struct GuardianCodeView: View {
                     
                 })
                 .buttonStyle(.defaultButton)
+                .padding(.bottom, -10)
                 
                 Button("초대 코드 취소", action: {
                     isShowingCancelAlert = true
                 })
                 .buttonStyle(.outlineThirdButton)
-                .alert("초대 코드를 취소할까요?", isPresented: $isShowingCancelAlert) {
-                    Button("취소", role: .cancel) { }
-                    Button("확인", role: .destructive) {
-                        // TODO: 서버와 통신하여 초대 코드 삭제 처리
-                        viewModel.coordinator.popToRoot()
-                    }
-                } message: {
-                    Text("초대 코드를 취소하면 더 이상 사용할 수 없어요.")
-                }
+                .padding(.bottom, 44)
+               
             }
             .backgroundPadding(.horizontal)
+            .alert("초대 코드를 취소할까요?", isPresented: $isShowingCancelAlert) {
+                Button("취소", role: .cancel) { }
+                Button("확인", role: .destructive) {
+                    // TODO: 서버와 통신하여 초대 코드 삭제 처리
+                    viewModel.coordinator.popToRoot()
+                }
+            } message: {
+                Text("초대 코드를 취소하면 더 이상 사용할 수 없어요.")
+            }
         }
         .ignoresSafeArea()
         .navigationBarBackButtonHidden(true)
-        .padding(.bottom, 20)
     }
 }
 
