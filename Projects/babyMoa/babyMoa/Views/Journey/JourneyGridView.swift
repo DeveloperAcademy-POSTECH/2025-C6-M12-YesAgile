@@ -12,9 +12,9 @@ struct JourneyGridView: View {
     private let columns = [
         GridItem(.flexible(), spacing: 26),
         GridItem(.flexible(), spacing: 26),
-        GridItem(.flexible(), spacing: 26)
+        GridItem(.flexible(), spacing: 26),
     ]
-    
+
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
@@ -37,7 +37,6 @@ struct JourneyGridView: View {
 }
 
 // MARK: - 원형 사진 아이템
-
 
 struct CirclePhotoItem: View {
     var body: some View {

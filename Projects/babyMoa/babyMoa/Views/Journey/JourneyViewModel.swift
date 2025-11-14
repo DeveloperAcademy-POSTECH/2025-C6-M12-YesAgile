@@ -71,17 +71,7 @@ import SwiftUI
 
         // Mock 모드: 배열에 추가
         journies.append(journey)
-
-        // 콘솔 확인용 (Mock 테스트)
-        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        print("✅ 여정 추가됨!")
-        print("  📅 날짜: \(journey.formattedDate)")
-        print("  📝 메모: \(journey.memo)")
-        print("  📸 이미지: \(journey.journeyImage != nil ? "있음" : "없음")")
-        print("  📍 위치: (\(journey.latitude), \(journey.longitude))")
-        print("  📊 총 개수: \(journies.count)개")
-        print("  📋 전체 날짜: \(journies.map { $0.formattedDate })")
-        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        
     }
 
     /// 여정 삭제

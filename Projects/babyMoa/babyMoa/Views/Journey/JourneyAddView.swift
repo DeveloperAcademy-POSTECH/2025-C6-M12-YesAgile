@@ -134,7 +134,7 @@ struct JourneyAddView: View {
             .padding(.bottom, 227)
         }
         .background(Color.background)
-        .ignoresSafeArea() //흰화면 대비
+        .ignoresSafeArea() //흰화면 대
         .photosPicker(
             isPresented: $showImagePicker,
             selection: $pickedItem,

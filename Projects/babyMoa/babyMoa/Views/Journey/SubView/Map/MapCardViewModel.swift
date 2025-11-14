@@ -9,11 +9,5 @@ import SwiftUI
 
 @Observable
 class MapCardViewModel {
-    
+
 }
-
-
-
-
-
-
