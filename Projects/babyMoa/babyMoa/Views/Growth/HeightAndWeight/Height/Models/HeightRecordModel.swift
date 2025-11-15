@@ -79,72 +79,53 @@ extension HeightRecordModel {
         HeightRecordModel(
             height: 73.1,
             date: "2025-10-21",
-            memo: "13개월 첫 기록",
-            monthLabel: "13개월",
-            diffText: "+0.1"
+            memo: "13개월 첫 기록"
+            // monthLabel, diffText는 ViewModel에서 계산하여 채워 넣을 것이므로 여기서는 비워둡니다.
         ),
         HeightRecordModel(
             height: 73.0,
             date: "2025-10-20",
-            memo: nil,
-            monthLabel: "13개월",
-            diffText: nil
+            memo: nil
         ),
         HeightRecordModel(
             height: 73.0,
             date: "2025-09-15",
-            memo: "12개월 검진",
-            monthLabel: "12개월",
-            diffText: "+0.3"
+            memo: "12개월 검진"
         ),
         HeightRecordModel(
             height: 72.7,
             date: "2025-08-10",
-            memo: "11개월",
-            monthLabel: "11개월",
-            diffText: "+0.5"
+            memo: "11개월"
         ),
         HeightRecordModel(
             height: 72.2,
             date: "2025-07-10",
-            memo: "10개월",
-            monthLabel: "10개월",
-            diffText: nil
+            memo: "10개월"
         ),
         HeightRecordModel(
             height: 71.8,
             date: "2025-06-10",
-            memo: "9개월",
-            monthLabel: "9개월",
-            diffText: "+0.4"
+            memo: "9개월"
         ),
         HeightRecordModel(
             height: 71.4,
             date: "2025-05-10",
-            memo: "8개월",
-            monthLabel: "8개월",
-            diffText: "+0.6"
+            memo: "8개월"
         ),
         HeightRecordModel(
             height: 70.8,
             date: "2025-04-10",
-            memo: "7개월",
-            monthLabel: "7개월",
-            diffText: "+0.5"
+            memo: "7개월"
         ),
         HeightRecordModel(
             height: 70.3,
             date: "2025-03-10",
-            memo: "6개월",
-            monthLabel: "6개월",
-            diffText: "+0.7"
+            memo: "6개월"
         ),
         HeightRecordModel(
             height: 69.6,
             date: "2025-02-10",
-            memo: "5개월",
-            monthLabel: "5개월",
-            diffText: "+0.8"
+            memo: "5개월"
         )
     ]
 }

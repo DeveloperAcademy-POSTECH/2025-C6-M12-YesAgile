@@ -57,7 +57,7 @@ struct HeightView: View {
                 } else {
                     switch selectedTab {
                     case .record:
-                        HeightRecordListView(viewModel: viewModel)
+                        HeightRecordListView(coordinator: viewModel.coordinator)
                     case .chart:
                         HeightChartView(viewModel: viewModel)
                     }

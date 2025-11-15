@@ -9,7 +9,14 @@ import SwiftUI
 import Foundation
 
 struct HeightRecordListView: View {
-    @StateObject var viewModel: HeightViewModel
+    // View가 ViewModel을 직접 생성하고 소유하도록 변경
+    @StateObject private var viewModel: HeightViewModel
+    
+    // Coordinator와 같은 의존성은 init을 통해 외부에서 주입받음
+    init(coordinator: BabyMoaCoordinator) {
+        // _viewModel의 wrappedValue에 StateObject를 생성하여 할당
+        self._viewModel = StateObject(wrappedValue: HeightViewModel(coordinator: coordinator))
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -58,9 +65,16 @@ struct HeightRecordListView: View {
             Spacer()
         }
         .background(Color.background)
+        .onAppear {
+            // View가 나타날 때 데이터 로드
+            Task {
+                await viewModel.fetchHeights()
+            }
+        }
     }
 }
 
 #Preview {
-    HeightRecordListView(viewModel: HeightViewModel(coordinator: BabyMoaCoordinator()))
+    // Preview에서는 coordinator만 전달
+    HeightRecordListView(coordinator: BabyMoaCoordinator())
 }
