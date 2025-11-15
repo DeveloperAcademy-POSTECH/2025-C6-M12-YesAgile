@@ -11,7 +11,7 @@ import SwiftUI
 
 /// 서버에서 받은 키 데이터(height, date, memo)를 기반으로
 /// UI에서 쓰기 편하게 가공한 모델
-struct WeightRecordModel: Identifiable, Codable {
+struct WeightRecordModel: Identifiable, Codable, GrowthRecord {
     // MARK: - Identifiable
     let id = UUID()
 
@@ -31,6 +31,12 @@ struct WeightRecordModel: Identifiable, Codable {
 
     /// 이전 기록과의 차이값 예: "+0.3"
     var diffText: String?
+    
+    // MARK: -  Protokoll: GrowthRecord
+    /// GrowthRecord 프로토콜을 위한 단위 값
+    var unit: String {
+        return "kg"
+    }
 
     // MARK: - 계산 프로퍼티 (UI에서 사용)
 
@@ -79,72 +85,52 @@ extension WeightRecordModel {
         WeightRecordModel(
             weight: 9.7,
             date: "2025-10-21",
-            memo: "13개월 첫 기록",
-            monthLabel: "13개월",
-            diffText: "+0.1"
+            memo: "13개월 첫 기록"
         ),
         WeightRecordModel(
             weight: 9.6,
             date: "2025-10-20",
-            memo: nil,
-            monthLabel: "13개월",
-            diffText: nil
+            memo: nil
         ),
         WeightRecordModel(
             weight: 9.3,
             date: "2025-09-15",
-            memo: "12개월 검진",
-            monthLabel: "12개월",
-            diffText: "+0.3"
+            memo: "12개월 검진"
         ),
         WeightRecordModel(
             weight: 8.8,
             date: "2025-08-10",
-            memo: "11개월",
-            monthLabel: "11개월",
-            diffText: "+0.5"
+            memo: "11개월"
         ),
         WeightRecordModel(
             weight: 8.3,
             date: "2025-07-10",
-            memo: "10개월",
-            monthLabel: "10개월",
-            diffText: nil
+            memo: "10개월"
         ),
         WeightRecordModel(
             weight: 7.9,
             date: "2025-06-10",
-            memo: "9개월",
-            monthLabel: "9개월",
-            diffText: "+0.4"
+            memo: "9개월"
         ),
         WeightRecordModel(
             weight: 7.5,
             date: "2025-05-10",
-            memo: "8개월",
-            monthLabel: "8개월",
-            diffText: "+0.6"
+            memo: "8개월"
         ),
         WeightRecordModel(
             weight: 7.0,
             date: "2025-04-10",
-            memo: "7개월",
-            monthLabel: "7개월",
-            diffText: "+0.5"
+            memo: "7개월"
         ),
         WeightRecordModel(
             weight: 6.5,
             date: "2025-03-10",
-            memo: "6개월",
-            monthLabel: "6개월",
-            diffText: "+0.7"
+            memo: "6개월"
         ),
         WeightRecordModel(
             weight: 5.7,
             date: "2025-02-10",
-            memo: "5개월",
-            monthLabel: "5개월",
-            diffText: "+0.8"
+            memo: "5개월"
         )
     ]
 }

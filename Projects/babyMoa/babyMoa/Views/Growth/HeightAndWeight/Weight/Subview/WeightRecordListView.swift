@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct WeightRecordListView: View {
-    @StateObject var viewModel: WeightViewModel
+    @StateObject private var viewModel: WeightViewModel
+    
+    init(coordinator: BabyMoaCoordinator) {
+        self._viewModel = StateObject(wrappedValue: WeightViewModel(coordinator: coordinator))
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -56,9 +60,14 @@ struct WeightRecordListView: View {
             
             Spacer()
         }
+        .onAppear {
+            Task {
+                await viewModel.fetchWeights()
+            }
+        }
     }
 }
 
 #Preview {
-    WeightRecordListView(viewModel: WeightViewModel(coordinator: BabyMoaCoordinator()))
+    WeightRecordListView(coordinator: BabyMoaCoordinator())
 }

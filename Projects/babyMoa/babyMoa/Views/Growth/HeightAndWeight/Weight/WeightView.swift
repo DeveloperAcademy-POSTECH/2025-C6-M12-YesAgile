@@ -57,7 +57,7 @@ struct WeightView: View {
                 } else {
                     switch selectedTab {
                     case .record:
-                        WeightRecordListView(viewModel: viewModel)
+                        WeightRecordListView(coordinator: viewModel.coordinator)
                     case .chart:
                         WeightChartView(viewModel: viewModel)
                     }
