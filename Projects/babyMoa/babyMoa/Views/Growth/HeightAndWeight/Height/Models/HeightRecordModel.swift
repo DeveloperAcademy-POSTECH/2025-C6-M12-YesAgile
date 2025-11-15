@@ -10,7 +10,7 @@ import SwiftUI
 
 /// 서버에서 받은 키 데이터(height, date, memo)를 기반으로
 /// UI에서 쓰기 편하게 가공한 모델
-struct HeightRecordModel: Identifiable, Codable {
+struct HeightRecordModel: Identifiable, Codable, GrowthRecord {
     // MARK: - Identifiable
     let id = UUID()
 
@@ -30,6 +30,12 @@ struct HeightRecordModel: Identifiable, Codable {
 
     /// 이전 기록과의 차이값 예: "+0.3"
     var diffText: String?
+    
+    // MARK: -  Protokoll: GrowthRecord
+    /// GrowthRecord 프로토콜을 위한 단위 값
+    var unit: String {
+        return "cm"
+    }
 
     // MARK: - 계산 프로퍼티 (UI에서 사용)
 
