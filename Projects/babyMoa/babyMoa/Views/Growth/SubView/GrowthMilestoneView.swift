@@ -19,7 +19,7 @@ struct GrowthMilestoneView: View {
     @Environment(\.dismiss) private var dismiss
     
     // Image
-    @State private var pickedItem: PhotosPickerItem? = nil
+    @StateObject private var imageLoaderViewModel = ImageLoaderViewModel()
     @State private var selectedImage: UIImage? = nil
     @State private var showPhotoPicker: Bool = false
     
@@ -42,7 +42,7 @@ struct GrowthMilestoneView: View {
         self.milestone = milestone
         self.onSave = onSave
         self.onDelete = onDelete
-        selectedImage = milestone.image
+        _selectedImage = State(initialValue: milestone.image)
         _selectedDate = State(initialValue: milestone.completedDate ?? Date())
         _memo = State(initialValue: milestone.description ?? "")
     }
@@ -50,7 +50,7 @@ struct GrowthMilestoneView: View {
     // 변경 여부
     private var hasChanges: Bool {
         // 사진 변경 체크
-        let imgChanged = selectedImage != nil
+        let imgChanged = selectedImage != milestone.image
         
         // 날짜 변경 체크 (같은 날짜인지 비교)
         let originalDate = milestone.completedDate ?? Date()
@@ -72,10 +72,6 @@ struct GrowthMilestoneView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // Create 일때 삭제(휴지통)을 클릭하면 취소되게 해야 한다.
-                // 이미지를 불러와서 휴지통을 클릭하면 삭제되어야 한다.
-                // 삭제 함수 찾아서 구현해야 한다.
-                // 해야 될 것 많다.
                 CustomNavigationBar(
                     title: milestone.title,
                     leading: {
@@ -111,7 +107,7 @@ struct GrowthMilestoneView: View {
                                     .foregroundColor(Color.font)
                                 
                                 
-                                Button(formattedDate(selectedDate), action: {
+                                Button(selectedDate.yyyyMMdd, action: { // formattedDate 함수 대신 yyyyMMdd 사용
                                     showDatePicker = true
                                 })
                                 .buttonStyle(.outlineMileButton)
@@ -137,15 +133,14 @@ struct GrowthMilestoneView: View {
                                 )
                                 dismiss()
                             }
-                            .id("bottom") 
+                            .id("bottom")
                         }
                         .padding(.bottom, 44)
                     }
-                    .scrollDismissesKeyboard(.interactively)  //
+                    .scrollDismissesKeyboard(.interactively)
                     
                     .onChange(of: isFocused) {_, focused in
                         guard focused else { return }
-                        // 키보드 애니메이션 타이밍 맞추기 위해 약간 딜레이
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             withAnimation {
                                 proxy.scrollTo("bottom", anchor: .bottom)
@@ -160,7 +155,7 @@ struct GrowthMilestoneView: View {
 
         }
         .ignoresSafeArea(edges: .top)
-        .simultaneousGesture(   // ✅ 버튼 동작 + 키보드 내리기 둘 다 가능
+        .simultaneousGesture(
             TapGesture().onEnded {
                 isFocused = false
             }
@@ -169,45 +164,27 @@ struct GrowthMilestoneView: View {
         .animation(.spring, value: selectedImage)
         .sheet(isPresented: $showDatePicker) {
             VStack(spacing: 0) {
-                // 헤더
                 HStack {
-                    Button("취소") {
-                        showDatePicker = false
-                    }
+                    Button("취소") { showDatePicker = false }
                     .foregroundColor(.secondary)
-                    
                     Spacer()
-                    
-                    Text("작성일 선택")
-                        .font(.system(size: 17, weight: .semibold))
-                    
+                    Text("작성일 선택").font(.system(size: 17, weight: .semibold))
                     Spacer()
-                    
-                    Button("완료") {
-                        showDatePicker = false
-                    }
+                    Button("완료") { showDatePicker = false }
                     .foregroundColor(Color.brand50)
                 }
                 .padding()
-                
                 Divider()
-                
-                // Wheel Picker
-                DatePicker(
-                    "작성일",
-                    selection: $selectedDate,
-                    displayedComponents: .date
-                )
-                .datePickerStyle(.wheel)
-                .labelsHidden()
-                .padding()
+                DatePicker("작성일", selection: $selectedDate, displayedComponents: .date)
+                    .datePickerStyle(.wheel)
+                    .labelsHidden()
+                    .padding()
             }
             .presentationDetents([.height(320)])
         }
-        // 사진 선택 모달 (레이아웃와 분리)
         .photosPicker(
             isPresented: $showPhotoPicker,
-            selection: $pickedItem,
+            selection: $imageLoaderViewModel.imageSelection, // ViewModel에 바인딩
             matching: .images
         )
         .alert("성장 마일스톤", isPresented: $showDeleteDialog) {
@@ -222,17 +199,10 @@ struct GrowthMilestoneView: View {
         } message: {
             Text("삭제 하시겠습니까?")
         }
-        // 선택 변경 시 이미지 갱신
-        .onChange(of: pickedItem) { _, newValue in
-            Task { @MainActor in
-                guard let newValue else { return }
-                if let data = try? await newValue.loadTransferable(
-                    type: Data.self
-                ),
-                   let uiImage = UIImage(data: data)
-                {
-                    selectedImage = uiImage
-                }
+        .onChange(of: imageLoaderViewModel.imageToUpload) { _, newImage in
+            // ImageLoaderViewModel이 로드한 이미지를 받아서 selectedImage에 할당
+            if let newImage {
+                self.selectedImage = newImage
             }
         }
     }
@@ -240,69 +210,50 @@ struct GrowthMilestoneView: View {
     // MARK: - Photo Section
     private var photoSection: some View {
         ZStack {
-            if selectedImage == nil && milestone.image == nil {
-                // 일러스트가 있으면 일러스트 표시, 없으면 플레이스홀더
-                if let illustrationName = milestone.illustrationName {
-                    MilestoneCardView(milestone: milestone, cardWidth: 353, cardHeight: 471, cardType: .big, onTap: {
-                        showPhotoPicker = true
-                    })
-                } else {
-                    // 이미지가 없을 때만 플레이스홀더 박스 표시
+            // 1. 기본 플레이스홀더 (항상 배경에 존재)
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color(.systemBackground))
+                .overlay(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(Color(.systemBackground))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .stroke(
-                                    Color("Brand-50").opacity(0.4),
-                                    lineWidth: 1
-                                )
+                        .stroke(
+                            Color("Brand-50").opacity(0.4),
+                            lineWidth: 1
                         )
-                        .frame(height: 250)
-                        .overlay(
-                            VStack(spacing: 8) {
-                                Image(systemName: "photo")
-                                    .font(.system(size: 40))
-                                    .foregroundColor(.gray)
-                                Text("사진을 선택하세요")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.gray)
-                            }
-                        )
-                }
-            } else {
-                // 이미지가 있을 때는 비율에 맞게 표시
-                aspectFilledImage
-                    .clipShape(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    )
-                    .onTapGesture {
-                        showPhotoPicker = true
+                )
+                .frame(height: 250) // 고정된 높이
+                .overlay(
+                    VStack(spacing: 8) {
+                        Image(systemName: "photo")
+                            .font(.system(size: 40))
+                            .foregroundColor(.gray)
+                        Text("사진을 선택하세요")
+                            .font(.system(size: 14))
+                            .foregroundColor(.gray)
                     }
+                )
+
+            // 2. 실제 이미지 또는 일러스트 표시 (있을 경우)
+            if let imageToDisplay = selectedImage ?? milestone.image {
+                Image(uiImage: imageToDisplay)
+                    .resizable()
+                    .scaledToFill() // 프레임을 가득 채우도록
+                    .frame(height: 250) // 고정된 높이
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .clipped() // 프레임을 벗어나는 부분 자르기
+            } else if let illustrationName = milestone.illustrationName {
+                // 일러스트가 이미지 에셋 이름이라고 가정
+                Image(illustrationName)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 250)
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .clipped()
             }
         }
-        .contentShape(Rectangle())
-    }
-    
-    @ViewBuilder
-    private var aspectFilledImage: some View {
-        if let uiImage = selectedImage {
-            Image(uiImage: uiImage)
-                .resizable()
-                .scaledToFit()
-                .frame(maxWidth: .infinity)
-        } else if let image = milestone.image
-        {
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFit()
-                .frame(maxWidth: .infinity)
+        .contentShape(Rectangle()) // 전체 영역을 탭 가능하게
+        .onTapGesture {
+            showPhotoPicker = true // 탭하면 PhotosPicker 열기
         }
-    }
-    
-    private func formattedDate(_ date: Date) -> String {
-        let f = DateFormatter()
-        f.dateFormat = "yyyy. MM. dd."
-        return f.string(from: date)
     }
 }
 
