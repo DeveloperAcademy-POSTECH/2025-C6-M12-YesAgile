@@ -44,15 +44,10 @@ struct JourneyView: View {
                         onNextMonth: { calendarCardVM.nextMonthTapped() },
                         // 날짜 탭 시 화면 전환 로직을 View에서 처리
                         onDateTap: { date in
-                            // 1. ViewModel에 날짜 선택 알림 (상태 업데이트)
-                            calendarCardVM.dateTapped(date)
+                            // ViewModel에서 날짜 선택 + 여정 조회 한 번에 처리
+                            let journiesForDate = calendarCardVM.dateTapped(date)
 
-                            // 2. 해당 날짜의 여정 조회
-                            let journiesForDate = calendarCardVM.journies(
-                                for: date
-                            )
-
-                            // 3. 여정 존재 여부에 따라 화면 전환 (View의 책임)
+                            // 여정 존재 여부에 따라 화면 전환
                             if journiesForDate.isEmpty {
                                 // 여정 없음 → 추가 화면
                                 coordinator.push(path: .journeyAdd(date: date))

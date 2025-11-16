@@ -226,14 +226,10 @@ private struct PreviewWrapper: View {
     let coordinator = BabyMoaCoordinator()
     
     init() {
-        // ✅ 리팩토링: JourneyViewModel에서 coordinator 제거됨
-        // - 이전: JourneyViewModel(coordinator: BabyMoaCoordinator())
-        // - 수정: JourneyViewModel() (coordinator 불필요)
+     
         let journeyVM = JourneyViewModel()
         journeyVM.journies = Journey.mockData
         
-        // ✅ CalendarCardViewModel도 coordinator 제거됨
-        // - CalendarCardViewModel(journeyViewModel: journeyVM)만 전달
         _viewModel = State(initialValue: CalendarCardViewModel(journeyViewModel: journeyVM))
     }
     
@@ -250,8 +246,7 @@ private struct PreviewWrapper: View {
                 onNextMonth: { viewModel.nextMonthTapped() },
                 // ⭐️ Preview에서는 화면 전환 대신 콘솔 출력만
                 onDateTap: { date in
-                    viewModel.dateTapped(date)
-                    let journiesForDate = viewModel.journies(for: date)
+                    let journiesForDate = viewModel.dateTapped(date)
                     if journiesForDate.isEmpty {
                         print("➕ [Preview] 여정 추가 화면으로 이동할 날짜: \(date)")
                     } else {

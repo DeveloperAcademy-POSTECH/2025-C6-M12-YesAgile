@@ -48,6 +48,7 @@ import SwiftUI
             
             // ✅ 개발 환경에서는 Mock 데이터로 대체
             #if DEBUG
+            print("📦 개발 환경: Mock 데이터 \(Journey.mockData.count)개 로드")
             journies = Journey.mockData
             #else
             journies = []

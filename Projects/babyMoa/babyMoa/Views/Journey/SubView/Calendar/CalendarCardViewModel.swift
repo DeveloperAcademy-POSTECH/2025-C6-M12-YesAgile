@@ -118,21 +118,20 @@ class CalendarCardViewModel {
 
     // MARK: - 날짜 선택
     
-    /// 날짜 셀 탭 이벤트 (화면 전환 로직 제거)
+    /// 날짜 탭 시 해당 날짜의 여정 반환
     /// - Parameter date: 선택된 날짜
-    func dateTapped(_ date: Date) {
+    /// - Returns: 해당 날짜의 여정 배열
+    func dateTapped(_ date: Date) -> [Journey] {
         selectedDate = date
         print("📅 날짜 선택: \(date.yyyyMMdd)")
-    }
-    
-    /// 특정 날짜에 해당하는 여정 목록 반환
-    /// - Parameter date: 조회할 날짜
-    /// - Returns: 해당 날짜의 여정 배열
-    /// - Note: View에서 화면 전환 분기 처리를 위해 사용
-    func journies(for date: Date) -> [Journey] {
-        journies.filter { journey in
+        
+        // 해당 날짜의 여정 필터링
+        let result = journies.filter { journey in
             Calendar.current.isDate(journey.date, inSameDayAs: date)
         }
+        
+        print("  → 여정 수: \(result.count)개")
+        return result
     }
 
     // MARK: - Helper Methods (View에서 이동함)
