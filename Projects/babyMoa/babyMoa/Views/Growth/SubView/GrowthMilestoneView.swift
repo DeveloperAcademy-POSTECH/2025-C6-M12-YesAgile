@@ -220,7 +220,7 @@ struct GrowthMilestoneView: View {
                             lineWidth: 1
                         )
                 )
-                .frame(height: 250) // 고정된 높이
+                .frame(height: 420) // 고정된 높이
                 .overlay(
                     VStack(spacing: 8) {
                         Image(systemName: "photo")
@@ -236,15 +236,15 @@ struct GrowthMilestoneView: View {
             if let imageToDisplay = selectedImage ?? milestone.image {
                 Image(uiImage: imageToDisplay)
                     .resizable()
-                    .scaledToFill() // 프레임을 가득 채우도록
-                    .frame(height: 250) // 고정된 높이
+                    .frame(height: 420) // 고정된 높이
+                    .aspectRatio(contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .clipped() // 프레임을 벗어나는 부분 자르기
             } else if let illustrationName = milestone.illustrationName {
                 // 일러스트가 이미지 에셋 이름이라고 가정
                 Image(illustrationName)
                     .resizable()
-                    .scaledToFill()
+                    .aspectRatio(contentMode: .fit)
                     .frame(height: 250)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .clipped()
