@@ -56,7 +56,6 @@ struct WeightRecordListView: View {
             }
             .listStyle(.plain)
             .scrollIndicators(.hidden)
-            .padding(.top, 20)
             
             Spacer()
         }

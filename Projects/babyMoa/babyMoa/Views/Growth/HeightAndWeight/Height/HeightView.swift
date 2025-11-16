@@ -58,8 +58,10 @@ struct HeightView: View {
                     switch selectedTab {
                     case .record:
                         HeightRecordListView(coordinator: viewModel.coordinator)
+                            .padding(.top, 20)
                     case .chart:
                         HeightChartView(viewModel: viewModel)
+                            .padding(.top, 20)
                     }
                     
                 }

@@ -58,8 +58,11 @@ struct WeightView: View {
                     switch selectedTab {
                     case .record:
                         WeightRecordListView(coordinator: viewModel.coordinator)
+                            .padding(.top, 20)
                     case .chart:
                         WeightChartView(viewModel: viewModel)
+                            .padding(.top, 20)
+
                     }
                     
                 }
