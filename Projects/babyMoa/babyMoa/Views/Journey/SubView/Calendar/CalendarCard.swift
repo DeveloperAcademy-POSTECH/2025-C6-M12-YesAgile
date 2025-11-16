@@ -7,28 +7,37 @@
 
 import SwiftUI
 
+// MARK: - Data & Actions
+
+struct CalendarCardData {
+    let currentMonth: Date
+    let monthDates: [Date]
+    let selectedDate: Date
+    let journies: [Journey]
+}
+
+struct CalendarCardActions {
+    let onPreviousMonth: () -> Void
+    let onNextMonth: () -> Void
+    let onDateTap: (Date) -> Void
+    let isInCurrentMonth: (Date) -> Bool
+    let isSelected: (Date) -> Bool
+}
+
+// MARK: - CalendarCard
+
 struct CalendarCard: View {
-    var viewModel: CalendarCardViewModel
-
-    // MARK: - Binding (부모로부터 받음)
-
-    /// 여정 추가 Sheet 표시 여부
-    @Binding var showAddJourney: Bool
-
-    /// 선택된 날짜 (여정 추가용)
-    @Binding var selectedDateForAdd: Date?
+    let data: CalendarCardData
+    let actions: CalendarCardActions
 
     var body: some View {
         VStack(spacing: 0) {
             // 월 네비게이션
+            // 여기서 쓰는 value들 직접 뷰모델 받아서 쓰지말고, 프로퍼티로 선언해서 뷰에서 주입할 수 있도록!
             MonthNavigationView(
-                currentMonth: viewModel.currentMonth,  // ViewModel 데이터
-                onPrevious: {
-                    viewModel.previousMonthTapped()  // ViewModel 호출
-                },
-                onNext: {
-                    viewModel.nextMonthTapped()  // ViewModel 호출
-                }
+                currentMonth: data.currentMonth,
+                onPrevious: actions.onPreviousMonth,
+                onNext: actions.onNextMonth
             )
             .padding(.bottom, 20)
 
@@ -36,11 +45,10 @@ struct CalendarCard: View {
             DaysOfWeekHeader()
                 .padding(.bottom, 10)
 
-            // 날짜 그리드 (Binding 전달)
+            // 날짜 그리드
             CalendarGrid(
-                viewModel: viewModel,
-                showAddJourney: $showAddJourney,
-                selectedDateForAdd: $selectedDateForAdd
+                data: data,
+                actions: actions
             )
         }
         .padding(20)
@@ -117,17 +125,10 @@ struct DaysOfWeekHeader: View {
 
 // MARK: - Calendar Grid
 
-/// 날짜 그리드 - 심플하게 ViewModel 데이터만 표시
+/// 날짜 그리드
 struct CalendarGrid: View {
-    var viewModel: CalendarCardViewModel
-
-    // MARK: - Binding (CalendarCard로부터 받음)
-
-    /// 여정 추가 Sheet 표시 여부
-    @Binding var showAddJourney: Bool
-
-    /// 선택된 날짜 (여정 추가용)
-    @Binding var selectedDateForAdd: Date?
+    let data: CalendarCardData
+    let actions: CalendarCardActions
 
     private let columns = Array(
         repeating: GridItem(.flexible(), spacing: 8),
@@ -136,23 +137,18 @@ struct CalendarGrid: View {
 
     var body: some View {
         LazyVGrid(columns: columns, spacing: 8) {
-            ForEach(viewModel.monthDates, id: \.self) { date in
-                let dateJournies = viewModel.journies.filter({
+            ForEach(data.monthDates, id: \.self) { date in
+                let dateJournies = data.journies.filter({
                     $0.date.yyyyMMdd == date.yyyyMMdd
                 })
                 DateCellView(
                     date: date,
-                    isCurrentMonth: viewModel.isInCurrentMonth(date),
+                    isCurrentMonth: actions.isInCurrentMonth(date),
                     journies: dateJournies,
-                    isSelected: viewModel.isSelected(date)
+                    isSelected: actions.isSelected(date)
                 )
                 .onTapGesture {
-                    // Binding 전달
-                    viewModel.dateTapped(
-                        date,
-                        showAddJourney: $showAddJourney,
-                        selectedDateForAdd: $selectedDateForAdd
-                    )
+                    actions.onDateTap(date)
                 }
             }
         }
@@ -165,14 +161,14 @@ struct DateCellView: View {
     let date: Date
     let isCurrentMonth: Bool
     let journies: [Journey]  //ourney 인스턴스를 “데려오는 코드”가 아니야.그냥 “나는 이런 타입의 값을 받을 거야”라고 타입만 선언 이건 저장 프로퍼티임
-    let isSelected: Bool  // 선택 상태 추가
+    let isSelected: Bool  // 선택 상태
 
     var body: some View {
         ZStack {
             // 선택된 날짜 배경
             if isSelected {
                 Circle()
-                    .fill(Color.orange.opacity(0.2))
+                    .fill(Color.white)
             }
 
             // 점선 원 테두리
@@ -182,33 +178,26 @@ struct DateCellView: View {
                 )
                 .foregroundColor(.gray.opacity(0.3))
 
-            // 날짜 숫자
-            Text("\(day)")
-                .font(
-                    .system(size: 16, weight: isSelected ? .bold : .regular)
-                )  // 선택 시 볼드
-                .foregroundColor(textColor)
-
-            // TODO: 삭제 필요, journey 가 잘들어왔나 테스트하기 위한 코드 (Ted 맘대로 추가한 거)
-
-            if let first = journies.first,
-                let uiImage = first.journeyImage
-            {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 28, height: 28)
-                    .clipShape(Circle())
-                    .overlay {
-                        Circle().stroke(
-                            style: StrokeStyle(lineWidth: 1, dash: [4])
-                        )
-                        .opacity(0.3)  // 점선 테두리
-                    }
-            } else {
-                // 이미지 없을 때 자리(선택)
-                Spacer(minLength: 28)
+            // 이미지 썸네일 + 날짜 숫자
+            ZStack {
+                // 여정 이미지 (있으면 표시)
+                if let first = journies.first, let uiImage = first.journeyImage {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 40, height: 40)
+                        .clipShape(Circle())
+                }
+                
+                // 날짜 숫자 (항상 표시, 이미지 위에 오버레이)
+                Text("\(day)")
+                    .font(
+                        .system(size: 16, weight: isSelected ? .bold : .regular)
+                    )
+                    .foregroundColor(journies.first?.journeyImage != nil ? .white : textColor)
+                    .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
             }
+            .frame(width: 40, height: 40)
         }
         .frame(height: 44)
         .opacity(isCurrentMonth ? 1.0 : 0.3)
@@ -230,22 +219,48 @@ struct DateCellView: View {
     PreviewWrapper()
 }
 
+// MARK: - Preview Helper
+
 private struct PreviewWrapper: View {
-    @State private var showAdd = false
-    @State private var date: Date? = nil
-
+    @State private var viewModel: CalendarCardViewModel
+    let coordinator = BabyMoaCoordinator()
+    
+    init() {
+        // ✅ 리팩토링: JourneyViewModel에서 coordinator 제거됨
+        // - 이전: JourneyViewModel(coordinator: BabyMoaCoordinator())
+        // - 수정: JourneyViewModel() (coordinator 불필요)
+        let journeyVM = JourneyViewModel()
+        journeyVM.journies = Journey.mockData
+        
+        // ✅ CalendarCardViewModel도 coordinator 제거됨
+        // - CalendarCardViewModel(journeyViewModel: journeyVM)만 전달
+        _viewModel = State(initialValue: CalendarCardViewModel(journeyViewModel: journeyVM))
+    }
+    
     var body: some View {
-        let coordinator = BabyMoaCoordinator()
-        let journeyVM = JourneyViewModel(coordinator: coordinator)
-        journeyVM.journies = Journey.mockData  // ✨ Mock 데이터 추가!
-
-        return CalendarCard(
-            viewModel: CalendarCardViewModel(
-                coordinator: coordinator,
-                journeyViewModel: journeyVM
+        CalendarCard(
+            data: CalendarCardData(
+                currentMonth: viewModel.currentMonth,
+                monthDates: viewModel.monthDates,
+                selectedDate: viewModel.selectedDate,
+                journies: viewModel.journies
             ),
-            showAddJourney: $showAdd,
-            selectedDateForAdd: $date
+            actions: CalendarCardActions(
+                onPreviousMonth: { viewModel.previousMonthTapped() },
+                onNextMonth: { viewModel.nextMonthTapped() },
+                // ⭐️ Preview에서는 화면 전환 대신 콘솔 출력만
+                onDateTap: { date in
+                    viewModel.dateTapped(date)
+                    let journiesForDate = viewModel.journies(for: date)
+                    if journiesForDate.isEmpty {
+                        print("➕ [Preview] 여정 추가 화면으로 이동할 날짜: \(date)")
+                    } else {
+                        print("📋 [Preview] 여정 리스트 화면으로 이동: \(journiesForDate.count)개")
+                    }
+                },
+                isInCurrentMonth: { viewModel.isInCurrentMonth($0) },
+                isSelected: { viewModel.isSelected($0) }
+            )
         )
     }
 }

@@ -11,7 +11,7 @@ import SwiftUI
 /// 지도 카드 컴포넌트
 struct MapCard: View {
     // Journey 데이터 (나중에 JourneyViewModel에서 받을 예정)
-    let journies: [Journey] = []
+    let journies: [Journey] = [] // <- 수정 예정
 
     //  MapCameraPosition 공부 17+
     @State private var position = MapCameraPosition.region(

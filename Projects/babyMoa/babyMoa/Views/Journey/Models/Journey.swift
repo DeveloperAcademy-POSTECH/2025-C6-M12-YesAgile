@@ -6,7 +6,7 @@
 //
 
 import CoreLocation
-import UIKit  // UIKit 이 낫다고 결론 내어주심
+import UIKit  
 
 /// 여정 도메인 모델
 /// 서버 ResponseModel과 달리 UI에 최적화된 형태로 데이터 보관
@@ -58,21 +58,15 @@ struct Journey: Entity, Hashable {
             [
                 Journey(
                     journeyId: 1,
-                    journeyImage: createSampleImage(
-                        systemName: "star.fill",
-                        color: .systemYellow
-                    ),
+                    journeyImage: UIImage(systemName: "star.fill"),
                     latitude: 37.5665,
                     longitude: 126.9780,
                     date: Date(),
                     memo: "서울 나들이"
                 ),
                 Journey(
-                    journeyId: 1,
-                    journeyImage: createSampleImage(
-                        systemName: "heart.fill",
-                        color: .systemPink
-                    ),
+                    journeyId: 2,
+                    journeyImage: UIImage(systemName: "heart.fill"),
                     latitude: 37.5642,
                     longitude: 126.9770,
                     date: Calendar.current.date(
@@ -83,11 +77,8 @@ struct Journey: Entity, Hashable {
                     memo: "공원 산책"
                 ),
                 Journey(
-                    journeyId: 1,
-                    journeyImage: createSampleImage(
-                        systemName: "leaf.fill",
-                        color: .systemGreen
-                    ),
+                    journeyId: 3,
+                    journeyImage: UIImage(systemName: "leaf.fill"),
                     latitude: 37.5700,
                     longitude: 126.9800,
                     date: Calendar.current.date(
@@ -98,11 +89,8 @@ struct Journey: Entity, Hashable {
                     memo: "한강 피크닉"
                 ),
                 Journey(
-                    journeyId: 1,
-                    journeyImage: createSampleImage(
-                        systemName: "leaf.fill",
-                        color: .systemGreen
-                    ),
+                    journeyId: 4,
+                    journeyImage: UIImage(systemName: "camera.fill"),
                     latitude: 37.5700,
                     longitude: 126.0000,
                     date: Calendar.current.date(
@@ -110,23 +98,10 @@ struct Journey: Entity, Hashable {
                         value: -5,
                         to: Date()
                     ) ?? Date(),
-                    memo: "한강 피크닉0"
+                    memo: "한강 피크닉2"
                 ),
 
             ]
-        }
-
-        private static func createSampleImage(
-            systemName: String,
-            color: UIColor
-        ) -> UIImage {
-            let config = UIImage.SymbolConfiguration(
-                pointSize: 100,
-                weight: .regular
-            )
-            return UIImage(systemName: systemName, withConfiguration: config)?
-                .withTintColor(color, renderingMode: .alwaysOriginal)
-                ?? UIImage()
         }
     }
 #endif

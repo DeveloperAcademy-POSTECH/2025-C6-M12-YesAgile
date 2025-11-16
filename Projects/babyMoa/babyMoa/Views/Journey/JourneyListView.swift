@@ -12,9 +12,8 @@ struct JourneyListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // ✅ CustomNavigationBar 추가 (Milestone 방식)
             CustomNavigationBar(
-                title: formattedDate,
+                title: selectedDate.yyyyMMdd,
                 leading: {
                     Button(action: {
                         coordinator.pop()
@@ -24,7 +23,6 @@ struct JourneyListView: View {
                 }
             )
             .padding(.horizontal, 20)
-
             ScrollView {
                 VStack(spacing: 20) {
                     ForEach(journies, id: \.journeyId) { journey in
@@ -45,32 +43,16 @@ struct JourneyListView: View {
             Spacer()
 
             // 여정 추가 버튼
-            Button(action: {
+            Button("여정 추가") {
                 coordinator.push(path: .journeyAdd(date: selectedDate))
-            }) {
-                Text("여정 추가")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 56)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color(red: 1.0, green: 0.3, blue: 0.2))
-                    )
             }
+            .buttonStyle(.primaryButton)
+            .frame(height: 56)
             .padding(.horizontal, 20)
             .padding(.bottom, 30)
         }
         .background(Color(red: 0.95, green: 0.95, blue: 0.97))
-    }
-
-    // MARK: - Helpers
-
-    /// 날짜를 "yyyy.MM.dd" 형식으로 변환
-    private var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd"
-        return formatter.string(from: selectedDate)
+        .ignoresSafeArea()
     }
 }
 
@@ -89,14 +71,14 @@ struct JourneyCard: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
-                        .frame(height: 450)
+                        .frame(height: 300)
                         .clipped()
                         .cornerRadius(16)
                 } else {
                     // 이미지 없을 때 placeholder
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color.gray.opacity(0.2))
-                        .frame(height: 450)
+                        .frame(height: 300)
                         .overlay(
                             Image(systemName: "photo")
                                 .font(.system(size: 60))
@@ -122,7 +104,7 @@ struct JourneyCard: View {
             }) {
                 Image(systemName: "trash")
                     .font(.system(size: 20))
-                    .foregroundColor(Color(red: 1.0, green: 0.3, blue: 0.2))
+                    .foregroundColor(.red)
                     .frame(width: 40, height: 40)
                     .background(Color.white)
                     .clipShape(Circle())
