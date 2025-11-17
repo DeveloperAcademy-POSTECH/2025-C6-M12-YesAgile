@@ -96,7 +96,7 @@ struct BabyMoaRootView: View {
                 case .journeyAdd(let date):
                     JourneyAddView(coordinator: coordinator,
                                    selectedDate: date,
-                                   onSave: { image, memo in
+                                   onSave: { image, memo in //Todo : -onSave 어떻게 받을지 고민해보기. 옮겨야할
                                         }
                                     )
                                     .navigationBarBackButtonHidden()

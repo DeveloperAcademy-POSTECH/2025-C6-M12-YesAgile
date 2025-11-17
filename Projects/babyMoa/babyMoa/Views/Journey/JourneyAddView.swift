@@ -14,7 +14,7 @@ struct JourneyAddView: View {
     /// 저장 콜백: 부모(JourneyView)가 JourneyViewModel을 통해 저장 처리
     ///   - image: 사용자가 선택한 사진 (nil 가능?)
     ///   - memo: 사용자가 입력한 메모
-    let onSave: (UIImage?, String) -> Void // UIImage 옵셔널 수정 예정
+    let onSave: (UIImage?, String) -> Void // UIImage 옵셔널 수정 예정 저니뷰모델에게?
     // 부모가 넘겨주는 ‘저장할 때 실행할 함수’를 저장해두는 프로퍼티
     /// 선택된 이미지 ,메모, 사진선택 UI 표시 여부,PhotosPicker에서 선택한 항목
     @State private var selectedImage: UIImage?
@@ -94,7 +94,8 @@ struct JourneyAddView: View {
             Button("저장") {
                 // 1. 부모에게 데이터 전달 (콜백 실행)
                 onSave(selectedImage, memo)
-                // Todo 1. API로 각월에 대해 불러와 Journey 리스트를 만들고
+                // Todo 저니뷰모델에서
+                // 1. API로 각월에 대해 불러와 Journey 리스트를 만들고
                 //  2. 캘린더뷰모델과 맵뷰모델에 1. 에서만든 Journey 리스트를 공유
                 //  Journey 추가할때는 캘린더뷰모델에서 호출, API "200"code오면 추가적인 조회 api 호출 없이 로컬 배열에 추가
                 // 3. 화면 닫기

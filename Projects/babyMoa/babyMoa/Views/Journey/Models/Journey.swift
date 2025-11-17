@@ -37,7 +37,7 @@ struct Journey: Entity, Hashable {
         date.yyyyMMddKorean
     }
 
-    // MARK: - Hashable
+    // MARK: - Hashable 이거 공부하기 ㅜㅜ
 
     /// ForEach(journies, id: \.self) 사용을 위한 Hashable 구현 journeyId + 날짜 동일 여정
     static func == (lhs: Journey, rhs: Journey) -> Bool {
@@ -105,3 +105,5 @@ struct Journey: Entity, Hashable {
         }
     }
 #endif
+
+//지도에다가 핀 꼽아두듯, 위도경도 추출 (사진)
