@@ -68,24 +68,6 @@ class CalendarCardViewModel {
 
     // MARK: - 월 네비게이션
 
-    /// 현재 월의 여정 데이터 가져오기
-    func fetchCurrentMonthJournies() { // 아기가 있을상황만함
-        guard let babyId = SelectedBaby.babyId else {
-            print("⚠️ babyId 없음 - 프리뷰/테스트 환경 확인 필요")
-            return
-        }
-        
-        Task {
-            let year = Calendar.current.component(.year, from: currentMonth)
-            let month = Calendar.current.component(.month, from: currentMonth)
-            await journeyVM.fetchJournies(
-                babyId: babyId,
-                year: year,
-                month: month
-            )
-        }
-    }
-
     /// 이전 월로 이동
     func previousMonthTapped() {
         guard
@@ -97,7 +79,6 @@ class CalendarCardViewModel {
         else { return }
         currentMonth = newMonth
         updateMonthDates()
-        fetchCurrentMonthJournies()
         print("📅 이전 월: \(formatMonth(currentMonth))")
     }
 
@@ -112,7 +93,6 @@ class CalendarCardViewModel {
         else { return }
         currentMonth = newMonth
         updateMonthDates()
-        fetchCurrentMonthJournies()
         print("📅 다음 월: \(formatMonth(currentMonth))")
     }
 

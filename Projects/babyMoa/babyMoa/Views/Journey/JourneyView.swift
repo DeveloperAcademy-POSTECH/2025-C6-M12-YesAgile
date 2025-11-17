@@ -29,7 +29,7 @@ struct JourneyView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // 달력 카드
+                // 달력 카드 직접 뷰모델을 통해 값을 주입
                 CalendarCard(
                     data: CalendarCardData(
                         currentMonth: calendarCardVM.currentMonth,
@@ -40,8 +40,18 @@ struct JourneyView: View {
                     actions: CalendarCardActions(
                         onPreviousMonth: {
                             calendarCardVM.previousMonthTapped()
+                            
+                            Task {
+                                await journeyVM.fetchJournies(for: calendarCardVM.currentMonth)
+                            }
                         },
-                        onNextMonth: { calendarCardVM.nextMonthTapped() },
+                        onNextMonth: {
+                            calendarCardVM.nextMonthTapped()
+                            
+                            Task {
+                                await journeyVM.fetchJournies(for: calendarCardVM.currentMonth)
+                            }
+                        },
                         // 날짜 탭 시 화면 전환 로직을 View에서 처리
                         onDateTap: { date in
                             // ViewModel에서 날짜 선택 + 여정 조회 한 번에 처리
@@ -68,20 +78,27 @@ struct JourneyView: View {
                         isInCurrentMonth: {
                             calendarCardVM.isInCurrentMonth($0)
                         },
-                        isSelected: { calendarCardVM.isSelected($0) }
+                        isSelected: { date in
+                            let result = calendarCardVM.isSelected(date)
+                            return result  // true 또는 false
+                        }
+                        //          ↑ 여기서 함수를 전달!
+                               //          { $0 } = 는 클로저 축약 문법
+                               
                     )
                 )
                 .padding(.horizontal, 20)
                 // 지도 카드
-                MapCard()
+                MapCard(journies: journeyVM.journies)
                     .padding(.horizontal, 20)
                 Spacer().frame(height: 30)
             }
             .padding(.top, 20)
         }
         .onAppear {
-            SelectedBaby.babyId = 1
-            calendarCardVM.fetchCurrentMonthJournies()
+            Task {
+                await journeyVM.fetchJournies(for: calendarCardVM.currentMonth)
+            }
         }
     }
 }

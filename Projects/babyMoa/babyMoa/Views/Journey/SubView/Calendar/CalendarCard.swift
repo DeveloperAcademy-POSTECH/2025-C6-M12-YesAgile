@@ -160,7 +160,7 @@ struct CalendarGrid: View {
 struct DateCellView: View {
     let date: Date
     let isCurrentMonth: Bool
-    let journies: [Journey]  //ourney 인스턴스를 “데려오는 코드”가 아니야.그냥 “나는 이런 타입의 값을 받을 거야”라고 타입만 선언 이건 저장 프로퍼티임
+    let journies: [Journey]
     let isSelected: Bool  // 선택 상태
 
     var body: some View {
@@ -168,7 +168,7 @@ struct DateCellView: View {
             // 선택된 날짜 배경
             if isSelected {
                 Circle()
-                    .fill(Color.white)
+                    .fill(Color.orange)
             }
 
             // 점선 원 테두리

@@ -17,44 +17,6 @@ import SwiftUI
 @Observable class JourneyViewModel {
     /// 여정 데이터 배열
     var journies: [Journey] = []
-/// 서버에서 월별 여정 데이터 가져오기 맨 아래 테드 코드 나중에 ..
-    func fetchJournies(babyId: Int, year: Int, month: Int) async {
-        // 1) 월별 여정 데이터 API 호출
-        let result = await BabyMoaService.shared.getGetJourniesAtMonth(
-            babyId: babyId,
-            year: year,
-            month: month
-        )
-
-        switch result {
-        case .success(let response):
-            guard let models = response.data else {
-                journies = []
-                return
-            }
-
-            // 2) ResponseModel → Domain 변환
-            var converted: [Journey] = []
-            for model in models {
-                let journey = await model.toDomain()
-                converted.append(journey)
-            }
-
-            // 3) UI 상태 업데이트
-            journies = converted
-
-        case .failure(let error):
-            print("❌ 여정 조회 실패:", error)
-            
-            // ✅ 개발 환경에서는 Mock 데이터로 대체
-            #if DEBUG
-            print("📦 개발 환경: Mock 데이터 \(Journey.mockData.count)개 로드")
-            journies = Journey.mockData
-            #else
-            journies = []
-            #endif
-        }
-    }
 
     /// 여정 추가
     /// - 실제 모드: API POST 후 다시 조회
@@ -77,20 +39,62 @@ import SwiftUI
         // ✅ Equatable 사용 (id 대신)
         journies.removeAll { $0 == journey }
     }
+    
+    // MARK: - Fetch 함수
+    /// 특정 날짜의 월 데이터 조회
+    /// - Parameter date: 조회할 월이 포함된 날짜
+    func fetchJournies(for date: Date) async {
+        // 1. babyId 확인
+        guard let babyId = SelectedBaby.babyId else {
+            print("⚠️ babyId 없음 - MainTabViewModel에서 설정 필요")
+            
+            #if DEBUG
+            print("📦 개발 환경: Mock 데이터 \(Journey.mockData.count)개 로드")
+            journies = Journey.mockData
+            #else
+            journies = []
+            #endif
+            
+            return
+        }
+        // 2. year, month 추출
+        let year = Calendar.current.component(.year, from: date)
+        let month = Calendar.current.component(.month, from: date)
+        
+        // 3. 월별 여정 데이터 API 호출
+        let result = await BabyMoaService.shared.getGetJourniesAtMonth(
+            babyId: babyId,
+            year: year,
+            month: month
+        )
+        
+        switch result {
+        case .success(let response):
+            guard let models = response.data else {
+                journies = []
+                return
+            }
+            
+            // ResponseModel → Domain 변환
+            var converted: [Journey] = []
+            for model in models {
+                let journey = await model.toDomain()
+                converted.append(journey)
+            }
+            
+            // UI 상태 업데이트
+            journies = converted
+            
+        case .failure(let error):
+            print("❌ 여정 조회 실패:", error)
+            
+            // 개발 환경에서는 Mock 데이터로 대체
+            #if DEBUG
+            print("📦 개발 환경: Mock 데이터 \(Journey.mockData.count)개 로드")
+            journies = Journey.mockData
+            #else
+            journies = []
+            #endif
+        }
+    }
 }
-
-
-// TODO: BabyMoaService 연동
-// func fetchJournies(babyId: Int, year: Int, month: Int) async {
-//        let result = await BabyMoaService.shared.getGetJourniesAtMonth(babyId: babyId, year: year, month: month)
-//        switch result {
-//        case .success(let success):
-//            guard let journeyResModels = success.data else { return }
-//            for journeyResModel in journeyResModels {
-//                let journey = await journeyResModel.toDomain()
-//                journies.append(journey)
-//            }
-//        case .failure(let error):
-//            print(error)
-//        }
-// TODO: 테스트 (Ted 맘대로 한거)
