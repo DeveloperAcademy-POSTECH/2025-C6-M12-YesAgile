@@ -123,7 +123,7 @@ struct GrowthView: View {
             //MARK: - 데이터 확인 작업 찾기
             Task {
 //                SelectedBaby.babyId = 1
-//                await viewModel.fetchAllGrowthData()
+                await viewModel.fetchAllGrowthData()
             }
         }
     }

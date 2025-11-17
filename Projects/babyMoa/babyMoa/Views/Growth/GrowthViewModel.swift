@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import Combine
 
 @Observable
 final class GrowthViewModel {
     var coordinator: BabyMoaCoordinator
+    
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Properties
     // 좌측 상단 아기 정보 보여주기 위함
@@ -20,8 +23,8 @@ final class GrowthViewModel {
     
     var selectedMonthIdx: Int = 0
     
-    var selectedMilestoneAgeRangeIdx: Int = 0 // TODO: 네이밍 어떻게 할까요.. 네이밍하다가 머리 터질뻔했습니다.. -> allMilestones 2차원 배열의 row 인덱스입니다
-    var selectedMilestoneIdxInAgeRange: Int = 0 // TODO: 네이밍 어떻게 할까요.. 네이밍하다가 머리 터질뻔했습니다.. -> allMilestones 2차원 배열의 col 인덱스입니다
+    var selectedMilestoneAgeRangeIdx: Int = 0
+    var selectedMilestoneIdxInAgeRange: Int = 0
     
     var isMilestoneEditingViewPresented: Bool = false
     
@@ -149,6 +152,15 @@ final class GrowthViewModel {
     
     init(coordinator: BabyMoaCoordinator) {
         self.coordinator = coordinator
+        
+        SelectedBabyState.shared.$baby
+            .sink { [weak self] _ in
+                print("Selected baby changed. Fetching new growth data...")
+                Task {
+                    await self?.fetchAllGrowthData()
+                }
+            }
+            .store(in: &cancellables)
     }
     
     func fetchAllGrowthData() async {
