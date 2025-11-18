@@ -8,56 +8,33 @@
 import MapKit
 import SwiftUI
 
-/// 지도 카드 컴포넌트
+/// 지도 카드 컴포넌트 (Data/Actions 패턴)
 struct MapCard: View {
-    /// Journey 데이터 (JourneyView에서 주입)
-    let journies: [Journey]
-
-    //  MapCameraPosition 공부 17+
-    @State private var position = MapCameraPosition.region(
-        MKCoordinateRegion(
-            center: CLLocationCoordinate2D(
-                latitude: 37.5665,
-                longitude: 126.9780
-            ),  // 서울
-            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-        )
-    )
+    let data: MapCardData
+    let actions: MapCardActions
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            //  MapContentBuilder
-            Map(position: $position) {
-                //  ForEach로 Annotation 추가
-                ForEach(annotations) { annotation in
+            Map(position: data.position) {
+                ForEach(data.annotations) { annotation in
                     Annotation("", coordinate: annotation.coordinate) {
-                        // 커스텀 마커 (컴포넌트 분리)
-                        PhotoMarkerView(image: annotation.image)
+                        PhotoMarkerView(
+                            image: annotation.image,
+                            count: annotation.count  // ✅ count 전달
+                        )
+                        .onTapGesture {
+                            actions.onMarkerTap(annotation.date)
+                        }
                     }
                 }
             }
-            .mapStyle(.standard)  // 지도 스타일
+            .mapStyle(.standard)
             .cornerRadius(16)
             .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
 
             // 나침반 버튼 (우측 상단)
             Button {
-                withAnimation {
-                    // iOS 17+ 방식으로 위치 이동
-                    position = .region(
-                        MKCoordinateRegion(
-                            center: CLLocationCoordinate2D(
-                                latitude: 37.5665,
-                                longitude: 126.9780
-                            ),
-                            span: MKCoordinateSpan(
-                                latitudeDelta: 0.1,
-                                longitudeDelta: 0.1
-                            )
-                        )
-                    )
-                }
-                print("🧭 지도 중심 이동: 서울")
+                actions.onCompassTap()
             } label: {
                 Image(systemName: "location.fill")
                     .font(.system(size: 16))
@@ -71,56 +48,40 @@ struct MapCard: View {
         }
         .frame(height: 400)
     }
-
-    // MARK: - Computed Properties
-
-    /// 날짜별로 그룹화된 마커
-    private var annotations: [JourneyAnnotation] {
-        var uniqueAnnotations: [JourneyAnnotation] = []
-
-        for journey in journies {
-            // 같은 날짜가 이미 있는지 확인
-            let exists = uniqueAnnotations.contains { annotation in
-                Calendar.current.isDate(
-                    annotation.date,
-                    inSameDayAs: journey.date
-                )
-            }
-
-            // 없으면 추가 (그 날의 대표 마커)
-            if !exists {
-                uniqueAnnotations.append(JourneyAnnotation(from: journey))
-            }
-        }
-
-        return uniqueAnnotations
-    }
 }
 
 // MARK: - Photo Marker View ( 컴포넌트 분리)
 
 /// 사진 마커 뷰 - 지도 위 커스텀 마커
 struct PhotoMarkerView: View {
-    let image: UIImage?
+    let image: UIImage
+    let count: Int  // ✅ 같은 날짜의 여정 개수
 
     var body: some View {
-        ZStack {
-            // 배경 원
-            Circle()
-                .fill(Color.blue)
-                .frame(width: 40, height: 40)
+        VStack(spacing: 4) {  // ✅ VStack으로 변경 (개수 표시 추가)
+            ZStack {
+                // 배경 원
+                Circle()
+                    .fill(Color.blue)
+                    .frame(width: 40, height: 40)
 
-            // 사진 또는 기본 아이콘
-            if let image = image {
+                // 사진
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
                     .frame(width: 32, height: 32)
                     .clipShape(Circle())
-            } else {
-                Image(systemName: "photo")
+            }
+            
+            // ✅ 2개 이상일 때만 개수 표시
+            if count > 1 {
+                Text("\(count)개")
+                    .font(.system(size: 11, weight: .semibold))
                     .foregroundColor(.white)
-                    .font(.system(size: 16))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 2)
+                    .background(Color.blue)
+                    .cornerRadius(8)
             }
         }
     }
@@ -131,23 +92,58 @@ struct PhotoMarkerView: View {
 struct JourneyAnnotation: Identifiable {
     let id: Int
     let coordinate: CLLocationCoordinate2D
-    let image: UIImage?
+    let image: UIImage  // ✅ Non-optional
     let date: Date
+    let count: Int  // ✅ 같은 날짜의 여정 개수
 
-    init(from journey: Journey) {
-        // ✅ Journey에 id가 생기므로 넣어줬음.
+    init(from journey: Journey, count: Int) {
         self.id = journey.journeyId
         self.coordinate = journey.coordinate
-        self.image = journey.journeyImage  // ✅ journeyImage로 수정
+        self.image = journey.journeyImage
         self.date = journey.date
+        self.count = count
     }
+}
+
+// MARK: - Data & Actions
+
+/// MapCard에 전달할 데이터
+struct MapCardData {
+    var position: Binding<MapCameraPosition>
+    var annotations: [JourneyAnnotation]
+}
+
+/// MapCard의 사용자 액션
+struct MapCardActions {
+    var onMarkerTap: (Date) -> Void
+    var onCompassTap: () -> Void
 }
 
 // MARK: - Preview
 
 #Preview {
-    VStack {
-        MapCard(journies: Journey.mockData)
+    @Previewable @State var position = MapCameraPosition.region(
+        MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780),
+            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+        )
+    )
+    
+    let mockAnnotations = Journey.mockData
+        .filter { $0.latitude != 0 && $0.longitude != 0 }
+        .map { JourneyAnnotation(from: $0, count: 1) }  // ✅ Preview용 count 추가
+    
+    return VStack {
+        MapCard(
+            data: MapCardData(
+                position: $position,
+                annotations: mockAnnotations
+            ),
+            actions: MapCardActions(
+                onMarkerTap: { _ in },
+                onCompassTap: { }
+            )
+        )
         Spacer()
     }
     .padding(.horizontal, 20)
