@@ -181,8 +181,9 @@ struct DateCellView: View {
             // 이미지 썸네일 + 날짜 숫자
             ZStack {
                 // 여정 이미지 (있으면 표시)
-                if let first = journies.first, let uiImage = first.journeyImage {
-                    Image(uiImage: uiImage)
+                // journeyImage는 non-optional
+                if let first = journies.first {
+                    Image(uiImage: first.journeyImage)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 40, height: 40)
@@ -244,14 +245,8 @@ private struct PreviewWrapper: View {
             actions: CalendarCardActions(
                 onPreviousMonth: { viewModel.previousMonthTapped() },
                 onNextMonth: { viewModel.nextMonthTapped() },
-                // ⭐️ Preview에서는 화면 전환 대신 콘솔 출력만
                 onDateTap: { date in
-                    let journiesForDate = viewModel.dateTapped(date)
-                    if journiesForDate.isEmpty {
-                        print("➕ [Preview] 여정 추가 화면으로 이동할 날짜: \(date)")
-                    } else {
-                        print("📋 [Preview] 여정 리스트 화면으로 이동: \(journiesForDate.count)개")
-                    }
+                    _ = viewModel.dateTapped(date)
                 },
                 isInCurrentMonth: { viewModel.isInCurrentMonth($0) },
                 isSelected: { viewModel.isSelected($0) }

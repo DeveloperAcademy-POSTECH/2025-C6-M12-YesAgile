@@ -194,7 +194,7 @@ struct babyMoaTests {
 @Test func addjourney() async {
 
     let result = await BabyMoaService.shared.postAddJourney(
-        babyId: 9,
+        babyId: 31,
         journeyImage: "https://example.com/image.png",
         latitude: 37.5665,
         longitude: 126.9780,
@@ -229,8 +229,7 @@ struct babyMoaTests {
 }
 @Test func getJourniesAtMonth() async {
     let result = await BabyMoaService.shared.getGetJourniesAtMonth(
-
-        babyId: 14,
+        babyId: 31,
         year: 2025,
         month: 11
     )
