@@ -14,16 +14,21 @@ struct JourneyGridView: View {
     let journies: [Journey]  // 이미 최신순 정렬됨
     let onJourneyTap: (Journey) -> Void
     let onDismiss: () -> Void
-    
+
     @Environment(\.dismiss) private var dismiss
-    
-    init(selectedDate: Date, journies: [Journey], onJourneyTap: @escaping (Journey) -> Void, onDismiss: @escaping () -> Void) {
+
+    init(
+        selectedDate: Date,
+        journies: [Journey],
+        onJourneyTap: @escaping (Journey) -> Void,
+        onDismiss: @escaping () -> Void
+    ) {
         self.selectedDate = selectedDate
         self.journies = journies
         self.onJourneyTap = onJourneyTap
         self.onDismiss = onDismiss
     }
-    
+
     // 3열 그리드
     private let columns = [
         GridItem(.flexible(), spacing: 26),
@@ -44,7 +49,7 @@ struct JourneyGridView: View {
                 }
             )
             .padding(.horizontal, 20)
-            
+
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20) {
                     ForEach(journies, id: \.journeyId) { journey in
@@ -77,7 +82,7 @@ struct JourneyGridView: View {
             selectedDate: Date(),
             journies: Journey.mockData,
             onJourneyTap: { _ in },
-            onDismiss: { }
+            onDismiss: {}
         )
     }
 }

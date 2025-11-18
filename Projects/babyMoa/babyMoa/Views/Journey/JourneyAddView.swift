@@ -5,14 +5,13 @@
 //  Created by pherd on 11/7/25.
 //
 
-import PhotosUI
-import SwiftUI
 import CoreLocation
-import Photos
+import PhotosUI  // PhotosPicker, PHAuthorizationStatus 포함
+import SwiftUI
 
 struct JourneyAddView: View {
     let selectedDate: Date
-    let photoAccessStatus: PHAuthorizationStatus // ✅ 추가: 사진 라이브러리 권한 상태
+    let photoAccessStatus: PHAuthorizationStatus  // ✅ 추가: 사진 라이브러리 권한 상태
     /// 저장 콜백: 부모(JourneyView)가 JourneyViewModel을 통해 저장 처리
     /// - Parameters:
     ///   - image: 선택한 사진 (필수)
@@ -21,12 +20,12 @@ struct JourneyAddView: View {
     ///   - longitude: 경도 (위치 정보 없으면 0.0)
     let onSave: (UIImage, String, Double, Double) -> Void
     let onDismiss: () -> Void
-    
+
     // MARK: - Environment
     @Environment(\.dismiss) private var dismiss
-    
+
     // MARK: - State
-    
+
     @State private var selectedImage: UIImage?
     @State private var memo: String = ""
     @State private var showImagePicker = false
@@ -47,7 +46,7 @@ struct JourneyAddView: View {
                 }
             )
             .padding(.horizontal, 20)
-            
+
             // MARK: - Limited Access 안내 배너
             if photoAccessStatus == .limited {
                 LimitedAccessBanner(
@@ -58,7 +57,7 @@ struct JourneyAddView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 12)
             }
-            
+
             ScrollView {
                 VStack(spacing: 20) {
                     // 사진 영역
@@ -119,14 +118,14 @@ struct JourneyAddView: View {
                 guard let image = selectedImage else {
                     return  // ✅ 사진 필수
                 }
-                
+
                 // 위치 정보 (없으면 0.0)
                 let latitude = extractedLocation?.coordinate.latitude ?? 0.0
                 let longitude = extractedLocation?.coordinate.longitude ?? 0.0
-                
+
                 // 부모에게 데이터 전달
                 onSave(image, memo, latitude, longitude)
-                
+
                 dismiss()
             }
             .buttonStyle(.defaultButton)
@@ -151,35 +150,28 @@ struct JourneyAddView: View {
         )
         .onChange(of: pickedItem) { _, newValue in
             guard let newValue else { return }
-            
+
             Task { @MainActor in
                 // 1. 이미지 로드
-                guard let data = try? await newValue.loadTransferable(type: Data.self),
-                      let uiImage = UIImage(data: data) else {
+                guard
+                    let data = try? await newValue.loadTransferable(
+                        type: Data.self
+                    ),
+                    let uiImage = UIImage(data: data)
+                else {
                     selectedImage = nil
                     extractedLocation = nil
                     return
                 }
-                
+
                 selectedImage = uiImage
-                
-                // 2. EXIF에서 직접 위치 정보 추출 (우선순위 1)
-                // Instagram, WhatsApp 등 대부분의 앱이 이 방식 사용
+
+                // 2. EXIF에서 위치 정보 추출
+                // Instagram, WhatsApp 등 대부분의 앱이 사용하는 방식
                 if let location = ImageEXIFHelper.extractLocation(from: data) {
                     extractedLocation = location
                 }
-                // 3. EXIF 실패 시 PHAssetHelper 시도 (Fallback)
-                // 스크린샷이나 편집된 이미지 대비
-                else if let itemIdentifier = newValue.itemIdentifier {
-                    if let metadata = await PHAssetHelper.extractMetadata(from: itemIdentifier),
-                       let location = metadata.location {
-                        extractedLocation = location
-                    } else {
-                        extractedLocation = nil
-                        showLocationAlert = true
-                    }
-                }
-                // 4. 둘 다 실패
+                // 3. 위치 정보 없음 (스크린샷, 위치 태그 비활성화 등)
                 else {
                     extractedLocation = nil
                     showLocationAlert = true
@@ -187,7 +179,7 @@ struct JourneyAddView: View {
             }
         }
         .alert("위치 정보 없음", isPresented: $showLocationAlert) {
-            Button("확인", role: .cancel) { }
+            Button("확인", role: .cancel) {}
         } message: {
             Text("사진에 위치 정보가 없어서 지도 위에 보이지 않습니다.")
         }
@@ -201,20 +193,20 @@ struct JourneyAddView: View {
 /// - 설정 앱으로 이동하여 권한 변경 유도
 struct LimitedAccessBanner: View {
     let onSettingsTap: () -> Void
-    
+
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundColor(.orange)
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text("위치 정보를 사용할 수 없습니다. 맵 위에는 보이지 않아요.")
                     .font(.system(size: 14, weight: .semibold))
                     .lineLimit(2)
             }
-            
+
             Spacer()
-            
+
             Button("설정") {
                 onSettingsTap()
             }
@@ -234,6 +226,6 @@ struct LimitedAccessBanner: View {
         selectedDate: Date(),
         photoAccessStatus: .authorized,
         onSave: { _, _, _, _ in },
-        onDismiss: { }
+        onDismiss: {}
     )
 }

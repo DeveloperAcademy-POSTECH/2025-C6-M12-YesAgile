@@ -11,7 +11,7 @@ struct JourneyListView: View {
     let onAddJourney: () -> Void
     let onDeleteJourney: (Journey) -> Void
     let onDismiss: () -> Void
-    
+
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -28,7 +28,7 @@ struct JourneyListView: View {
             )
             .padding(.horizontal, 20)
             .background(Color.white)
-            
+
             ScrollView {
                 VStack(spacing: 20) {
                     ForEach(journies, id: \.journeyId) { journey in
@@ -86,11 +86,11 @@ struct JourneyCard: View {
                     .lineLimit(nil)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 16)
-        }
-        .background(
-            Color.background
-                .ignoresSafeArea(edges: .bottom) // 하단만 확장해 여백 없이 표시
-        )
+            }
+            .background(
+                Color.background
+                    .ignoresSafeArea(edges: .bottom)  // 하단만 확장해 여백 없이 표시
+            )
             .cornerRadius(16)
             .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
 
@@ -125,8 +125,8 @@ struct JourneyCard: View {
     JourneyListView(
         selectedDate: Date(),
         journies: Journey.mockData,
-        onAddJourney: { },
+        onAddJourney: {},
         onDeleteJourney: { _ in },
-        onDismiss: { }
+        onDismiss: {}
     )
 }

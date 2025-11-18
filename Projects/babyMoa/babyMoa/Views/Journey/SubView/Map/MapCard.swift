@@ -9,7 +9,6 @@ import MapKit
 import SwiftUI
 
 /// // MARK: - Data & Actions
-
 /// MapCard에 전달할 데이터 지도 카드 컴포넌트
 struct MapCardData {
     var position: Binding<MapCameraPosition>
@@ -21,10 +20,11 @@ struct MapCardActions {
     var onMarkerTap: (Date) -> Void
     var onCompassTap: () -> Void
 }
+
 struct MapCard: View {
     let data: MapCardData
     let actions: MapCardActions
-
+    // 여기서 쓰는 value들 직접 뷰모델 받아서 쓰지말고, 프로퍼티로 선언해서 뷰에서 주입 및 호출수 있도록!
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Map(position: data.position) {
@@ -32,7 +32,7 @@ struct MapCard: View {
                     Annotation("", coordinate: annotation.coordinate) {
                         PhotoMarkerView(
                             image: annotation.image,
-                            count: annotation.count  // ✅ count 전달
+                            count: annotation.count  // 마커 안에 보여줄 사진 이미지와 같은 날짜 여정 개수를 표시,
                         )
                         .onTapGesture {
                             actions.onMarkerTap(annotation.date)
@@ -84,7 +84,7 @@ struct PhotoMarkerView: View {
                     .frame(width: 32, height: 32)
                     .clipShape(Circle())
             }
-            
+
             // ✅ 2개 이상일 때만 개수 표시
             if count > 1 {
                 Text("\(count)개")
@@ -99,36 +99,20 @@ struct PhotoMarkerView: View {
     }
 }
 
-// MARK: - Journey Annotation 뷰에 표시하기 위한 가벼운 모델
-
-struct JourneyAnnotation: Identifiable {
-    let id: Int
-    let coordinate: CLLocationCoordinate2D
-    let image: UIImage  // ✅ Non-optional
-    let date: Date
-    let count: Int  // ✅ 같은 날짜의 여정 개수
-
-    init(from journey: Journey, count: Int) {
-        self.id = journey.journeyId
-        self.coordinate = journey.coordinate
-        self.image = journey.journeyImage
-        self.date = journey.date
-        self.count = count
-    }
-}
-
-
 
 // MARK: - Preview
 
 #Preview {
     @Previewable @State var position = MapCameraPosition.region(
         MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780),
+            center: CLLocationCoordinate2D(
+                latitude: 37.5665,
+                longitude: 126.9780
+            ),
             span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
         )
     )
-    
+
     let mockAnnotations = Journey.mockData
         .filter { journey in
             journey.latitude != 0 && journey.longitude != 0
@@ -136,7 +120,7 @@ struct JourneyAnnotation: Identifiable {
         .map { journey in
             JourneyAnnotation(from: journey, count: 1)  // ✅ Preview용 count 추가
         }
-    
+
     return VStack {
         MapCard(
             data: MapCardData(
@@ -145,7 +129,7 @@ struct JourneyAnnotation: Identifiable {
             ),
             actions: MapCardActions(
                 onMarkerTap: { _ in },
-                onCompassTap: { }
+                onCompassTap: {}
             )
         )
         Spacer()

@@ -92,19 +92,19 @@ class CalendarCardViewModel {
     }
 
     // MARK: - 날짜 선택
-    
+
     /// 날짜 탭 시 해당 날짜의 여정 반환
     /// - Parameter date: 선택된 날짜
     /// - Returns: 해당 날짜의 여정 배열
     func dateTapped(_ date: Date) -> [Journey] {
         // 1. 선택된 날짜 업데이트 (달력에서 해당 날짜가 하이라이트됨)
         selectedDate = date
-        
+
         // 2. 탭한 날짜와 동일한 날짜의 여정만 필터링하여 반환
         let result = journies.filter { journey in
             journey.date.isSameDay(as: date)
         }
-        
+
         return result
     }
 

@@ -189,13 +189,15 @@ struct DateCellView: View {
                         .frame(width: 40, height: 40)
                         .clipShape(Circle())
                 }
-                
+
                 // 날짜 숫자 (항상 표시, 이미지 위에 오버레이)
                 Text("\(day)")
                     .font(
                         .system(size: 16, weight: isSelected ? .bold : .regular)
                     )
-                    .foregroundColor(journies.first?.journeyImage != nil ? .white : textColor)
+                    .foregroundColor(
+                        journies.first?.journeyImage != nil ? .white : textColor
+                    )
                     .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
             }
             .frame(width: 40, height: 40)
@@ -225,15 +227,17 @@ struct DateCellView: View {
 private struct PreviewWrapper: View {
     @State private var viewModel: CalendarCardViewModel
     let coordinator = BabyMoaCoordinator()
-    
+
     init() {
-     
+
         let journeyVM = JourneyViewModel()
         journeyVM.journies = Journey.mockData
-        
-        _viewModel = State(initialValue: CalendarCardViewModel(journeyViewModel: journeyVM))
+
+        _viewModel = State(
+            initialValue: CalendarCardViewModel(journeyViewModel: journeyVM)
+        )
     }
-    
+
     var body: some View {
         CalendarCard(
             data: CalendarCardData(

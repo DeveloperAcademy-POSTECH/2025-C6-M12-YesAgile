@@ -18,14 +18,7 @@ import SwiftUI
     /// 여정 데이터 배열
     var journies: [Journey] = []
 
-    /// 여정 추가 (Server-First)
-    /// - Parameters:
-    ///   - image: 여정 이미지
-    ///   - memo: 여정 메모
-    ///   - date: 여정 날짜
-    ///   - latitude: 위도
-    ///   - longitude: 경도
-    /// - Returns: 성공 여부
+    /// 여정 추가
     func addJourney(
         image: UIImage,
         memo: String,
@@ -38,20 +31,22 @@ import SwiftUI
             print("⚠️ babyId 없음")
             return false
         }
-        
+
         // 2. UIImage 리사이즈: 1024x1024로 제한하여 배터리/메모리 최적화 (원본 대비 약 1/4~1/10)
         let resizedImage = ImageManager.shared.resizeImage(image, maxSize: 1024)
-        
+
         // 3. UIImage → Base64 변환: 서버 전송을 위해 이미지를 문자열로 인코딩
         // (ImageManager.swift 참고: JPEG Data → Base64 String 변환)
-        guard let base64Image = ImageManager.shared.encodeToBase64(
-            resizedImage,
-            compressionQuality: 0.7
-        ) else {
+        guard
+            let base64Image = ImageManager.shared.encodeToBase64(
+                resizedImage,
+                compressionQuality: 0.7
+            )
+        else {
             print("❌ 이미지 Base64 변환 실패")
             return false
         }
-        
+
         // 4. 서버에 여정 추가 API 호출
         let result = await BabyMoaService.shared.postAddJourney(
             babyId: babyId,
@@ -61,7 +56,7 @@ import SwiftUI
             date: DateFormatter.yyyyDashMMDashdd.string(from: date),
             memo: memo
         )
-        
+
         // 5. 서버 응답 처리 및 로컬 배열 업데이트 (Server-First 방식)
         switch result {
         case .success(let response):
@@ -85,7 +80,7 @@ import SwiftUI
             }
             print("⚠️ 서버 응답 데이터 없음")
             return false
-            
+
         case .failure(let error):
             print("❌ 서버 저장 실패: \(error)")
             return false
@@ -101,13 +96,13 @@ import SwiftUI
             print("⚠️ babyId 없음")
             return false
         }
-        
+
         // 2. 서버에 삭제 API 호출
         let result = await BabyMoaService.shared.deleteJourney(
             babyId: babyId,
             journeyId: journey.journeyId
         )
-        
+
         // 3. 서버 삭제 성공 시 로컬 배열에서도 제거 (Server-First 방식)
         switch result {
         case .success:
@@ -115,13 +110,13 @@ import SwiftUI
                 existingJourney == journey
             }
             return true
-            
+
         case .failure(let error):
             print("❌ 서버 삭제 실패: \(error)")
             return false
         }
     }
-    
+
     // MARK: - Fetch 함수
     /// 특정 날짜의 월 데이터 조회
     /// - Parameter date: 조회할 월이 포함된 날짜
@@ -132,18 +127,18 @@ import SwiftUI
             journies = []
             return
         }
-        
+
         // 2. date에서 연도(year)와 월(month) 추출
         let year = Calendar.current.component(.year, from: date)
         let month = Calendar.current.component(.month, from: date)
-        
+
         // 3. 서버에서 해당 월의 모든 여정 데이터 조회
         let result = await BabyMoaService.shared.getGetJourniesAtMonth(
             babyId: babyId,
             year: year,
             month: month
         )
-        
+
         switch result {
         case .success(let response):
             // 서버 응답 데이터 확인
@@ -152,17 +147,17 @@ import SwiftUI
                 journies = []
                 return
             }
-            
+
             // ResponseModel → Domain Model 변환 (각 모델마다 이미지 다운로드 포함)
             var converted: [Journey] = []
             for model in models {
                 let journey = await model.toDomain()
                 converted.append(journey)
             }
-            
+
             // 변환된 여정 배열로 UI 상태 업데이트
             journies = converted
-            
+
         case .failure(let error):
             print("❌ 여정 조회 실패: \(error)")
             journies = []
