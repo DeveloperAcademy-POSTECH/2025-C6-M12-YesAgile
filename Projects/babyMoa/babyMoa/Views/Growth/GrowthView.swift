@@ -60,7 +60,11 @@ struct GrowthView: View {
                             coordinator.push(path: .newHeight)
                         }, label: {
                             // 1. 기린 카드
-                            CardItemView(title: "키", value: "37.5cm", backgroundColor: Color.orange50) {
+                            CardItemView(
+                                title: "키",
+                                value: viewModel.latestHeight != nil ? "\(viewModel.latestHeight!)cm" : "0cm",
+                                backgroundColor: Color.orange50
+                            ) {
                                 // 👇 기린의 고유한 레이아웃 전달
                                 Image("GiraffeNeck")
                                     .resizable()
@@ -74,7 +78,11 @@ struct GrowthView: View {
                             coordinator.push(path: .newWeight)
                         }, label: {
                             // 2. 코끼리 카드
-                            CardItemView(title: "몸무게", value: "10.2kg", backgroundColor: Color.green80) {
+                            CardItemView(
+                                title: "몸무게",
+                                value: viewModel.latestWeight != nil ? "\(viewModel.latestWeight!)kg" : "0Kg",
+                                backgroundColor: Color.green80
+                            ) {
                                 // 👇 코끼리의 고유한 레이아웃(VStack+Spacer) 전달
                                 VStack {
                                     Spacer()
