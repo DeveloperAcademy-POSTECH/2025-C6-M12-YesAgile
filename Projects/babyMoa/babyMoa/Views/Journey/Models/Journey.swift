@@ -12,7 +12,7 @@ import UIKit
 /// 서버 ResponseModel과 달리 UI에 최적화된 형태로 데이터 보관
 struct Journey: Entity, Hashable {
     var journeyId: Int
-    var journeyImage: UIImage?
+    var journeyImage: UIImage  // ✅ 사진 필수 (non-optional)
     var latitude: Double
     var longitude: Double
     var date: Date  // ⚠️ String이 아닌 Date: Calendar API 사용을 위함 나중에 변환 요함
@@ -23,6 +23,15 @@ struct Journey: Entity, Hashable {
     /// CLLocationCoordinate2D로 변환 (MapKit 사용)
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+
+    /// 지도에 표시 가능한 유효한 위치인지 확인
+    /// - (0, 0) 제외 (위치 정보 없음)
+    /// - GPS 유효 범위 내 (위도: -90~90, 경도: -180~180)
+    var hasValidLocation: Bool {
+        latitude != 0 && longitude != 0 &&
+        latitude >= -90 && latitude <= 90 &&
+        longitude >= -180 && longitude <= 180
     }
 
     /// UI 표시용 짧은 날짜 형식 (예: "2025.11.07")
@@ -58,15 +67,23 @@ struct Journey: Entity, Hashable {
             [
                 Journey(
                     journeyId: 1,
-                    journeyImage: UIImage(systemName: "star.fill"),
+                    journeyImage: UIImage(systemName: "star.fill")!,  // ✅ force unwrap (system image는 항상 존재)
                     latitude: 37.5665,
                     longitude: 126.9780,
                     date: Date(),
                     memo: "서울 나들이"
                 ),
                 Journey(
+                    journeyId: 5,
+                    journeyImage: UIImage(systemName: "star.fill")!,  // ✅ force unwrap (system image는 항상 존재)
+                    latitude: 37.5665,
+                    longitude: 126.9790,
+                    date: Date(),
+                    memo: "서울 나들이2"
+                ),
+                Journey(
                     journeyId: 2,
-                    journeyImage: UIImage(systemName: "heart.fill"),
+                    journeyImage: UIImage(systemName: "heart.fill")!,
                     latitude: 37.5642,
                     longitude: 126.9770,
                     date: Calendar.current.date(
@@ -78,7 +95,7 @@ struct Journey: Entity, Hashable {
                 ),
                 Journey(
                     journeyId: 3,
-                    journeyImage: UIImage(systemName: "leaf.fill"),
+                    journeyImage: UIImage(systemName: "leaf.fill")!,
                     latitude: 37.5700,
                     longitude: 126.9800,
                     date: Calendar.current.date(
@@ -90,7 +107,7 @@ struct Journey: Entity, Hashable {
                 ),
                 Journey(
                     journeyId: 4,
-                    journeyImage: UIImage(systemName: "camera.fill"),
+                    journeyImage: UIImage(systemName: "camera.fill")!,
                     latitude: 37.5700,
                     longitude: 126.0000,
                     date: Calendar.current.date(
