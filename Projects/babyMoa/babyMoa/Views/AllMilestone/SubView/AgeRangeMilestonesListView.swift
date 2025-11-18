@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AgeRangeMilestonesListView: View {
-    @Binding var viewModel: AllMilestoneViewModel
+    var viewModel: AllMilestoneViewModel
     let row: Int
     
     var body: some View {

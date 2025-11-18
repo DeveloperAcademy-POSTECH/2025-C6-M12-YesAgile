@@ -10,8 +10,8 @@ import SwiftUI
 struct AllMilestoneView: View {
     @State var viewModel: AllMilestoneViewModel
     
-    init(coordinator: BabyMoaCoordinator, allMilestones: [[GrowthMilestone]]) {
-        viewModel = AllMilestoneViewModel(coordinator: coordinator, allMilestones: allMilestones)
+    init(coordinator: BabyMoaCoordinator) {
+        _viewModel = State(wrappedValue: AllMilestoneViewModel(coordinator: coordinator))
     }
     
     var body: some View {
@@ -33,7 +33,7 @@ struct AllMilestoneView: View {
                 
                 ScrollView(.vertical) {
                     ForEach(0..<viewModel.allMilestones.count, id: \.self) { row in
-                        AgeRangeMilestonesListView(viewModel: $viewModel, row: row)
+                        AgeRangeMilestonesListView(viewModel: viewModel, row: row)
                         Spacer().frame(height: 20)
                     }
                 }

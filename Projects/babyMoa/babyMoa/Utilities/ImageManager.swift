@@ -37,7 +37,7 @@ final class ImageManager {
             // sessionResult.0: data
             // sessionResult.1: URLResponse
             return UIImage(data: sessionResult.0)
-        } catch(let e) {
+        } catch {
             return nil
         }
     }

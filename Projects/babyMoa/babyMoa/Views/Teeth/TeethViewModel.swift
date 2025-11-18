@@ -50,12 +50,7 @@ final class TeethViewModel {
     }
     
     func refreshEruptedTeethList() {
-        self.sortedEruptedTeethList = teethList.filter({ teeth in
-            if teeth.erupted, let eruptedDate = teeth.eruptedDate {
-                return true
-            }
-            return false
-        })
+        self.sortedEruptedTeethList = teethList.filter { $0.erupted && $0.eruptedDate != nil }
         .sorted(by: {
             let firstDate = DateFormatter.yyyyDashMMDashdd.date(from: $0.eruptedDate!)
             let secondDate = DateFormatter.yyyyDashMMDashdd.date(from: $1.eruptedDate!)
