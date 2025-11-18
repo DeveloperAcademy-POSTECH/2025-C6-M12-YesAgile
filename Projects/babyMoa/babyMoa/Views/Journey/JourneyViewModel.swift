@@ -18,50 +18,122 @@ import SwiftUI
     /// 여정 데이터 배열
     var journies: [Journey] = []
 
-    /// 여정 추가
-    /// - 실제 모드: API POST 후 다시 조회
-    func addJourney(_ journey: Journey) async {
-        // TODO: 나중에 API로 교체
-        // let reqModel = AddJourneyReqModel(...)
-        // let result = await BabyMoaService.shared.postAddJourney(reqModel)
-        // if result.isSuccess {
-        //     await fetchJournies(babyId: babyId, year: 2025, month: 11)
-        // }
-
-        // Mock 모드: 배열에 추가
-        journies.append(journey)
+    /// 여정 추가 (Server-First)
+    /// - Parameters:
+    ///   - image: 여정 이미지
+    ///   - memo: 여정 메모
+    ///   - date: 여정 날짜
+    ///   - latitude: 위도
+    ///   - longitude: 경도
+    /// - Returns: 성공 여부
+    func addJourney(
+        image: UIImage,
+        memo: String,
+        date: Date,
+        latitude: Double,
+        longitude: Double
+    ) async -> Bool {
+        // 1. babyId 확인: MainTabViewModel에서 설정한 현재 아기 ID 가져오기
+        guard let babyId = SelectedBaby.babyId else {
+            print("⚠️ babyId 없음")
+            return false
+        }
         
+        // 2. UIImage 리사이즈: 1024x1024로 제한하여 배터리/메모리 최적화 (원본 대비 약 1/4~1/10)
+        let resizedImage = ImageManager.shared.resizeImage(image, maxSize: 1024)
+        
+        // 3. UIImage → Base64 변환: 서버 전송을 위해 이미지를 문자열로 인코딩
+        // (ImageManager.swift 참고: JPEG Data → Base64 String 변환)
+        guard let base64Image = ImageManager.shared.encodeToBase64(
+            resizedImage,
+            compressionQuality: 0.7
+        ) else {
+            print("❌ 이미지 Base64 변환 실패")
+            return false
+        }
+        
+        // 4. 서버에 여정 추가 API 호출
+        let result = await BabyMoaService.shared.postAddJourney(
+            babyId: babyId,
+            journeyImage: base64Image,
+            latitude: latitude,
+            longitude: longitude,
+            date: DateFormatter.yyyyDashMMDashdd.string(from: date),
+            memo: memo
+        )
+        
+        // 5. 서버 응답 처리 및 로컬 배열 업데이트 (Server-First 방식)
+        switch result {
+        case .success(let response):
+            // 서버에서 생성된 journeyId 포함한 데이터 받아오기
+            if let data = response.data {
+                // 새 여정 객체 생성 (서버 ID + 로컬 이미지 조합)
+                let newJourney = Journey(
+                    journeyId: data.journeyId,
+                    journeyImage: resizedImage,  // 리사이즈된 이미지 재사용
+                    latitude: latitude,
+                    longitude: longitude,
+                    date: date,
+                    memo: memo
+                )
+                // 배열에 추가 후 최신순 정렬 (날짜 기준 내림차순)
+                journies.append(newJourney)
+                journies.sort { $0.date > $1.date }
+                return true
+            }
+            print("⚠️ 서버 응답 데이터 없음")
+            return false
+            
+        case .failure(let error):
+            print("❌ 서버 저장 실패: \(error)")
+            return false
+        }
     }
 
-    /// 여정 삭제
+    /// 여정 삭제 (Server-First)
     /// - Parameter journey: 삭제할 여정
-    func removeJourney(_ journey: Journey) async {
-        // ✅ Equatable 사용 (id 대신)
-        journies.removeAll { $0 == journey }
+    /// - Returns: 성공 여부
+    func removeJourney(_ journey: Journey) async -> Bool {
+        // 1. babyId 확인: 현재 아기 ID 가져오기
+        guard let babyId = SelectedBaby.babyId else {
+            print("⚠️ babyId 없음")
+            return false
+        }
+        
+        // 2. 서버에 삭제 API 호출
+        let result = await BabyMoaService.shared.deleteJourney(
+            babyId: babyId,
+            journeyId: journey.journeyId
+        )
+        
+        // 3. 서버 삭제 성공 시 로컬 배열에서도 제거 (Server-First 방식)
+        switch result {
+        case .success:
+            journies.removeAll { $0 == journey }
+            return true
+            
+        case .failure(let error):
+            print("❌ 서버 삭제 실패: \(error)")
+            return false
+        }
     }
     
     // MARK: - Fetch 함수
     /// 특정 날짜의 월 데이터 조회
     /// - Parameter date: 조회할 월이 포함된 날짜
     func fetchJournies(for date: Date) async {
-        // 1. babyId 확인
+        // 1. babyId 확인: 현재 아기 ID 가져오기
         guard let babyId = SelectedBaby.babyId else {
-            print("⚠️ babyId 없음 - MainTabViewModel에서 설정 필요")
-            
-            #if DEBUG
-            print("📦 개발 환경: Mock 데이터 \(Journey.mockData.count)개 로드")
-            journies = Journey.mockData
-            #else
+            print("⚠️ babyId 없음")
             journies = []
-            #endif
-            
             return
         }
-        // 2. year, month 추출
+        
+        // 2. date에서 연도(year)와 월(month) 추출
         let year = Calendar.current.component(.year, from: date)
         let month = Calendar.current.component(.month, from: date)
         
-        // 3. 월별 여정 데이터 API 호출
+        // 3. 서버에서 해당 월의 모든 여정 데이터 조회
         let result = await BabyMoaService.shared.getGetJourniesAtMonth(
             babyId: babyId,
             year: year,
@@ -70,31 +142,26 @@ import SwiftUI
         
         switch result {
         case .success(let response):
+            // 서버 응답 데이터 확인
             guard let models = response.data else {
+                print("⚠️ response.data가 nil")
                 journies = []
                 return
             }
             
-            // ResponseModel → Domain 변환
+            // ResponseModel → Domain Model 변환 (각 모델마다 이미지 다운로드 포함)
             var converted: [Journey] = []
             for model in models {
                 let journey = await model.toDomain()
                 converted.append(journey)
             }
             
-            // UI 상태 업데이트
+            // 변환된 여정 배열로 UI 상태 업데이트
             journies = converted
             
         case .failure(let error):
-            print("❌ 여정 조회 실패:", error)
-            
-            // 개발 환경에서는 Mock 데이터로 대체
-            #if DEBUG
-            print("📦 개발 환경: Mock 데이터 \(Journey.mockData.count)개 로드")
-            journies = Journey.mockData
-            #else
+            print("❌ 여정 조회 실패: \(error)")
             journies = []
-            #endif
         }
     }
 }
