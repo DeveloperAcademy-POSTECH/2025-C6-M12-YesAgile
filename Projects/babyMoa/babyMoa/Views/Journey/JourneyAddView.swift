@@ -7,20 +7,32 @@
 
 import PhotosUI
 import SwiftUI
+import CoreLocation
+import Photos
 
 struct JourneyAddView: View {
-    let coordinator: BabyMoaCoordinator
     let selectedDate: Date
+    let photoAccessStatus: PHAuthorizationStatus // ✅ 추가: 사진 라이브러리 권한 상태
     /// 저장 콜백: 부모(JourneyView)가 JourneyViewModel을 통해 저장 처리
-    ///   - image: 사용자가 선택한 사진 (nil 가능?)
-    ///   - memo: 사용자가 입력한 메모
-    let onSave: (UIImage?, String) -> Void // UIImage 옵셔널 수정 예정 저니뷰모델에게?
-    // 부모가 넘겨주는 ‘저장할 때 실행할 함수’를 저장해두는 프로퍼티
-    /// 선택된 이미지 ,메모, 사진선택 UI 표시 여부,PhotosPicker에서 선택한 항목
+    /// - Parameters:
+    ///   - image: 선택한 사진 (필수)
+    ///   - memo: 여정 메모
+    ///   - latitude: 위도 (위치 정보 없으면 0.0)
+    ///   - longitude: 경도 (위치 정보 없으면 0.0)
+    let onSave: (UIImage, String, Double, Double) -> Void
+    let onDismiss: () -> Void
+    
+    // MARK: - Environment
+    @Environment(\.dismiss) private var dismiss
+    
+    // MARK: - State
+    
     @State private var selectedImage: UIImage?
     @State private var memo: String = ""
     @State private var showImagePicker = false
     @State private var pickedItem: PhotosPickerItem? = nil
+    @State private var extractedLocation: CLLocation?  // ✅ 위치 정보
+    @State private var showLocationAlert = false  // ✅ 위치 없음 알림
 
     var body: some View {
         VStack(spacing: 0) {
@@ -28,13 +40,25 @@ struct JourneyAddView: View {
                 title: selectedDate.yyyyMMdd,
                 leading: {
                     Button(action: {
-                        coordinator.pop()
+                        dismiss()
                     }) {
                         Image(systemName: "chevron.left")
                     }
                 }
             )
             .padding(.horizontal, 20)
+            
+            // MARK: - Limited Access 안내 배너
+            if photoAccessStatus == .limited {
+                LimitedAccessBanner(
+                    onSettingsTap: {
+                        PhotoLibraryPermissionHelper.openSettings()
+                    }
+                )
+                .padding(.horizontal, 20)
+                .padding(.top, 12)
+            }
+            
             ScrollView {
                 VStack(spacing: 20) {
                     // 사진 영역
@@ -92,48 +116,124 @@ struct JourneyAddView: View {
 
             // 저장 버튼
             Button("저장") {
-                // 1. 부모에게 데이터 전달 (콜백 실행)
-                onSave(selectedImage, memo)
-                // Todo 저니뷰모델에서
-                // 1. API로 각월에 대해 불러와 Journey 리스트를 만들고
-                //  2. 캘린더뷰모델과 맵뷰모델에 1. 에서만든 Journey 리스트를 공유
-                //  Journey 추가할때는 캘린더뷰모델에서 호출, API "200"code오면 추가적인 조회 api 호출 없이 로컬 배열에 추가
-                // 3. 화면 닫기
-                coordinator.pop()
+                guard let image = selectedImage else {
+                    return  // ✅ 사진 필수
+                }
+                
+                // 위치 정보 (없으면 0.0)
+                let latitude = extractedLocation?.coordinate.latitude ?? 0.0
+                let longitude = extractedLocation?.coordinate.longitude ?? 0.0
+                
+                // 부모에게 데이터 전달
+                onSave(image, memo, latitude, longitude)
+                
+                dismiss()
             }
             .buttonStyle(.defaultButton)
             .frame(height: 56)
             .padding(.horizontal, 20)
             .padding(.bottom, 227)
+            .disabled(selectedImage == nil)  // ✅ 사진 없으면 비활성화
         }
         .background(Color.background)
         .ignoresSafeArea()
         .photosPicker(
             isPresented: $showImagePicker,
             selection: $pickedItem,
-            matching: .images
+            matching: .images,
+            // MARK: - iCloud Photo Library 에러 방지
+            // preferredItemEncoding: .current
+            // - 디바이스에 이미 저장된 버전 사용 (즉시 로딩)
+            // - iCloud에서 원본 다운로드하지 않음 (에러 방지)
+            // - 품질: 1080p~2K (서버 저장용으로 충분)
+            // - 참고: .compatible은 원본 다운로드 (느림, 에러 가능)
+            preferredItemEncoding: .current
         )
         .onChange(of: pickedItem) { _, newValue in
+            guard let newValue else { return }
+            
             Task { @MainActor in
-                guard let newValue else { return }
-                if let data = try? await newValue.loadTransferable(
-                    type: Data.self
-                ),
-                    let uiImage = UIImage(data: data)
-                {
-                    selectedImage = uiImage
+                // 1. 이미지 로드
+                guard let data = try? await newValue.loadTransferable(type: Data.self),
+                      let uiImage = UIImage(data: data) else {
+                    selectedImage = nil
+                    extractedLocation = nil
+                    return
+                }
+                
+                selectedImage = uiImage
+                
+                // 2. EXIF에서 직접 위치 정보 추출 (우선순위 1)
+                // Instagram, WhatsApp 등 대부분의 앱이 이 방식 사용
+                if let location = ImageEXIFHelper.extractLocation(from: data) {
+                    extractedLocation = location
+                }
+                // 3. EXIF 실패 시 PHAssetHelper 시도 (Fallback)
+                // 스크린샷이나 편집된 이미지 대비
+                else if let itemIdentifier = newValue.itemIdentifier {
+                    if let metadata = await PHAssetHelper.extractMetadata(from: itemIdentifier),
+                       let location = metadata.location {
+                        extractedLocation = location
+                    } else {
+                        extractedLocation = nil
+                        showLocationAlert = true
+                    }
+                }
+                // 4. 둘 다 실패
+                else {
+                    extractedLocation = nil
+                    showLocationAlert = true
                 }
             }
+        }
+        .alert("위치 정보 없음", isPresented: $showLocationAlert) {
+            Button("확인", role: .cancel) { }
+        } message: {
+            Text("사진에 위치 정보가 없어서 지도 위에 보이지 않습니다.")
         }
     }
 }
 
+// MARK: - Limited Access 안내 배너
+
+/// Limited Access 상태일 때 표시되는 안내 배너
+/// - 사용자에게 위치 정보 사용 불가를 알림
+/// - 설정 앱으로 이동하여 권한 변경 유도
+struct LimitedAccessBanner: View {
+    let onSettingsTap: () -> Void
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundColor(.orange)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text("위치 정보를 사용할 수 없습니다. 맵 위에는 보이지 않아요.")
+                    .font(.system(size: 14, weight: .semibold))
+                    .lineLimit(2)
+            }
+            
+            Spacer()
+            
+            Button("설정") {
+                onSettingsTap()
+            }
+            .font(.system(size: 14, weight: .medium))
+            .foregroundColor(.blue)
+        }
+        .padding(12)
+        .background(Color.orange.opacity(0.1))
+        .cornerRadius(12)
+    }
+}
+
+// MARK: - Preview
+
 #Preview {
     JourneyAddView(
-        coordinator: BabyMoaCoordinator(),
         selectedDate: Date(),
-        onSave: { image, memo in
-            print("Preview: 저장 - \(memo)")
-        }
+        photoAccessStatus: .authorized,
+        onSave: { _, _, _, _ in },
+        onDismiss: { }
     )
 }
