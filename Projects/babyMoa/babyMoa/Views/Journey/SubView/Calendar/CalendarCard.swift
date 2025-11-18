@@ -138,9 +138,9 @@ struct CalendarGrid: View {
     var body: some View {
         LazyVGrid(columns: columns, spacing: 8) {
             ForEach(data.monthDates, id: \.self) { date in
-                let dateJournies = data.journies.filter({
-                    $0.date.yyyyMMdd == date.yyyyMMdd
-                })
+                let dateJournies = data.journies.filter { journey in
+                    journey.date.yyyyMMdd == date.yyyyMMdd
+                }
                 DateCellView(
                     date: date,
                     isCurrentMonth: actions.isInCurrentMonth(date),
@@ -248,8 +248,12 @@ private struct PreviewWrapper: View {
                 onDateTap: { date in
                     _ = viewModel.dateTapped(date)
                 },
-                isInCurrentMonth: { viewModel.isInCurrentMonth($0) },
-                isSelected: { viewModel.isSelected($0) }
+                isInCurrentMonth: { date in
+                    viewModel.isInCurrentMonth(date)
+                },
+                isSelected: { date in
+                    viewModel.isSelected(date)
+                }
             )
         )
     }

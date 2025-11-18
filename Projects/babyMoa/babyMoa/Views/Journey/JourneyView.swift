@@ -90,8 +90,8 @@ struct JourneyView: View {
                                 showListView = true
                             }
                         },
-                        isInCurrentMonth: {
-                            calendarCardVM.isInCurrentMonth($0)
+                        isInCurrentMonth: { date in
+                            calendarCardVM.isInCurrentMonth(date)
                         },
                         isSelected: { date in
                             let result = calendarCardVM.isSelected(date)
@@ -109,13 +109,13 @@ struct JourneyView: View {
                     data: MapCardData(
                         position: $mapPosition,
                         // ✅ journeyVM.journies를 직접 전달 (데이터 중복 제거)
-                        annotations: mapCardVM
-                            .representativeJournies(from: journeyVM.journies)
-                            .map { journey in
+                            annotations: mapCardVM
+                                .representativeJournies(from: journeyVM.journies)
+                                .map { journey in
                                 // ✅ 같은 날짜의 위치 있는 여정 개수 계산
-                                let dateJournies = journeyVM.journies.filter {
-                                    Calendar.current.isDate($0.date, inSameDayAs: journey.date) &&
-                                    $0.hasValidLocation
+                                let dateJournies = journeyVM.journies.filter { eachJourney in
+                                    eachJourney.date.isSameDay(as: journey.date) &&
+                                    eachJourney.hasValidLocation
                                 }
                                 return JourneyAnnotation(from: journey, count: dateJournies.count)
                             }
@@ -129,7 +129,9 @@ struct JourneyView: View {
                             )
                             
                             // 2. 위치 정보가 있는 여정만 필터링 (lat/lng가 유효한 것만)
-                            let validJourniesForDate = allJourniesForDate.filter { $0.hasValidLocation }
+                            let validJourniesForDate = allJourniesForDate.filter { journey in
+                                journey.hasValidLocation
+                            }
                             
                             // 3. 여정 개수에 따라 화면 분기
                             if validJourniesForDate.count > 1 {
@@ -273,8 +275,8 @@ struct JourneyView: View {
                         
                         if success {
                             // 삭제 성공: 현재 날짜의 여정 목록 다시 필터링하여 화면 갱신
-                            journiesForSelectedDate = journeyVM.journies.filter {
-                                Calendar.current.isDate($0.date, inSameDayAs: selectedDateForList)
+                            journiesForSelectedDate = journeyVM.journies.filter { journey in
+                                journey.date.isSameDay(as: selectedDateForList)
                             }
                         } else {
                             print("❌ 여정 삭제 실패: journeyId=\(journey.journeyId)")

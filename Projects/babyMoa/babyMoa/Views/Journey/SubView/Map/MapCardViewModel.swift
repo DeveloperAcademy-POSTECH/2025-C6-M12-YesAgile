@@ -16,17 +16,6 @@ import Foundation
 ///   → 데이터 중복 제거, 자동 동기화
 class MapCardViewModel {
     
-    // MARK: - 위치 유효성 검증
-    
-    /// 위치 정보가 유효한지 확인 (지도에 표시 가능한지)
-    /// - Parameter journey: 검증할 여정
-    /// - Returns: 유효하면 true (0,0 제외, GPS 범위 내)
-    private func hasValidLocation(_ journey: Journey) -> Bool {
-        journey.latitude != 0 && journey.longitude != 0 &&
-        journey.latitude >= -90 && journey.latitude <= 90 &&
-        journey.longitude >= -180 && journey.longitude <= 180
-    }
-    
     // MARK: - 대표 여정 선택
     
     /// 같은 날짜의 여정 중 첫 번째(가장 먼저 추가된) 여정을 대표로 선택
@@ -34,8 +23,10 @@ class MapCardViewModel {
     /// - Returns: 날짜별 대표 여정 배열 (지도 마커용)
     /// - Note: 위치 정보가 유효한 여정만 포함
     func representativeJournies(from journies: [Journey]) -> [Journey] {
-        // 1. 위치 정보가 유효한 여정만 필터링
-        let validJournies = journies.filter { hasValidLocation($0) }
+        // 1. 위치 정보가 유효한 여정만 필터링 (Journey.hasValidLocation 사용)
+        let validJournies = journies.filter { journey in
+            journey.hasValidLocation
+        }
         
         var result: [Journey] = []
         var seenDates: Set<Date> = []
@@ -62,7 +53,11 @@ class MapCardViewModel {
     /// - Returns: 해당 날짜의 여정 배열 (최신순)
     func journies(for date: Date, from journies: [Journey]) -> [Journey] {
         journies
-            .filter { Calendar.current.isDate($0.date, inSameDayAs: date) }
-            .sorted { $0.date > $1.date }  // 최신순
+            .filter { journey in
+                journey.date.isSameDay(as: date)
+            }
+            .sorted { firstJourney, secondJourney in
+                firstJourney.date > secondJourney.date  // 최신순
+            }
     }
 }

@@ -102,7 +102,7 @@ class CalendarCardViewModel {
         
         // 2. 탭한 날짜와 동일한 날짜의 여정만 필터링하여 반환
         let result = journies.filter { journey in
-            Calendar.current.isDate(journey.date, inSameDayAs: date)
+            journey.date.isSameDay(as: date)
         }
         
         return result
@@ -121,7 +121,7 @@ class CalendarCardViewModel {
 
     /// 날짜가 선택되었는지
     func isSelected(_ date: Date) -> Bool {
-        Calendar.current.isDate(date, inSameDayAs: selectedDate)
+        date.isSameDay(as: selectedDate)
     }
 
     // MARK: - Private Helpers

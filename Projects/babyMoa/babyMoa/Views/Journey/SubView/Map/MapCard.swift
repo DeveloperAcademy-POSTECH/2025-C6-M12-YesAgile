@@ -8,7 +8,19 @@
 import MapKit
 import SwiftUI
 
-/// 지도 카드 컴포넌트 (Data/Actions 패턴)
+/// // MARK: - Data & Actions
+
+/// MapCard에 전달할 데이터 지도 카드 컴포넌트
+struct MapCardData {
+    var position: Binding<MapCameraPosition>
+    var annotations: [JourneyAnnotation]
+}
+
+/// MapCard의 사용자 액션
+struct MapCardActions {
+    var onMarkerTap: (Date) -> Void
+    var onCompassTap: () -> Void
+}
 struct MapCard: View {
     let data: MapCardData
     let actions: MapCardActions
@@ -105,19 +117,7 @@ struct JourneyAnnotation: Identifiable {
     }
 }
 
-// MARK: - Data & Actions
 
-/// MapCard에 전달할 데이터
-struct MapCardData {
-    var position: Binding<MapCameraPosition>
-    var annotations: [JourneyAnnotation]
-}
-
-/// MapCard의 사용자 액션
-struct MapCardActions {
-    var onMarkerTap: (Date) -> Void
-    var onCompassTap: () -> Void
-}
 
 // MARK: - Preview
 
@@ -130,8 +130,12 @@ struct MapCardActions {
     )
     
     let mockAnnotations = Journey.mockData
-        .filter { $0.latitude != 0 && $0.longitude != 0 }
-        .map { JourneyAnnotation(from: $0, count: 1) }  // ✅ Preview용 count 추가
+        .filter { journey in
+            journey.latitude != 0 && journey.longitude != 0
+        }
+        .map { journey in
+            JourneyAnnotation(from: journey, count: 1)  // ✅ Preview용 count 추가
+        }
     
     return VStack {
         MapCard(

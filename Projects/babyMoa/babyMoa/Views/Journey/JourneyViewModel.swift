@@ -78,7 +78,9 @@ import SwiftUI
                 )
                 // 배열에 추가 후 최신순 정렬 (날짜 기준 내림차순)
                 journies.append(newJourney)
-                journies.sort { $0.date > $1.date }
+                journies.sort { firstJourney, secondJourney in
+                    firstJourney.date > secondJourney.date
+                }
                 return true
             }
             print("⚠️ 서버 응답 데이터 없음")
@@ -109,7 +111,9 @@ import SwiftUI
         // 3. 서버 삭제 성공 시 로컬 배열에서도 제거 (Server-First 방식)
         switch result {
         case .success:
-            journies.removeAll { $0 == journey }
+            journies.removeAll { existingJourney in
+                existingJourney == journey
+            }
             return true
             
         case .failure(let error):
