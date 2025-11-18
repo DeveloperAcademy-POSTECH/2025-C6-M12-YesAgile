@@ -250,14 +250,6 @@ extension BabyMoaEndpoint {
                 "babyId": String(babyId),
                 "milestoneName": milestoneName,
             ]
-        case .deleteJourney(
-            let babyId,
-            let journeyId
-        ):
-            return [
-                "babyId": String(babyId),
-                "journeyId": String(journeyId),
-            ]
         // getBabyInviteCode
         case .getBabyInviteCode(let babyId):
             return [
@@ -438,6 +430,16 @@ extension BabyMoaEndpoint {
                 "longitude": longitude,
                 "date": date,
                 "memo": memo,
+            ]
+        
+        // ✅ deleteJourney: query → body로 변경 (백엔드 Request Body 요구)
+        case .deleteJourney(
+            let babyId,
+            let journeyId
+        ):
+            return [
+                "babyId": babyId,
+                "journeyId": journeyId,
             ]
 
         // case 없이도 가능
