@@ -82,4 +82,27 @@ final class WeightViewModel: ObservableObject {
             print(errorMessage!)
         }
     }
+    
+    @MainActor
+    func deleteWeightRecord(at offsets: IndexSet) {
+        let recordsToDelete = offsets.map { self.records[$0] }
+        
+        Task {
+            for record in recordsToDelete {
+                let result = await BabyMoaService.shared.deleteWeight(babyId: self.babyId, date: record.date)
+                
+                switch result {
+                case .success:
+                    print("Successfully deleted weight record for date: \(record.date)")
+                    DispatchQueue.main.async {
+                        self.records.removeAll { $0.id == record.id }
+                    }
+                    
+                case .failure(let error):
+                    self.errorMessage = "몸무게 기록 삭제에 실패했습니다: \(error.localizedDescription)"
+                    print(self.errorMessage!)
+                }
+            }
+        }
+    }
 }

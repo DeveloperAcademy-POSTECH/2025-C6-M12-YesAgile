@@ -113,6 +113,11 @@ struct WeightAddView: View {
             }
             .backgroundPadding(.horizontal)
             .padding(.bottom, 44)
+            .simultaneousGesture(   // ✅ 버튼 동작 + 키보드 내리기 둘 다 가능
+                TapGesture().onEnded {
+                    isFocused = false
+                }
+            )
             
             // 날짜 피커 모달
             if viewModel.showDatePicker { // ViewModel의 프로퍼티 사용
@@ -125,11 +130,6 @@ struct WeightAddView: View {
             }
         }
         .ignoresSafeArea()
-        .simultaneousGesture(   // ✅ 버튼 동작 + 키보드 내리기 둘 다 가능
-            TapGesture().onEnded {
-                isFocused = false
-            }
-        )
     }
     
 }

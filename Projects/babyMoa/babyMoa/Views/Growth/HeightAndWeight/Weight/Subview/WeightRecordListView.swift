@@ -52,6 +52,7 @@ struct WeightRecordListView: View {
                     .background(Color.background)
                     .padding(.vertical, 10)
                 }
+                .onDelete(perform: viewModel.deleteWeightRecord)
                 .background(Color.background)
             }
             .listStyle(.plain)
