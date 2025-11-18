@@ -6,9 +6,13 @@
 import SwiftUI
 
 struct JourneyListView: View {
-    let coordinator: BabyMoaCoordinator
     let selectedDate: Date
     let journies: [Journey]
+    let onAddJourney: () -> Void
+    let onDeleteJourney: (Journey) -> Void
+    let onDismiss: () -> Void
+    
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack(spacing: 0) {
@@ -16,21 +20,22 @@ struct JourneyListView: View {
                 title: selectedDate.yyyyMMdd,
                 leading: {
                     Button(action: {
-                        coordinator.pop()
+                        dismiss()
                     }) {
                         Image(systemName: "chevron.left")
                     }
                 }
             )
             .padding(.horizontal, 20)
+            .background(Color.white)
+            
             ScrollView {
                 VStack(spacing: 20) {
                     ForEach(journies, id: \.journeyId) { journey in
                         JourneyCard(
                             journey: journey,
                             onDelete: {
-                                print("삭제: \(journey.journeyId)")
-                                // TODO: JourneyViewModel.removeJourney() 호출
+                                onDeleteJourney(journey)
                             }
                         )
                     }
@@ -40,23 +45,23 @@ struct JourneyListView: View {
                 .padding(.bottom, 100)
             }
 
-            Spacer()
-
             // 여정 추가 버튼
             Button("여정 추가") {
-                coordinator.push(path: .journeyAdd(date: selectedDate))
+                onAddJourney()
             }
             .buttonStyle(.primaryButton)
             .frame(height: 56)
             .padding(.horizontal, 20)
             .padding(.bottom, 30)
         }
-        .background(Color(red: 0.95, green: 0.95, blue: 0.97))
-        .ignoresSafeArea()
+        .background(
+            Color(red: 0.95, green: 0.95, blue: 0.97)
+                .ignoresSafeArea()  // ✅ 배경만 Safe Area 위로 확장 (콘텐츠는 안전하게 유지)
+        )
     }
 }
 
-// MARK: - Journey Card
+// MARK: - Journey Card Todo : 업데이트 및 삭제구현..
 
 struct JourneyCard: View {
     let journey: Journey
@@ -66,25 +71,13 @@ struct JourneyCard: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             VStack(alignment: .leading, spacing: 12) {
-                // 사진 영역
-                if let image = journey.journeyImage {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(height: 300)
-                        .clipped()
-                        .cornerRadius(16)
-                } else {
-                    // 이미지 없을 때 placeholder
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(height: 300)
-                        .overlay(
-                            Image(systemName: "photo")
-                                .font(.system(size: 60))
-                                .foregroundColor(.gray)
-                        )
-                }
+                // 사진 영역 (journeyImage는 non-optional)
+                Image(uiImage: journey.journeyImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 300)
+                    .clipped()
+                    .cornerRadius(16)
 
                 // 메모 텍스트
                 Text(journey.memo)
@@ -93,8 +86,11 @@ struct JourneyCard: View {
                     .lineLimit(nil)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 16)
-            }
-            .background(Color.background)
+        }
+        .background(
+            Color.background
+                .ignoresSafeArea(edges: .bottom) // 하단만 확장해 여백 없이 표시
+        )
             .cornerRadius(16)
             .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
 
@@ -127,8 +123,10 @@ struct JourneyCard: View {
 
 #Preview {
     JourneyListView(
-        coordinator: BabyMoaCoordinator(),
         selectedDate: Date(),
-        journies: Journey.mockData
+        journies: Journey.mockData,
+        onAddJourney: { },
+        onDeleteJourney: { _ in },
+        onDismiss: { }
     )
 }
