@@ -88,18 +88,6 @@ struct BabyMoaRootView: View {
                 case .guardiainCode(let viewModel):
                     GuardianCodeView(viewModel: viewModel)
                         .navigationBarBackButtonHidden()
-                case .journeyList(let date, let journies):
-                    JourneyListView(coordinator: coordinator,
-                                    selectedDate: date,
-                                    journies: journies)
-                                    .navigationBarBackButtonHidden()
-                case .journeyAdd(let date):
-                    JourneyAddView(coordinator: coordinator,
-                                   selectedDate: date,
-                                   onSave: { image, memo in //Todo : -onSave 어떻게 받을지 고민해보기. 옮겨야할
-                                        }
-                                    )
-                                    .navigationBarBackButtonHidden()
 
                 }
             }
