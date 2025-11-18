@@ -21,7 +21,7 @@ final class TeethViewModel {
     }
     
     func setTeethStatus(teethId: Int, deletion: Bool, eruptedDate: String?) async {
-        guard let selectedBabyId = SelectedBaby.babyId else { return }
+        guard let selectedBabyId = SelectedBabyState.shared.baby?.babyId else { return }
         if let date = eruptedDate {
             let result = await BabyMoaService.shared.postSetTeethStatus(babyId: selectedBabyId, teethId: teethId, date: date, deletion: deletion)
             switch result {

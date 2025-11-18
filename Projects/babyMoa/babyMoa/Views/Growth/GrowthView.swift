@@ -62,7 +62,7 @@ struct GrowthView: View {
                             // 1. 기린 카드
                             CardItemView(
                                 title: "키",
-                                value: viewModel.latestHeight != nil ? "\(viewModel.latestHeight!)cm" : "-",
+                                value: viewModel.latestHeight != nil ? "\(viewModel.latestHeight!)cm" : "0cm",
                                 backgroundColor: Color.orange50
                             ) {
                                 // 👇 기린의 고유한 레이아웃 전달
@@ -80,7 +80,7 @@ struct GrowthView: View {
                             // 2. 코끼리 카드
                             CardItemView(
                                 title: "몸무게",
-                                value: viewModel.latestWeight != nil ? "\(viewModel.latestWeight!)kg" : "-",
+                                value: viewModel.latestWeight != nil ? "\(viewModel.latestWeight!)kg" : "0kg",
                                 backgroundColor: Color.green80
                             ) {
                                 // 👇 코끼리의 고유한 레이아웃(VStack+Spacer) 전달
@@ -130,8 +130,11 @@ struct GrowthView: View {
         .onAppear {
             //MARK: - 데이터 확인 작업 찾기
             Task {
-//                SelectedBaby.babyId = 1
-                await viewModel.fetchAllGrowthData()
+                if let babyId = SelectedBabyState.shared.baby?.babyId {
+                    await viewModel.fetchAllGrowthData(babyId: babyId)
+                } else {
+                    print("Error: No selected baby found in GrowthView onAppear.")
+                }
             }
         }
     }

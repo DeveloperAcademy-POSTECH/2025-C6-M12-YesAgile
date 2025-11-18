@@ -154,17 +154,17 @@ final class GrowthViewModel {
         self.coordinator = coordinator
         
         SelectedBabyState.shared.$baby
-            .sink { [weak self] _ in
-                print("Selected baby changed. Fetching new growth data...")
+            .sink { [weak self] baby in
+                guard let self = self, let baby = baby else { return }
+                print("Selected baby changed to: \(baby.name) (ID: \(baby.babyId)). Fetching new growth data...")
                 Task {
-                    await self?.fetchAllGrowthData()
+                    await self.fetchAllGrowthData(babyId: baby.babyId)
                 }
             }
             .store(in: &cancellables)
     }
     
-    func fetchAllGrowthData() async {
-        guard let babyId = SelectedBaby.babyId else { return }
+    func fetchAllGrowthData(babyId: Int) async {
         await fetchSelectedBabySummary(babyId: babyId)
         await fetchAllMilestones(babyId: babyId)
         await fetchGrowthData(babyId: babyId)
@@ -194,11 +194,15 @@ final class GrowthViewModel {
     }
     
     func setMilestone(milestone: GrowthMilestone) async -> Bool {
+        guard let babyId = SelectedBabyState.shared.baby?.babyId else {
+            print("Error: No baby selected for setting milestone.")
+            return false
+        }
         var base64EncodedImage: String?
         if let image = milestone.image {
             base64EncodedImage = ImageManager.shared.encodeToBase64(image)
         }
-        let result = await BabyMoaService.shared.postSetBabyMilestone(babyId: SelectedBaby.babyId!, milestoneName: milestone.id, milestoneImage: base64EncodedImage ?? "", date: DateFormatter.yyyyDashMMDashdd.string(from: milestone.completedDate ?? Date()), memo: milestone.description)
+        let result = await BabyMoaService.shared.postSetBabyMilestone(babyId: babyId, milestoneName: milestone.id, milestoneImage: base64EncodedImage ?? "", date: DateFormatter.yyyyDashMMDashdd.string(from: milestone.completedDate ?? Date()), memo: milestone.description)
         switch result {
         case .success:
             return true
@@ -210,16 +214,26 @@ final class GrowthViewModel {
     
     func fetchGrowthData(babyId: Int) async {
         let result = await BabyMoaService.shared.getGetGrowthData(babyId: babyId)
+        
+        print("----------- Growth Data API Response -----------")
+        print("Fetching for babyId: \(babyId)")
+        print(result)
+        print("---------------------------------------------")
+        
         switch result {
         case .success(let success):
-            guard let data = success.data else { return }
+            guard let data = success.data else {
+                print("Growth data is nil.")
+                return
+            }
             await MainActor.run {
+                print("Updating UI with latestHeight: \(data.latestHeight ?? -1), latestWeight: \(data.latestWeight ?? -1)")
                 latestHeight = data.latestHeight
                 latestWeight = data.latestWeight
                 teethList = data.toothStatus
             }
         case .failure(let failure):
-            print(failure)
+            print("Failed to fetch growth data: \(failure)")
         }
     }
     
@@ -237,7 +251,11 @@ final class GrowthViewModel {
     }
     
     func deleteBabyMilestone() async {
-        let result = await BabyMoaService.shared.deleteBabyMilestone(babyId: SelectedBaby.babyId!, milestoneName: selectedMilestone.id)
+        guard let babyId = SelectedBabyState.shared.baby?.babyId else {
+            print("Error: No baby selected for deleting milestone.")
+            return
+        }
+        let result = await BabyMoaService.shared.deleteBabyMilestone(babyId: babyId, milestoneName: selectedMilestone.id)
         switch result {
         case .success:
             isMilestoneEditingViewPresented = false
