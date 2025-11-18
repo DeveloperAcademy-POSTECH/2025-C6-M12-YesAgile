@@ -14,6 +14,8 @@ struct TeethView: View {
     @State private var selectedTeethId: Int? = nil
     @State private var isDatePickerPresented = false
     @State private var selectedDate = Date()
+    @State private var isDeleteAlertPresented = false
+    @State private var teethIdToDelete: Int? = nil
     
     init(coordinator: BabyMoaCoordinator, teethList: [TeethData]) {
         viewModel = TeethViewModel(
@@ -47,6 +49,8 @@ struct TeethView: View {
                                     viewModel: $viewModel,
                                     selectedTeethId: $selectedTeethId,
                                     isDatePickerPresented: $isDatePickerPresented,
+                                    isDeleteAlertPresented: $isDeleteAlertPresented,
+                                    teethIdToDelete: $teethIdToDelete,
                                     rowIdx: rowIdx
                                 )
                                 if rowIdx == 0 {
@@ -89,6 +93,22 @@ struct TeethView: View {
             }
         }
         .ignoresSafeArea()
+        .alert("기록 삭제", isPresented: $isDeleteAlertPresented) {
+            Button("삭제", role: .destructive) {
+                if let teethId = teethIdToDelete {
+                    Task {
+                        await viewModel.setTeethStatus(
+                            teethId: teethId,
+                            deletion: true,
+                            eruptedDate: nil
+                        )
+                    }
+                }
+            }
+            Button("취소", role: .cancel) {}
+        } message: {
+            Text("선택한 치아 기록을 삭제하시겠습니까?")
+        }
     }
 }
 

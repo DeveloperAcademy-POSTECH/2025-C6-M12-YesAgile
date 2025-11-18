@@ -11,6 +11,8 @@ struct LineTeethView: View {
     @Binding var viewModel: TeethViewModel
     @Binding var selectedTeethId: Int?
     @Binding var isDatePickerPresented: Bool
+    @Binding var isDeleteAlertPresented: Bool
+    @Binding var teethIdToDelete: Int?
     var rowIdx: Int
     
     var body: some View {
@@ -21,19 +23,14 @@ struct LineTeethView: View {
                     teeth: teeth,
                     rowIdx: rowIdx,
                     onTap: {
-                        Task {
-                            if teeth.erupted {
-                                // 이미 난 이 → 삭제
-                                await viewModel.setTeethStatus(
-                                    teethId: teeth.teethId,
-                                    deletion: true,
-                                    eruptedDate: nil
-                                )
-                            } else {
-                                // 안 난 이 → 날짜 선택 시트
-                                selectedTeethId = teeth.teethId
-                                isDatePickerPresented = true
-                            }
+                        if teeth.erupted {
+                            // 이미 난 이 → 삭제 확인 알림창 띄우기
+                            teethIdToDelete = teeth.teethId
+                            isDeleteAlertPresented = true
+                        } else {
+                            // 안 난 이 → 날짜 선택 시트
+                            selectedTeethId = teeth.teethId
+                            isDatePickerPresented = true
                         }
                     }
                 )
