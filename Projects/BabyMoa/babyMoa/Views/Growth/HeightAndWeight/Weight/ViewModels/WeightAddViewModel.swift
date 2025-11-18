@@ -16,10 +16,11 @@ final class WeightAddViewModel: ObservableObject {
 
     @Published var measuredDate: Date = Date()
     @Published var weightValue: Double = 7.5 // 초기값 설정
-    @Published var weightText: String = "7.5" // UI 바인딩용
     @Published var memo: String = ""
     @Published var errorMessage: String?
     @Published var showDatePicker: Bool = false
+    
+    @Published var existingWeights: [GetWeightsResModel] = []
     
     // 몸무게 범위 (예: 2kg ~ 20kg)
     let minWeight: Double = 2.0
@@ -28,14 +29,23 @@ final class WeightAddViewModel: ObservableObject {
     init(coordinator: BabyMoaCoordinator, babyId: Int) {
         self.coordinator = coordinator
         self.babyId = babyId
+        fetchExistingWeights()
+    }
+    
+    private func fetchExistingWeights() {
+        Task {
+            let result = await BabyMoaService.shared.getGetWeights(babyId: self.babyId)
+            switch result {
+            case .success(let response):
+                self.existingWeights = response.data ?? []
+            case .failure(let error):
+                self.errorMessage = "기존 몸무게 기록을 불러오는 데 실패했습니다: \(error.localizedDescription)"
+            }
+        }
     }
 
     func saveWeight() async {
-        // 입력된 몸무게 값을 Double로 변환
-        guard let finalWeight = Double(weightText) else {
-            self.errorMessage = "유효한 몸무게 값을 입력해주세요."
-            return
-        }
+        let finalWeight = self.weightValue
         
         // 몸무게 값 범위 유효성 검사
         guard finalWeight >= minWeight && finalWeight <= maxWeight else {
@@ -44,6 +54,13 @@ final class WeightAddViewModel: ObservableObject {
         }
 
         let dateString = DateFormatter.yyyyDashMMDashdd.string(from: measuredDate)
+        
+        let isDuplicate = existingWeights.contains { $0.date == dateString }
+        
+        if isDuplicate {
+            self.errorMessage = "이미 해당 날짜에 기록이 존재합니다."
+            return
+        }
         
         let result = await BabyMoaService.shared.postSetWeight(
             babyId: self.babyId,
