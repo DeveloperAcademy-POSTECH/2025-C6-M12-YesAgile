@@ -67,10 +67,10 @@ struct MapCard: View {
 /// 사진 마커 뷰 - 지도 위 커스텀 마커
 struct PhotoMarkerView: View {
     let image: UIImage
-    let count: Int  // ✅ 같은 날짜의 여정 개수
+    let count: Int  //같은 날짜의 여정 개수
 
     var body: some View {
-        VStack(spacing: 4) {  // ✅ VStack으로 변경 (개수 표시 추가)
+        VStack(spacing: 4) {  //VStack으로 변경 (개수 표시 추가)
             ZStack {
                 // 배경 원
                 Circle()
@@ -85,7 +85,7 @@ struct PhotoMarkerView: View {
                     .clipShape(Circle())
             }
 
-            // ✅ 2개 이상일 때만 개수 표시
+            // 2개 이상일 때만 개수 표시
             if count > 1 {
                 Text("\(count)개")
                     .font(.system(size: 11, weight: .semibold))
@@ -118,7 +118,7 @@ struct PhotoMarkerView: View {
             journey.latitude != 0 && journey.longitude != 0
         }
         .map { journey in
-            JourneyAnnotation(from: journey, count: 1)  // ✅ Preview용 count 추가
+            JourneyAnnotation(from: journey, count: 1)  // Preview용 count 추가
         }
 
     return VStack {

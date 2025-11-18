@@ -329,12 +329,12 @@ struct JourneyView: View {
                 selectedDate: context.date,
                 journies: context.journies,
                 onJourneyTap: { journey in
-                    gridContext = nil  // ✅ 시트 닫기
+                    gridContext = nil  // 시트 닫기
                     journiesForSelectedDate = [journey]
                     showListView = true
                 },
                 onDismiss: {
-                    gridContext = nil  // ✅ Cancel 등 기타 닫기 경로
+                    gridContext = nil  // Cancel 등 기타 닫기 경로
                 }
             )
         }
