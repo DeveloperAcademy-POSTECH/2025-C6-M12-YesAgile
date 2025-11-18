@@ -16,17 +16,19 @@ enum WeightTab: String, CaseIterable {
 final class WeightViewModel: ObservableObject {
     
     var coordinator: BabyMoaCoordinator
-
+    let babyId: Int
+    
     @Published var records: [WeightRecordModel] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     
     private var babyBirthday: Date? {
-        return DateFormatter.yyyyDashMMDashdd.date(from: "2024-01-01")
+        return SelectedBabyState.shared.baby?.birthDate
     }
     
-    init(coordinator: BabyMoaCoordinator) {
+    init(coordinator: BabyMoaCoordinator, babyId: Int) {
         self.coordinator = coordinator
+        self.babyId = babyId
     }
     
     @MainActor
@@ -36,18 +38,32 @@ final class WeightViewModel: ObservableObject {
         
         defer { isLoading = false }
         
-        do {
-            // TODO: 나중에는 babyId를 받아서 API 통신을 통해 데이터를 가져와야 합니다.
-            print("Fetching weights (using mock data)")
-            try await Task.sleep(nanoseconds: 1_000_000_000)
+        let result = await BabyMoaService.shared.getGetWeights(babyId: self.babyId)
+        
+        switch result {
+        case .success(let response):
+            guard let apiRecords = response.data else {
+                self.records = []
+                return
+            }
             
-            let rawRecords = WeightRecordModel.mockData
+            let mappedRecords: [WeightRecordModel] = apiRecords.compactMap { apiRecord in
+                guard let date = DateFormatter.yyyyDashMMDashdd.date(from: apiRecord.date) else {
+                    print("Error: Could not parse date string \(apiRecord.date)")
+                    return nil
+                }
+                return WeightRecordModel(
+                    id: UUID(),
+                    date: date,
+                    weight: apiRecord.weight,
+                    memo: apiRecord.memo
+                )
+            }
             
-            // 범용 GrowthRecordProcessor를 사용하여 데이터 가공
-            self.records = GrowthRecordProcessor.process(records: rawRecords, babyBirthday: self.babyBirthday)
+            self.records = GrowthRecordProcessor.process(records: mappedRecords, babyBirthday: self.babyBirthday)
             
-        } catch {
-            errorMessage = "Failed to fetch weights: \(error.localizedDescription)"
+        case .failure(let error):
+            errorMessage = "몸무게 기록을 불러오는데 실패했습니다: \(error.localizedDescription)"
             print(errorMessage!)
         }
     }

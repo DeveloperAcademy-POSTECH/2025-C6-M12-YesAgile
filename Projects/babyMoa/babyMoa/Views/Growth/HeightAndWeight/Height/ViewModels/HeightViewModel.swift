@@ -16,20 +16,20 @@ enum HeightTab: String, CaseIterable {
 final class HeightViewModel: ObservableObject {
     
     var coordinator: BabyMoaCoordinator
-
+    let babyId: Int // babyId를 프로퍼티로 추가
+    
     @Published var records: [HeightRecordModel] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     
-    // 아기의 생년월일 정보 (SelectedBabyState에서 가져온다고 가정)
     private var babyBirthday: Date? {
-        // 실제로는 SelectedBabyState.shared.baby?.birthday 등으로 가져와야 합니다.
-        // 현재는 목업 데이터를 위해 임시로 설정합니다.
-        return DateFormatter.yyyyDashMMDashdd.date(from: "2024-01-01")
+        // SelectedBabyState에서 아기의 실제 생년월일을 가져옵니다.
+        return SelectedBabyState.shared.baby?.birthDate
     }
     
-    init(coordinator: BabyMoaCoordinator) {
+    init(coordinator: BabyMoaCoordinator, babyId: Int) { // init에서 babyId를 받도록 수정
         self.coordinator = coordinator
+        self.babyId = babyId // 전달받은 babyId 할당
     }
     
     @MainActor
@@ -37,25 +37,37 @@ final class HeightViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        defer { isLoading = false } // Ensure isLoading is set to false when the function exits
+        defer { isLoading = false }
         
-        // let babyId = SelectedBabyState.shared.baby?.babyId // babyId는 API 통신 시에만 필요 추후에 guard로 해서 수정해야 한다
+        // 실제 API 통신을 통해 데이터를 가져옵니다.
+        let result = await BabyMoaService.shared.getGetHeights(babyId: self.babyId)
         
-        do {
-            // TODO: 나중에는 babyId를 받아서 API 통신을 통해 데이터를 가져와야 합니다.
-            // 현재는 목업 데이터를 사용합니다.
-            print("Fetching heights (using mock data)")
-            // Simulate network delay
-            try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
+        switch result {
+        case .success(let response):
+            guard let apiRecords = response.data else {
+                self.records = []
+                return
+            }
             
-            // HeightRecordModel.mockData를 원본 데이터로 사용
-            let rawRecords = HeightRecordModel.mockData
+            // API 응답 (GetHeightsResModel)을 HeightRecordModel로 매핑
+            let mappedRecords: [HeightRecordModel] = apiRecords.compactMap { apiRecord in
+                guard let date = DateFormatter.yyyyDashMMDashdd.date(from: apiRecord.date) else {
+                    print("Error: Could not parse date string \(apiRecord.date)")
+                    return nil
+                }
+                return HeightRecordModel(
+                    id: UUID(), // 각 기록에 고유한 ID 부여
+                    date: date,
+                    height: apiRecord.height,
+                    memo: apiRecord.memo // memo 필드 포함
+                )
+            }
             
             // 범용 GrowthRecordProcessor를 사용하여 데이터 가공
-            self.records = GrowthRecordProcessor.process(records: rawRecords, babyBirthday: self.babyBirthday)
+            self.records = GrowthRecordProcessor.process(records: mappedRecords, babyBirthday: self.babyBirthday)
             
-        } catch {
-            errorMessage = "Failed to fetch heights: \(error.localizedDescription)"
+        case .failure(let error):
+            errorMessage = "키 기록을 불러오는데 실패했습니다: \(error.localizedDescription)"
             print(errorMessage!)
         }
     }
