@@ -19,6 +19,7 @@ struct LineTeethView: View {
                 let teeth = viewModel.teethList[rowIdx * 10 + colIdx]
                 SingleTeethView(
                     teeth: teeth,
+                    rowIdx: rowIdx,
                     onTap: {
                         Task {
                             if teeth.erupted {
