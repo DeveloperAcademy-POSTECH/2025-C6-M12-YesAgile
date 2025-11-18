@@ -24,7 +24,7 @@ struct TeethView: View {
 
     var body: some View {
         ZStack {
-            Color.white.ignoresSafeArea()
+            Color.background.ignoresSafeArea()
             
             VStack(spacing: 0) {
                 CustomNavigationBar(title: "치아", leading: {
@@ -58,8 +58,12 @@ struct TeethView: View {
                     .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 4)
 
                 ScrollView(.vertical, showsIndicators: false) {
-                    EruptedTeethListView(viewModel: $viewModel)
-                        .padding(.top, 25)
+                    if !viewModel.sortedEruptedTeethList.isEmpty {
+                        EruptedTeethListView(viewModel: $viewModel)
+                            .padding(.top, 25)
+                    } else {
+                        TeethEmptyStateView()
+                    }
                     Spacer()
                 }
             }
@@ -86,6 +90,35 @@ struct TeethView: View {
         }
         .ignoresSafeArea()
     }
+}
+
+private struct TeethEmptyStateView: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            Spacer()
+            Image(.tooth)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 200, height: 200)
+            
+            Text("아직 난 치아가 없어요.")
+                .font(.headline)
+                .foregroundColor(.black)
+            
+            Text("위의 치아 그림을 탭하여\n첫 번째 유치가 나온 날짜를 기록해보세요!")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
+                .lineSpacing(4)
+            Text("주의: 다시 치아를 선택하면, 취소될 수 있습니다. ")
+                .font(.system(size: 12, weight: .light))
+                .foregroundStyle(Color.orange50)
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, minHeight: 200)
+    }
+    
 }
 
 #Preview {
