@@ -17,6 +17,13 @@ extension Date {
     var yyyyMMddKorean: String {
         return DateFormatter.yyyyMMddKorean.string(from: self)
     }
+    
+    /// 두 날짜가 같은 날인지 비교합니다 (년, 월, 일이 동일한지)
+    /// - Parameter otherDate: 비교할 다른 날짜
+    /// - Returns: 같은 날이면 true, 다르면 false
+    func isSameDay(as otherDate: Date) -> Bool {
+        return Calendar.current.isDate(self, inSameDayAs: otherDate)
+    }
 }
 
 
