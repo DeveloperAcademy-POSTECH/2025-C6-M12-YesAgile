@@ -46,7 +46,7 @@ struct JourneyView: View {
                 journeyViewModel: journeyViewModel
             )
         )
-        _mapCardVM = State(initialValue: MapCardViewModel()) // 순수 계산용이라 새로 생성만
+        _mapCardVM = State(initialValue: MapCardViewModel())  // 순수 계산용이라 새로 생성만
     }
 
     var body: some View {
@@ -116,12 +116,12 @@ struct JourneyView: View {
                 MapCard(
                     data: MapCardData(
                         position: $mapPosition,
-                        // ✅ journeyVM.journies를 직접 전달 (데이터 중복 제거)
+                        //  journeyVM.journies를 직접 전달 (데이터 중복 제거)
                         annotations:
                             mapCardVM
                             .representativeJournies(from: journeyVM.journies)
                             .map { journey in
-                                // ✅ 같은 날짜의 위치 있는 여정 개수 계산
+                                // 같은 날짜의 위치 있는 여정 개수 계산
                                 let dateJournies = journeyVM.journies.filter {
                                     eachJourney in
                                     eachJourney.date.isSameDay(as: journey.date)

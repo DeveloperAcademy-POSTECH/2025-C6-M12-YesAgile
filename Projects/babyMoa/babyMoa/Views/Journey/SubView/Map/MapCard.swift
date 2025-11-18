@@ -99,7 +99,6 @@ struct PhotoMarkerView: View {
     }
 }
 
-
 // MARK: - Preview
 
 #Preview {
