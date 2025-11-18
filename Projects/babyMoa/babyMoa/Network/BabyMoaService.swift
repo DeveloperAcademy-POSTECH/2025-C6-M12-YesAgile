@@ -122,6 +122,8 @@ protocol BabyMoaServicable: HTTPClient {
     func getBabyInviteCode(babyId: Int) async -> Result<BaseResponse<String>, RequestError>
     
     func deleteBaby(babyId: Int) async -> Result<BaseResponse<EmptyData>, RequestError>
+    
+    func deleteHeight(babyId: Int, date: String) async -> Result<BaseResponse<EmptyData>, RequestError>
 }
 
 class BabyMoaService: BabyMoaServicable {
@@ -652,6 +654,22 @@ class BabyMoaService: BabyMoaServicable {
             UserToken.refreshToken = success.data!.refreshToken
         case .failure(let failure):
             print(failure)
+        }
+    }
+    
+    func deleteHeight(babyId: Int, date: String) async -> Result<BaseResponse<EmptyData>, RequestError> {
+        let result = await request(endpoint: BabyMoaEndpoint.deleteHeight(babyId: babyId, date: date), responseModel: BaseResponse<EmptyData>.self)
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                await refreshToken()
+                return await request(endpoint: BabyMoaEndpoint.deleteHeight(babyId: babyId, date: date), responseModel: BaseResponse<EmptyData>.self)
+            default:
+                return result
+            }
         }
     }
 

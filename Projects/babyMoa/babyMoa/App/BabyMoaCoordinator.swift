@@ -54,8 +54,8 @@ enum CoordinatorPath: Hashable {
     case guardain
     case guardiainCode(viewModel: GuardianInvitationCodeViewModel)
     // New Height and Weight
-    case newHeight
-    case newHeightAdd
-    case newWeight
-    case newWeightAdd
+    case newHeight(babyId: Int)
+    case newHeightAdd(babyId: Int)
+    case newWeight(babyId: Int)
+    case newWeightAdd(babyId: Int)
 }

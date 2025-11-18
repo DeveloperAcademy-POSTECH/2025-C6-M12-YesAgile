@@ -11,8 +11,8 @@ struct WeightView: View {
     @State private var selectedTab: WeightTab = .record
     @StateObject private var viewModel: WeightViewModel
     
-    init(coordinator: BabyMoaCoordinator) {
-        _viewModel = StateObject(wrappedValue: WeightViewModel(coordinator: coordinator))
+    init(coordinator: BabyMoaCoordinator, babyId: Int) {
+        _viewModel = StateObject(wrappedValue: WeightViewModel(coordinator: coordinator, babyId: babyId))
     }
     
     var body: some View {
@@ -57,7 +57,7 @@ struct WeightView: View {
                 } else {
                     switch selectedTab {
                     case .record:
-                        WeightRecordListView(coordinator: viewModel.coordinator)
+                        WeightRecordListView(viewModel: viewModel)
                             .padding(.top, 20)
                     case .chart:
                         WeightChartView(viewModel: viewModel)
@@ -68,7 +68,7 @@ struct WeightView: View {
                 }
                 // 기록 추가 버튼
                 Button("기록 추가", action: {
-                    viewModel.coordinator.push(path: .newWeightAdd)
+                    viewModel.navigateToWeightAdd()
                 })
                 .buttonStyle(.defaultButton)
                 .padding(.bottom, 40)
@@ -88,8 +88,5 @@ struct WeightView: View {
 
 #Preview {
     let coordinator = BabyMoaCoordinator()
-    let viewModel = WeightViewModel(coordinator: coordinator)
-    viewModel.records = WeightRecordModel.mockData
-    return WeightView(coordinator: coordinator)
-        .environmentObject(coordinator)
+    return WeightView(coordinator: coordinator, babyId: 1)
 }

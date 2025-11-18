@@ -16,20 +16,40 @@ enum HeightTab: String, CaseIterable {
 final class HeightViewModel: ObservableObject {
     
     var coordinator: BabyMoaCoordinator
-    let babyId: Int // babyId를 프로퍼티로 추가
+    let babyId: Int
     
     @Published var records: [HeightRecordModel] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     
+    private var cancellables = Set<AnyCancellable>() // Combine 구독을 위한 cancellables 추가
+    
     private var babyBirthday: Date? {
-        // SelectedBabyState에서 아기의 실제 생년월일을 가져옵니다.
-        return SelectedBabyState.shared.baby?.birthDate
+        // 1. birthDate가 String이므로 Date로 변환하여 반환합니다.
+        if let baby = SelectedBabyState.shared.baby, let date = DateFormatter.yyyyDashMMDashdd.date(from: baby.birthDate) {
+            return date
+        }
+        return nil
     }
     
-    init(coordinator: BabyMoaCoordinator, babyId: Int) { // init에서 babyId를 받도록 수정
+    init(coordinator: BabyMoaCoordinator, babyId: Int) {
         self.coordinator = coordinator
-        self.babyId = babyId // 전달받은 babyId 할당
+        self.babyId = babyId
+        
+        // GrowthDataNotifier의 heightDidUpdate 알림을 구독합니다.
+        GrowthDataNotifier.shared.heightDidUpdate
+            .sink { [weak self] in
+                print("HeightViewModel: Height data updated notification received. Refreshing data.")
+                Task {
+                    await self?.fetchHeights()
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    @MainActor
+    func navigateToHeightAdd() {
+        coordinator.push(path: .newHeightAdd(babyId: self.babyId))
     }
     
     @MainActor
@@ -39,7 +59,6 @@ final class HeightViewModel: ObservableObject {
         
         defer { isLoading = false }
         
-        // 실제 API 통신을 통해 데이터를 가져옵니다.
         let result = await BabyMoaService.shared.getGetHeights(babyId: self.babyId)
         
         switch result {
@@ -49,26 +68,48 @@ final class HeightViewModel: ObservableObject {
                 return
             }
             
-            // API 응답 (GetHeightsResModel)을 HeightRecordModel로 매핑
-            let mappedRecords: [HeightRecordModel] = apiRecords.compactMap { apiRecord in
-                guard let date = DateFormatter.yyyyDashMMDashdd.date(from: apiRecord.date) else {
-                    print("Error: Could not parse date string \(apiRecord.date)")
-                    return nil
-                }
+            // 2. HeightRecordModel 생성자 오류 수정
+            let mappedRecords: [HeightRecordModel] = apiRecords.map { apiRecord in
                 return HeightRecordModel(
-                    id: UUID(), // 각 기록에 고유한 ID 부여
-                    date: date,
-                    height: apiRecord.height,
-                    memo: apiRecord.memo // memo 필드 포함
+                    height: apiRecord.height, // 순서 변경
+                    date: apiRecord.date,
+                    memo: apiRecord.memo
                 )
             }
             
-            // 범용 GrowthRecordProcessor를 사용하여 데이터 가공
             self.records = GrowthRecordProcessor.process(records: mappedRecords, babyBirthday: self.babyBirthday)
             
         case .failure(let error):
             errorMessage = "키 기록을 불러오는데 실패했습니다: \(error.localizedDescription)"
             print(errorMessage!)
+        }
+    }
+    
+    @MainActor
+    func deleteHeightRecord(at offsets: IndexSet) {
+        // 1. 삭제할 레코드 식별
+        let recordsToDelete = offsets.map { self.records[$0] }
+        
+        Task {
+            for record in recordsToDelete {
+                // 2. API를 통해 서버에서 레코드 삭제
+                let result = await BabyMoaService.shared.deleteHeight(babyId: self.babyId, date: record.date)
+                
+                switch result {
+                case .success:
+                    // 3. 성공 시 로컬 배열에서도 삭제
+                    print("Successfully deleted height record for date: \(record.date)")
+                    // UI 업데이트를 위해 메인 스레드에서 실행
+                    DispatchQueue.main.async {
+                        self.records.removeAll { $0.id == record.id }
+                    }
+                    
+                case .failure(let error):
+                    // 4. 실패 시 에러 메시지 표시
+                    self.errorMessage = "키 기록 삭제에 실패했습니다: \(error.localizedDescription)"
+                    print(self.errorMessage!)
+                }
+            }
         }
     }
 }

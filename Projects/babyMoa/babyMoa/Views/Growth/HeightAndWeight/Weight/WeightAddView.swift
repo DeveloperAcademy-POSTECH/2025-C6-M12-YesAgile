@@ -9,46 +9,33 @@ import SwiftUI
 
 struct WeightAddView: View {
     
-    let coordinator: BabyMoaCoordinator
-    // 측정일
-    @State private var measuredDate: Date = Date()
-    // 키 값 (cm)
-    @State private var weightValue: Double = 8.1
-    
-    // 키 TextField용 문자열
-    @State private var weightText: String = "8.1"
-    
-    // 메모
-    @State private var memo: String = ""
-    
-    // 날짜 피커 표시 여부
-    @State private var showDatePicker: Bool = false
+    @StateObject private var viewModel: WeightAddViewModel // ViewModel 사용
 
     // 메모 TextEditor 포커스 상태
     @FocusState private var isFocused: Bool
     
-    // 키 범위 (예: 40cm ~ 120cm)
-    private let minWeight: Double = 2.0
-    private let maxWeight: Double = 120.0
-    
+    init(coordinator: BabyMoaCoordinator, babyId: Int) {
+        _viewModel = StateObject(wrappedValue: WeightAddViewModel(coordinator: coordinator, babyId: babyId))
+    }
 
-    
     var body: some View {
-        ZStack{
+        ZStack {
             Color.background
+               
             VStack(spacing: 0) {
                 
                 // 상단 네비게이션 바
                 CustomNavigationBar(title: "몸무게 기록", leading: {
-                    Button {
-                        coordinator.pop() // 뒤로가기 액션 구현
-                    } label: {
+                    
+                    
+                    Button(action:  {
+                        viewModel.coordinator.pop() // 뒤로가기 액션 구현
+                    }, label: {
                         Image(systemName: "chevron.left")
-                    }
+                    })
                 })
-                
-                
-                VStack(alignment: .leading, spacing: 24) {
+
+                VStack(alignment: .leading, spacing: 24) { // spacing 24로 변경
                     
                     // MARK: - 측정일
                     VStack(alignment: .leading, spacing: 8) {
@@ -57,35 +44,34 @@ struct WeightAddView: View {
                             .foregroundStyle(.black)
 
                         Button(action: {
-                            showDatePicker = true
-                        }) {
+                            viewModel.showDatePicker = true // ViewModel의 프로퍼티 사용
+                        }, label: {
                             HStack {
                                 Spacer()
 
-                                Text(measuredDate, formatter: DateFormatter.yyyyMMdd)
+                                Text(viewModel.measuredDate, formatter: DateFormatter.yyyyMMdd) // ViewModel의 프로퍼티 사용
                                     .font(.system(size: 16, weight: .medium))
                                     .foregroundColor(Color("Font"))
 
                                 Spacer()
                             }
-                        }
+                        })
                         .buttonStyle(.outlineMileButton)
                     }
-                    
-                    //MARK: - 키
-                    
+
+                    // MARK: - 몸무게
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("키")
+                        Text("몸무게") // "키" -> "몸무게"로 수정
                             .font(.system(size: 14, weight: .regular))
                             .foregroundStyle(Color.black)
                         
                         Button(action: {
-                            // 키를 입력할 수 있게 해야 한다. 어떻게 해야 되는가?
-                            // 이것을 해결하면 체중을 입력하는것과 동일하다.
+                            // TODO: 몸무게 직접 입력용 액션 (Alert / Sheet 등)
+                            // 현재는 HorizontalDialPicker와 연결되어 있으므로, 필요시 여기에 추가 로직 구현
                         }, label: {
                             HStack {
                                 Spacer()
-                                Text("\(String(format: "%.1f", weightValue)) kg")
+                                Text("\(String(format: "%.1f", viewModel.weightValue)) kg") // ViewModel의 프로퍼티 사용
                                     .font(.system(size: 16, weight: .medium))
                                     .foregroundColor(Color("Font"))
                                 Spacer()
@@ -96,11 +82,15 @@ struct WeightAddView: View {
                     }
                     
                     // MARK: - 눈금 + 슬라이더
-                    HorizontalDialPicker(value: $weightValue, range: 0.0...100.0, step: 0.1)
+                    HorizontalDialPicker(
+                        value: $viewModel.weightValue, // ViewModel의 프로퍼티에 바인딩
+                        range: viewModel.minWeight...viewModel.maxWeight, // ViewModel의 프로퍼티 사용
+                        step: 0.1
+                    )
                     
                     // MARK: - 메모
                     MemoTextEditor(
-                        memo: $memo,
+                        memo: $viewModel.memo, // ViewModel의 프로퍼티에 바인딩
                         limit: 300,
                         isFocused: $isFocused
                     )
@@ -109,20 +99,26 @@ struct WeightAddView: View {
                 }
                 
                 Button("저장", action: {
-                    //print("저장하기 버튼을 구현하자")
+                    Task {
+                        await viewModel.saveWeight() // ViewModel의 saveWeight() 호출
+                    }
                 })
                 .buttonStyle(.defaultButton)
-                
+                .alert("오류", isPresented: Binding(get: { viewModel.errorMessage != nil }, set: { _ in viewModel.errorMessage = nil })) {
+                    Button("확인") { }
+                } message: {
+                    Text(viewModel.errorMessage ?? "알 수 없는 오류가 발생했습니다.")
+                }
                 
             }
             .backgroundPadding(.horizontal)
             .padding(.bottom, 44)
             
             // 날짜 피커 모달
-            if showDatePicker {
+            if viewModel.showDatePicker { // ViewModel의 프로퍼티 사용
                 DatePickerModal(
-                    birthDate: $measuredDate,
-                    showDatePicker: $showDatePicker,
+                    birthDate: $viewModel.measuredDate, // ViewModel의 프로퍼티 사용
+                    showDatePicker: $viewModel.showDatePicker, // ViewModel의 프로퍼티 사용
                     style: .graphical,
                     components: .date
                 )
@@ -141,5 +137,5 @@ struct WeightAddView: View {
 
 
 #Preview {
-    WeightAddView(coordinator: BabyMoaCoordinator())
+    WeightAddView(coordinator: BabyMoaCoordinator(), babyId: 1) // Preview에서도 babyId 전달
 }

@@ -22,13 +22,33 @@ final class WeightViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     
+    private var cancellables = Set<AnyCancellable>() // Combine 구독을 위한 cancellables 추가
+    
     private var babyBirthday: Date? {
-        return SelectedBabyState.shared.baby?.birthDate
+        if let baby = SelectedBabyState.shared.baby, let date = DateFormatter.yyyyDashMMDashdd.date(from: baby.birthDate) {
+            return date
+        }
+        return nil
     }
     
     init(coordinator: BabyMoaCoordinator, babyId: Int) {
         self.coordinator = coordinator
         self.babyId = babyId
+        
+        // GrowthDataNotifier의 weightDidUpdate 알림을 구독합니다.
+        GrowthDataNotifier.shared.weightDidUpdate
+            .sink { [weak self] in
+                print("WeightViewModel: Weight data updated notification received. Refreshing data.")
+                Task {
+                    await self?.fetchWeights()
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    @MainActor
+    func navigateToWeightAdd() {
+        coordinator.push(path: .newWeightAdd(babyId: self.babyId))
     }
     
     @MainActor
@@ -47,15 +67,10 @@ final class WeightViewModel: ObservableObject {
                 return
             }
             
-            let mappedRecords: [WeightRecordModel] = apiRecords.compactMap { apiRecord in
-                guard let date = DateFormatter.yyyyDashMMDashdd.date(from: apiRecord.date) else {
-                    print("Error: Could not parse date string \(apiRecord.date)")
-                    return nil
-                }
+            let mappedRecords: [WeightRecordModel] = apiRecords.map { apiRecord in
                 return WeightRecordModel(
-                    id: UUID(),
-                    date: date,
-                    weight: apiRecord.weight,
+                    weight: apiRecord.weight, // 순서 변경
+                    date: apiRecord.date,
                     memo: apiRecord.memo
                 )
             }

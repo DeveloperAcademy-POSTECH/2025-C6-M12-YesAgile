@@ -47,18 +47,6 @@ struct BabyMoaRootView: View {
                 case .allMilestones(let allMilestones):
                     AllMilestoneView(coordinator: coordinator, allMilestones: allMilestones)
                         .navigationBarBackButtonHidden()
-                case .height(let babyId):
-                    GrowthDetailView<Height>(
-                        coordinator: coordinator,
-                        growthDetailType: .height,
-                        babyId: babyId
-                    )
-                case .weight(let babyId):
-                    GrowthDetailView<Weight>(
-                        coordinator: coordinator,
-                        growthDetailType: .weight,
-                        babyId: babyId
-                    )
                 case .teeth(let teethList):
                     TeethView(
                         coordinator: coordinator,
@@ -91,21 +79,23 @@ struct BabyMoaRootView: View {
                         .navigationBarBackButtonHidden()
                     
                     // New Weight and Height View
-                case .newHeight:
-                    HeightView(coordinator: coordinator)
+                case .newHeight(let babyId):
+                    HeightView(coordinator: coordinator, babyId: babyId)
                         .navigationBarBackButtonHidden()
                     
-                case .newHeightAdd:
-                    HeightAddView(coordinator: coordinator)
+                case .newHeightAdd(let babyId):
+                    HeightAddView(coordinator: coordinator, babyId: babyId)
                         .navigationBarBackButtonHidden()
                     
-                case .newWeight:
-                    WeightView(coordinator: coordinator)
+                case .newWeight(let babyId):
+                    WeightView(coordinator: coordinator, babyId: babyId)
                         .navigationBarBackButtonHidden()
                     
-                case .newWeightAdd:
-                    WeightAddView(coordinator: coordinator)
+                case .newWeightAdd(let babyId):
+                    WeightAddView(coordinator: coordinator, babyId: babyId)
                         .navigationBarBackButtonHidden()
+                default:
+                    EmptyView()
                 }
             }
         }

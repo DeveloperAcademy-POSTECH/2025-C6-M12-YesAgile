@@ -274,13 +274,21 @@ final class GrowthViewModel {
     }
     
     @MainActor
-    func heightButtonTapped() {
-        coordinator.push(path: .height(babyId: SelectedBaby.babyId!))
+    func navigateToHeightDetail() {
+        guard let babyId = SelectedBabyState.shared.baby?.babyId else {
+            print("Error: No baby selected.")
+            return
+        }
+        coordinator.push(path: .newHeight(babyId: babyId))
     }
     
     @MainActor
-    func weightButtonTapped() {
-        coordinator.push(path: .weight(babyId: SelectedBaby.babyId!))
+    func navigateToWeightDetail() {
+        guard let babyId = SelectedBabyState.shared.baby?.babyId else {
+            print("Error: No baby selected.")
+            return
+        }
+        coordinator.push(path: .newWeight(babyId: babyId))
     }
     
     @MainActor

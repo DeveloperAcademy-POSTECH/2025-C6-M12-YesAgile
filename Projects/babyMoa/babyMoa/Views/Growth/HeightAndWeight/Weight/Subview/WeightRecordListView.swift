@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct WeightRecordListView: View {
-    @StateObject private var viewModel: WeightViewModel
+    @ObservedObject var viewModel: WeightViewModel
     
-    init(coordinator: BabyMoaCoordinator) {
-        self._viewModel = StateObject(wrappedValue: WeightViewModel(coordinator: coordinator))
+    init(viewModel: WeightViewModel) {
+        self.viewModel = viewModel
     }
     
     var body: some View {
@@ -59,14 +59,12 @@ struct WeightRecordListView: View {
             
             Spacer()
         }
-        .onAppear {
-            Task {
-                await viewModel.fetchWeights()
-            }
-        }
     }
 }
 
 #Preview {
-    WeightRecordListView(coordinator: BabyMoaCoordinator())
+    let coordinator = BabyMoaCoordinator()
+    let viewModel = WeightViewModel(coordinator: coordinator, babyId: 1)
+    viewModel.records = WeightRecordModel.mockData
+    return WeightRecordListView(viewModel: viewModel)
 }

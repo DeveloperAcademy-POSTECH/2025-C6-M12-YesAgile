@@ -57,12 +57,12 @@ struct GrowthView: View {
                     
                     HStack(spacing: 20){
                         Button(action: {
-                            coordinator.push(path: .newHeight)
+                            viewModel.navigateToHeightDetail()
                         }, label: {
                             // 1. 기린 카드
                             CardItemView(
                                 title: "키",
-                                value: viewModel.latestHeight != nil ? "\(viewModel.latestHeight!)cm" : "0cm",
+                                value: viewModel.latestHeight != nil ? "\(viewModel.latestHeight!)cm" : "-",
                                 backgroundColor: Color.orange50
                             ) {
                                 // 👇 기린의 고유한 레이아웃 전달
@@ -75,12 +75,12 @@ struct GrowthView: View {
                         })
                         
                         Button(action: {
-                            coordinator.push(path: .newWeight)
+                            viewModel.navigateToWeightDetail()
                         }, label: {
                             // 2. 코끼리 카드
                             CardItemView(
                                 title: "몸무게",
-                                value: viewModel.latestWeight != nil ? "\(viewModel.latestWeight!)kg" : "0Kg",
+                                value: viewModel.latestWeight != nil ? "\(viewModel.latestWeight!)kg" : "-",
                                 backgroundColor: Color.green80
                             ) {
                                 // 👇 코끼리의 고유한 레이아웃(VStack+Spacer) 전달

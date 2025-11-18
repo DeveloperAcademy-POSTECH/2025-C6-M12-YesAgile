@@ -160,9 +160,9 @@ struct WeightChartView: View {
     }
 }
 
-#Preview {
-    let coordinator = BabyMoaCoordinator()
-    let viewModel = WeightViewModel(coordinator: coordinator)
-    viewModel.records = WeightRecordModel.mockData
-    return WeightChartView(viewModel: viewModel)
-}
+//#Preview {
+//    let coordinator = BabyMoaCoordinator()
+//    let viewModel = WeightViewModel(coordinator: coordinator)
+//    viewModel.records = WeightRecordModel.mockData
+//    return WeightChartView(viewModel: viewModel)
+//}

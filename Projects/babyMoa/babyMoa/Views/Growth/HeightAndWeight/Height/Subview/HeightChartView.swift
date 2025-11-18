@@ -162,10 +162,10 @@ struct HeightChartView: View {
         }
     }
 }
-
-#Preview {
-    let coordinator = BabyMoaCoordinator()
-    let viewModel = HeightViewModel(coordinator: coordinator)
-    viewModel.records = HeightRecordModel.mockData
-    return HeightChartView(viewModel: viewModel)
-}
+//
+//#Preview {
+//    let coordinator = BabyMoaCoordinator()
+//    let viewModel = HeightViewModel(coordinator: coordinator)
+//    viewModel.records = HeightRecordModel.mockData
+//    HeightChartView(viewModel: viewModel)
+//}

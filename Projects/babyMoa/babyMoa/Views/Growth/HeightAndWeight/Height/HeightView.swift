@@ -11,8 +11,8 @@ struct HeightView: View {
     @State private var selectedTab: HeightTab = .record
     @StateObject private var viewModel: HeightViewModel
     
-    init(coordinator: BabyMoaCoordinator) {
-        _viewModel = StateObject(wrappedValue: HeightViewModel(coordinator: coordinator))
+    init(coordinator: BabyMoaCoordinator, babyId: Int) {
+        _viewModel = StateObject(wrappedValue: HeightViewModel(coordinator: coordinator, babyId: babyId))
     }
     
     var body: some View {
@@ -57,7 +57,7 @@ struct HeightView: View {
                 } else {
                     switch selectedTab {
                     case .record:
-                        HeightRecordListView(coordinator: viewModel.coordinator)
+                        HeightRecordListView(viewModel: viewModel)
                             .padding(.top, 20)
                     case .chart:
                         HeightChartView(viewModel: viewModel)
@@ -67,7 +67,7 @@ struct HeightView: View {
                 }
                 // 기록 추가 버튼
                 Button("기록 추가", action: {
-                    viewModel.coordinator.push(path: .newHeightAdd)
+                    viewModel.navigateToHeightAdd()
                 })
                 .buttonStyle(.defaultButton)
                 .padding(.bottom, 40)
@@ -87,8 +87,5 @@ struct HeightView: View {
 
 #Preview {
     let coordinator = BabyMoaCoordinator()
-    let viewModel = HeightViewModel(coordinator: coordinator)
-    viewModel.records = HeightRecordModel.mockData
-    return HeightView(coordinator: coordinator)
-        .environmentObject(coordinator)
+    return HeightView(coordinator: coordinator, babyId: 1)
 }
