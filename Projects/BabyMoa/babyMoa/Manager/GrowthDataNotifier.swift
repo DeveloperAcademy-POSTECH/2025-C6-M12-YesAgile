@@ -5,6 +5,7 @@
 //  Created by Baba on 11/19/25.
 //
 
+import Foundation
 import Combine
 
 final class GrowthDataNotifier {
