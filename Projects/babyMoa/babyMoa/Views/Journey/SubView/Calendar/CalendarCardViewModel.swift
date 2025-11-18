@@ -61,9 +61,6 @@ class CalendarCardViewModel {
         }
 
         monthDates = dates
-        print(
-            "✅ CalendarViewModel: \(monthDates.count)개 날짜 생성 (\(formatMonth(currentMonth)))"
-        )
     }
 
     // MARK: - 월 네비게이션
@@ -79,7 +76,6 @@ class CalendarCardViewModel {
         else { return }
         currentMonth = newMonth
         updateMonthDates()
-        print("📅 이전 월: \(formatMonth(currentMonth))")
     }
 
     /// 다음 월로 이동
@@ -93,7 +89,6 @@ class CalendarCardViewModel {
         else { return }
         currentMonth = newMonth
         updateMonthDates()
-        print("📅 다음 월: \(formatMonth(currentMonth))")
     }
 
     // MARK: - 날짜 선택
@@ -102,15 +97,14 @@ class CalendarCardViewModel {
     /// - Parameter date: 선택된 날짜
     /// - Returns: 해당 날짜의 여정 배열
     func dateTapped(_ date: Date) -> [Journey] {
+        // 1. 선택된 날짜 업데이트 (달력에서 해당 날짜가 하이라이트됨)
         selectedDate = date
-        print("📅 날짜 선택: \(date.yyyyMMdd)")
         
-        // 해당 날짜의 여정 필터링
+        // 2. 탭한 날짜와 동일한 날짜의 여정만 필터링하여 반환
         let result = journies.filter { journey in
             Calendar.current.isDate(journey.date, inSameDayAs: date)
         }
         
-        print("  → 여정 수: \(result.count)개")
         return result
     }
 
