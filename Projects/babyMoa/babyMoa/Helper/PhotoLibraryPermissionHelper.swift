@@ -15,14 +15,6 @@ import UIKit
 /// - 권한 요청 (첫 실행 시)
 /// - Limited Access 사용자를 위한 추가 선택 UI 표시
 /// - 설정 앱으로 이동
-///
-/// **사용 예시**:
-/// ```swift
-/// let status = PhotoLibraryPermissionHelper.checkAuthorizationStatus()
-/// if status == .notDetermined {
-///     let newStatus = await PhotoLibraryPermissionHelper.requestAuthorization()
-/// }
-/// ```
 @MainActor
 class PhotoLibraryPermissionHelper {
 

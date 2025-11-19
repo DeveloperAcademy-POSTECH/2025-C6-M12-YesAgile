@@ -201,7 +201,7 @@ struct JourneyView: View {
         }
         .onAppear {
             Task {
-                // MARK: - 사진 라이브러리 권한 체크 (여정 탭 진입 시)
+                // MARK: - 사진 라이브러리 권한 체크 (여정 탭 진입 시) Todo : 여기 위치가 맞는지.. 
                 let photoStatus =
                     PhotoLibraryPermissionHelper.checkAuthorizationStatus()
 
@@ -233,7 +233,7 @@ struct JourneyView: View {
                 // MainTabViewModel이 SelectedBabyState에 아기 정보를 설정하면,
                 // 여기서 SelectedBaby.babyId에 동기화 (API 호출 시 필요)
                 // MainTabViewModel (아기 선택 시 자동 설정) 로 이야기해보거나
-                //JourneyViewModel (필요 시 직접 조회)로 이동 예정 Tod
+                //JourneyViewModel (필요 시 직접 조회)로 이동 예정 Todo
                 if let baby = SelectedBabyState.shared.baby {
                     SelectedBaby.babyId = baby.babyId
                 } else {

@@ -26,7 +26,7 @@ import SwiftUI
         latitude: Double,
         longitude: Double
     ) async -> Bool {
-        // 1. babyId 확인: MainTabViewModel에서 설정한 현재 아기 ID 가져오기
+        // 1. babyId 확인: MainTabViewModel에서 설정한 현재 아기 ID 가져오기 ToDo 여기서 가져올것인가 동기화 시킬것인가? JourneyView에서 동기화 시키고있음..
         guard let babyId = SelectedBaby.babyId else {
             print("⚠️ babyId 없음")
             return false
