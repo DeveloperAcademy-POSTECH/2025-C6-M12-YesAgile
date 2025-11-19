@@ -17,7 +17,7 @@ struct BabyMoaStartView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             Spacer()
             Image("authImg")
                 .resizable()
@@ -31,18 +31,21 @@ struct BabyMoaStartView: View {
                 .lineLimit(nil)
                 .multilineTextAlignment(.center)
                 
+            Spacer()
             
             Button("BabyMoa 시작하기", action: {
                 isShowSheet = true // Show the sheet
                 // viewModel.coordinator.push(path: .login) 
             })
             .buttonStyle(.defaultButton)
+            .padding(.bottom, 44)
             
         }
         .backgroundPadding(.horizontal)
         .sheet(isPresented: $isShowSheet) {
             SignUpView(coordinator: viewModel.coordinator)
         }
+        .ignoresSafeArea()
     }
 }
 

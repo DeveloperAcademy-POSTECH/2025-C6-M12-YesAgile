@@ -22,31 +22,37 @@ struct SignUpView: View {
 //                viewModel.coordinator.pop()
 //            })
 //            .padding(.bottom, 60)
-            TermsAgreementView(termCheckList: $viewModel.termCheckList)
-                .padding(.bottom, 20)
-            if viewModel.isAllChecked() {
-                SignInWithAppleButton(.signIn) { request in
-                    viewModel.handleRequest(request: request)
-                } onCompletion: { result in
-                    Task {
-                        await viewModel.handleCompletion(result: result)
-                        //  로그인 성공 후 시트 닫기
-                        dismiss() // 시트를 닫습니다.
+            VStack{
+                TermsAgreementView(termCheckList: $viewModel.termCheckList)
+                
+                Spacer()
+
+                if viewModel.isAllChecked() {
+                    SignInWithAppleButton(.signIn) { request in
+                        viewModel.handleRequest(request: request)
+                    } onCompletion: { result in
+                        Task {
+                            await viewModel.handleCompletion(result: result)
+                            //  로그인 성공 후 시트 닫기
+                            dismiss() // 시트를 닫습니다.
+                        }
                     }
+                    .signInWithAppleButtonStyle(.black)
+                    .frame(height: 50)
+                    .cornerRadius(12)
+                    .backgroundPadding(.horizontal)
+                    .padding(.bottom, 44)
                 }
-                .signInWithAppleButtonStyle(.black)
-                .frame(height: 50)
-                .cornerRadius(10)
-                .padding()
             }
-            Spacer()
+            .sheet(isPresented: $viewModel.isShowingPrivacySheet) {
+                PrivacyConsentView(coordinator: viewModel.coordinator)
+            }
+            .presentationDetents([.height(345)])
+            .presentationCornerRadius(25)
+            .presentationDragIndicator(.visible)
         }
-        .sheet(isPresented: $viewModel.isShowingPrivacySheet) {
-            PrivacyConsentView(coordinator: viewModel.coordinator)
-        }
-        .presentationDetents([.height(370)])
-        .presentationCornerRadius(25)
-        .presentationDragIndicator(.visible)
+        .ignoresSafeArea()
+        
     }
     
 }
