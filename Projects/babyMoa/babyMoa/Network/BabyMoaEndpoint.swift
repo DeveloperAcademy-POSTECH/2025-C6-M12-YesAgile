@@ -432,7 +432,7 @@ extension BabyMoaEndpoint {
                 "memo": memo,
             ]
         
-        // ✅ deleteJourney: query → body로 변경 (백엔드 Request Body 요구)
+        // deleteJourney: query → body로 변경했음 퍼드 충돌 및 오류시에 query 제거 필요합니다
         case .deleteJourney(
             let babyId,
             let journeyId
