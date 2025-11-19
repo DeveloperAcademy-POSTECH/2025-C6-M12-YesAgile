@@ -27,11 +27,10 @@ struct JourneyListView: View {
                 }
             )
             .padding(.horizontal, 20)
-            .background(Color.white)
 
             ScrollView {
                 VStack(spacing: 20) {
-                    ForEach(journies, id: \.journeyId) { journey in
+                    ForEach(journies) { journey in
                         JourneyCard(
                             journey: journey,
                             onDelete: {
@@ -49,15 +48,19 @@ struct JourneyListView: View {
             Button("여정 추가") {
                 onAddJourney()
             }
-            .buttonStyle(.primaryButton)
+            .buttonStyle(
+                AppButtonStyle(
+                    backgroundColor: Color("BrandMain"),
+                    foregroundColor: .white,
+                    pressedBackgroundColor: Color("BrandMain").opacity(0.8)
+                )
+            )
             .frame(height: 56)
             .padding(.horizontal, 20)
             .padding(.bottom, 30)
         }
-        .background(
-            Color(red: 0.95, green: 0.95, blue: 0.97)
-                .ignoresSafeArea()  // ✅ 배경만 Safe Area 위로 확장 (콘텐츠는 안전하게 유지)
-        )
+        .background(Color.background)  // JourneyAddView와 동일한 배경 컬러
+        .ignoresSafeArea()  // 상/하단 모두 Safe Area까지 확장
     }
 }
 
@@ -75,8 +78,11 @@ struct JourneyCard: View {
                 Image(uiImage: journey.journeyImage)
                     .resizable()
                     .scaledToFill()
-                    .frame(height: 300)
-                    .clipped()
+                    .frame(
+                        width: UIScreen.main.bounds.width - 40,
+                        height: 300
+                    )  // 명시적 크기 지정
+                    .clipped()  // 넘치는 부분 강제로 자르기
                     .cornerRadius(16)
 
                 // 메모 텍스트
@@ -101,10 +107,13 @@ struct JourneyCard: View {
                 Image(systemName: "trash")
                     .font(.system(size: 20))
                     .foregroundColor(.red)
-                    .frame(width: 40, height: 40)
-                    .background(Color.white)
+                    .frame(width: 24, height: 24)
+                    .background(
+                        Color(red: 243 / 255, green: 243 / 255, blue: 243 / 255)
+                            .opacity(0.8)
+                    )
                     .clipShape(Circle())
-                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                    .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
             }
             .padding(12)
         }
