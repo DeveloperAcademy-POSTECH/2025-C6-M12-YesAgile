@@ -52,7 +52,7 @@ struct GrowthView: View {
                     
                     Rectangle()
                         .fill(Color.gray90)
-                        .frame(height: 0.5)
+                        .frame(height: 1)
                         .padding(.vertical, 20)
                     
                     HStack(spacing: 20){
