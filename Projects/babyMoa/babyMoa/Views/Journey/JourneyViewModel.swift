@@ -6,7 +6,7 @@
 //
 import Foundation
 import SwiftUI
-
+/// Todo - 업데이트만 남았다!!
 /// Journey 비즈니스 로직을 관리하는 ViewModel
 /// - Note: 순수 데이터 관리만 담당 (네비게이션 책임 없음)
 //         - fetchJournies: 데이터 조회만
