@@ -10,7 +10,10 @@ import UIKit
 
 /// 여정 도메인 모델
 /// 서버 ResponseModel과 달리 UI에 최적화된 형태로 데이터 보관
-struct Journey: Entity, Hashable {
+struct Journey: Entity, Hashable, Identifiable {
+    // MapKit ForEach에서 사용하기 위한 Identifiable 구현
+    var id: Int { journeyId }
+    
     var journeyId: Int
     var journeyImage: UIImage  // ✅ 사진 필수 (non-optional)
     var latitude: Double
