@@ -13,11 +13,6 @@ struct JourneyAddView: View {
     let selectedDate: Date
     let photoAccessStatus: PHAuthorizationStatus  // ✅ 추가: 사진 라이브러리 권한 상태
     /// 저장 콜백: 부모(JourneyView)가 JourneyViewModel을 통해 저장 처리
-    /// - Parameters:
-    ///   - image: 선택한 사진 (필수)
-    ///   - memo: 여정 메모
-    ///   - latitude: 위도 (위치 정보 없으면 0.0)
-    ///   - longitude: 경도 (위치 정보 없으면 0.0)
     let onSave: (UIImage, String, Double, Double) -> Void
     let onDismiss: () -> Void
 
@@ -32,110 +27,100 @@ struct JourneyAddView: View {
     @State private var pickedItem: PhotosPickerItem? = nil
     @State private var extractedLocation: CLLocation?  // ✅ 위치 정보
     @State private var showLocationAlert = false  // ✅ 위치 없음 알림
+    @FocusState private var isMemoFocused: Bool  // 키보드 포커스 관리
 
     var body: some View {
-        VStack(spacing: 0) {
-            CustomNavigationBar(
-                title: selectedDate.yyyyMMdd,
-                leading: {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "chevron.left")
-                    }
-                }
-            )
-            .padding(.horizontal, 20)
-
-            // MARK: - Limited Access 안내 배너
-            if photoAccessStatus == .limited {
-                LimitedAccessBanner(
-                    onSettingsTap: {
-                        PhotoLibraryPermissionHelper.openSettings()
+        // MARK: - 키보드 대응 레이아웃 (GrowthMilestoneView 패턴)
+        // ZStack + ScrollView 구조로 키보드가 올라올 때 저장 버튼이 자동으로 위로 밀림? 근데 왜 적용이 안되냐..
+        ZStack {
+            Color.background
+                .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                CustomNavigationBar(
+                    title: selectedDate.yyyyMMdd,
+                    leading: {
+                        Button(action: {
+                            endTextEditing()  // 키보드 내린 후 닫기
+                            dismiss()
+                        }) {
+                            Image(systemName: "chevron.left")
+                        }
                     }
                 )
                 .padding(.horizontal, 20)
-                .padding(.top, 12)
-            }
 
-            ScrollView {
-                VStack(spacing: 20) {
-                    // 사진 영역
-                    Button(action: { showImagePicker = true }) {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.white, lineWidth: 2)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color.white)
-                                )
-                            if let image = selectedImage {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .clipShape(
-                                        RoundedRectangle(cornerRadius: 16)
-                                    )
-                            } else {
-                                Text("아이와 함께한 소중한 여정 사진을 등록 해주세요")
-                                    .foregroundColor(.gray)
-                                    .multilineTextAlignment(.center)
-                                    .padding()
-                            }
+                // MARK: - Limited Access 안내 배너
+                if photoAccessStatus == .limited {
+                    LimitedAccessBanner(
+                        onSettingsTap: {
+                            PhotoLibraryPermissionHelper.openSettings()
                         }
-                        .frame(width: 353, height: 265)
-                    }
-                    .buttonStyle(.plain)
+                    )
                     .padding(.horizontal, 20)
-
-                    // 메모 영역
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("여정 메모")
-                            .labelTextStyle()
-
-                        TextField(
-                            "아이와 함께한 소중한 여정 메모를 입력 해주세요",
-                            text: $memo,
-                            axis: .vertical
-                        )
-                        .padding(16)
-                        .frame(width: 353, height: 100, alignment: .top)
-                        .background(Color.white)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.brand40, lineWidth: 2)
-                        )
-                    }
-                    .padding(.horizontal, 20)
+                    .padding(.top, 12)
                 }
 
-            }
+                ScrollView {
+                    VStack(spacing: 20) {
+                        photoSection
+                            .padding(.horizontal, 20)
+                            .padding(.top, 8)
 
-            Spacer()
+                        // 메모 영역
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("여정 메모")
+                                .labelTextStyle()
 
-            // 저장 버튼
-            Button("저장") {
-                guard let image = selectedImage else {
-                    return  // ✅ 사진 필수
+                            TextField(
+                                "아이와 함께한 소중한 여정 메모를 입력 해주세요",
+                                text: $memo,
+                                axis: .vertical
+                            )
+                            .focused($isMemoFocused)  // 키보드 포커스 관리
+                            .padding(16)
+                            .frame(width: 353, height: 100, alignment: .top)
+                            .background(Color.white)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.brand40, lineWidth: 2)
+                            )
+                        }
+                        .padding(.horizontal, 20)
+                        
+                        Spacer()
+                        
+                        // MARK: - 저장 버튼 (ScrollView 내부)
+                        // 키보드가 올라오면 자동으로 위로 밀림
+                        Button("저장") {
+                            guard let image = selectedImage else {
+                                return
+                            }
+
+                            endTextEditing()  // 키보드 내림
+                            
+                            let resizedImage = ImageManager.shared.resizeImage(image, maxSize: 1024)
+                            let latitude = extractedLocation?.coordinate.latitude ?? 0.0
+                            let longitude = extractedLocation?.coordinate.longitude ?? 0.0
+
+                            onSave(resizedImage, memo, latitude, longitude)
+                            dismiss()
+                        }
+                        .buttonStyle(.defaultButton)
+                        .frame(height: 56)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 30)
+                        .disabled(selectedImage == nil)
+                    }
+                    .padding(.bottom, 44)  // 하단 여백
                 }
-
-                // 위치 정보 (없으면 0.0)
-                let latitude = extractedLocation?.coordinate.latitude ?? 0.0
-                let longitude = extractedLocation?.coordinate.longitude ?? 0.0
-
-                // 부모에게 데이터 전달
-                onSave(image, memo, latitude, longitude)
-
-                dismiss()
+                .scrollDismissesKeyboard(.interactively)  // 스크롤 시 키보드 내림
             }
-            .buttonStyle(.defaultButton)
-            .frame(height: 56)
-            .padding(.horizontal, 20)
-            .padding(.bottom, 227)
-            .disabled(selectedImage == nil)  // ✅ 사진 없으면 비활성화
         }
-        .background(Color.background)
-        .ignoresSafeArea()
+        .ignoresSafeArea(edges: .top)
+        .onTapGesture {
+            endTextEditing()  // 빈 영역 탭 시 키보드 내림 (팀 extension 사용)
+        }
         .photosPicker(
             isPresented: $showImagePicker,
             selection: $pickedItem,
@@ -183,6 +168,47 @@ struct JourneyAddView: View {
         } message: {
             Text("사진에 위치 정보가 없어서 지도 위에 보이지 않습니다.")
         }
+    }
+
+    // MARK: - Grow 스타일 사진 카드
+    private var photoSection: some View {
+        ZStack {
+            if let image = selectedImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .transition(.opacity.combined(with: .scale))
+            } else {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color.white)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(Color.brand40.opacity(0.4), lineWidth: 1.5)
+                    )
+                    .overlay(
+                        VStack(spacing: 10) {
+                            Image(systemName: "photo.on.rectangle")
+                                .font(.system(size: 36, weight: .medium))
+                                .foregroundColor(Color.brand40)
+                            Text("아이와 함께한 소중한 여정 사진을 등록 해주세요")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(.gray)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 20)
+                        }
+                    )
+                    .frame(height: 265)  // 플레이스홀더만 고정 높이
+            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            withAnimation(.spring) {
+                showImagePicker = true
+            }
+        }
+        .animation(.spring, value: selectedImage)
     }
 }
 
