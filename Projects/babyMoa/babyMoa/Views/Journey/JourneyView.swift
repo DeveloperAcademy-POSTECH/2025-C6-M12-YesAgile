@@ -10,29 +10,27 @@ import Photos  // PhotoLibraryPermissionHelper에서 PHAuthorizationStatus 사�
 import SwiftUI
 
 struct JourneyView: View {
-    // MARK: - View가 화면 전환 책임을 가짐 (ViewModel은 순수 비즈니스 로직만)
+    // MARK: - View가 화면 전환 책임을 가짐 (ViewModel은 순수 비즈니스 로직만) 맨아래 위치정보 alert 주석 및 최신 리스트 업데이트 위해서 아래에!!
     let coordinator: BabyMoaCoordinator
 
     @State private var journeyVM: JourneyViewModel
     @State private var calendarCardVM: CalendarCardViewModel
     @State private var mapCardVM: MapCardViewModel
+    @State private var locationManager = LocationManager()  // 현재 위치 관리
     @State private var mapPosition = MapCameraPosition.region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(
-                latitude: 37.5665,
-                longitude: 126.9780
+                latitude: 36.5,  // 대한민국 중심
+                longitude: 127.5
             ),
-            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+            span: MKCoordinateSpan(latitudeDelta: 4.0, longitudeDelta: 4.0)  // 한반도 전체 표시
         )
     )
 
     // MARK: - fullScreenCover용 State
     @State private var showAddView = false
     @State private var selectedDateForAdd: Date = Date()
-    @State private var showListView = false
-    @State private var selectedDateForList: Date = Date()
-    @State private var journiesForSelectedDate: [Journey] = []
-    @State private var gridContext: JourneyGridContext? = nil
+    @State private var listContext: JourneyListContext? = nil  // Identifiable Context로 변경
 
     // MARK: - 사진 라이브러리 권한 관련 State
     @State private var showPhotoAccessAlert = false
@@ -52,7 +50,7 @@ struct JourneyView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // 달력 카드 직접 뷰모델을 통해 값을 주입
+            
                 CalendarCard(
                     data: CalendarCardData(
                         currentMonth: calendarCardVM.currentMonth,
@@ -82,9 +80,7 @@ struct JourneyView: View {
                         // 캘린더 날짜 탭 시 화면 전환 로직
                         onDateTap: { date in
                             // 1. 탭한 날짜 선택 & 해당 날짜의 여정 가져오기
-                            let journiesForDate = calendarCardVM.dateTapped(
-                                date
-                            )
+                            let journiesForDate = calendarCardVM.dateTapped(date)
 
                             // 2. 여정 존재 여부에 따라 화면 분기
                             if journiesForDate.isEmpty {
@@ -92,10 +88,11 @@ struct JourneyView: View {
                                 selectedDateForAdd = date
                                 showAddView = true
                             } else {
-                                // 여정 있음: 여정 상세 화면으로 이동
-                                selectedDateForList = date
-                                journiesForSelectedDate = journiesForDate
-                                showListView = true
+                                // 여정 있음: Identifiable Context로 최신 데이터 보장
+                                listContext = JourneyListContext(
+                                    date: date,
+                                    journies: journiesForDate
+                                )
                             }
                         },
                         isInCurrentMonth: { date in
@@ -116,78 +113,56 @@ struct JourneyView: View {
                 MapCard(
                     data: MapCardData(
                         position: $mapPosition,
-                        //  journeyVM.journies를 직접 전달 (데이터 중복 제거)
-                        annotations:
-                            mapCardVM
-                            .representativeJournies(from: journeyVM.journies)
-                            .map { journey in
-                                // 같은 날짜의 위치 있는 여정 개수 계산
-                                let dateJournies = journeyVM.journies.filter {
-                                    eachJourney in
-                                    eachJourney.date.isSameDay(as: journey.date)
-                                        && eachJourney.hasValidLocation
-                                }
-                                return JourneyAnnotation(
-                                    from: journey,
-                                    count: dateJournies.count
-                                )
-                            }
+                        // 위치 있는 대표 여정을 마커로 전달 (Journey 모델 직접 사용)
+                        annotations: mapCardVM.representativeJournies(from: journeyVM.journies),
+                        userLocation: locationManager.location
                     ),
                     actions: MapCardActions(
                         onMarkerTap: { date in
-                            // 1. 탭한 마커의 날짜에 해당하는 모든 여정 가져오기
+                            // 마커 탭 시 → Identifiable Context로 최신 데이터 보장
                             let allJourniesForDate = mapCardVM.journies(
                                 for: date,
                                 from: journeyVM.journies
                             )
-
-                            // 2. 위치 정보가 있는 여정만 필터링 (lat/lng가 유효한 것만)
-                            let validJourniesForDate = allJourniesForDate.filter
-                            { journey in
-                                journey.hasValidLocation
-                            }
-
-                            // 3. 여정 개수에 따라 화면 분기
-                            if validJourniesForDate.count > 1 {
-                                // 2개 이상: 그리드 화면으로 이동하여 여러 사진 보여주기
-                                selectedDateForList = date
-
-                                // Identifiable Context로 최신 데이터 보장 (SwiftUI 캐싱 문제 해결)
-                                gridContext = JourneyGridContext(
-                                    date: date,
-                                    journies: validJourniesForDate
-                                )
-
-                            } else if validJourniesForDate.count == 1 {
-                                // 1개: 상세 화면으로 바로 이동
-                                selectedDateForList = date
-                                journiesForSelectedDate = validJourniesForDate
-                                showListView = true
-
-                            } else {
-                                // 0개: 마커가 있는데 유효한 여정이 없는 경우 (비정상 상태)
-                                print("⚠️ 유효한 여정 없음")
-                            }
+                            listContext = JourneyListContext(
+                                date: date,
+                                journies: allJourniesForDate
+                            )
                         },
                         onCompassTap: {
-                            // 나침반 버튼 탭 시: 지도를 첫 번째 여정 위치로 이동
-                            if let firstJourney =
-                                mapCardVM
-                                .representativeJournies(
-                                    from: journeyVM.journies
-                                )
-                                .first
-                            {
+                            // 나침반 버튼 탭 시: 현재 위치로 이동 (없으면 첫 번째 여정 위치로 fallback)
+                            if let currentLocation = locationManager.location {
                                 withAnimation {
                                     mapPosition = .region(
                                         MKCoordinateRegion(
-                                            center: firstJourney.coordinate,
+                                            center: currentLocation.coordinate,
                                             span: MKCoordinateSpan(
                                                 latitudeDelta: 0.1,
                                                 longitudeDelta: 0.1
                                             )
                                         )
                                     )
+                                }
+                            } else {
+                                // 현재 위치 없으면 첫 번째 여정 위치로 이동
+                                if let firstJourney =
+                                    mapCardVM
+                                    .representativeJournies(
+                                        from: journeyVM.journies
+                                    )
+                                    .first
+                                {
+                                    withAnimation {
+                                        mapPosition = .region(
+                                            MKCoordinateRegion(
+                                                center: firstJourney.coordinate,
+                                                span: MKCoordinateSpan(
+                                                    latitudeDelta: 0.1,
+                                                    longitudeDelta: 0.1
+                                                )
+                                            )
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -243,19 +218,33 @@ struct JourneyView: View {
                 // 현재 월의 여정 데이터 서버에서 가져오기
                 await journeyVM.fetchJournies(for: calendarCardVM.currentMonth)
 
-                // 지도 초기 위치: 첫 번째 여정의 위치로 설정
-                if let firstJourney =
-                    mapCardVM
-                    .representativeJournies(from: journeyVM.journies)
-                    .first
-                {
+                // 위치 업데이트 시작 (데이터 로드 후에 시작하여 hang 방지)
+                locationManager.startUpdating()
+                
+                // 지도 초기 위치 우선순위:
+                // 1. 현재 위치 (locationManager)
+                // 2. 첫 번째 여정 위치
+                // 3. 대한민국 중심 (서울)
+                if let currentLocation = locationManager.location {
+                    mapPosition = .region(
+                        MKCoordinateRegion(
+                            center: currentLocation.coordinate,
+                            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                        )
+                    )
+                } else if let firstJourney = mapCardVM.representativeJournies(from: journeyVM.journies).first {
                     mapPosition = .region(
                         MKCoordinateRegion(
                             center: firstJourney.coordinate,
-                            span: MKCoordinateSpan(
-                                latitudeDelta: 0.1,
-                                longitudeDelta: 0.1
-                            )
+                            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                        )
+                    )
+                } else {
+                    // 기본값: 서울 중심
+                    mapPosition = .region(
+                        MKCoordinateRegion(
+                            center: CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780),
+                            span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
                         )
                     )
                 }
@@ -290,13 +279,13 @@ struct JourneyView: View {
                 }
             )
         }
-        .fullScreenCover(isPresented: $showListView) {
+        .fullScreenCover(item: $listContext) { context in
             JourneyListView(
-                selectedDate: selectedDateForList,
-                journies: journiesForSelectedDate,
+                selectedDate: context.date,
+                journies: context.journies,
                 onAddJourney: {
-                    showListView = false
-                    selectedDateForAdd = selectedDateForList
+                    listContext = nil
+                    selectedDateForAdd = context.date
                     showAddView = true
                 },
                 onDeleteJourney: { journey in
@@ -305,39 +294,32 @@ struct JourneyView: View {
                         let success = await journeyVM.removeJourney(journey)
 
                         if success {
-                            // 삭제 성공: 현재 날짜의 여정 목록 다시 필터링하여 화면 갱신
-                            journiesForSelectedDate = journeyVM.journies.filter
-                            { journey in
-                                journey.date.isSameDay(as: selectedDateForList)
+                            // 삭제 후 해당 날짜 여정 재계산
+                            let updatedJournies = journeyVM.journies.filter { eachJourney in
+                                eachJourney.date.isSameDay(as: context.date)
+                            }
+
+                            if updatedJournies.isEmpty {
+                                // 남은 여정이 없으면 리스트 닫고 JourneyView로 복귀
+                                listContext = nil
+                            } else {
+                                // 남은 여정이 있으면 리스트 계속 표시
+                                listContext = JourneyListContext(
+                                    date: context.date,
+                                    journies: updatedJournies
+                                )
                             }
                         } else {
                             print("❌ 여정 삭제 실패: journeyId=\(journey.journeyId)")
-                            // TODO: 사용자에게 실패 알림 (Alert 등)
                         }
                     }
                 },
                 onDismiss: {
-                    showListView = false
+                    listContext = nil
                 }
             )
         }
-        .fullScreenCover(item: $gridContext) { context in
-            // MARK: - Identifiable Context 기반 fullScreenCover
-            // 문제: Bool 기반 fullScreenCover는 초기 렌더 시점을 캐시하여 첫 클릭에 빈 배열 전달
-            // 해결: 보여줄 여정을 포함하는 Identifiable Context를 바인딩 → 매번 최신 데이터로 생성
-            JourneyGridView(
-                selectedDate: context.date,
-                journies: context.journies,
-                onJourneyTap: { journey in
-                    gridContext = nil  // 시트 닫기
-                    journiesForSelectedDate = [journey]
-                    showListView = true
-                },
-                onDismiss: {
-                    gridContext = nil  // Cancel 등 기타 닫기 경로
-                }
-            )
-        }
+        // fullScreenCover(item: $gridContext) 제거 (JourneyGridView 사용 중단)
         // MARK: - Limited Access 안내 Alert
         .alert("📍 위치 기반 여정 기록", isPresented: $showPhotoAccessAlert) {
             Button("설정으로 이동") {
@@ -353,13 +335,18 @@ struct JourneyView: View {
 }
 
 // MARK: - Identifiable Context (fullScreenCover 전용)
+
 /// Bool state 대신 Identifiable 컨텍스트를 사용하여
 /// fullScreenCover가 항상 최신 데이터를 기반으로 표시되도록 한다.
-private struct JourneyGridContext: Identifiable {
+/// - SwiftUI의 fullScreenCover는 isPresented 방식일 때 초기 렌더링 시점의 데이터를 캐시함
+/// - item 방식을 사용하면 Context 생성 시점의 최신 데이터를 보장함
+private struct JourneyListContext: Identifiable {
     let id = UUID()
     let date: Date
     let journies: [Journey]
 }
+
 #Preview {
     JourneyView(coordinator: BabyMoaCoordinator())
 }
+
