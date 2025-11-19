@@ -1,8 +1,8 @@
 //
-//  HorizontalDialPicker.swift
-//  BabyMoa
+//  HorizontalDialPicker.swift
+//  BabyMoa
 //
-//  Created by Baba on 11/12/25.
+//  Created by Baba on 11/12/25.
 //
 
 import SwiftUI
@@ -11,8 +11,8 @@ struct HorizontalDialPicker<ValueType>: View where ValueType: BinaryFloatingPoin
     
     @Binding var value: ValueType
     var range: ClosedRange<ValueType>
-    var step: ValueType
-    
+    var step: ValueType // 💡 이제 이 step에 실제 단위(예: 0.1)를 설정합니다.
+        
     var tickSpacing: CGFloat = 10.0
     var tickSegmentCount: Int = 10
     var showSegmentValueLabel: Bool = true
@@ -27,15 +27,20 @@ struct HorizontalDialPicker<ValueType>: View where ValueType: BinaryFloatingPoin
             // viewSize가 처음 설정될 때 (oldValue == nil)
             // 초기 스크롤 위치를 계산합니다.
             if oldValue == nil && viewSize != nil {
-                // .onAppear에서 하던 작업을 여기서 수행합니다.
-                self.scrollPosition = Int(value / step - range.lowerBound)
+                // 💡 수정 1: 초기 scrollPosition 계산 시 부동 소수점 오차 보정 (round())
+                let targetIndex = (value - range.lowerBound) / step
+                self.scrollPosition = Int(targetIndex.rounded())
             }
         }
     }
     
     var body: some View {
         ScrollView(.horizontal, content: {
-            let totalTicks = Int((range.upperBound - range.lowerBound) / step) + 1
+            // totalTicks 계산: 부동 소수점 오차 보정 (round())을 사용하여 정확한 틱 개수 계산
+            let difference = range.upperBound - range.lowerBound
+            let count = difference / step
+            let safeCount = count.rounded()
+            let totalTicks = Int(safeCount) + 1
             
             HStack(spacing: tickSpacing) {
                 ForEach(0..<totalTicks, id: \.self) { index in
@@ -44,37 +49,45 @@ struct HorizontalDialPicker<ValueType>: View where ValueType: BinaryFloatingPoin
                     let isTarget = index == scrollPosition
                     
                     RoundedRectangle(cornerRadius: 2)
-                        // 원하시는 색상으로 변경 (예: .blue)
-                        .fill(isTarget ? .blue : isSegment ? .black : .gray)
-                        .frame(width: 3, height: 24)
+                        .fill(isTarget ? Color.brandLight : isSegment ? .black : .gray)
+                        .frame(width: 3, height: 30)
                         .id(index)
                         .scaleEffect(x: isTarget ? 1.2 : 1, y: isTarget ? 1.5 : 0.8, anchor: .bottom)
                         .animation(.default.speed(1.2), value: isTarget)
                         .sensoryFeedback(.selection, trigger: isTarget && initialized)
                         .overlay(alignment: .bottom, content: {
                             if isSegment, self.showSegmentValueLabel {
-                                let value = Double(range.lowerBound + ValueType(index) * step)
-                                Text("\(String(format: "%.\(labelSignificantDigit)f", value))")
+                                // 💡 수정 3: 틱 레이블 값 계산 시 부동 소수점 오차 보정 (round() 기반)
+                                let theoreticalValue = range.lowerBound + ValueType(index) * step
+                                
+                                // 오차를 보정하여 가장 가까운 step 배수로 만듭니다.
+                                let roundedValue = (theoreticalValue / step).rounded() * step
+                                let displayValue = Double(roundedValue)
+                                
+                                // 줄자 하단에 숫자를 보여줄 것인가 ?? 현재는 보여지도록 구현했고 상황에 따라서 변경할 수 있다.
+                                
+                                Text("\(String(format: "%.\(labelSignificantDigit)f", displayValue))")
                                     .font(.system(size: 12))
                                     .fontWeight(.semibold)
                                     .fixedSize()
-                                    .offset(y: 16)
+                                    .offset(y: 40)
                             }
                         })
                 }
             }
             .scrollTargetLayout()
-            .padding(.vertical, 16)
+            .padding(.vertical, 20)
         })
         .onAppear {
-            // 👈 2. .onAppear에서는 햅틱 초기화만 수행합니다.
-            //    (초기 스크롤 로직은 viewSize.didSet으로 이동됨)
+            // 햅틱 초기화만 수행합니다.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                 self.initialized = true
             })
         }
         .onChange(of: value) {
-            self.scrollPosition = Int(value / step - range.lowerBound)
+            // 💡 수정 2: 외부 value 변경 시 scrollPosition 계산에 부동 소수점 오차 보정 (round())
+            let targetIndex = (value - range.lowerBound) / step
+            self.scrollPosition = Int(targetIndex.rounded())
         }
         .scrollTargetBehavior(.viewAligned)
         .scrollIndicators(.hidden)
@@ -83,12 +96,13 @@ struct HorizontalDialPicker<ValueType>: View where ValueType: BinaryFloatingPoin
         .defaultScrollAnchor(.center, for: .initialOffset)
         .defaultScrollAnchor(.center, for: .sizeChanges)
         .onChange(of: scrollPosition, {
-            guard let scrollPosition = self.scrollPosition, initialized else { return } // 👈 햅틱 초기화 후 값 변경
+            guard let scrollPosition = self.scrollPosition, initialized else { return }
+            // scrollPosition을 사용하여 정확하게 value를 계산합니다.
             value = range.lowerBound + ValueType(scrollPosition) * step
         })
         .safeAreaPadding(.horizontal, (viewSize?.width ?? 0)/2)
         .overlay(content: {
-            // 👈 3. GeometryReader는 viewSize를 설정하는 역할만 합니다.
+            // GeometryReader는 viewSize를 설정하는 역할만 합니다.
             GeometryReader { geometry in
                 if geometry.size != self.viewSize {
                     DispatchQueue.main.async {

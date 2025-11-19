@@ -22,7 +22,7 @@ struct AllMilestoneView: View {
             
             VStack {
                 //CustomerNavigationBar 추가하기
-                CustomNavigationBar(title: "전체 성장 마일스톤", leading: {
+                CustomNavigationBar(title: "전체 성장 단계", leading: {
                     Button(action: {
                         viewModel.coordinator.pop()
                     }) {

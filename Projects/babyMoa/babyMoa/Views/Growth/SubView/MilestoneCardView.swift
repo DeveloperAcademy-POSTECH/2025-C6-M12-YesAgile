@@ -20,6 +20,7 @@ struct MilestoneCardView: View {
                 Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
+                    .opacity(0.9)   // 수정해야 한다.
             } else {
                 Image(milestone.illustrationName!)
                     .resizable()
@@ -29,7 +30,7 @@ struct MilestoneCardView: View {
             }
             VStack {
                 Spacer().frame(height: cardType == .small ? 10 : 20)
-                Text(milestone.completedDate != nil ? DateFormatter.yyyyMMdd.string(from: milestone.completedDate!) : "저는 곧 할 수 있어요")
+                Text(milestone.completedDate != nil ? DateFormatter.yyyyMMdd.string(from: milestone.completedDate!) : "사진을 넣어 주세요")
                     .font(.system(size: cardType.dateFontSize, weight: .bold))
                 Spacer()
                 Text(milestone.title)
@@ -47,9 +48,9 @@ struct MilestoneCardView: View {
                 .fill(.white)
         )
         .clipShape(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 10)
         )
-        .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 5)
+        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 10)
         .onTapGesture {
             onTap()
         }
@@ -92,7 +93,7 @@ enum MilestoneCardType {
         ),
         cardWidth: 150,
         cardHeight: 200,
-        cardType: .big,
+        cardType: .small,
         onTap: {}
     )
 }
@@ -109,7 +110,7 @@ enum MilestoneCardType {
         ),
         cardWidth: 150,
         cardHeight: 200,
-        cardType: .big,
+        cardType: .small,
         onTap: {}
     )
 }

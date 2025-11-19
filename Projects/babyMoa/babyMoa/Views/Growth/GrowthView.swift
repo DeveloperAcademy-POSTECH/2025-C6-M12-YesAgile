@@ -28,10 +28,10 @@ struct GrowthView: View {
                 
                 VStack(spacing: 0){
                     HStack(spacing: 0) {
-                        Text("24개월간의,")
+                        Text("24개월간의 ")
                             .font(.system(size: 24, weight: .bold))
                             .foregroundStyle(.orange50)
-                        Text("성장 마일스톤")
+                        Text("성장 단계")
                             .font(.system(size: 24))
                             .foregroundStyle(.black)
                         Spacer()
@@ -43,7 +43,7 @@ struct GrowthView: View {
                         .frame(height: 500)
                     
                     
-                    Button("전체 성장 마일스톤 확인하기", action: {
+                    Button("전체 성장 단계 확인하기", action: {
                         viewModel.checkAllMilestonesButtonTapped()
                     })
                     .buttonStyle(.fixedHeightButton)
