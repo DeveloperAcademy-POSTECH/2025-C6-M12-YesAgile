@@ -9,11 +9,14 @@ import SwiftUI
 
 struct MainTabView: View {
     @State var viewModel: MainTabViewModel
+    @StateObject var babyMainViewModel: BabyMainViewModel
+    
     @State private var selectedTab = 0
     @State private var sheetHeight: CGFloat = 0
     
     init(coordinator: BabyMoaCoordinator) {
-        _viewModel = State(initialValue: MainTabViewModel(coordinator: coordinator))
+        _viewModel = State(wrappedValue: MainTabViewModel(coordinator: coordinator))
+        _babyMainViewModel = StateObject(wrappedValue: BabyMainViewModel(coordinator: coordinator))
     }
 
     var body: some View {
@@ -41,7 +44,7 @@ struct MainTabView: View {
                 EmptyView()
                     .tag(1)
                 // 아기 탭
-                BabyMainView(viewModel: BabyMainViewModel(coordinator: viewModel.coordinator), coordinator: viewModel.coordinator)
+                BabyMainView(viewModel: babyMainViewModel, coordinator: viewModel.coordinator)
                     .tabItem {
                         Image(systemName: "gift.fill")
                         Text("아기")

@@ -14,7 +14,7 @@ struct SingleTeethView: View {
     var body: some View {
         VStack(spacing: 1) {
             Rectangle()
-                .fill(teeth.erupted ? Color.white : Color.white.opacity(0.3))
+                .fill(teeth.erupted ? Color.white : Color.white.opacity(0.2))
                 .frame(width: 30, height: 30)
                 .cornerRadius(8, corners: rowIdx == 0 ? [.bottomLeft, .bottomRight] : [.topLeft, .topRight])
                 .overlay(

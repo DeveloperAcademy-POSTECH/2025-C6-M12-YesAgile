@@ -53,7 +53,7 @@ struct EruptedTeethRow: View {
                     RoundedRectangle(cornerRadius: 6)
                         .frame(width: 120, height: 34)
                         .overlay(
-                            Text(teeth.eruptedDate!.replacingOccurrences(of: "-", with: "."))
+                            Text(teeth.eruptedDate!.replacingOccurrences(of: "-", with: ". "))
                                 .font(.system(size: 17))
                                 .foregroundStyle(.brandMain)
                         )

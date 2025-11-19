@@ -10,11 +10,11 @@ struct TeethSummaryView: View {
     @Binding var viewModel: GrowthViewModel
     var body: some View {
         RoundedRectangle(cornerRadius: 16)
-            .foregroundStyle(.pink.opacity(0.5))
+            .foregroundStyle(Color.memoryLightPink)
             .frame(height: 100)
             .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(.white.opacity(0.3), lineWidth: 3)   // ← 두께 추가
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(.white.opacity(0.2), lineWidth: 3)   // ← 두께 추가
             )
             .overlay(
                 VStack {

@@ -64,7 +64,7 @@ struct BabyProfileCard: View {
                     HStack{
                         Text("\(baby.name)(\(baby.alias))")
                             .font(.system(size: 16, weight: .bold))
-                        Text(baby.gender)
+                        Text(baby.genderDisplayString)
                             .font(.system(size: 14, weight: .medium))
                             .frame(height: 25)
                             .padding(.horizontal, 10)
@@ -72,7 +72,7 @@ struct BabyProfileCard: View {
                             .clipShape(Capsule())
                             .overlay {
                                 Capsule()
-                                    .stroke(Color.gray90, lineWidth: 2)
+                                    .stroke(Color.gray90, lineWidth: 1)
                             }
                         
                     }
@@ -80,6 +80,18 @@ struct BabyProfileCard: View {
                     Text(ageText)
                         .font(.system(size: 14, weight: .medium))
                         .padding(.bottom, 8)
+                    HStack(spacing: 8){
+                        Text(baby.relationshipDisplayString)
+                            .font(.system(size: 11, weight:.medium))
+                            .foregroundStyle(Color.brand50)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 4)
+                            .frame(height: 20, alignment: .center)
+                            .background(
+                                Color.brand50.opacity(0.1)
+                            )
+                            .cornerRadius(20)
+                    }
                     
                 }
                 Spacer()
@@ -122,14 +134,13 @@ struct BabyProfileCard: View {
 
 
 #Preview {
-    let sampleImageUrl = "https://yesagile-s3-bucket.s3.amazonaws.com/avatars/2025/11/08/38d90084-0fcd-4f34-bc25-471dc2d2f704.jpg"
-    
-    return BabyProfileCard(coordinator: BabyMoaCoordinator(), baby: Babies(
+    BabyProfileCard(coordinator: BabyMoaCoordinator(), baby: Babies(
         babyId: 1,
         alias: "튼튼이",
         name: "김아기",
         birthDate: "2025-11-09",
         gender: "M",
-        avatarImageName: sampleImageUrl
+        avatarImageName: "https://yesagile-s3-bucket.s3.amazonaws.com/avatars/2025/11/08/38d90084-0fcd-4f34-bc25-471dc2d2f704.jpg",
+        relationshipType: "MOTHER"
     ))
 }
