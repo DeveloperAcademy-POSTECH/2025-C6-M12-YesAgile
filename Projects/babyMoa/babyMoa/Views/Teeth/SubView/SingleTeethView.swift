@@ -26,7 +26,7 @@ struct SingleTeethView: View {
                 .onTapGesture {
                     onTap()
                 }
-                .shadow(color: .gray.opacity(0.3), radius: 2, x: 0, y: 1)
+//                .shadow(color: .gray.opacity(0.3), radius: 2, x: 0, y: 1)
             
             // TODO: 제거
 //            if teeth.erupted, let eruptedDate = teeth.eruptedDate {

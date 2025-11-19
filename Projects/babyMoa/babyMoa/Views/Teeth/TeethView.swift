@@ -39,7 +39,7 @@ struct TeethView: View {
                 .padding(.bottom, 30)
                 
                 RoundedRectangle(cornerRadius: 16)
-                    .foregroundStyle(.pink.opacity(0.5))
+                    .foregroundStyle(Color.memoryLightPink)
                     .frame(height: 100)
                     .overlay(
                         VStack {

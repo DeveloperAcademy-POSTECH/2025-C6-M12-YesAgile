@@ -37,32 +37,35 @@ struct EruptedTeethRow: View {
     var body: some View {
         VStack(spacing: 10) {
             HStack {
+                // 1. 치아 번호 (숫자): ID로 숫자를 가져옴 -> 정상
                 Text("\(TeethInfo.teethNumber[teeth.teethId])")
                     .frame(width: 20)
                     .font(.system(size: 17, weight: .semibold))
-                    .foregroundStyle(Color.memoryPink)
+                    .foregroundStyle(Color.memoryPink) // 사용자 정의 컬러
                     .multilineTextAlignment(.leading)
-                Text(TeethInfo.teethName[TeethInfo.teethNumber[teeth.teethId]])
+                
+                // 2. [수정됨] 치아 이름: ID로 바로 이름을 가져와야 함!
+                Text(TeethInfo.teethName[teeth.teethId])
                     .font(.system(size: 17, weight: .semibold))
 
-                    
                 Spacer()
+                
                 Button(action: {
                     isCalendarPresented = true
                 }) {
                     RoundedRectangle(cornerRadius: 6)
                         .frame(width: 120, height: 34)
                         .overlay(
-                            Text(teeth.eruptedDate!.replacingOccurrences(of: "-", with: ". "))
+                            Text(teeth.eruptedDate?.replacingOccurrences(of: "-", with: ". ") ?? "")
                                 .font(.system(size: 17))
-                                .foregroundStyle(.brandMain)
+                                .foregroundStyle(.brandMain) // 사용자 정의 컬러
                         )
-                        .foregroundStyle(Color.gray45.opacity(0.12))
+                        .foregroundStyle(Color.gray45.opacity(0.12)) // 사용자 정의 컬러
                 }
             }
             RoundedRectangle(cornerRadius: 999)
                 .frame(height: 1)
-                .foregroundStyle(.gray80)
+                .foregroundStyle(.gray80) // 사용자 정의 컬러
         }
         .sheet(isPresented: $isCalendarPresented) {
             VStack(spacing: 20) {
@@ -74,32 +77,17 @@ struct EruptedTeethRow: View {
                 .datePickerStyle(GraphicalDatePickerStyle())
                 .padding()
                 
-//                Button("확인") {
-//                    if let teethId = selectedTeethId {
-//                        Task {
-//                            let dateStr = DateFormatter.yyyyDashMMDashdd.string(from: selectedDate)
-//                            await viewModel.setTeethStatus(
-//                                teethId: teethId,
-//                                deletion: false,
-//                                eruptedDate: dateStr
-//                            )
-//                        }
-//                    }
-//                    isDatePickerPresented = false
-//                }
-                .buttonStyle(.borderedProminent)
-                .tint(.pink)
-                .padding(.bottom, 40)
+                // 확인 버튼 등 UI 추가 가능
             }
             .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
         }
-        .ignoresSafeArea()
         .onChange(of: selectedDate) {
+            // 날짜가 변경되면 창을 닫고 액션 실행
             isCalendarPresented = false
             dateSelectAction(DateFormatter.yyyyDashMMDashdd.string(from: selectedDate))
         }
     }
-        
 }
 
 #Preview {
