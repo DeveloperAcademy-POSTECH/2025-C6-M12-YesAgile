@@ -11,7 +11,7 @@ struct MemoTextEditor: View {
     @Binding var memo: String
     let limit: Int
     @FocusState.Binding var isFocused: Bool
-    var placeholder: String = ""
+    var placeholder: String = "아이와 함께한 추억을 입력해주세요."
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -24,9 +24,9 @@ struct MemoTextEditor: View {
                 if memo.isEmpty {
                     Text(placeholder)
                         .font(.system(size: 14))
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color.gray70)
                         .padding(.horizontal, 16)
-                        .padding(.vertical, 14)
+                        .padding(.vertical, 12)
                 }
 
                 // ✏️ TextEditor
@@ -36,9 +36,9 @@ struct MemoTextEditor: View {
                     .padding(8)
                     .frame(height: 150)
                     .background(Color.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 10)
+                        RoundedRectangle(cornerRadius: 12)
                             .strokeBorder(Color.brandLight, lineWidth: 1) // 안쪽으로만 그려짐
                     )
             }

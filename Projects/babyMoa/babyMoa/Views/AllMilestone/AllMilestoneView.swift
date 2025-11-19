@@ -72,3 +72,8 @@ struct AllMilestoneView: View {
         .ignoresSafeArea()
     }
 }
+
+#Preview {
+    let coordinator = BabyMoaCoordinator()
+    return AllMilestoneView(coordinator: coordinator)
+}
