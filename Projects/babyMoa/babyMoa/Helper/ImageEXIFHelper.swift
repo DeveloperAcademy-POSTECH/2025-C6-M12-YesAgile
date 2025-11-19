@@ -10,7 +10,6 @@ import Foundation
 import ImageIO
 
 /// 이미지 EXIF 메타데이터에서 GPS 정보 추출 Helper
-///
 /// **왜 필요한가?**
 /// - iOS 14+ PhotosPicker는 itemIdentifier를 제공하지 않는 경우가 많음
 /// - "모든 사진" 권한이 있어도 itemIdentifier가 nil일 수 있음 (iCloud 동기화, Live Photos 등)

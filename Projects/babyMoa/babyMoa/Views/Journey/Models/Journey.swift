@@ -6,19 +6,18 @@
 //
 
 import CoreLocation
-import UIKit  
+import UIKit
 
 /// 여정 도메인 모델
 /// 서버 ResponseModel과 달리 UI에 최적화된 형태로 데이터 보관
 struct Journey: Entity, Hashable, Identifiable {
     // MapKit ForEach에서 사용하기 위한 Identifiable 구현
     var id: Int { journeyId }
-    
     var journeyId: Int
-    var journeyImage: UIImage  // ✅ 사진 필수 (non-optional)
+    var journeyImage: UIImage
     var latitude: Double
     var longitude: Double
-    var date: Date  // ⚠️ String이 아닌 Date: Calendar API 사용을 위함 나중에 변환 요함
+    var date: Date  // String이 아닌 Date: Calendar API 사용을 위함 나중에 변환 요함
     var memo: String
 
     // MARK: - Computed Properties
@@ -32,9 +31,8 @@ struct Journey: Entity, Hashable, Identifiable {
     /// - (0, 0) 제외 (위치 정보 없음)
     /// - GPS 유효 범위 내 (위도: -90~90, 경도: -180~180)
     var hasValidLocation: Bool {
-        latitude != 0 && longitude != 0 &&
-        latitude >= -90 && latitude <= 90 &&
-        longitude >= -180 && longitude <= 180
+        latitude != 0 && longitude != 0 && latitude >= -90 && latitude <= 90
+            && longitude >= -180 && longitude <= 180
     }
 
     /// UI 표시용 짧은 날짜 형식 (예: "2025.11.07")
