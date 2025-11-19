@@ -168,7 +168,7 @@ struct DateCellView: View {
             // 선택된 날짜 배경
             if isSelected {
                 Circle()
-                    .fill(Color.orange)
+                    .fill(Color.brandSecondary.opacity(0.1))
             }
 
             // 점선 원 테두리
