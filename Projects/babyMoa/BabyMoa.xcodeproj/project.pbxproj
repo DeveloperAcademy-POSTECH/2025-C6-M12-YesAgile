@@ -414,6 +414,7 @@
 				INFOPLIST_FILE = "BabyMoa-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "현재 위치를 지도에 표시하기 위해 위치 정보를 사용합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "여정 사진을 저장하기 위해 사진 라이브러리 접근이 필요합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "여정 사진을 추가하기 위해 사진 라이브러리 접근이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -449,6 +450,7 @@
 				INFOPLIST_FILE = "BabyMoa-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "현재 위치를 지도에 표시하기 위해 위치 정보를 사용합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "여정 사진을 저장하기 위해 사진 라이브러리 접근이 필요합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "여정 사진을 추가하기 위해 사진 라이브러리 접근이 필요합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
