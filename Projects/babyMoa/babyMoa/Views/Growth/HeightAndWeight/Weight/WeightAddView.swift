@@ -1,8 +1,8 @@
 //
-//  WeightAddView.swift
-//  BabyMoa
+//  WeightAddView.swift
+//  BabyMoa
 //
-//  Created by Baba on 11/13/25.
+//  Created by Baba on 11/13/25.
 //
 
 import SwiftUI
@@ -21,14 +21,14 @@ struct WeightAddView: View {
     var body: some View {
         ZStack {
             Color.background
-               
+                
             VStack(spacing: 0) {
                 
                 // 상단 네비게이션 바
                 CustomNavigationBar(title: "몸무게 기록", leading: {
                     
                     
-                    Button(action:  {
+                    Button(action: {
                         viewModel.coordinator.pop() // 뒤로가기 액션 구현
                     }, label: {
                         Image(systemName: "chevron.left")
@@ -99,6 +99,7 @@ struct WeightAddView: View {
                 }
                 
                 Button("저장", action: {
+                    self.endTextEditing() // 💡 저장 시 키보드 닫기 추가
                     Task {
                         await viewModel.saveWeight() // ViewModel의 saveWeight() 호출
                     }
@@ -113,11 +114,11 @@ struct WeightAddView: View {
             }
             .backgroundPadding(.horizontal)
             .padding(.bottom, 44)
-            .simultaneousGesture(   // ✅ 버튼 동작 + 키보드 내리기 둘 다 가능
-                TapGesture().onEnded {
-                    isFocused = false
-                }
-            )
+            // 💡 수정: simultaneousGesture 대신 onTapGesture로 키보드 내리기 구현
+            .contentShape(Rectangle()) // 탭 영역을 VStack 전체로 확장
+            .onTapGesture {
+                self.endTextEditing() // 👈 확장 메서드 사용
+            }
             
             // 날짜 피커 모달
             if viewModel.showDatePicker { // ViewModel의 프로퍼티 사용
@@ -133,7 +134,6 @@ struct WeightAddView: View {
     }
     
 }
-
 
 
 #Preview {

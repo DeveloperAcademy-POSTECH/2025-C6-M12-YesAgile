@@ -1,10 +1,10 @@
 //
-//  GrowthMilestoneView.swift
-//  babyMoa
+//  GrowthMilestoneView.swift
+//  babyMoa
 //
-//  Created by Pherd on 10/27/25.
+//  Created by Pherd on 10/27/25.
 //
-//  성장 마일스톤 상세/편집 뷰 (사진 1장, 작성일, 메모, 저장)
+//  성장 마일스톤 상세/편집 뷰 (사진 1장, 작성일, 메모, 저장)
 //
 
 import PhotosUI
@@ -76,21 +76,26 @@ struct GrowthMilestoneView: View {
                     title: milestone.title,
                     leading: {
                         Button(action: {
+                            self.endTextEditing() // 👈 뒤로가기 전 키보드 닫기
                             dismiss()
                         }) {
                             Image(systemName: "chevron.backward")
-                               
+                                
                         }
                         
                     },
                     trailing: {
                         Button(action: {
+                            self.endTextEditing() // 👈 삭제 버튼 전 키보드 닫기
                             showDeleteDialog = true
                         }) {
                             Image(systemName: "trash")
-                            
+                                
                         }
                     },
+                    // 키보드가 올라왔을 때 네비게이션 바가 가려지지 않도록 배경 색을 설정합니다.
+                    // (CustomNavigationBar 내부 구현에 따라 다름)
+                    backgroundColor: Color.background
                 )
                 ScrollViewReader { proxy in
                     
@@ -108,6 +113,7 @@ struct GrowthMilestoneView: View {
                                 
                                 
                                 Button(selectedDate.yyyyMMdd, action: { // formattedDate 함수 대신 yyyyMMdd 사용
+                                    self.endTextEditing() // 👈 날짜 피커 열기 전 키보드 닫기
                                     showDatePicker = true
                                 })
                                 .buttonStyle(.outlineMileButton)
@@ -125,6 +131,7 @@ struct GrowthMilestoneView: View {
                             Spacer()
                             
                             GrowthBottomButton(title: "저장", isEnabled: hasChanges) {
+                                self.endTextEditing() // 💡 수정 2: 저장 시 키보드 닫기 추가
                                 onSave?(
                                     milestone,
                                     selectedImage,
@@ -139,6 +146,7 @@ struct GrowthMilestoneView: View {
                     }
                     .scrollDismissesKeyboard(.interactively)
                     
+                    // 메모 포커스 시 스크롤 조정 로직은 유지
                     .onChange(of: isFocused) {_, focused in
                         guard focused else { return }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -155,11 +163,12 @@ struct GrowthMilestoneView: View {
 
         }
         .ignoresSafeArea(edges: .top)
-        .simultaneousGesture(
-            TapGesture().onEnded {
-                isFocused = false
-            }
-        )
+        // 💡 수정 1: simultaneousGesture 대신 onTapGesture를 사용하여 키보드 내리기 구현
+        .onTapGesture {
+            self.endTextEditing() // 👈 확장 메서드 사용
+        }
+        // -------------------------------------------------------------
+        
         .animation(.spring, value: milestone.image)
         .animation(.spring, value: selectedImage)
         .sheet(isPresented: $showDatePicker) {
@@ -252,6 +261,7 @@ struct GrowthMilestoneView: View {
         }
         .contentShape(Rectangle()) // 전체 영역을 탭 가능하게
         .onTapGesture {
+            self.endTextEditing() // 👈 PhotosPicker를 열기 전에 키보드 닫기
             showPhotoPicker = true // 탭하면 PhotosPicker 열기
         }
     }

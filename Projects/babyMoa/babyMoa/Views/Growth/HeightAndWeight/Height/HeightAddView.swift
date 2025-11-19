@@ -1,8 +1,8 @@
 //
-//  HeightAddView.swift
-//  BabyMoa
+//  HeightAddView.swift
+//  BabyMoa
 //
-//  Created by Baba on 11/11/25.
+//  Created by Baba on 11/11/25.
 //
 
 import SwiftUI
@@ -11,7 +11,7 @@ struct HeightAddView: View {
     
     @StateObject private var viewModel: HeightAddViewModel // ViewModel 사용
     
-    // 키 TextField용 문자열
+    // 키 TextField용 문자열 (MemoTextEditor의 FocusState는 뷰 내부에서 관리됨)
     @FocusState private var isFocused: Bool
     
     init(coordinator: BabyMoaCoordinator, babyId: Int) {
@@ -21,7 +21,7 @@ struct HeightAddView: View {
     var body: some View {
         ZStack {
             Color.background
-               
+                
             VStack(spacing: 0) {
 
                 // 상단 네비게이션 바
@@ -88,7 +88,7 @@ struct HeightAddView: View {
                         step: 0.1
                     )
 
-                    // MARK: - 메모                    
+                    // MARK: - 메모
                     MemoTextEditor(
                         memo: $viewModel.memo, // ViewModel의 프로퍼티에 바인딩
                         limit: 300,
@@ -99,6 +99,7 @@ struct HeightAddView: View {
                 }
 
                 Button("저장", action: {
+                    self.endTextEditing() // 💡 저장 시 키보드 닫기 추가
                     Task {
                         await viewModel.saveHeight() // ViewModel의 saveHeight() 호출
                     }
@@ -112,12 +113,12 @@ struct HeightAddView: View {
             }
             .backgroundPadding(.horizontal)
             .padding(.bottom, 44)
-            .simultaneousGesture(   // ✅ 버튼 동작 + 키보드 내리기 둘 다 가능
-                TapGesture().onEnded {
-                    isFocused = false
-                }
-            )
-
+            // 💡 수정: contentShape와 onTapGesture를 사용하여 키보드 내리기 구현
+            .contentShape(Rectangle()) // 탭 영역을 VStack 전체로 확장
+            .onTapGesture {
+                self.endTextEditing() // 👈 확장 메서드 사용
+            }
+            // ❌ 기존 simultaneousGesture 로직은 제거되었습니다.
 
             // 날짜 피커 모달
             if viewModel.showDatePicker { // ViewModel의 프로퍼티 사용
@@ -132,7 +133,6 @@ struct HeightAddView: View {
         .ignoresSafeArea()
     }
 }
-
 
 
 #Preview {

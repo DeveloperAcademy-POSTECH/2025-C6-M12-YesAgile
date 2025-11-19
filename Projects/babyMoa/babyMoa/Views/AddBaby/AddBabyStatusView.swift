@@ -1,8 +1,8 @@
 //
-//  AddBabyStatusView.swift
-//  babyMoa
+//  AddBabyStatusView.swift
+//  babyMoa
 //
-//  Created by Baba on 11/4/25.
+//  Created by Baba on 11/4/25.
 //
 
 import SwiftUI
@@ -31,7 +31,7 @@ struct AddBabyStatusView: View {
                 CustomNavigationBar(
                     title: viewModel.navigationTitle,
                     leading: {
-                        Button(action: { 
+                        Button(action: {
                             viewModel.coordinator.pop()
                         }) {
                             Image(systemName: "chevron.left")
@@ -62,23 +62,20 @@ struct AddBabyStatusView: View {
                 }
                 .onTapGesture {
                     // 3. 탭하면 showLibrary를 true로 설정합니다.
-                    //    (showImageOptions가 아님)
                     viewModel.showLibrary = true
                 }
-//                Image("baby_milestone_illustration")
-//                    .profileImageStyle()
-//
+                
                 VStack(spacing: 20){
                     
                     BabyInputField(label: "이름 (필수)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName, focus: $focusedField, field: .babyName)
                     BabyInputField(label: "태명 (필수)", placeholder: "태명을 입력해주세요", text: $viewModel.babyNickname, focus: $focusedField, field: .babyNickname)
                     
                     if viewModel.isBorn {
-                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: viewModel.availableGenderSegments, isBorn: true, onTap: { focusedField = nil })
-
+                        // 💡 수정: onTap에서 endTextEditing() 호출
+                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: viewModel.availableGenderSegments, isBorn: true, onTap: { self.endTextEditing() })
                     } else {
-                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: viewModel.availableGenderSegments, isBorn: false, onTap: { focusedField = nil })
-
+                        // 💡 수정: onTap에서 endTextEditing() 호출
+                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: viewModel.availableGenderSegments, isBorn: false, onTap: { self.endTextEditing() })
                     }
                 }
                 
@@ -95,6 +92,7 @@ struct AddBabyStatusView: View {
                 
                 
                 Button("저장", action: {
+                    self.endTextEditing() // 저장 버튼을 누를 때도 키보드를 닫는 것이 좋습니다.
                     viewModel.save()
                 })
                 .buttonStyle(!viewModel.isFormValid ? .noneButton : .defaultButton)
@@ -102,8 +100,10 @@ struct AddBabyStatusView: View {
                 
                 Spacer()
             }
+            // 💡 수정: 기존의 focusedField = nil 대신 self.endTextEditing()을 사용
+            .contentShape(Rectangle()) // 탭 영역 확장 (키보드 닫기 UX 개선)
             .onTapGesture {
-                focusedField = nil
+                self.endTextEditing() // 👈 키보드 내리기 함수 호출
             }
             .ignoresSafeArea()
             .navigationBarBackButtonHidden(true)
@@ -137,7 +137,6 @@ struct AddBabyStatusView: View {
 }
 
 
-
 #Preview("Create Mode - isBorn") {
     // 1. 생성 모드 Preview
     AddBabyStatusView(coordinator: BabyMoaCoordinator(), baby: nil, isBorn: true)
@@ -152,5 +151,3 @@ struct AddBabyStatusView: View {
     // 2. 수정 모드 Preview
     AddBabyStatusView(coordinator: BabyMoaCoordinator(), baby: AddBabyModel.mockAddBabyModel.first!)
 }
-
-
