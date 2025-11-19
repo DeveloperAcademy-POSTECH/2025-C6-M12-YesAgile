@@ -33,20 +33,14 @@ struct MemoTextEditor: View {
                 TextEditor(text: $memo)
                     .focused($isFocused)
                     .scrollContentBackground(.hidden)
-                    .padding()
-                    .background(Color.white)
+                    .padding(8)
                     .frame(height: 150)
+                    .background(Color.white)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .foregroundStyle(.font)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.brandLight, lineWidth: 1)
+                        RoundedRectangle(cornerRadius: 10)
+                            .strokeBorder(Color.brandLight, lineWidth: 1) // 안쪽으로만 그려짐
                     )
-                    .onChange(of: memo) { oldValue, newValue in
-                        if newValue.count > limit {
-                            memo = String(newValue.prefix(limit))
-                        }
-                    }
             }
 
             HStack {

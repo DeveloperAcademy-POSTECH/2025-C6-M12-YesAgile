@@ -41,13 +41,13 @@ struct HeightRecordListView: View {
                             .frame(width: 75, alignment: .trailing)
                             .multilineTextAlignment(.trailing)
                         
-                        Button(action: {
-                            
-                        }, label: {
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 17, weight: .semibold))
-                                .foregroundStyle(.gray50)
-                        })
+//                        Button(action: {
+//                            
+//                        }, label: {
+//                            Image(systemName: "chevron.right")
+//                                .font(.system(size: 17, weight: .semibold))
+//                                .foregroundStyle(.gray50)
+//                        })
                     }
                     .listRowInsets(EdgeInsets())
                     .background(Color.background)
