@@ -12,7 +12,8 @@ import SwiftUI
 /// MapCard에 전달할 데이터 지도 카드 컴포넌트
 struct MapCardData {
     var position: Binding<MapCameraPosition>
-    var annotations: [JourneyAnnotation]
+    var annotations: [Journey]
+    var userLocation: CLLocation?
 }
 
 /// MapCard의 사용자 액션
@@ -24,19 +25,29 @@ struct MapCardActions {
 struct MapCard: View {
     let data: MapCardData
     let actions: MapCardActions
-    // 여기서 쓰는 value들 직접 뷰모델 받아서 쓰지말고, 프로퍼티로 선언해서 뷰에서 주입 및 호출수 있도록!
+    
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Map(position: data.position) {
-                ForEach(data.annotations) { annotation in
-                    Annotation("", coordinate: annotation.coordinate) {
-                        PhotoMarkerView(
-                            image: annotation.image,
-                            count: annotation.count  // 마커 안에 보여줄 사진 이미지와 같은 날짜 여정 개수를 표시,
-                        )
+                ForEach(data.annotations) { journey in
+                    Annotation("", coordinate: journey.coordinate) {
+                        PhotoMarkerView(image: journey.journeyImage)
                         .onTapGesture {
-                            actions.onMarkerTap(annotation.date)
+                            actions.onMarkerTap(journey.date)
                         }
+                    }
+                }
+                
+                if let userLocation = data.userLocation {
+                    Annotation("", coordinate: userLocation.coordinate) {
+                        Circle()
+                            .fill(Color.blue)
+                            .frame(width: 18, height: 18)
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.white, lineWidth: 3)
+                            )
+                            .shadow(radius: 2)
                     }
                 }
             }
@@ -67,35 +78,13 @@ struct MapCard: View {
 /// 사진 마커 뷰 - 지도 위 커스텀 마커
 struct PhotoMarkerView: View {
     let image: UIImage
-    let count: Int  //같은 날짜의 여정 개수
 
     var body: some View {
-        VStack(spacing: 4) {  //VStack으로 변경 (개수 표시 추가)
-            ZStack {
-                // 배경 원
-                Circle()
-                    .fill(Color.blue)
-                    .frame(width: 40, height: 40)
-
-                // 사진
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 32, height: 32)
-                    .clipShape(Circle())
-            }
-
-            // 2개 이상일 때만 개수 표시
-            if count > 1 {
-                Text("\(count)개")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
-                    .background(Color.blue)
-                    .cornerRadius(8)
-            }
-        }
+        Image(uiImage: image)
+            .resizable()
+            .scaledToFill()
+            .frame(width: 36, height: 36)
+            .clipShape(Circle())
     }
 }
 
@@ -116,15 +105,13 @@ struct PhotoMarkerView: View {
         .filter { journey in
             journey.latitude != 0 && journey.longitude != 0
         }
-        .map { journey in
-            JourneyAnnotation(from: journey, count: 1)  // Preview용 count 추가
-        }
 
     return VStack {
         MapCard(
             data: MapCardData(
                 position: $position,
-                annotations: mockAnnotations
+                annotations: mockAnnotations,
+                userLocation: nil
             ),
             actions: MapCardActions(
                 onMarkerTap: { _ in },
