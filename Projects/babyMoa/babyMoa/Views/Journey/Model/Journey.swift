@@ -51,12 +51,22 @@ struct Journey: Entity, Hashable, Identifiable {
 
     /// ForEach(journies, id: \.self) 사용을 위한 Hashable 구현 journeyId + 날짜 동일 여정
     static func == (lhs: Journey, rhs: Journey) -> Bool {
-        lhs.journeyId == rhs.journeyId && lhs.date == rhs.date
+        // [2024-11-20] 이미지/메모/위치 변경 시 뷰 갱신을 위해 모든 필드 비교
+        // UIImage는 참조 타입이므로 주소 비교(===)를 통해 변경 감지
+        lhs.journeyId == rhs.journeyId &&
+        lhs.date == rhs.date &&
+        lhs.memo == rhs.memo &&
+        lhs.latitude == rhs.latitude &&
+        lhs.longitude == rhs.longitude &&
+        lhs.journeyImage === rhs.journeyImage
     }
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(journeyId)
         hasher.combine(date)
+        hasher.combine(memo)
+        // UIImage는 Hashable이 아니므로 제외하거나 다른 방식으로 포함해야 함
+        // 여기서는 변경 빈도가 높은 필드들로 해시 구성
     }
 }
 

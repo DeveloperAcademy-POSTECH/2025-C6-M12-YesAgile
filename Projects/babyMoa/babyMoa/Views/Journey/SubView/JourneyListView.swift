@@ -3,21 +3,25 @@
 //  babyMoa
 //
 //  Created by pherd on 11/11/25.
+//
+//  [2024-11-20 수정]
+//  - JourneyListViewModel 도입: 비즈니스 로직 분리 및 데이터 일관성 유지
+//  - @Observable 패턴 적용으로 편집 시 화면 깜빡임 제거
+
 import SwiftUI
 
 struct JourneyListView: View {
-    let selectedDate: Date
-    let journies: [Journey]
+    @State var viewModel: JourneyListViewModel
     let onAddJourney: () -> Void
-    let onDeleteJourney: (Journey) -> Void
     let onDismiss: () -> Void
-
+    
     @Environment(\.dismiss) private var dismiss
-
+    @State private var editingJourney: Journey? = nil  // 편집할 여정
+    
     var body: some View {
         VStack(spacing: 0) {
             CustomNavigationBar(
-                title: selectedDate.yyyyMMdd,
+                title: viewModel.date.yyyyMMdd,
                 leading: {
                     Button(action: {
                         dismiss()
@@ -27,23 +31,32 @@ struct JourneyListView: View {
                 }
             )
             .padding(.horizontal, 20)
-
+            
             ScrollView {
                 VStack(spacing: 20) {
-                    ForEach(journies) { journey in
+                    ForEach(viewModel.journies) { journey in
                         JourneyCard(
                             journey: journey,
                             onDelete: {
-                                onDeleteJourney(journey)
+                                Task {
+                                    let success = await viewModel.deleteJourney(journey)
+                                    // 여정이 하나도 없으면 화면 닫기
+                                    if success && viewModel.journies.isEmpty {
+                                        onDismiss()
+                                    }
+                                }
                             }
                         )
+                        .onTapGesture {
+                            editingJourney = journey
+                        }
                     }
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
                 .padding(.bottom, 100)
             }
-
+            
             // 여정 추가 버튼
             Button("여정 추가") {
                 onAddJourney()
@@ -59,18 +72,42 @@ struct JourneyListView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 30)
         }
-        .background(Color.background)  // JourneyAddView와 동일한 배경 컬러
-        .ignoresSafeArea()  // 상/하단 모두 Safe Area까지 확장
+        .background(Color.background)
+        .ignoresSafeArea()
+        .fullScreenCover(item: $editingJourney) { journey in
+            JourneyAddView(
+                selectedDate: journey.date,
+                photoAccessStatus: PhotoLibraryPermissionHelper.checkAuthorizationStatus(),
+                existingJourney: journey,
+                onSave: { image, memo, lat, lon in
+                    Task {
+                        let success = await viewModel.updateJourney(
+                            journey: journey,
+                            image: image,
+                            memo: memo,
+                            latitude: lat,
+                            longitude: lon
+                        )
+                        if success {
+                            editingJourney = nil
+                        }
+                    }
+                },
+                onDismiss: {
+                    editingJourney = nil
+                }
+            )
+        }
     }
 }
 
-// MARK: - Journey Card Todo : 업데이트 및 삭제구현..
+// MARK: - Journey Card
 
 struct JourneyCard: View {
     let journey: Journey
     let onDelete: () -> Void
     @State private var showDeleteAlert = false
-
+    
     var body: some View {
         ZStack(alignment: .topTrailing) {
             VStack(alignment: .leading, spacing: 12) {
@@ -84,7 +121,7 @@ struct JourneyCard: View {
                     )  // 명시적 크기 지정
                     .clipped()  // 넘치는 부분 강제로 자르기
                     .cornerRadius(16)
-
+                
                 // 메모 텍스트
                 Text(journey.memo)
                     .font(.system(size: 16))
@@ -99,7 +136,7 @@ struct JourneyCard: View {
             )
             .cornerRadius(16)
             .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
-
+            
             // 삭제 버튼 (우측 상단)
             Button(action: {
                 showDeleteAlert = true
@@ -107,7 +144,7 @@ struct JourneyCard: View {
                 Image(systemName: "trash")
                     .font(.system(size: 20))
                     .foregroundColor(.red)
-                    .frame(width: 24, height: 24)
+                    .frame(width: 36, height: 36)
                     .background(
                         Color(red: 243 / 255, green: 243 / 255, blue: 243 / 255)
                             .opacity(0.8)
@@ -132,10 +169,12 @@ struct JourneyCard: View {
 
 #Preview {
     JourneyListView(
-        selectedDate: Date(),
-        journies: Journey.mockData,
+        viewModel: JourneyListViewModel(
+            date: Date(),
+            journies: Journey.mockData,
+            parentVM: JourneyViewModel()
+        ),
         onAddJourney: {},
-        onDeleteJourney: { _ in },
         onDismiss: {}
     )
 }
