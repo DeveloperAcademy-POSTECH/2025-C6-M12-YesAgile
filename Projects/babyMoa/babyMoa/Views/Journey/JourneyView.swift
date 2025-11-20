@@ -29,7 +29,9 @@ struct JourneyView: View {
     // MARK: - fullScreenCover용 State
     @State private var showAddView = false
     @State private var selectedDateForAdd: Date = Date()
-    @State private var listContext: JourneyListContext? = nil  // Identifiable Context로 변경
+    
+    // [2024-11-20] 수정: Context 부활 시트 트리거
+    @State private var listContext: JourneyListContext? = nil
 
     // MARK: - 사진 라이브러리 권한 관련 State
     @State private var showPhotoAccessAlert = false
@@ -47,14 +49,16 @@ struct JourneyView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                CalendarCard(
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: 20) {
+                    CalendarCard(
                     data: CalendarCardData(
                         currentMonth: calendarCardVM.currentMonth,
                         monthDates: calendarCardVM.monthDates,
                         selectedDate: calendarCardVM.selectedDate,
-                        journies: calendarCardVM.journies
+                        // [2024-11-20] journeyVM.journies 직접 주입: 데이터 변경 시 캘린더 즉시 갱신 보장 (Nested Observable 이슈 방지)
+                        journies: journeyVM.journies
                     ),
                     actions: CalendarCardActions(
                         onPreviousMonth: {
@@ -86,7 +90,7 @@ struct JourneyView: View {
                                 selectedDateForAdd = date
                                 showAddView = true
                             } else {
-                                // 여정 있음: Identifiable Context로 최신 데이터 보장
+                                // 여정 있음: Context 생성하여 리스트 시트 오픈
                                 listContext = JourneyListContext(
                                     date: date,
                                     journies: journiesForDate
@@ -104,9 +108,9 @@ struct JourneyView: View {
                         //
 
                     )
-                )
-                .padding(.horizontal, 20)
-                MapCard(
+                    )
+                    .padding(.horizontal, 20)
+                    MapCard(
                     data: MapCardData(
                         position: $mapPosition,
                         // 위치 있는 대표 여정을 마커로 전달 (Journey 모델 직접 사용)
@@ -115,7 +119,7 @@ struct JourneyView: View {
                     ),
                     actions: MapCardActions(
                         onMarkerTap: { date in
-                            // 마커 탭 시 → Identifiable Context로 최신 데이터 보장
+                            // 마커 탭 시
                             let allJourniesForDate = mapCardVM.journies(
                                 for: date,
                                 from: journeyVM.journies
@@ -163,12 +167,11 @@ struct JourneyView: View {
                             }
                         }
                     )
-                )
-                .padding(.horizontal, 20)
-
-                Spacer().frame(height: 30)
+                    )
+                    .padding(.horizontal, 20)
+                }
+                .padding(.vertical, 24)
             }
-            .padding(.top, 20)
         }
         .onAppear {
             Task {
@@ -200,16 +203,10 @@ struct JourneyView: View {
                     break
                 }
 
-                // MARK: - babyId 동기화
+                // MARK: - babyId 동기화 (ViewModel에 위임)
                 // MainTabViewModel이 SelectedBabyState에 아기 정보를 설정하면,
-                // 여기서 SelectedBaby.babyId에 동기화 (API 호출 시 필요)
-                // MainTabViewModel (아기 선택 시 자동 설정) 로 이야기해보거나
-                // JourneyViewModel (필요 시 직접 조회)로 이동 예정 Todo
-                if let baby = SelectedBabyState.shared.baby {
-                    SelectedBaby.babyId = baby.babyId
-                } else {
-                    print("⚠️ SelectedBabyState.shared.baby가 nil")
-                }
+                // JourneyViewModel에서 SelectedBaby.babyId에 동기화 (API 호출 시 필요)
+                journeyVM.syncBabyId()
 
                 // 현재 월의 여정 데이터 서버에서 가져오기
                 await journeyVM.fetchJournies(for: calendarCardVM.currentMonth)
@@ -252,6 +249,9 @@ struct JourneyView: View {
                 selectedDate: selectedDateForAdd,
                 photoAccessStatus:
                     PhotoLibraryPermissionHelper.checkAuthorizationStatus(),
+                // - JourneyAddView는 추가 모드로 동작
+                // - onSave에서 journeyVM.addJourney 호출
+                // - 편집 모드는 JourneyListView에서 처리 (journeyVM.updateJourney)
                 onSave: { image, memo, latitude, longitude in
                     Task {
                         // 서버에 여정 추가 API 호출 (JourneyViewModel)
@@ -267,7 +267,7 @@ struct JourneyView: View {
                             print("❌ 여정 저장 실패")
                         }
                         // 성공 시: journeyVM.journies 배열이 업데이트되어
-                        // CalendarCard와 MapCard가 자동으로 갱신됨 (@Observable)
+                        // CalendarCard와 MapCard가 자동으로 갱신
                     }
                 },
                 onDismiss: {
@@ -277,38 +277,15 @@ struct JourneyView: View {
         }
         .fullScreenCover(item: $listContext) { context in
             JourneyListView(
-                selectedDate: context.date,
-                journies: context.journies,
+                viewModel: JourneyListViewModel(
+                    date: context.date,
+                    journies: context.journies,
+                    parentVM: journeyVM
+                ),
                 onAddJourney: {
                     listContext = nil
                     selectedDateForAdd = context.date
                     showAddView = true
-                },
-                onDeleteJourney: { journey in
-                    Task {
-                        // 서버에 여정 삭제 API 호출 (JourneyViewModel)
-                        let success = await journeyVM.removeJourney(journey)
-
-                        if success {
-                            // 삭제 후 해당 날짜 여정 재계산
-                            let updatedJournies = journeyVM.journies.filter { eachJourney in
-                                eachJourney.date.isSameDay(as: context.date)
-                            }
-
-                            if updatedJournies.isEmpty {
-                                // 남은 여정이 없으면 리스트 닫고 JourneyView로 복귀
-                                listContext = nil
-                            } else {
-                                // 남은 여정이 있으면 리스트 계속 표시
-                                listContext = JourneyListContext(
-                                    date: context.date,
-                                    journies: updatedJournies
-                                )
-                            }
-                        } else {
-                            print("❌ 여정 삭제 실패: journeyId=\(journey.journeyId)")
-                        }
-                    }
                 },
                 onDismiss: {
                     listContext = nil
@@ -330,12 +307,10 @@ struct JourneyView: View {
     }
 }
 
-// MARK: - Identifiable Context (fullScreenCover 전용) -> 최신 리스트뷰 보이게끔
+// MARK: - Identifiable Context
 
-/// Bool state 대신 Identifiable 컨텍스트를 사용하여
-/// fullScreenCover가 항상 최신 데이터를 기반으로 표시되도록 한다.
-/// - SwiftUI의 fullScreenCover는 isPresented 방식일 때 초기 렌더링 시점의 데이터를 캐시함
-/// - item 방식을 사용하면 Context 생성 시점의 최신 데이터를 보장함
+/// fullScreenCover 시트 오픈을 위한 포장지(Wrapper)
+/// - 시트를 "유지"하는 역할. 내부 데이터가 갱신되어도 이 객체(id)는 변하지 않아야 함.
 private struct JourneyListContext: Identifiable {
     let id = UUID()
     let date: Date
@@ -345,4 +320,3 @@ private struct JourneyListContext: Identifiable {
 #Preview {
     JourneyView(coordinator: BabyMoaCoordinator())
 }
-

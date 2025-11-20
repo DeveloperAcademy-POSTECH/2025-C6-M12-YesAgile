@@ -6,17 +6,24 @@
 //
 import Foundation
 import SwiftUI
-/// Todo - 업데이트만 남았다!!
-/// Journey 비즈니스 로직을 관리하는 ViewModel
-/// - Note: 순수 데이터 관리만 담당 (네비게이션 책임 없음)
-//         - fetchJournies: 데이터 조회만
-//         - addJourney: 데이터 추가만
-//         - removeJourney: 데이터 삭제만
-//         → 화면 전환은 View(JourneyView)에서 담당
+
 @MainActor
 @Observable class JourneyViewModel {
     /// 여정 데이터 배열
     var journies: [Journey] = []
+
+    // MARK: - babyId 동기화 새 아기 동기화 .. 그 아기가 변경되어도 journeyView에서 한번 호출해주면 괜춘!!
+    
+    /// SelectedBabyState에서 babyId를 동기화
+    /// - Note: MainTabViewModel이 SelectedBabyState에 아기 정보를 설정하면,
+    ///         여기서 SelectedBaby.babyId에 동기화 (API 호출 시 필요)
+    func syncBabyId() {
+        if let baby = SelectedBabyState.shared.baby {
+            SelectedBaby.babyId = baby.babyId
+        } else {
+            print("⚠️ SelectedBabyState.shared.baby가 nil")
+        }
+    }
 
     /// 여정 추가
     func addJourney(
@@ -83,6 +90,63 @@ import SwiftUI
 
         case .failure(let error):
             print("❌ 서버 저장 실패: \(error)")
+            return false
+        }
+    }
+
+    /// 여정 수정 (Server-First)
+    func updateJourney(
+        journey: Journey,
+        image: UIImage,
+        memo: String,
+        latitude: Double,
+        longitude: Double
+    ) async -> Bool {
+        // 1. babyId 확인
+        guard let babyId = SelectedBaby.babyId else {
+            print("⚠️ babyId 없음")
+            return false
+        }
+        
+        // 2. UIImage 리사이즈 (addJourney와 동일: 1024x1024)
+        let resizedImage = ImageManager.shared.resizeImage(image, maxSize: 1024)
+        
+        // 3. UIImage → Base64 변환 (addJourney와 동일: 압축률 0.7)
+        guard let base64Image = ImageManager.shared.encodeToBase64(
+            resizedImage,
+            compressionQuality: 0.7
+        ) else {
+            print("❌ 이미지 Base64 변환 실패")
+            return false
+        }
+        
+        // 4. 서버에 여정 수정 API 호출
+        let result = await BabyMoaService.shared.patchUpdateJourney(
+            babyId: babyId,
+            journeyId: journey.journeyId,
+            journeyImage: base64Image,
+            latitude: latitude,
+            longitude: longitude,
+            date: DateFormatter.yyyyDashMMDashdd.string(from: journey.date),
+            memo: memo
+        )
+        
+        // 5. 성공 시 로컬 배열 업데이트
+        switch result {
+        case .success:
+            if let index = journies.firstIndex(where: { $0.journeyId == journey.journeyId }) {
+                journies[index] = Journey(
+                    journeyId: journey.journeyId,
+                    journeyImage: resizedImage,  // 리사이즈된 이미지 재사용
+                    latitude: latitude,
+                    longitude: longitude,
+                    date: journey.date,
+                    memo: memo
+                )
+            }
+            return true
+        case .failure(let error):
+            print("❌ 여정 수정 실패: \(error)")
             return false
         }
     }
