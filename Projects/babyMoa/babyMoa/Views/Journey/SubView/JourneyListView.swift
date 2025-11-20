@@ -4,10 +4,6 @@
 //
 //  Created by pherd on 11/11/25.
 //
-//  [2024-11-20 수정]
-//  - JourneyListViewModel 도입: 비즈니스 로직 분리 및 데이터 일관성 유지
-//  - @Observable 패턴 적용으로 편집 시 화면 깜빡임 제거
-
 import SwiftUI
 
 struct JourneyListView: View {
