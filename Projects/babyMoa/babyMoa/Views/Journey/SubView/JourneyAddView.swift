@@ -5,7 +5,7 @@
 //  Created by pherd on 11/7/25.
 //
 import CoreLocation
-import PhotosUI  
+import PhotosUI  // PhotosPicker, PHAuthorizationStatus 포함
 import SwiftUI
 
 struct JourneyAddView: View {
@@ -109,16 +109,11 @@ struct JourneyAddView: View {
                             
                             endTextEditing()  // 키보드 내림
                             
-                            // 이미지 리사이즈 등은 호출 측(JourneyViewModel)에서 하거나
-                            // 여기서 하되, AddViewModel은 순수 데이터만 관리
-                            // 여기서는 기존 흐름대로 UI에서 가공해서 넘김 (일단 유지)
-                            // 추후 AddViewModel 내부로 이동 가능
-                            
-                            let resizedImage = ImageManager.shared.resizeImage(image, maxSize: 1024)
+                            // 리사이즈 로직 제거: JourneyViewModel(부모)에서 수행하므로 여기선 원본 전달
                             let latitude = viewModel.extractedLocation?.coordinate.latitude ?? 0.0
                             let longitude = viewModel.extractedLocation?.coordinate.longitude ?? 0.0
                             
-                            onSave(resizedImage, viewModel.memo, latitude, longitude)
+                            onSave(image, viewModel.memo, latitude, longitude)
                             dismiss()
                         }
                         .buttonStyle(viewModel.isSaveDisabled ? .noneButton : .defaultButton)
