@@ -43,43 +43,30 @@ struct BabyProfileCard: View {
         Button(action: navigateToEditBaby) {
             VStack(spacing: 8){
                 HStack(spacing: 15){
-                    if let url = URL(string: baby.avatarImageName) {
-                        AsyncImage(url: url) { phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                                    .frame(width: 70, height: 70)
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                            case .failure:
-                                Image("defaultAvata")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                            @unknown default:
-                                EmptyView()
-                            }
+                    CachedAsyncImage(urlString: baby.avatarImageName) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(width: 70, height: 70)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        case .failure:
+                            Image("defaultAvata")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        @unknown default:
+                            EmptyView()
                         }
-                        .frame(width: 70, height: 70)
-                        .clipShape(Circle())
-                        .overlay(
-                            Circle()
-                                .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
-                        )
-                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
-                    } else {
-                        Image("defaultAvata")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 70, height: 70)
-                            .clipShape(Circle())
-                            .overlay(
-                                Circle()
-                                    .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
-                            )
-                            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
                     }
+                    .frame(width: 70, height: 70)
+                    .clipShape(Circle())
+                    .overlay(
+                        Circle()
+                            .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+                    )
+                    .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
                     
                     VStack(alignment:.leading, spacing: 0){
                         HStack{

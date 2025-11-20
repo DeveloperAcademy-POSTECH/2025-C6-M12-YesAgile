@@ -26,43 +26,30 @@ struct BabyListView: View {
             ForEach(babies) { baby in
                 Button(action: { onSelectBaby(baby) }) {
                     HStack(spacing: 20){
-                        if let url = URL(string: baby.profileImageUrl) {
-                            AsyncImage(url: url) { phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                        .frame(width: 50, height: 50)
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                case .failure:
-                                    Image("defaultAvata")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                @unknown default:
-                                    EmptyView()
-                                }
+                        CachedAsyncImage(urlString: baby.profileImageUrl) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                                    .frame(width: 50, height: 50)
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                            case .failure:
+                                Image("defaultAvata")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                            @unknown default:
+                                EmptyView()
                             }
-                            .frame(width: 50, height: 50)
-                            .clipShape(Circle())
-                            .overlay(
-                                Circle()
-                                    .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
-                            )
-                            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
-                        } else {
-                            Image("defaultAvata")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 50, height: 50)
-                                .clipShape(Circle())
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
-                                )
-                                .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
                         }
+                        .frame(width: 50, height: 50)
+                        .clipShape(Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+                        )
+                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
                         
                         Text(baby.name) // 아기 이름
                             .font(.system(size: 16, weight: .bold))
