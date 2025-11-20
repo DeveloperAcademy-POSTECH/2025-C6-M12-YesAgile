@@ -30,8 +30,6 @@ struct MainTabView: View {
             ) {
                 viewModel.showBabyListSheet()
             }
-            
-            
             TabView(selection: $selectedTab) {
                 // 성장 탭
                 GrowthView(coordinator: viewModel.coordinator)

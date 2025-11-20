@@ -13,18 +13,18 @@ struct JourneyAddView: View {
     let photoAccessStatus: PHAuthorizationStatus
     let onSave: (UIImage, String, Double, Double) -> Void
     let onDismiss: () -> Void
-    
+
     // MARK: - Environment
     @Environment(\.dismiss) private var dismiss
-    
+
     // MARK: - State (ViewModel)
     @State private var viewModel: JourneyAddViewModel
     @State private var showImagePicker = false
     @State private var pickedItem: PhotosPickerItem? = nil
     @FocusState private var isMemoFocused: Bool
-    
+
     // MARK: - Init
-    
+
     init(
         selectedDate: Date,
         photoAccessStatus: PHAuthorizationStatus,
@@ -36,20 +36,23 @@ struct JourneyAddView: View {
         self.photoAccessStatus = photoAccessStatus
         self.onSave = onSave
         self.onDismiss = onDismiss
-        
+
         // ViewModel 초기화
-        _viewModel = State(initialValue: JourneyAddViewModel(existingJourney: existingJourney))
+        _viewModel = State(
+            initialValue: JourneyAddViewModel(existingJourney: existingJourney)
+        )
     }
-    
+
     var body: some View {
         // MARK: - 키보드 대응 레이아웃 (GrowthMilestoneView 패턴)
         ZStack {
             Color.background
                 .ignoresSafeArea()
-            
+
             VStack(spacing: 0) {
                 CustomNavigationBar(
-                    title: viewModel.navigationTitle.isEmpty ? selectedDate.yyyyMMdd : viewModel.navigationTitle,
+                    title: viewModel.navigationTitle.isEmpty
+                        ? selectedDate.yyyyMMdd : viewModel.navigationTitle,
                     leading: {
                         Button(action: {
                             endTextEditing()  // 키보드 내린 후 닫기
@@ -60,7 +63,7 @@ struct JourneyAddView: View {
                     }
                 )
                 .padding(.horizontal, 20)
-                
+
                 // MARK: - Limited Access 안내 배너
                 if photoAccessStatus == .limited {
                     LimitedAccessBanner(
@@ -71,18 +74,18 @@ struct JourneyAddView: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 12)
                 }
-                
+
                 ScrollView {
                     VStack(spacing: 20) {
                         photoSection
                             .padding(.horizontal, 20)
                             .padding(.top, 8)
-                        
+
                         // 메모 영역
                         VStack(alignment: .leading, spacing: 8) {
                             Text("여정 메모")
                                 .labelTextStyle()
-                            
+
                             TextField(
                                 "아이와 함께한 소중한 여정 메모를 입력 해주세요",
                                 text: $viewModel.memo,
@@ -98,25 +101,32 @@ struct JourneyAddView: View {
                             )
                         }
                         .padding(.horizontal, 20)
-                        
+
                         Spacer()
-                        
+
                         // MARK: - 저장 버튼 (ScrollView 내부)
                         Button("저장") {
                             guard let image = viewModel.selectedImage else {
                                 return
                             }
-                            
+
                             endTextEditing()  // 키보드 내림
-                            
+
                             // 리사이즈 로직 제거: JourneyViewModel(부모)에서 수행하므로 여기선 원본 전달
-                            let latitude = viewModel.extractedLocation?.coordinate.latitude ?? 0.0
-                            let longitude = viewModel.extractedLocation?.coordinate.longitude ?? 0.0
-                            
+                            let latitude =
+                                viewModel.extractedLocation?.coordinate.latitude
+                                ?? 0.0
+                            let longitude =
+                                viewModel.extractedLocation?.coordinate
+                                .longitude ?? 0.0
+
                             onSave(image, viewModel.memo, latitude, longitude)
                             dismiss()
                         }
-                        .buttonStyle(viewModel.isSaveDisabled ? .noneButton : .defaultButton)
+                        .buttonStyle(
+                            viewModel.isSaveDisabled
+                                ? .noneButton : .defaultButton
+                        )
                         .frame(height: 56)
                         .padding(.horizontal, 20)
                         .padding(.bottom, 30)
@@ -151,7 +161,7 @@ struct JourneyAddView: View {
             Text(viewModel.loadErrorMessage)
         }
     }
-    
+
     // MARK: - Grow 스타일 사진 카드
     private var photoSection: some View {
         ZStack {
@@ -198,20 +208,20 @@ struct JourneyAddView: View {
 
 struct LimitedAccessBanner: View {
     let onSettingsTap: () -> Void
-    
+
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundColor(.orange)
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text("위치 정보를 사용할 수 없습니다. 맵 위에는 보이지 않아요.")
                     .font(.system(size: 14, weight: .semibold))
                     .lineLimit(2)
             }
-            
+
             Spacer()
-            
+
             Button("설정") {
                 onSettingsTap()
             }

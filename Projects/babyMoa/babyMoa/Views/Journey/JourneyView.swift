@@ -29,7 +29,7 @@ struct JourneyView: View {
     // MARK: - fullScreenCover용 State
     @State private var showAddView = false
     @State private var selectedDateForAdd: Date = Date()
-    
+
     // [2024-11-20] 수정: Context 부활 시트 트리거
     @State private var listContext: JourneyListContext? = nil
 
@@ -53,109 +53,96 @@ struct JourneyView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     CalendarCard(
-                    data: CalendarCardData(
-                        currentMonth: calendarCardVM.currentMonth,
-                        monthDates: calendarCardVM.monthDates,
-                        selectedDate: calendarCardVM.selectedDate,
-                        // [2024-11-20] journeyVM.journies 직접 주입: 데이터 변경 시 캘린더 즉시 갱신 보장 (Nested Observable 이슈 방지)
-                        journies: journeyVM.journies
-                    ),
-                    actions: CalendarCardActions(
-                        onPreviousMonth: {
-                            calendarCardVM.previousMonthTapped()
+                        data: CalendarCardData(
+                            currentMonth: calendarCardVM.currentMonth,
+                            monthDates: calendarCardVM.monthDates,
+                            selectedDate: calendarCardVM.selectedDate,
+                            // [2024-11-20] journeyVM.journies 직접 주입: 데이터 변경 시 캘린더 즉시 갱신 보장 (Nested Observable 이슈 방지)
+                            journies: journeyVM.journies
+                        ),
+                        actions: CalendarCardActions(
+                            onPreviousMonth: {
+                                calendarCardVM.previousMonthTapped()
 
-                            Task {
-                                await journeyVM.fetchJournies(
-                                    for: calendarCardVM.currentMonth
+                                Task {
+                                    await journeyVM.fetchJournies(
+                                        for: calendarCardVM.currentMonth
+                                    )
+                                }
+                            },
+                            onNextMonth: {
+                                calendarCardVM.nextMonthTapped()
+
+                                Task {
+                                    await journeyVM.fetchJournies(
+                                        for: calendarCardVM.currentMonth
+                                    )
+                                }
+                            },
+                            // 캘린더 날짜 탭 시 화면 전환 로직
+                            onDateTap: { date in
+                                // 1. 탭한 날짜 선택 & 해당 날짜의 여정 가져오기
+                                let journiesForDate = calendarCardVM.dateTapped(
+                                    date
                                 )
-                            }
-                        },
-                        onNextMonth: {
-                            calendarCardVM.nextMonthTapped()
 
-                            Task {
-                                await journeyVM.fetchJournies(
-                                    for: calendarCardVM.currentMonth
-                                )
+                                // 2. 여정 존재 여부에 따라 화면 분기
+                                if journiesForDate.isEmpty {
+                                    // 여정 없음: 여정 추가 화면으로 이동
+                                    selectedDateForAdd = date
+                                    showAddView = true
+                                } else {
+                                    // 여정 있음: Context 생성하여 리스트 시트 오픈
+                                    listContext = JourneyListContext(
+                                        date: date,
+                                        journies: journiesForDate
+                                    )
+                                }
+                            },
+                            isInCurrentMonth: { date in
+                                calendarCardVM.isInCurrentMonth(date)
+                            },
+                            isSelected: { date in
+                                let result = calendarCardVM.isSelected(date)
+                                return result  // true 또는 false
                             }
-                        },
-                        // 캘린더 날짜 탭 시 화면 전환 로직
-                        onDateTap: { date in
-                            // 1. 탭한 날짜 선택 & 해당 날짜의 여정 가져오기
-                            let journiesForDate = calendarCardVM.dateTapped(date)
+                            //          ↑ 여기서 함수를 전달!
+                            //
 
-                            // 2. 여정 존재 여부에 따라 화면 분기
-                            if journiesForDate.isEmpty {
-                                // 여정 없음: 여정 추가 화면으로 이동
-                                selectedDateForAdd = date
-                                showAddView = true
-                            } else {
-                                // 여정 있음: Context 생성하여 리스트 시트 오픈
-                                listContext = JourneyListContext(
-                                    date: date,
-                                    journies: journiesForDate
-                                )
-                            }
-                        },
-                        isInCurrentMonth: { date in
-                            calendarCardVM.isInCurrentMonth(date)
-                        },
-                        isSelected: { date in
-                            let result = calendarCardVM.isSelected(date)
-                            return result  // true 또는 false
-                        }
-                        //          ↑ 여기서 함수를 전달!
-                        //
-
-                    )
+                        )
                     )
                     .padding(.horizontal, 20)
                     MapCard(
-                    data: MapCardData(
-                        position: $mapPosition,
-                        // 위치 있는 대표 여정을 마커로 전달 (Journey 모델 직접 사용)
-                        annotations: mapCardVM.representativeJournies(from: journeyVM.journies),
-                        userLocation: locationManager.location
-                    ),
-                    actions: MapCardActions(
-                        onMarkerTap: { date in
-                            // 마커 탭 시
-                            let allJourniesForDate = mapCardVM.journies(
-                                for: date,
+                        data: MapCardData(
+                            position: $mapPosition,
+                            // 위치 있는 대표 여정을 마커로 전달 (Journey 모델 직접 사용)
+                            annotations: mapCardVM.representativeJournies(
                                 from: journeyVM.journies
-                            )
-                            listContext = JourneyListContext(
-                                date: date,
-                                journies: allJourniesForDate
-                            )
-                        },
-                        onCompassTap: {
-                            // 나침반 버튼 탭 시: 현재 위치로 이동 (없으면 첫 번째 여정 위치로 fallback)
-                            if let currentLocation = locationManager.location {
-                                withAnimation {
-                                    mapPosition = .region(
-                                        MKCoordinateRegion(
-                                            center: currentLocation.coordinate,
-                                            span: MKCoordinateSpan(
-                                                latitudeDelta: 0.1,
-                                                longitudeDelta: 0.1
-                                            )
-                                        )
-                                    )
-                                }
-                            } else {
-                                // 현재 위치 없으면 첫 번째 여정 위치로 이동
-                                if let firstJourney =
-                                    mapCardVM
-                                    .representativeJournies(
-                                        from: journeyVM.journies
-                                    )
-                                    .first
+                            ),
+                            userLocation: locationManager.location
+                        ),
+                        actions: MapCardActions(
+                            onMarkerTap: { date in
+                                // 마커 탭 시
+                                let allJourniesForDate = mapCardVM.journies(
+                                    for: date,
+                                    from: journeyVM.journies
+                                )
+                                listContext = JourneyListContext(
+                                    date: date,
+                                    journies: allJourniesForDate
+                                )
+                            },
+                            onCompassTap: {
+                                // 나침반 버튼 탭 시: 현재 위치로 이동 (없으면 첫 번째 여정 위치로 fallback)
+                                if let currentLocation = locationManager
+                                    .location
                                 {
                                     withAnimation {
                                         mapPosition = .region(
                                             MKCoordinateRegion(
-                                                center: firstJourney.coordinate,
+                                                center: currentLocation
+                                                    .coordinate,
                                                 span: MKCoordinateSpan(
                                                     latitudeDelta: 0.1,
                                                     longitudeDelta: 0.1
@@ -163,10 +150,31 @@ struct JourneyView: View {
                                             )
                                         )
                                     }
+                                } else {
+                                    // 현재 위치 없으면 첫 번째 여정 위치로 이동
+                                    if let firstJourney =
+                                        mapCardVM
+                                        .representativeJournies(
+                                            from: journeyVM.journies
+                                        )
+                                        .first
+                                    {
+                                        withAnimation {
+                                            mapPosition = .region(
+                                                MKCoordinateRegion(
+                                                    center: firstJourney
+                                                        .coordinate,
+                                                    span: MKCoordinateSpan(
+                                                        latitudeDelta: 0.1,
+                                                        longitudeDelta: 0.1
+                                                    )
+                                                )
+                                            )
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    )
+                        )
                     )
                     .padding(.horizontal, 20)
                 }
@@ -213,7 +221,7 @@ struct JourneyView: View {
 
                 // 위치 업데이트 시작 (데이터 로드 후에 시작하여 hang 방지)
                 locationManager.startUpdating()
-                
+
                 // 지도 초기 위치 우선순위:
                 // 1. 현재 위치 (locationManager)
                 // 2. 첫 번째 여정 위치
@@ -222,22 +230,36 @@ struct JourneyView: View {
                     mapPosition = .region(
                         MKCoordinateRegion(
                             center: currentLocation.coordinate,
-                            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                            span: MKCoordinateSpan(
+                                latitudeDelta: 0.1,
+                                longitudeDelta: 0.1
+                            )
                         )
                     )
-                } else if let firstJourney = mapCardVM.representativeJournies(from: journeyVM.journies).first {
+                } else if let firstJourney = mapCardVM.representativeJournies(
+                    from: journeyVM.journies
+                ).first {
                     mapPosition = .region(
                         MKCoordinateRegion(
                             center: firstJourney.coordinate,
-                            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                            span: MKCoordinateSpan(
+                                latitudeDelta: 0.1,
+                                longitudeDelta: 0.1
+                            )
                         )
                     )
                 } else {
                     // 기본값: 한반도 보이게
                     mapPosition = .region(
                         MKCoordinateRegion(
-                            center: CLLocationCoordinate2D(latitude: 37.5, longitude: 127.5),
-                            span: MKCoordinateSpan(latitudeDelta: 4.0, longitudeDelta: 4.0)
+                            center: CLLocationCoordinate2D(
+                                latitude: 37.5,
+                                longitude: 127.5
+                            ),
+                            span: MKCoordinateSpan(
+                                latitudeDelta: 4.0,
+                                longitudeDelta: 4.0
+                            )
                         )
                     )
                 }

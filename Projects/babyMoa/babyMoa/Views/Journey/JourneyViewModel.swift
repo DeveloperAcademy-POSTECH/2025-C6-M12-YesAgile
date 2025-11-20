@@ -13,7 +13,7 @@ import SwiftUI
     var journies: [Journey] = []
 
     // MARK: - babyId 동기화 새 아기 동기화 .. 그 아기가 변경되어도 journeyView에서 한번 호출해주면 괜춘!!
-    
+
     /// SelectedBabyState에서 babyId를 동기화
     /// - Note: MainTabViewModel이 SelectedBabyState에 아기 정보를 설정하면,
     ///         여기서 SelectedBaby.babyId에 동기화 (API 호출 시 필요)
@@ -107,19 +107,21 @@ import SwiftUI
             print("⚠️ babyId 없음")
             return false
         }
-        
+
         // 2. UIImage 리사이즈 (addJourney와 동일: 1024x1024)
         let resizedImage = ImageManager.shared.resizeImage(image, maxSize: 1024)
-        
+
         // 3. UIImage → Base64 변환 (addJourney와 동일: 압축률 0.7)
-        guard let base64Image = ImageManager.shared.encodeToBase64(
-            resizedImage,
-            compressionQuality: 0.7
-        ) else {
+        guard
+            let base64Image = ImageManager.shared.encodeToBase64(
+                resizedImage,
+                compressionQuality: 0.7
+            )
+        else {
             print("❌ 이미지 Base64 변환 실패")
             return false
         }
-        
+
         // 4. 서버에 여정 수정 API 호출
         let result = await BabyMoaService.shared.patchUpdateJourney(
             babyId: babyId,
@@ -130,11 +132,13 @@ import SwiftUI
             date: DateFormatter.yyyyDashMMDashdd.string(from: journey.date),
             memo: memo
         )
-        
+
         // 5. 성공 시 로컬 배열 업데이트
         switch result {
         case .success:
-            if let index = journies.firstIndex(where: { $0.journeyId == journey.journeyId }) {
+            if let index = journies.firstIndex(where: {
+                $0.journeyId == journey.journeyId
+            }) {
                 journies[index] = Journey(
                     journeyId: journey.journeyId,
                     journeyImage: resizedImage,  // 리사이즈된 이미지 재사용
