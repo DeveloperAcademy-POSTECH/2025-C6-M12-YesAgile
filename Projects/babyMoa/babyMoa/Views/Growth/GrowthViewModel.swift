@@ -120,7 +120,6 @@ final class GrowthViewModel {
         
         print("----------- Growth Data API Response -----------")
         print("Fetching for babyId: \(babyId)")
-        print(result)
         print("---------------------------------------------")
         
         switch result {
