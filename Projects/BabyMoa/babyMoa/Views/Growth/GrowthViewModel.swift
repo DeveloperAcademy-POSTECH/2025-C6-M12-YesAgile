@@ -62,37 +62,9 @@ final class GrowthViewModel {
     }
     
     func fetchAllMilestones(babyId: Int) async {
-        let result = await BabyMoaService.shared.getGetBabyMilestones(babyId: babyId)
-        switch result {
-        case .success(let success):
-            guard let milestonesData = success.data else { return }
-            
-            var updatedMilestones = GrowthMilestone.mockData
-            
-            for milestone in milestonesData {
-                let row = Int(milestone.milestoneName.split(separator: "_")[1])!
-                let col = Int(milestone.milestoneName.split(separator: "_")[2])!
-                
-                if updatedMilestones.indices.contains(row) && updatedMilestones[row].indices.contains(col) {
-                    var decodedImage: UIImage?
-                    if let imageUrl = milestone.imageUrl {
-                        decodedImage = await ImageManager.shared.downloadImage(from: imageUrl)
-                    }
-                    
-                    updatedMilestones[row][col].image = decodedImage
-                    updatedMilestones[row][col].completedDate = DateFormatter.yyyyDashMMDashdd.date(from: milestone.date)
-                    updatedMilestones[row][col].description = milestone.memo
-                    updatedMilestones[row][col].isCompleted = true
-                }
-            }
-            
-            let finalMilestones = updatedMilestones
-            await MainActor.run {
-                self.allMilestones = finalMilestones
-            }
-            
-        case .failure(let error):
-            print(error)
+        let fetchedMilestones = await MilestoneRepository.shared.fetchAllMilestones(babyId: babyId)
+        await MainActor.run {
+            self.allMilestones = fetchedMilestones
         }
     }
     
@@ -108,6 +80,7 @@ final class GrowthViewModel {
         let result = await BabyMoaService.shared.postSetBabyMilestone(babyId: babyId, milestoneName: milestone.id, milestoneImage: base64EncodedImage ?? "", date: DateFormatter.yyyyDashMMDashdd.string(from: milestone.completedDate ?? Date()), memo: milestone.description)
         switch result {
         case .success:
+            MilestoneRepository.shared.clearCache() // Clear repository cache on successful update
             return true
         case .failure(let error):
             print(error)
@@ -143,7 +116,9 @@ final class GrowthViewModel {
         let result = await BabyMoaService.shared.getBaby(babyId: babyId)
         switch result {
         case .success(let success):
-            guard let babySummary = success.data else { return }
+            guard let babySummary = success.data else {
+                return
+            }
             let profileImage = await ImageManager.shared.downloadImage(from: babySummary.avatarImageName)
             self.selectedBaby = BabySummary(babyId: babyId, babyName: babySummary.name, babyProfileImage: profileImage)
             
@@ -160,6 +135,7 @@ final class GrowthViewModel {
         let result = await BabyMoaService.shared.deleteBabyMilestone(babyId: babyId, milestoneName: selectedMilestone.id)
         switch result {
         case .success:
+            MilestoneRepository.shared.clearCache() // Clear repository cache on successful delete
             isMilestoneEditingViewPresented = false
             initiateSelectedMilestone()
         case .failure(let error):
