@@ -92,10 +92,10 @@ struct GrowthMilestoneView: View {
                             Image(systemName: "trash")
                                 
                         }
-                    },
+                    }
                     // 키보드가 올라왔을 때 네비게이션 바가 가려지지 않도록 배경 색을 설정합니다.
                     // (CustomNavigationBar 내부 구현에 따라 다름)
-                    backgroundColor: Color.background
+//                    backgroundColor: Color.background
                 )
                 ScrollViewReader { proxy in
                     
