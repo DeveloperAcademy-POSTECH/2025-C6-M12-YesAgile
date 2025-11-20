@@ -162,6 +162,15 @@ extension ButtonStyle where Self == AppButtonStyle {
         )
     }
     
+    static var outlineDefaultButton: AppButtonStyle {
+        AppButtonStyle(
+            backgroundColor: .clear,
+            foregroundColor: .font,
+            borderColor: .brand40, // 👈 테두리 색상 설정
+            borderWidth: 1         // 👈 테두리 두께 설정
+        )
+    }
+    
     static var outlinelessButton: AppButtonStyle {
         AppButtonStyle(
             backgroundColor: .white,
@@ -274,6 +283,13 @@ extension ButtonStyle where Self == AppButtonStyle {
                         .font(.headline)
                     Button("외곽선 버튼 (Outline)") { }
                         .buttonStyle(.outlineFourButton) // ✅ 훨씬 깔끔함
+                    
+                    Divider()
+                    
+                    Text("OutlineDefaultButton")
+                        .font(.headline)
+                    Button("외곽선 버튼 (Outline)") { }
+                        .buttonStyle(.outlineDefaultButton) // ✅ 훨씬 깔끔함
                     
                     Divider()
 

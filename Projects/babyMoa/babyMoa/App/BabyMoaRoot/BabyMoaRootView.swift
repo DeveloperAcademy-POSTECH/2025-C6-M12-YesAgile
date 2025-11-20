@@ -44,7 +44,6 @@ struct BabyMoaRootView: View {
                     EmptyView()
                 case .privacyConsent:
                     PrivacyConsentView(coordinator: coordinator)
-                        .navigationBarBackButtonHidden()
                 case .allMilestones(let allMilestones):
                     AllMilestoneView(coordinator: coordinator, allMilestones: allMilestones)
                         .navigationBarBackButtonHidden()
@@ -88,7 +87,15 @@ struct BabyMoaRootView: View {
                 case .guardiainCode(let viewModel):
                     GuardianCodeView(viewModel: viewModel)
                         .navigationBarBackButtonHidden()
-
+                    
+//                    // 신규 추가 해야 한다. newHeightView
+//                case .newHeight(let babyId):
+//                    HeightView(coordinator: coordinator, babyId: babyId)
+//                        .navigationBarBackButtonHidden()
+                    
+                case .heightAdd:
+                    HeightAddView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
                 }
             }
         }

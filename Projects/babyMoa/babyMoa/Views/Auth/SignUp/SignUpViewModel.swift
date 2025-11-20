@@ -12,10 +12,12 @@ import SwiftUI
 final class SignUpViewModel {
     var coordinator: BabyMoaCoordinator
     var termCheckList: [TermCheckItem]
+    var isShowingPrivacySheet = false
     
     init(coordinator: BabyMoaCoordinator) {
         self.coordinator = coordinator
-        termCheckList = [
+        self.termCheckList = []
+        self.termCheckList = [
             TermCheckItem(
                 term: Term.ageRestriction,
                 isChecked: false
@@ -23,12 +25,8 @@ final class SignUpViewModel {
             TermCheckItem(
                 term: Term.privacyConsent,
                 isChecked: false,
-                moreAction: {
-                    Task {
-                        await MainActor.run {
-                            coordinator.push(path: .privacyConsent)
-                        }
-                    }
+                moreAction: { [weak self] in
+                    self?.isShowingPrivacySheet = true
                 }
             )
         ]

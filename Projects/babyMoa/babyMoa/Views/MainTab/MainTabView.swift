@@ -83,56 +83,6 @@ struct MainTabView: View {
 
 // MARK: - Baby Selection Header
 
-/// 상단 아기 선택 헤더
-//struct BabySelectionHeader: View {
-//    @State private var showBabySelection = false
-//
-//    var body: some View {
-//        HStack(spacing: 12) {
-//            // 아기 프로필 이미지
-//            Circle()
-//                .fill(Color.gray.opacity(0.3))
-//                .frame(width: 40, height: 40)
-//                .overlay(
-//                    Image(systemName: "face.smiling")
-//                        .font(.system(size: 20))
-//                        .foregroundColor(.gray)
-//                )
-//
-//            // 아기 이름 + 드롭다운 버튼
-//            Button(action: {
-//                showBabySelection.toggle()
-//            }) {
-//                HStack(spacing: 4) {
-//                    Text("아기")
-//                        .font(.system(size: 18, weight: .semibold))
-//                        .foregroundColor(Color("Font"))
-//
-//                    Image(systemName: "chevron.down")
-//                        .font(.system(size: 14, weight: .semibold))
-//                        .foregroundColor(Color("Font"))
-//                }
-//            }
-//
-//            Spacer()
-//        }
-//        .padding(.horizontal, 20)
-//        .padding(.vertical, 12)
-//        .background(Color(.systemBackground))
-//        .actionSheet(isPresented: $showBabySelection) {
-//            ActionSheet(
-//                title: Text("아기 선택"),
-//                buttons: [
-//                    .default(Text("아기 이름")) {},
-//                    .default(Text("+ 아기 추가")) {},
-//                    .cancel(),
-//                ]
-//            )
-//        }
-//    }
-//}
-// MARK: - Preview
-
 #Preview {
     @Previewable @StateObject var coordinator = BabyMoaCoordinator()
     MainTabView(coordinator: coordinator)

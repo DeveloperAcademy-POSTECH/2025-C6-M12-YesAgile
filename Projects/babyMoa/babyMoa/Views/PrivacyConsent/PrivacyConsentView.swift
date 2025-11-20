@@ -16,7 +16,7 @@ struct PrivacyConsentView: View {
                 Text("privacyPolicy.title")
                     .font(.title2)
                     .bold()
-                    .padding(.bottom, 8)
+                    .padding(.vertical, 20)
                 ScrollView {
                     VStack(alignment: .leading, spacing: 12) {
                         

@@ -92,7 +92,16 @@ class AddBabyViewModel: ObservableObject {
             // 수정 모드: 전달받은 데이터로 속성 초기화
             self.babyName = baby.name
             self.babyNickname = baby.nickname ?? ""
-            self.selectedGender = baby.gender
+            
+            switch baby.gender {
+            case "M":
+                self.selectedGender = "male"
+            case "F":
+                self.selectedGender = "female"
+            default:
+                self.selectedGender = "none"
+            }
+            
             self.birthDate = baby.birthDate
             self.isBorn = baby.isBorn
             // self.relationship = baby.relationship // RelationshipType으로 변환 필요
@@ -101,9 +110,28 @@ class AddBabyViewModel: ObservableObject {
             Task {
                 await loadImage(from: baby.profileImage)
             }
+            
+            // Log received values in edit mode
+            print("--- AddBabyViewModel Init (Edit Mode) ---")
+            print("수신 태명 (babyNickname): \(self.babyNickname)")
+            print("수신 성별 (selectedGender): \(self.selectedGender)")
+            print("수신 날짜 (birthDate): \(self.birthDate)")
+            print("수신 관계 (relationship): \(self.relationship)")
+            print("수신 isBorn: \(self.isBorn)")
+            print("----------------------------------------")
+
         } else if let isBorn = isBorn {
             // 생성 모드: isBorn 값으로 초기화
             self.isBorn = isBorn
+            
+            // Log received values in create mode
+            print("--- AddBabyViewModel Init (Create Mode) ---")
+            print("수신 태명 (babyNickname): \(self.babyNickname)")
+            print("수신 성별 (selectedGender): \(self.selectedGender)")
+            print("수신 날짜 (birthDate): \(self.birthDate)")
+            print("수신 관계 (relationship): \(self.relationship)")
+            print("수신 isBorn: \(self.isBorn)")
+            print("----------------------------------------")
         }
     }
 
@@ -269,7 +297,8 @@ class AddBabyViewModel: ObservableObject {
                     self.displayedProfileImage = Image(uiImage: uiImage)
                     print("✅ 이미지 로드 성공: \(urlString)")
                 }
-            } else {
+            }
+            else {
                 print("❌ 이미지 로드 실패: 데이터로부터 UIImage 생성 불가")
             }
         } catch {
