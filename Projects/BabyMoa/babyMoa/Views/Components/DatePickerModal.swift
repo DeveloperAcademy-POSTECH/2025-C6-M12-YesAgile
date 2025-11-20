@@ -5,6 +5,7 @@
 //  Created by Baba on 11/4/25.
 //
 
+
 import SwiftUI
 
 // 1. 선택 가능한 DatePicker 스타일을 Enum으로 정의합니다.
@@ -12,7 +13,6 @@ enum ModalDatePickerStyle {
     case graphical
     case wheel
 }
-
 
 struct DatePickerModal: View {
     @Binding var birthDate: Date
