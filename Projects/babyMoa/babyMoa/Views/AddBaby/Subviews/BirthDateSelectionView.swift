@@ -17,7 +17,9 @@ struct BirthDateSelectionView: View {
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(Color("Font").opacity(0.6))
 
-            Button(action: { showDatePicker = true }) {
+            Button(action: {
+                showDatePicker = true
+            }, label: {
                 HStack {
                     Text(label)
                         .font(.system(size: 16, weight: .medium))
@@ -26,7 +28,7 @@ struct BirthDateSelectionView: View {
                     Image(systemName: "chevron.down")
                         .foregroundColor(Color("Font").opacity(0.4))
                 }
-            }
+            })
             .buttonStyle(DateSelectButtonStyle())
         }
     }

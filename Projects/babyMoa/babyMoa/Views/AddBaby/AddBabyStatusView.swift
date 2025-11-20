@@ -11,7 +11,6 @@ import PhotosUI // For PhotosPicker
 struct AddBabyStatusView: View {
     
     @StateObject var viewModel: AddBabyViewModel
-    
     @StateObject private var imageLoaderViewModel = ImageLoaderViewModel()
     
     enum FocusField: Hashable {
@@ -21,17 +20,29 @@ struct AddBabyStatusView: View {
     
     @FocusState private var focusedField: FocusField?
     
-    init(coordinator: BabyMoaCoordinator, baby: AddBabyModel? = nil, isBorn: Bool? = nil) {
-        self._viewModel = StateObject(wrappedValue: AddBabyViewModel(coordinator: coordinator, baby: baby, isBorn: isBorn))
+    init(
+        coordinator: BabyMoaCoordinator,
+        baby: AddBabyModel? = nil,
+        isBorn: Bool? = nil
+    ) {
+        self._viewModel = StateObject(
+            wrappedValue: AddBabyViewModel(
+                coordinator: coordinator,
+                baby: baby,
+                isBorn: isBorn
+            )
+        )
     }
     
     var body: some View {
         ZStack {
-            VStack(spacing: 20) {
+            Color.background
+            VStack(spacing: 0) {
+                // MARK: - Custom Navigation Bar
                 CustomNavigationBar(
                     title: viewModel.navigationTitle,
                     leading: {
-                        Button(action: { 
+                        Button(action: {
                             viewModel.coordinator.pop()
                         }) {
                             Image(systemName: "chevron.left")
@@ -49,82 +60,131 @@ struct AddBabyStatusView: View {
                     }
                 )
                 
-                ZStack {
-                    // 1. 버튼을 제거하고 이미지를 표시하는 로직만 남깁니다.
-                    if let displayedImage = viewModel.displayedProfileImage {
-                        displayedImage
-                            .profileImageStyle()
-                    } else {
-                        // 2. 기본 이미지
-                        Image("defaultAvata")
-                            .profileImageStyle()
+                // MARK: - Scrollable Content
+                ScrollView {
+                    VStack(spacing: 20) {
+                        // 프로필 이미지
+                        ZStack {
+                            if let displayedImage = viewModel.displayedProfileImage {
+                                displayedImage
+                                    .profileImageStyle()
+                            } else {
+                                Image("defaultAvata")
+                                    .profileImageStyle()
+                            }
+                        }
+                        .onTapGesture {
+                            viewModel.showLibrary = true
+                        }
+                        
+                        // 이름 / 태명 / 성별
+                        VStack(spacing: 20) {
+                            BabyInputField(
+                                label: "이름 (필수)",
+                                placeholder: "이름을 입력해주세요",
+                                text: $viewModel.babyName,
+                                focus: $focusedField,
+                                field: .babyName
+                            )
+                            
+                            BabyInputField(
+                                label: "태명 (필수)",
+                                placeholder: "태명을 입력해주세요",
+                                text: $viewModel.babyNickname,
+                                focus: $focusedField,
+                                field: .babyNickname
+                            )
+                            
+                            if viewModel.isBorn {
+                                GenderSelectionView(
+                                    selectedGender: $viewModel.selectedGender,
+                                    segments: viewModel.availableGenderSegments,
+                                    isBorn: true,
+                                    onTap: { focusedField = nil }
+                                )
+                            } else {
+                                GenderSelectionView(
+                                    selectedGender: $viewModel.selectedGender,
+                                    segments: viewModel.availableGenderSegments,
+                                    isBorn: false,
+                                    onTap: { focusedField = nil }
+                                )
+                            }
+                        }
+                        
+                        // 출생일
+                        BirthDateSelectionView(
+                            label: viewModel.birthDateLabel,
+                            showDatePicker: $viewModel.showDatePicker
+                        )
+                        
+                        // 관계 선택
+                        RelationshipSelectionView(
+                            relationship: $viewModel.relationship,
+                            showRelationshipPicker: $viewModel.showRelationshipPicker
+                        )
+                        
+                        // 스크롤 끝에서 여유 공간
+                        Spacer()
+                            .frame(height: 24)
                     }
+                    .frame(maxWidth: .infinity, alignment: .top)
+                    .padding(.top, 16)
                 }
-                .onTapGesture {
-                    // 3. 탭하면 showLibrary를 true로 설정합니다.
-                    //    (showImageOptions가 아님)
-                    viewModel.showLibrary = true
-                }
-//                Image("baby_milestone_illustration")
-//                    .profileImageStyle()
-//
-                VStack(spacing: 20){
-                    
-                    BabyInputField(label: "이름 (필수)", placeholder: "이름을 입력해주세요", text: $viewModel.babyName, focus: $focusedField, field: .babyName)
-                    BabyInputField(label: "태명 (필수)", placeholder: "태명을 입력해주세요", text: $viewModel.babyNickname, focus: $focusedField, field: .babyNickname)
-                    
-                    if viewModel.isBorn {
-                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: viewModel.availableGenderSegments, isBorn: true, onTap: { focusedField = nil })
-
-                    } else {
-                        GenderSelectionView(selectedGender: $viewModel.selectedGender, segments: viewModel.availableGenderSegments, isBorn: false, onTap: { focusedField = nil })
-
-                    }
-                }
+                .scrollIndicators(.hidden)
                 
-                BirthDateSelectionView(
-                    label: viewModel.birthDateLabel,
-                    showDatePicker: $viewModel.showDatePicker
-                )
+                // MARK: - Bottom Save Button
                 
-                RelationshipSelectionView(
-                    relationship: $viewModel.relationship,
-                    showRelationshipPicker: $viewModel.showRelationshipPicker
-                )
-                
-                
-                
-                Button("저장", action: {
+                Button(action: {
                     viewModel.save()
+
+                }, label: {
+                    Text("저장")
                 })
                 .buttonStyle(!viewModel.isFormValid ? .noneButton : .defaultButton)
-                
-                
-                Spacer()
+                .padding(.bottom, 44)
             }
+            .backgroundPadding(.horizontal)
+            .contentShape(Rectangle())
             .onTapGesture {
                 focusedField = nil
             }
-            .ignoresSafeArea()
             .navigationBarBackButtonHidden(true)
-            .backgroundPadding(.horizontal)
+            .background(
+                Color(.systemBackground)
+                    .ignoresSafeArea() // 배경만 safe area 무시
+            )
             
+            // MARK: - Modals
             if viewModel.showDatePicker {
-                DatePickerModal(birthDate: $viewModel.birthDate, showDatePicker: $viewModel.showDatePicker)
+                DatePickerModal(
+                    birthDate: $viewModel.birthDate,
+                    showDatePicker: $viewModel.showDatePicker
+                )
             }
             
             if viewModel.showRelationshipPicker {
-                RelationshipPickerModal(relationship: $viewModel.relationship, showRelationshipPicker: $viewModel.showRelationshipPicker)
+                RelationshipPickerModal(
+                    relationship: $viewModel.relationship,
+                    showRelationshipPicker: $viewModel.showRelationshipPicker
+                )
             }
         }
-        .photosPicker(isPresented: $viewModel.showLibrary, selection: $imageLoaderViewModel.imageSelection, matching: .images, photoLibrary: .shared())
+        .ignoresSafeArea()
+        // MARK: - Photo Picker
+        .photosPicker(
+            isPresented: $viewModel.showLibrary,
+            selection: $imageLoaderViewModel.imageSelection,
+            matching: .images,
+            photoLibrary: .shared()
+        )
         .onChange(of: imageLoaderViewModel.imageToUpload) { _, newValue in
             if let newValue = newValue {
                 viewModel.displayedProfileImage = Image(uiImage: newValue)
                 viewModel.profileImage = newValue
-                
             }
         }
+        // MARK: - Delete Alert
         .alert("아기 정보를 삭제할까요?", isPresented: $viewModel.showDeleteConfirmation) {
             Button("삭제", role: .destructive) {
                 viewModel.executeDelete()
@@ -136,21 +196,28 @@ struct AddBabyStatusView: View {
     }
 }
 
-
+// MARK: - Previews
 
 #Preview("Create Mode - isBorn") {
-    // 1. 생성 모드 Preview
-    AddBabyStatusView(coordinator: BabyMoaCoordinator(), baby: nil, isBorn: true)
+    AddBabyStatusView(
+        coordinator: BabyMoaCoordinator(),
+        baby: nil,
+        isBorn: true
+    )
 }
 
 #Preview("Create Mode - Not Born") {
-    // 1. 생성 모드 Preview
-    AddBabyStatusView(coordinator: BabyMoaCoordinator(), baby: nil, isBorn: false)
+    AddBabyStatusView(
+        coordinator: BabyMoaCoordinator(),
+        baby: nil,
+        isBorn: false
+    )
 }
 
 #Preview("Edit Mode") {
-    // 2. 수정 모드 Preview
-    AddBabyStatusView(coordinator: BabyMoaCoordinator(), baby: AddBabyModel.mockAddBabyModel.first!)
+    AddBabyStatusView(
+        coordinator: BabyMoaCoordinator(),
+        baby: AddBabyModel.mockAddBabyModel.first!,
+        isBorn: true
+    )
 }
-
-
