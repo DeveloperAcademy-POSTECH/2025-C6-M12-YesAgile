@@ -100,6 +100,8 @@ enum BabyMoaEndpoint: Endpoint {
     case getBabyInviteCode(babyId: Int)
     // 아기를 삭제하기 위해 요청한다.
     case deleteBaby(babyId: Int)
+    case deleteHeight(babyId: Int, date: String)
+    case deleteWeight(babyId: Int, date: String)
 }
 
 extension BabyMoaEndpoint {
@@ -150,6 +152,10 @@ extension BabyMoaEndpoint {
             return "/api/baby/get_baby_invite_code"
         case .deleteBaby:
             return "/api/baby/delete_baby"
+        case .deleteHeight:
+            return "/api/growth/delete_height"
+        case .deleteWeight:
+            return "/api/growth/delete_weight"
         }
     }
 
@@ -163,7 +169,7 @@ extension BabyMoaEndpoint {
         case .getGrowthData, .getBabyList, .getWeights, .getHeights, .getBaby, .getJourniesAtMonth, .getBabyMilestones, .getBabyInviteCode:
             return .get
         
-        case .deleteBabyMilestone, .deleteBaby:
+        case .deleteBabyMilestone, .deleteBaby, .deleteHeight, .deleteWeight:
             return .delete
             
         case .updateBaby:
@@ -183,7 +189,7 @@ extension BabyMoaEndpoint {
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
             .setHeight, .getWeights, .getHeights, .addJourney,
             .setBabyMilestone, .getBaby, .getJourniesAtMonth,
-            .getBabyMilestones, .deleteBabyMilestone, .getBabyInviteCode, .deleteBaby, .updateBaby:
+            .getBabyMilestones, .deleteBabyMilestone, .getBabyInviteCode, .deleteBaby, .updateBaby, .deleteHeight, .deleteWeight:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -238,6 +244,16 @@ extension BabyMoaEndpoint {
         case .deleteBaby(let babyId):
             return [
                 "babyId": String(babyId)
+            ]
+        case .deleteHeight(let babyId, let date):
+            return [
+                "babyId": String(babyId),
+                "date": date
+            ]
+        case .deleteWeight(let babyId, let date):
+            return [
+                "babyId": String(babyId),
+                "date": date
             ]
             
         default:

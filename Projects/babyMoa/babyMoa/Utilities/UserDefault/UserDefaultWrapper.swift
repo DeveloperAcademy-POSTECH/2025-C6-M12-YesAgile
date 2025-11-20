@@ -24,7 +24,13 @@ struct UserDefault<T> {
             return userDefaults.object(forKey: key) as? T ?? defaultValue
         }
         set {
-            userDefaults.set(newValue, forKey: key)
+            // newValue가 nil일 경우 UserDefaults에서 해당 객체를 제거합니다.
+            // 이렇게 하면 Optional 타입의 값을 nil로 설정할 때 발생할 수 있는 충돌을 방지할 수 있습니다.
+            if case Optional<Any>.none = newValue as Any {
+                userDefaults.removeObject(forKey: key)
+            } else {
+                userDefaults.set(newValue, forKey: key)
+            }
         }
     }
     

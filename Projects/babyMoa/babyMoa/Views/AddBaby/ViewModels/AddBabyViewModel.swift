@@ -141,19 +141,21 @@ class AddBabyViewModel: ObservableObject {
             if let editingBaby = editingBaby {
                 // --- 수정 로직 ---
                 print("➡️ [UPDATE] 아기 정보 수정을 시작합니다. babyId: \(editingBaby.babyId)")
-                let avatarImageData: Data?
+                let avatarImageName: String?
                 if let userSelectedImage = self.profileImage {
-                    avatarImageData = userSelectedImage.jpegData(compressionQuality: 0.8)
+                    avatarImageName = ImageManager.shared.encodeToBase64(userSelectedImage)
                 } else {
-                    avatarImageData = UIImage(named: "defaultAvata")?.jpegData(compressionQuality: 0.8)
+                    if let defaultImage = UIImage(named: "defaultAvata") {
+                        avatarImageName = ImageManager.shared.encodeToBase64(defaultImage)
+                    } else {
+                        avatarImageName = nil
+                    }
                 }
                 
-                guard let finalImageData = avatarImageData else {
+                guard let finalAvatarImageName = avatarImageName else {
                     print("❌ 아기 수정 실패: 이미지 데이터를 생성할 수 없습니다.")
                     return
                 }
-                
-                let avatarImageName = finalImageData.base64EncodedString()
                 
                 let genderToServer: String
                 switch selectedGender {
@@ -176,7 +178,7 @@ class AddBabyViewModel: ObservableObject {
                     name: babyName,
                     birthDate: birthDateString,
                     gender: genderToServer,
-                    avatarImageName: avatarImageName,
+                    avatarImageName: finalAvatarImageName,
                     relationshipType: relationshipToServer
                 )
                 
@@ -192,19 +194,21 @@ class AddBabyViewModel: ObservableObject {
                 // --- 생성 로직 ---
                 print("➡️ [CREATE] 아기 등록을 시작합니다.")
                 // 1. 아바타 이미지 준비 (Base64 인코딩)
-                let avatarImageData: Data?
+                let avatarImageName: String?
                 if let userSelectedImage = self.profileImage {
-                    avatarImageData = userSelectedImage.jpegData(compressionQuality: 0.8)
+                    avatarImageName = ImageManager.shared.encodeToBase64(userSelectedImage)
                 } else {
-                    avatarImageData = UIImage(named: "defaultAvata")?.jpegData(compressionQuality: 0.8)
+                    if let defaultImage = UIImage(named: "defaultAvata") {
+                        avatarImageName = ImageManager.shared.encodeToBase64(defaultImage)
+                    } else {
+                        avatarImageName = nil
+                    }
                 }
                 
-                guard let finalImageData = avatarImageData else {
+                guard let finalAvatarImageName = avatarImageName else {
                     print("❌ 아기 등록 실패: 이미지 데이터를 생성할 수 없습니다.")
                     return
                 }
-                
-                let avatarImageName = finalImageData.base64EncodedString()
                 
                 // 2. 서버에 보낼 나머지 파라미터를 준비합니다.
                 let genderToServer: String
@@ -223,7 +227,7 @@ class AddBabyViewModel: ObservableObject {
                 let birthDateString = DateFormatter.yyyyDashMMDashdd.string(from: birthDate)
 
                 print("DEBUG: Registering baby with parameters:")
-                print("DEBUG: alias: \(babyNickname), name: \(babyName), birthDate: \(birthDateString), gender: \(genderToServer), relationshipType: \(relationshipToServer)")
+                print("DEBUG: alias: \(babyNickname), name: \(babyName), birthDate: \(birthDateString), gender: genderToServer, relationshipType: relationshipToServer")
                 
                 // 3. 서버에 아기 등록을 요청합니다.
                 let result = await BabyMoaService.shared.postRegisterBaby(
@@ -231,7 +235,7 @@ class AddBabyViewModel: ObservableObject {
                     name: babyName,
                     birthDate: birthDateString,
                     gender: genderToServer,
-                    avatarImageName: avatarImageName,
+                    avatarImageName: finalAvatarImageName,
                     relationshipType: relationshipToServer
                 )
                 

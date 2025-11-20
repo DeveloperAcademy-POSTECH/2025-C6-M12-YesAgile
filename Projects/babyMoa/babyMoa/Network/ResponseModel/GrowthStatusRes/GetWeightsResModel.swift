@@ -7,4 +7,6 @@
 struct GetWeightsResModel : Decodable {
     var weight: Double
     var date: String // "2025-11-01"
+    var memo: String?
 }
+

@@ -14,28 +14,17 @@ struct GrowthBottomButton: View {
     let title: String
     let isEnabled: Bool
     let action: () -> Void
-
+    
     init(title: String, isEnabled: Bool = true, action: @escaping () -> Void) {
         self.title = title
         self.isEnabled = isEnabled
         self.action = action
     }
-
+    
     var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.system(size: 17, weight: .semibold))
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .frame(height: 56)
-                .background(
-                    isEnabled ? .brand50 : Color.gray.opacity(0.8)
-                )
-                .cornerRadius(12)
-        }
-        .disabled(!isEnabled)
-        .background(.clear)
-        .padding(.horizontal, 20)
+        Button(title, action: action)
+            .buttonStyle(isEnabled ? .defaultButton : .noneButton)
+            .disabled(!isEnabled)
     }
 }
 

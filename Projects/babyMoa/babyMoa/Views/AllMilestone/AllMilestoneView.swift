@@ -10,8 +10,8 @@ import SwiftUI
 struct AllMilestoneView: View {
     @State var viewModel: AllMilestoneViewModel
     
-    init(coordinator: BabyMoaCoordinator, allMilestones: [[GrowthMilestone]]) {
-        viewModel = AllMilestoneViewModel(coordinator: coordinator, allMilestones: allMilestones)
+    init(coordinator: BabyMoaCoordinator) {
+        _viewModel = State(wrappedValue: AllMilestoneViewModel(coordinator: coordinator))
     }
     
     var body: some View {
@@ -22,7 +22,7 @@ struct AllMilestoneView: View {
             
             VStack {
                 //CustomerNavigationBar 추가하기
-                CustomNavigationBar(title: "전체 성장 마일스톤", leading: {
+                CustomNavigationBar(title: "전체 성장 단계", leading: {
                     Button(action: {
                         viewModel.coordinator.pop()
                     }) {
@@ -33,7 +33,7 @@ struct AllMilestoneView: View {
                 
                 ScrollView(.vertical) {
                     ForEach(0..<viewModel.allMilestones.count, id: \.self) { row in
-                        AgeRangeMilestonesListView(viewModel: $viewModel, row: row)
+                        AgeRangeMilestonesListView(viewModel: viewModel, row: row)
                         Spacer().frame(height: 20)
                     }
                 }
@@ -71,4 +71,9 @@ struct AllMilestoneView: View {
         }
         .ignoresSafeArea()
     }
+}
+
+#Preview {
+    let coordinator = BabyMoaCoordinator()
+    return AllMilestoneView(coordinator: coordinator)
 }

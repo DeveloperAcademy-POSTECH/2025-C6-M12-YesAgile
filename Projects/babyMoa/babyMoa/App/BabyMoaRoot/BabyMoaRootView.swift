@@ -44,26 +44,16 @@ struct BabyMoaRootView: View {
                     EmptyView()
                 case .privacyConsent:
                     PrivacyConsentView(coordinator: coordinator)
-                case .allMilestones(let allMilestones):
-                    AllMilestoneView(coordinator: coordinator, allMilestones: allMilestones)
+                case .allMilestones:
+                    AllMilestoneView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
-                case .height(let babyId):
-                    GrowthDetailView<Height>(
-                        coordinator: coordinator,
-                        growthDetailType: .height,
-                        babyId: babyId
-                    )
-                case .weight(let babyId):
-                    GrowthDetailView<Weight>(
-                        coordinator: coordinator,
-                        growthDetailType: .weight,
-                        babyId: babyId
-                    )
                 case .teeth(let teethList):
                     TeethView(
                         coordinator: coordinator,
                         teethList: teethList
                     )
+                    .navigationBarBackButtonHidden()
+
                     // Add Baby and Guardian - 라우팅 잘 되어야 한다.
                 case .addBaby:
                     AddBabyView(coordinator: coordinator)
@@ -88,14 +78,24 @@ struct BabyMoaRootView: View {
                     GuardianCodeView(viewModel: viewModel)
                         .navigationBarBackButtonHidden()
                     
-//                    // 신규 추가 해야 한다. newHeightView
-//                case .newHeight(let babyId):
-//                    HeightView(coordinator: coordinator, babyId: babyId)
-//                        .navigationBarBackButtonHidden()
-                    
-                case .heightAdd:
-                    HeightAddView(coordinator: coordinator)
+                    // New Weight and Height View
+                case .newHeight(let babyId):
+                    HeightView(coordinator: coordinator, babyId: babyId)
                         .navigationBarBackButtonHidden()
+                    
+                case .newHeightAdd(let babyId):
+                    HeightAddView(coordinator: coordinator, babyId: babyId)
+                        .navigationBarBackButtonHidden()
+                    
+                case .newWeight(let babyId):
+                    WeightView(coordinator: coordinator, babyId: babyId)
+                        .navigationBarBackButtonHidden()
+                    
+                case .newWeightAdd(let babyId):
+                    WeightAddView(coordinator: coordinator, babyId: babyId)
+                        .navigationBarBackButtonHidden()
+                default:
+                    EmptyView()
                 }
             }
         }

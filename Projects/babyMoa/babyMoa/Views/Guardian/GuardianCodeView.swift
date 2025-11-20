@@ -23,96 +23,100 @@ struct GuardianCodeView: View {
                         viewModel.coordinator.pop()
                     }, label: {
                         Image(systemName: "chevron.left")
-
+                        
                     })
                 })
                 
-                // 아기 프로필 이미지 표시
-                if let imageUrlString = viewModel.selectedBabyImageURL, let url = URL(string: imageUrlString) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .empty:
-                            ProgressView()
-                                .frame(width: 70, height: 70)
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        case .failure:
+                ScrollView {
+                    VStack(spacing: 20) {
+                        // 아기 프로필 이미지 표시
+                        if let imageUrlString = viewModel.selectedBabyImageURL, let url = URL(string: imageUrlString) {
+                            AsyncImage(url: url) { phase in
+                                switch phase {
+                                case .empty:
+                                    ProgressView()
+                                        .frame(width: 70, height: 70)
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                case .failure:
+                                    Image("defaultAvata")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                @unknown default:
+                                    EmptyView()
+                                }
+                            }
+                            .frame(width: 70, height: 70)
+                            .clipShape(Circle())
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+                            )
+                            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                        } else {
                             Image("defaultAvata")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                        @unknown default:
-                            EmptyView()
+                                .frame(width: 70, height: 70)
+                                .clipShape(Circle())
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+                                )
+                                .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                        }
+                        
+                        VStack(alignment: .center, spacing: 11){
+                            Text(viewModel.selectedBabyName ?? "아기 이름")
+                                .font(.system(size: 18, weight: .medium))
+                                .multilineTextAlignment(.center)
+                            Text("초대할 양육자에게 \n 초대 코드를 전달해 주세요.")
+                                .font(.system(size: 14, weight: .medium))
+                                .multilineTextAlignment(.center)
+                        }
+                        
+                        // --- 초대 코드 표시 영역 ---
+                        VStack(alignment: .leading, spacing: 0){
+                            HStack{
+                                // ViewModel의 초대 코드를 표시합니다.
+                                Text(viewModel.generatedInvitation?.code ?? "")
+                                    .inviteTextStyle(
+                                        fontSize: 24,
+                                        bgColor: .white,
+                                        fontColor: .font,
+                                        borderColor: viewModel.isCodeCopied ? .red : Color("orange50")
+                                    )
+                                    .overlay {
+                                        HStack{
+                                            Spacer()
+                                            Button(action: {
+                                                // ViewModel의 복사 함수 호출
+                                                viewModel.copyCodeToClipboard()
+                                            }) {
+                                                Label("", systemImage: "document.on.document")
+                                                    .font(.system(size: 18, weight: .medium))
+                                                    .foregroundStyle(Color.brand50)
+                                            }
+                                            .padding(.trailing)
+                                        }
+                                    }
+                            }
+                            .padding(.bottom, 10)
+                            
+                            // isCodeCopied 상태에 따라 "복사되었어요" 텍스트 표시
+                            if viewModel.isCodeCopied {
+                                Text("복사되었어요.")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundStyle(Color.orange50)
+                                    .transition(.opacity.animation(.easeOut(duration: 0.5)))
+                            }
                         }
                     }
-                    .frame(width: 70, height: 70)
-                    .clipShape(Circle())
-                    .overlay(
-                        Circle()
-                            .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
-                    )
-                    .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
-                } else {
-                    Image("defaultAvata")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 70, height: 70)
-                        .clipShape(Circle())
-                        .overlay(
-                            Circle()
-                                .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
-                        )
-                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
-                }
-                
-                VStack(alignment: .center, spacing: 11){
-                    Text(viewModel.selectedBabyName ?? "아기 이름")
-                        .font(.system(size: 18, weight: .medium))
-                        .multilineTextAlignment(.center)
-                    Text("초대할 양육자에게 \n 초대 코드를 전달해 주세요.")
-                        .font(.system(size: 14, weight: .medium))
-                        .multilineTextAlignment(.center)
-                }
-                
-                // --- 초대 코드 표시 영역 ---
-                VStack(alignment: .leading, spacing: 0){
-                    HStack{
-                        // ViewModel의 초대 코드를 표시합니다.
-                        Text(viewModel.generatedInvitation?.code ?? "")
-                            .inviteTextStyle(
-                                fontSize: 24,
-                                bgColor: .white,
-                                fontColor: .font,
-                                borderColor: viewModel.isCodeCopied ? .red : Color("orange50")
-                            )
-                            .overlay {
-                                HStack{
-                                    Spacer()
-                                    Button(action: {
-                                        // ViewModel의 복사 함수 호출
-                                        viewModel.copyCodeToClipboard()
-                                    }) {
-                                        Label("", systemImage: "document.on.document")
-                                            .font(.system(size: 18, weight: .medium))
-                                            .foregroundStyle(Color.brand50)
-                                    }
-                                    .padding(.trailing)
-                                }
-                            }
-                    }
-                    .padding(.bottom, 10)
                     
-                    // isCodeCopied 상태에 따라 "복사되었어요" 텍스트 표시
-                    if viewModel.isCodeCopied {
-                        Text("복사되었어요.")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(Color.orange50)
-                            .transition(.opacity.animation(.easeOut(duration: 0.5)))
-                    }
                 }
-                
-                Spacer()
+                .scrollIndicators(.hidden)
                 
                 Button("전달 완료", action: {
                     // 네비게이션 스택을 리셋하고 메인 화면으로 돌아갑니다.
@@ -120,26 +124,29 @@ struct GuardianCodeView: View {
                     
                 })
                 .buttonStyle(.defaultButton)
+                .padding(.bottom, -10)
                 
                 Button("초대 코드 취소", action: {
                     isShowingCancelAlert = true
                 })
                 .buttonStyle(.outlineThirdButton)
-                .alert("초대 코드를 취소할까요?", isPresented: $isShowingCancelAlert) {
-                    Button("취소", role: .cancel) { }
-                    Button("확인", role: .destructive) {
-                        // TODO: 서버와 통신하여 초대 코드 삭제 처리
-                        viewModel.coordinator.popToRoot()
-                    }
-                } message: {
-                    Text("초대 코드를 취소하면 더 이상 사용할 수 없어요.")
-                }
+                .padding(.bottom, 44)
+                
+                
             }
             .backgroundPadding(.horizontal)
+            .alert("초대 코드를 취소할까요?", isPresented: $isShowingCancelAlert) {
+                Button("취소", role: .cancel) { }
+                Button("확인", role: .destructive) {
+                    // TODO: 서버와 통신하여 초대 코드 삭제 처리
+                    viewModel.coordinator.popToRoot()
+                }
+            } message: {
+                Text("초대 코드를 취소하면 더 이상 사용할 수 없어요.")
+            }
         }
         .ignoresSafeArea()
         .navigationBarBackButtonHidden(true)
-        .padding(.bottom, 20)
     }
 }
 

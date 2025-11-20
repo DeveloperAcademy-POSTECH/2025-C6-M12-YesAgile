@@ -94,7 +94,6 @@ struct TermsAgreementView: View {
                 }
             }
         }
-        .padding(.bottom, 20)
         .padding(.leading, 25)
         .padding(.trailing, 20)
 

@@ -64,6 +64,7 @@ struct AppButtonStyle: ButtonStyle {
     // 2. _body 함수
     func makeBody(configuration: Configuration) -> some View {
         let currentOpacity = (pressedOpacity != nil && configuration.isPressed) ? pressedOpacity! : 1.0
+        let bgColor = configuration.isPressed ? (pressedBackgroundColor ?? backgroundColor) : backgroundColor
         
         configuration.label
             .font(.system(
@@ -72,17 +73,21 @@ struct AppButtonStyle: ButtonStyle {
             ))
             .foregroundColor(foregroundColor)
             .frame(maxWidth: .infinity)
-            .padding(16)
-            .frame(height: height)
-            .background(configuration.isPressed ? (pressedBackgroundColor ?? backgroundColor) : backgroundColor)
-            .cornerRadius(12)
-            .overlay {
-                if borderColor != .clear {
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(borderColor, lineWidth: borderWidth)
-                }
-            }
+            .padding(16)                 // ← 내용 padding
+            .frame(height: height)       // ← 버튼 높이
+            .background(                 // 🔹 배경은 background에서
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(bgColor)
+            )
+            .overlay(                    // 🔹 테두리는 overlay에서
+                RoundedRectangle(cornerRadius: 12)
+                    .strokeBorder(       // ← 가능하면 strokeBorder 사용 권장
+                        borderColor,
+                        lineWidth: borderColor == .clear ? 0 : borderWidth
+                    )
+            )
             .opacity(currentOpacity)
+            .contentShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 //MARK: - AppButtonStyle을 쉽게 사용하기 위한 extension
@@ -167,6 +172,24 @@ extension ButtonStyle where Self == AppButtonStyle {
             backgroundColor: .clear,
             foregroundColor: .font,
             borderColor: .brand40, // 👈 테두리 색상 설정
+            borderWidth: 1         // 👈 테두리 두께 설정
+        )
+    }
+    
+    static var outlineDefaultLightButton: AppButtonStyle {
+        AppButtonStyle(
+            backgroundColor: .clear,
+            foregroundColor: .font,
+            borderColor: .brandLight, // 👈 테두리 색상 설정
+            borderWidth: 1         // 👈 테두리 두께 설정
+        )
+    }
+    
+    static var outlineMileButton: AppButtonStyle {
+        AppButtonStyle(
+            backgroundColor: .white,
+            foregroundColor: .font,
+            borderColor: .brandLight, // 👈 테두리 색상 설정
             borderWidth: 1         // 👈 테두리 두께 설정
         )
     }
@@ -283,6 +306,16 @@ extension ButtonStyle where Self == AppButtonStyle {
                         .font(.headline)
                     Button("외곽선 버튼 (Outline)") { }
                         .buttonStyle(.outlineFourButton) // ✅ 훨씬 깔끔함
+                    
+                    
+//                    outlineMileButton
+                    
+                    Divider()
+                    
+                    Text("OutlineMileButton")
+                        .font(.headline)
+                    Button("외곽선 버튼 (Outline)") { }
+                        .buttonStyle(.outlineMileButton) // ✅ 훨씬 깔끔함
                     
                     Divider()
                     

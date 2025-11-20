@@ -47,19 +47,23 @@ struct CardItemView<Content: View>: View {
             
             // 2️⃣ 콘텐츠 (표준화된 부분)
             HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: 0) {
                     Text(title)
                         .font(.system(size: 18, weight: .bold))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.top, 16)
+                        .padding(.leading, 16)
+                        .padding(.bottom, 5)
+
                     Text(value)
-                        .font(.system(size: 16))
+                        .font(.system(size: 18))
+                        .padding(.leading, 15)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
                     
                     Spacer()
                 }
                 .foregroundStyle(.white)
-                .frame(width: 65)
-                .padding(.top, 16)
-                .padding(.leading, 16)
-                
                 Spacer()
             }
         }

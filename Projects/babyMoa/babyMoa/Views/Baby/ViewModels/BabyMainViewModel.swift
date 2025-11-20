@@ -36,16 +36,18 @@ class BabyMainViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    func signOut() -> Bool {
-        do {
-            
-            // SignOut 함수를 만들어야 한다.
-            // 어떻게 해야 되는지 서버와 이야기 해야 한다.
-            
-            return true
-        } catch {
-            print("Error signing out: \(error.localizedDescription)")
-            return false
-        }
+    func signOut() {
+        // 1. Clear tokens
+        UserToken.accessToken = ""
+        UserToken.refreshToken = ""
+        
+        // 2. Clear selected baby from UserDefaults
+        SelectedBaby.babyId = nil
+        
+        // 3. Clear selected baby from in-memory state
+        SelectedBabyState.shared.baby = nil
+        
+        // 4. Reset navigation stack to trigger root view change
+        coordinator.paths = []
     }
 }

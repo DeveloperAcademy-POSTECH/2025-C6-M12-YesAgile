@@ -25,25 +25,30 @@ struct AddBabyCreate: View {
                 }
             })
             
-            Text("addBabyNew.question.title")
-                .titleTextStyle()
-                .padding(.bottom, 60)
+            ScrollView {
+                Text("addBabyNew.question.title")
+                    .titleTextStyle()
+                    .padding(.bottom, 60)
 
-            
-            // "예" 버튼 → AddBabyNewYesView
-            Button("addBabyNew.question.yesButton") {
-                viewModel.coordinator.push(path: .addBabyStatus(baby: nil, isBorn: true))
-            }
-            .buttonStyle(.defaultButton)
-            
-            Button("addBabyNew.question.noButton") {
-                viewModel.coordinator.push(path: .addBabyStatus(baby: nil, isBorn: false))
-            }
-            .buttonStyle(.secondButton)
+                
+                // "예" 버튼 → AddBabyNewYesView
+                Button("addBabyNew.question.yesButton") {
+                    viewModel.coordinator.push(path: .addBabyStatus(baby: nil, isBorn: true))
+                }
+                .buttonStyle(.defaultButton)
+                
+                Button("addBabyNew.question.noButton") {
+                    viewModel.coordinator.push(path: .addBabyStatus(baby: nil, isBorn: false))
+                }
+                .buttonStyle(.secondButton)
 
+                
+                
+                Spacer()
+            }
+            .scrollIndicators(.hidden)
             
             
-            Spacer()
         }
         .ignoresSafeArea()
         .backgroundPadding(.horizontal)

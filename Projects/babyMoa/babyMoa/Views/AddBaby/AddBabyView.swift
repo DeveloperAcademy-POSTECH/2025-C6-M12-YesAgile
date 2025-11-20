@@ -19,42 +19,57 @@ struct AddBabyView: View {
     
     
     var body: some View {
-        VStack(spacing: 20) {
-            Spacer()
-            // 새로운 아기 추가하기
-            VStack {
-                Text("addBaby.new.title")
-                    .titleTextStyle()
+        ZStack{
+            Color.background
+            VStack(spacing: 20) {
                 
-                Text("addBaby.new.description")
-                    .subTitleTextStyle()
-                
-                // 나중에 함수로 만들어서 사용할까???
-                Button("addBaby.new.button", action: {
-                    viewModel.coordinator.push(path: .addBabyCreate)
+                CustomNavigationBar(title: "아기추가", leading: {
+                    Button(action: {
+                        
+                        viewModel.coordinator.pop()
+                        
+                    }) {
+                        Image(systemName: "xmark")
+                            .foregroundStyle(.font)
+                    }
                 })
-                .buttonStyle(.defaultButton)
-            }
-            
-            // 초대코드 입력하기
-            VStack {
-                Text("addBaby.connect.title")
-                    .titleTextStyle()
                 
-                Text("addBaby.connect.description")
-                    .subTitleTextStyle()
                 
-                // 나중에 함수로 만들어서 사용할까???
-                Button("addBaby.connect.button", action: {
-                    viewModel.coordinator.push(path: .addBabyInvitaion)
-                })
-                .buttonStyle(.secondButton)
+                // 새로운 아기 추가하기
+                VStack {
+                    Text("addBaby.new.title")
+                        .titleTextStyle()
+                    
+                    Text("addBaby.new.description")
+                        .subTitleTextStyle()
+                    
+                    // 나중에 함수로 만들어서 사용할까???
+                    Button("addBaby.new.button", action: {
+                        viewModel.coordinator.push(path: .addBabyCreate)
+                    })
+                    .buttonStyle(.defaultButton)
+                }
+                
+                // 초대코드 입력하기
+                VStack {
+                    Text("addBaby.connect.title")
+                        .titleTextStyle()
+                    
+                    Text("addBaby.connect.description")
+                        .subTitleTextStyle()
+                    
+                    // 나중에 함수로 만들어서 사용할까???
+                    Button("addBaby.connect.button", action: {
+                        viewModel.coordinator.push(path: .addBabyInvitaion)
+                    })
+                    .buttonStyle(.secondButton)
+                }
+                
+                Spacer()
             }
-            
-            Spacer()
+            .backgroundPadding(.horizontal)
         }
         .ignoresSafeArea()
-        .backgroundPadding(.horizontal)
 
     }
 }
