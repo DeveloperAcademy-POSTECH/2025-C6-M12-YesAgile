@@ -38,6 +38,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		D4EEA6FE2EBBCE2F0006A51F /* babyMoa */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = babyMoa;
+			sourceTree = "<group>";
+		};
 		D4EEA8CD2EBBCFF90006A51F /* BabyMoaTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = BabyMoaTests;
@@ -77,6 +82,7 @@
 				D4EEA62C2EBBCD780006A51F /* BabyMoa.entitlements */,
 				D4EEA8CD2EBBCFF90006A51F /* BabyMoaTests */,
 				D4110B692EBBC61100B0C783 /* Products */,
+				D4EEA6FE2EBBCE2F0006A51F /* babyMoa */,
 				D4EEA4622EBBC9900006A51F /* TOKEN_MANAGEMENT_README.md */,
 			);
 			sourceTree = "<group>";
@@ -106,6 +112,9 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				D4EEA6FE2EBBCE2F0006A51F /* babyMoa */,
+			);
 			name = BabyMoa;
 			packageProductDependencies = (
 			);
@@ -125,6 +134,9 @@
 			);
 			dependencies = (
 				D4110B812EBBC61200B0C783 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D4EEA6FE2EBBCE2F0006A51F /* babyMoa */,
 			);
 			name = BabyMoaUITests;
 			packageProductDependencies = (
