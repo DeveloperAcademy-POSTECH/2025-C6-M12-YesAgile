@@ -4,7 +4,6 @@
 //
 //  Created by pherd on 11/6/25.
 //
-
 import MapKit
 import Photos  // PhotoLibraryPermissionHelper에서 PHAuthorizationStatus 사용
 import SwiftUI
@@ -205,7 +204,7 @@ struct JourneyView: View {
                 // MainTabViewModel이 SelectedBabyState에 아기 정보를 설정하면,
                 // 여기서 SelectedBaby.babyId에 동기화 (API 호출 시 필요)
                 // MainTabViewModel (아기 선택 시 자동 설정) 로 이야기해보거나
-                //JourneyViewModel (필요 시 직접 조회)로 이동 예정 Todo
+                // JourneyViewModel (필요 시 직접 조회)로 이동 예정 Todo
                 if let baby = SelectedBabyState.shared.baby {
                     SelectedBaby.babyId = baby.babyId
                 } else {
@@ -237,11 +236,11 @@ struct JourneyView: View {
                         )
                     )
                 } else {
-                    // 기본값: 서울 중심
+                    // 기본값: 한반도 보이게
                     mapPosition = .region(
                         MKCoordinateRegion(
-                            center: CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780),
-                            span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
+                            center: CLLocationCoordinate2D(latitude: 37.5, longitude: 127.5),
+                            span: MKCoordinateSpan(latitudeDelta: 4.0, longitudeDelta: 4.0)
                         )
                     )
                 }
