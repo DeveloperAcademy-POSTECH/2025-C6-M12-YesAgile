@@ -12,14 +12,54 @@ struct PrivacyConsentView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Button(action: {
-                    coordinator.pop()
-                }) {
-                    
+            VStack{
+                Text("privacyPolicy.title")
+                    .font(.title2)
+                    .bold()
+                    .padding(.vertical, 20)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 12) {
+                        
+                        
+                        Group {
+                            Text("privacyPolicy.intro")
+                            Text("privacyPolicy.purpose.title").bold()
+                            Text("privacyPolicy.purpose.content")
+                            Text("privacyPolicy.purpose.memberManagement")
+                        }
+                        
+                        Group {
+                            Text("privacyPolicy.collection.title").bold()
+                            Text("privacyPolicy.collection.items")
+                            Text("privacyPolicy.collection.auto")
+                            Text("privacyPolicy.collection.methods")
+                        }
+                        
+                        Group {
+                            Text("privacyPolicy.thirdParty.title").bold()
+                            Text("privacyPolicy.thirdParty.rules")
+                            Text("privacyPolicy.thirdParty.cases")
+                        }
+                        
+                        Group {
+                            Text("privacyPolicy.retention.title").bold()
+                            Text("privacyPolicy.retention.rules")
+                            Text("privacyPolicy.retention.records")
+                        }
+                        
+                        Group {
+                            Text("privacyPolicy.deletion.title").bold()
+                            Text("privacyPolicy.deletion.content")
+                        }
+                    }
+                    .padding()
                 }
+                
             }
-            Text("개인정보 수집 및 이용 동의 관련 텍스트 ..")
         }
     }
+}
+
+#Preview {
+    PrivacyConsentView(coordinator: BabyMoaCoordinator())
 }

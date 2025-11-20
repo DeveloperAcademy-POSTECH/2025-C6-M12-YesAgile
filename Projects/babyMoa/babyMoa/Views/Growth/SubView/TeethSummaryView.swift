@@ -10,8 +10,12 @@ struct TeethSummaryView: View {
     @Binding var viewModel: GrowthViewModel
     var body: some View {
         RoundedRectangle(cornerRadius: 16)
-            .foregroundStyle(.pink.opacity(0.5))
+            .foregroundStyle(Color.memoryLightPink)
             .frame(height: 100)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(.white.opacity(0.2), lineWidth: 3)   // ← 두께 추가
+            )
             .overlay(
                 VStack {
                     // 윗줄(10개) + 아랫줄(10개)
@@ -34,7 +38,19 @@ struct TeethSummaryView: View {
                     .frame(width: 40)
                     .offset(x: 105, y: -3)
             )
-            .padding(.horizontal, 20)
             .clipped()
     }
+}
+
+
+#Preview {
+    struct Preview: View {
+        @State var viewModel = GrowthViewModel(coordinator: BabyMoaCoordinator())
+        
+        var body: some View {
+            TeethSummaryView(viewModel: $viewModel)
+        }
+    }
+    
+    return Preview()
 }

@@ -47,14 +47,18 @@ struct AddBabyInvitationView: View {
                 .textFieldStyle(.borderedForm)
                 .multilineTextAlignment(.center)
             
-            Button("보내기") { 
+            Button("보내기") {
                 viewModel.coordinator.push(path: .growth)
             }
-                .buttonStyle(viewModel.isInvitationCodeValid ? .defaultButton : .noneButton)
-                .disabled(!viewModel.isInvitationCodeValid)
+            .buttonStyle(viewModel.isInvitationCodeValid ? .defaultButton : .noneButton)
+            .disabled(!viewModel.isInvitationCodeValid)
             
             Spacer() // 나머지 공간을 모두 밀어냄
             
+        }
+        .contentShape(Rectangle()) // 탭 제스처 영역을 Vstack 전체로 확장
+        .onTapGesture {
+            self.endTextEditing() // 👈 키보드 내리기 함수 호출
         }
         .ignoresSafeArea()
         .backgroundPadding(.horizontal)

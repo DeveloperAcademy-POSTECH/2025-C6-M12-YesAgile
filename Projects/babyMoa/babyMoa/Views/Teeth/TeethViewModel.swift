@@ -16,50 +16,34 @@ final class TeethViewModel {
     init(coordinator: BabyMoaCoordinator, teethList: [TeethData]) {
         self.coordinator = coordinator
         self.teethList = teethList
-        // 현재 난 치아 상태 초기화 (최신순 정렬하여 리스트로 보여주기 위해서)
         refreshEruptedTeethList()
     }
     
     func setTeethStatus(teethId: Int, deletion: Bool, eruptedDate: String?) async {
-        guard let selectedBabyId = SelectedBaby.babyId else { return }
-        if let date = eruptedDate {
-            let result = await BabyMoaService.shared.postSetTeethStatus(babyId: selectedBabyId, teethId: teethId, date: date, deletion: deletion)
-            switch result {
-            case .success:
-                // 로컬 치아 상태도 변경
+        guard let selectedBabyId = SelectedBabyState.shared.baby?.babyId else { return }
+        
+        let dateToUse = eruptedDate ?? DateFormatter.yyyyDashMMDashdd.string(from: .now)
+        
+        let result = await BabyMoaService.shared.postSetTeethStatus(babyId: selectedBabyId, teethId: teethId, date: dateToUse, deletion: deletion)
+        
+        switch result {
+        case .success:
+            if teethList.indices.contains(teethId) {
                 teethList[teethId].erupted = !deletion
-                teethList[teethId].eruptedDate = date
+                teethList[teethId].eruptedDate = dateToUse
                 refreshEruptedTeethList()
-            case .failure(let error):
-                print(error)
             }
-        }
-        else {
-            let nowString = DateFormatter.yyyyDashMMDashdd.string(from: .now)
-            let result = await BabyMoaService.shared.postSetTeethStatus(babyId: selectedBabyId, teethId: teethId, date: nowString, deletion: deletion)
-            switch result {
-            case .success:
-                // 로컬 치아 상태도 변경
-                teethList[teethId].erupted = !deletion
-                teethList[teethId].eruptedDate = nowString
-                refreshEruptedTeethList()
-            case .failure(let error):
-                print(error)
-            }
+        case .failure(let error):
+            print("Error setting teeth status: \(error)")
         }
     }
     
     func refreshEruptedTeethList() {
-        self.sortedEruptedTeethList = teethList.filter({ teeth in
-            if teeth.erupted, let eruptedDate = teeth.eruptedDate {
-                return true
-            }
-            return false
-        })
+        self.sortedEruptedTeethList = teethList.filter { $0.erupted && $0.eruptedDate != nil }
         .sorted(by: {
-            let firstDate = DateFormatter.yyyyDashMMDashdd.date(from: $0.eruptedDate!)
-            let secondDate = DateFormatter.yyyyDashMMDashdd.date(from: $1.eruptedDate!)
-            return firstDate! > secondDate!
+            let firstDate = DateFormatter.yyyyDashMMDashdd.date(from: $0.eruptedDate!) ?? Date()
+            let secondDate = DateFormatter.yyyyDashMMDashdd.date(from: $1.eruptedDate!) ?? Date()
+            return firstDate > secondDate
         })
     }
 }
@@ -69,58 +53,53 @@ struct TeethData: Decodable, Hashable {
     var eruptedDate: String?
     var erupted: Bool
     
-    static let mockData: [TeethData] = [
-        TeethData(teethId: 0, erupted: false),
-        TeethData(teethId: 1, erupted: false),
-        TeethData(teethId: 2, erupted: false),
-        TeethData(teethId: 3, erupted: false),
-        TeethData(teethId: 4, erupted: false),
-        TeethData(teethId: 5, erupted: false),
-        TeethData(teethId: 6, erupted: false),
-        TeethData(teethId: 7, erupted: false),
-        TeethData(teethId: 8, erupted: false),
-        TeethData(teethId: 9, erupted: false),
-        TeethData(teethId: 10, erupted: false),
-        TeethData(teethId: 11, erupted: false),
-        TeethData(teethId: 12, erupted: false),
-        TeethData(teethId: 13, erupted: false),
-        TeethData(teethId: 14, erupted: false),
-        TeethData(teethId: 15, erupted: false),
-        TeethData(teethId: 16, erupted: false),
-        TeethData(teethId: 17, erupted: false),
-        TeethData(teethId: 18, erupted: false),
-        TeethData(teethId: 19, erupted: false),
-    ]
+    static let mockData: [TeethData] = (0..<20).map {
+        TeethData(teethId: $0, erupted: false)
+    }
 }
 
+/// 모델 매핑의 기준점 (Source of Truth)
 struct TeethInfo {
-    /// 각 이빨의 20개 인덱스 (위 좌측 -> 아래 우측 순) 에 해당하는 이빨 이름입니다.
+    
+    /// [1] 치아 이름 데이터 (ID 0~19 순서)
+    /// 화면 배치 기준: 상단 줄 왼쪽부터 0번 ~ 하단 줄 오른쪽 끝 19번
     static let teethName: [String] = [
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니",
-        "위 좌측 뒤어금니"
+        // --- [Group 1] 위쪽 줄 (ID: 0 ~ 9) ---
+        // 화면상의 숫자: 10, 5, 7, 3, 2 | 2, 3, 7, 5, 10
+        "위 좌측 두 번째 어금니",  // ID 0
+        "위 좌측 첫 번째 어금니",  // ID 1
+        "위 좌측 송곳니",        // ID 2
+        "위 좌측 옆니",          // ID 3
+        "위 좌측 앞니",          // ID 4
+        
+        "위 우측 앞니",          // ID 5
+        "위 우측 옆니",          // ID 6
+        "위 우측 송곳니",        // ID 7
+        "위 우측 첫 번째 어금니",  // ID 8
+        "위 우측 두 번째 어금니",  // ID 9
+        
+        // --- [Group 2] 아래쪽 줄 (ID: 10 ~ 19) ---
+        // 화면상의 숫자: 9, 6, 8, 4, 1 | 1, 4, 8, 6, 9
+        "아래 좌측 두 번째 어금니", // ID 10
+        "아래 좌측 첫 번째 어금니", // ID 11
+        "아래 좌측 송곳니",       // ID 12
+        "아래 좌측 옆니",         // ID 13
+        "아래 좌측 앞니",         // ID 14
+        
+        "아래 우측 앞니",         // ID 15
+        "아래 우측 옆니",         // ID 16
+        "아래 우측 송곳니",       // ID 17
+        "아래 우측 첫 번째 어금니", // ID 18
+        "아래 우측 두 번째 어금니"  // ID 19
     ]
     
-    /// 각 이빨의 20개 인덱스 (위 좌측 -> 아래 우측 순)에 해당하는 이빨이 나는 순서입니다.
+    /// [2] 화면 표시용 숫자 데이터 (ID 0~19 순서)
+    /// 뷰에서는 이 배열을 참조하여 버튼에 숫자를 그립니다.
     static let teethNumber: [Int] = [
+        // 위쪽 줄 (ID 0~9)
         10, 5, 7, 3, 2, 2, 3, 7, 5, 10,
+        
+        // 아래쪽 줄 (ID 10~19)
         9, 6, 8, 4, 1, 1, 4, 8, 6, 9
     ]
 }

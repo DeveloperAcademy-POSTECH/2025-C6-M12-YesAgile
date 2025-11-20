@@ -146,7 +146,8 @@ final class MainTabViewModel {
                     name: babyDetails.name,
                     birthDate: babyDetails.birthDate,
                     gender: babyDetails.gender,
-                    avatarImageName: babyDetails.avatarImageName
+                    avatarImageName: babyDetails.avatarImageName,
+                    relationshipType: babyDetails.relationshipType
                 )
                 // 변환된 `Babies` 객체를 공유 상태에 업데이트합니다.
                 SelectedBabyState.shared.baby = fullBabyObject

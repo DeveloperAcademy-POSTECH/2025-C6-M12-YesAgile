@@ -20,6 +20,7 @@ class BabyMoaCoordinator: ObservableObject {
         paths.removeAll()
     }
     
+    @MainActor
     public func pop() {
         paths.removeLast()
     }
@@ -38,7 +39,7 @@ enum CoordinatorPath: Hashable {
     case login
     case mainTab
     case growth
-    case allMilestones([[GrowthMilestone]])
+    case allMilestones
     case height(babyId: Int)
     case weight(babyId: Int)
     case teeth(teethList: [TeethData])
@@ -52,4 +53,9 @@ enum CoordinatorPath: Hashable {
     case babyMain
     case guardain
     case guardiainCode(viewModel: GuardianInvitationCodeViewModel)
+    // New Height and Weight
+    case newHeight(babyId: Int)
+    case newHeightAdd(babyId: Int)
+    case newWeight(babyId: Int)
+    case newWeightAdd(babyId: Int)
 }

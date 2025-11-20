@@ -47,7 +47,7 @@ final class ImageManager {
     }
     
     /// UIImage를 Base64 문자열로 인코딩
-    func encodeToBase64(_ image: UIImage, compressionQuality: CGFloat = 1.0) -> String? {
+    func encodeToBase64(_ image: UIImage, compressionQuality: CGFloat = 0.5) -> String? {
         // UIImage를 JPEG 형식으로 Data 변환
         guard let imageData = image.jpegData(compressionQuality: compressionQuality) else {
             print("Failed to convert UIImage to Data")
@@ -70,7 +70,7 @@ final class ImageManager {
             // sessionResult.0: data
             // sessionResult.1: URLResponse
             return UIImage(data: sessionResult.0)
-        } catch(let e) {
+        } catch {
             return nil
         }
     }

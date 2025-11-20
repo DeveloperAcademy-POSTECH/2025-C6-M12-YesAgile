@@ -7,6 +7,7 @@
 struct GetHeightsResModel: Decodable {
     var height: Double
     var date: String
+    var memo: String? // memo 필드 추가
 }
 
 // [GetHeightsResModel]

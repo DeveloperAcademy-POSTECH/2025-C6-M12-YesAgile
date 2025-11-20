@@ -15,84 +15,100 @@ struct MainTopNavigtaionView: View {
     
     var body: some View {
         ZStack{
-            HStack(spacing: 20){
-                // babyImage가 유효한 URL인지 확인하고 AsyncImage를 사용
-                if let imageUrlString = babyImage, let url = URL(string: imageUrlString) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .empty:
-                            ProgressView() // 로딩 중
-                                .frame(width: 50, height: 50)
-                        case .success(let image):
-                            image // 로딩 성공
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        case .failure:
-                            Image("defaultAvata") // 로딩 실패 시 기본 이미지
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                        @unknown default:
-                            EmptyView()
-                        }
-                    }
-                    .frame(width: 50, height: 50)
-                    .clipShape(Circle())
-                    .overlay(
-                        Circle()
-                            .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
-                    )
-                    .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
-                } else {
-                    // URL이 없으면 기본 이미지 표시
-                    Image("defaultAvata")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 50, height: 50)
-                        .clipShape(Circle())
-                        .overlay(
-                            Circle()
-                                .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
-                        )
-                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
-                }
+            VStack(spacing: 0){
                 
-                Button(action: onButtonTap) {
-                    HStack(spacing: 5){
-                        Text(babyName)
-                            .font(.system(size: 16, weight: .bold))
-                        
-                        Image(systemName: "chevron.down")
-                            .foregroundStyle(Color.brand50)
-                            .font(.system(size: 14, weight: .bold))
-                    }
-                }
-                .foregroundStyle(.black)
-                Spacer()
-            }
-
-            
-            HStack{
-                Spacer()
-                
-                // buttonType이 .none이 아닐 때만 버튼을 렌더링
-                if buttonType != .none {
+                HStack(spacing: 20){
+                    profileImageView
+                    
                     Button(action: onButtonTap) {
-                        switch buttonType {
-                        case .navigate:
-                            Image(systemName: "chevron.right")
-                        case .delete:
-                            Image(systemName: "trash")
-                        case .settings:
-                            Image(systemName: "gearshape")
-                        case .none:
-                            EmptyView() // .none일 때는 아무것도 렌더링하지 않음
+                        HStack(spacing: 5){
+                            Text(babyName)
+                                .font(.system(size: 16, weight: .bold))
+                            
+                            Image(systemName: "chevron.down")
+                                .foregroundStyle(Color.brand50)
+                                .font(.system(size: 14, weight: .bold))
                         }
                     }
-                    .foregroundStyle(Color.brand50)
-                    .font(.system(size: 22, weight: .bold))
+                    .foregroundStyle(.black)
+                    Spacer()
+                }
+                
+                HStack{
+                    Spacer()
+                    
+                    // buttonType이 .none이 아닐 때만 버튼을 렌더링
+                    if buttonType != .none {
+                        Button(action: onButtonTap) {
+                            switch buttonType {
+                            case .navigate:
+                                Image(systemName: "chevron.right")
+                            case .delete:
+                                Image(systemName: "trash")
+                            case .settings:
+                                Image(systemName: "gearshape")
+                            case .none:
+                                EmptyView() // .none일 때는 아무것도 렌더링하지 않음
+                            }
+                        }
+                        .foregroundStyle(Color.brand50)
+                        .font(.system(size: 22, weight: .bold))
+                    }
                 }
             }
+            .backgroundPadding(.horizontal)
+            .padding(.bottom, 20)
         }
+        .background(Color.background)
+    }
+    
+    @ViewBuilder
+    private var profileImageView: some View {
+        if let imageUrlString = babyImage, let url = URL(string: imageUrlString) {
+            AsyncImage(url: url) { phase in
+                switch phase {
+                case .empty:
+                    ProgressView()
+                        .frame(width: 50, height: 50)
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .background(Color.orange.opacity(0.2))
+                case .failure:
+                    defaultAvatarImage
+                @unknown default:
+                    EmptyView()
+                }
+            }
+            .frame(width: 50, height: 50)
+            .clipShape(Circle())
+            .overlay(
+                Circle()
+                    .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+            )
+            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+        } else {
+            defaultAvatarImage
+        }
+    }
+    
+    private var defaultAvatarImage: some View {
+        Circle()
+            .fill(Color.orange.opacity(0.2))
+            .frame(width: 50, height: 50)
+            .overlay(
+                Image("defaultAvata")
+                    .resizable()
+                    .renderingMode(.original)
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundColor(.primary)
+            )
+            .overlay(
+                Circle()
+                    .stroke(Color.brand40.opacity(0.2), lineWidth: 2)
+            )
+            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
     }
 }
 

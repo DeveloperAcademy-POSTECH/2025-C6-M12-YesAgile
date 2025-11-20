@@ -12,6 +12,8 @@ struct BabyInputField: View {
     let label: String
     let placeholder: String
     @Binding var text: String
+    var focus: FocusState<AddBabyStatusView.FocusField?>.Binding
+    var field: AddBabyStatusView.FocusField
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -20,6 +22,7 @@ struct BabyInputField: View {
                 .foregroundColor(.font)
             TextField(placeholder, text: $text)
                 .textFieldStyle(.basicForm)
+                .focused(focus, equals: field)
         }
     }
 }

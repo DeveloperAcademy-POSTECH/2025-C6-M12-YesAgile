@@ -25,73 +25,127 @@ struct GrowthView: View {
             // babyName 파라미터는 GrowthViewModel에 있는 실제 아기 이름 프로퍼티로 연결해야 합니다.
             
             ScrollView {
-                HStack(spacing: 0) {
-                    Text("24개월간의,")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundStyle(.orange50)
-                    Text(" 성장 마일스톤")
-                        .font(.system(size: 24))
-                        .foregroundStyle(.black)
-                    Spacer()
-                }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 20)
-                MilestoneSummaryView(viewModel: $viewModel)
-                    .frame(height: 500)
-                Spacer()
-                Button(action: {
-                    viewModel.checkAllMilestonesButtonTapped()
-                }) {
-                    RoundedRectangle(cornerRadius: 12)
-                        .overlay(
-                            Text("전체 성장 마일스톤 확인하기")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundStyle(.white)
-                        )
-                        .foregroundStyle(.brand50)
-                        .frame(height: 60)
-                }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 30)
                 
-                HeightAndWeightView(
-                    height: $viewModel.latestHeight,
-                    weight: $viewModel.latestWeight,
-                    heightTapAction: {
-                        viewModel.heightButtonTapped()
-                    },
-                    weightTapAction: {
-                        viewModel.weightButtonTapped()
+                VStack(spacing: 0){
+                    HStack(spacing: 0) {
+                        Text("24개월간의 ")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundStyle(.orange50)
+                        Text("성장 단계")
+                            .font(.system(size: 24))
+                            .foregroundStyle(.black)
+                        Spacer()
                     }
-                )
-                .frame(height: 100)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 20)
+                    .backgroundPadding(.horizontal)
+                    .padding(.bottom, 18)
                 
-                Button(action: {
-                    viewModel.toothButtonTapped()
-                }) {
-                    TeethSummaryView(viewModel: $viewModel)
-                        .frame(height: 100)
+                    MilestoneSummaryView(viewModel: $viewModel)
+                        .frame(height: 500)
+                    
+                    
+                    Button("전체 성장 단계 확인하기", action: {
+                        viewModel.checkAllMilestonesButtonTapped()
+                    })
+                    .buttonStyle(.fixedHeightButton)
+                    .backgroundPadding(.horizontal)
+                    .padding(.bottom, 0)
+                    
+                    Rectangle()
+                        .fill(Color.gray90)
+                        .frame(height: 1)
+                        .padding(.vertical, 20)
+                    
+                    HStack(spacing: 20){
+                        Button(action: {
+                            viewModel.navigateToHeightDetail()
+                        }, label: {
+                            // 1. 기린 카드
+                            CardItemView(
+                                title: "키",
+                                value: viewModel.latestHeight != nil ? "\(viewModel.latestHeight!)cm" : "0cm",
+                                backgroundColor: Color.orange50
+                            ) {
+                                // 👇 기린의 고유한 레이아웃 전달
+                                Image("GiraffeNeck")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxHeight: .infinity)
+                                    .padding(.trailing, 18)
+                            }
+                        })
+                        
+                        Button(action: {
+                            viewModel.navigateToWeightDetail()
+                        }, label: {
+                            // 2. 코끼리 카드
+                            CardItemView(
+                                title: "몸무게",
+                                value: viewModel.latestWeight != nil ? "\(viewModel.latestWeight!)kg" : "0kg",
+                                backgroundColor: Color.green80
+                            ) {
+                                // 👇 코끼리의 고유한 레이아웃(VStack+Spacer) 전달
+                                VStack {
+                                    Spacer()
+                                    Image("elephantCropImg")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(maxHeight: 72)
+                                        .padding(.trailing, 11)
+                                }
+                            }
+                        })
+                    }
+                    .padding(.bottom, 20)
+                    .backgroundPadding(.horizontal)
+                    
+                    
+                    //                HeightAndWeightView(
+                    //                    height: $viewModel.latestHeight,
+                    //                    weight: $viewModel.latestWeight,
+                    //                    heightTapAction: {
+                    //                        viewModel.heightButtonTapped()
+                    //                    },
+                    //                    weightTapAction: {
+                    //                        viewModel.weightButtonTapped()
+                    //                    }
+                    //                )
+                    //                .frame(height: 100)
+                    //                .padding(.bottom, 20)
+                    
+                    Button(action: {
+                        viewModel.toothButtonTapped()
+                    }) {
+                        TeethSummaryView(viewModel: $viewModel)
+                            .frame(height: 100)
+                    }
+                    .buttonStyle(.plain)
+                    .backgroundPadding(.horizontal)
+
+                    Spacer().frame(height: 30)
                 }
-                .buttonStyle(.plain)
-                Spacer().frame(height: 30)
             }
+            .scrollIndicators(.hidden)
         }
+        .background(Color.background)
         .onAppear {
+            //MARK: - 데이터 확인 작업 찾기
             Task {
-                SelectedBaby.babyId = 1
-                await viewModel.fetchAllGrowthData()
+                if let babyId = SelectedBabyState.shared.baby?.babyId {
+                    await viewModel.fetchAllGrowthData(babyId: babyId)
+                } else {
+                    print("Error: No selected baby found in GrowthView onAppear.")
+                }
             }
         }
     }
 }
 
-struct MilestoneSummaryView: View {
+fileprivate struct MilestoneSummaryView: View {
     @Binding var viewModel: GrowthViewModel
     
     var body: some View {
         VStack {
+            //MARK: - 좌우 이동 버튼 영역
             HStack {
                 Button(action: {
                     viewModel.beforeMilestoneButtonTapped()
@@ -118,11 +172,13 @@ struct MilestoneSummaryView: View {
                         .frame(width: 10)
                 }
             }
-            .padding(.horizontal, 20)
-            
+            .backgroundPadding(.horizontal)
+
+            //MARK: - 아기 사진 입력하는 부분
             ScrollView(.horizontal) {
                 HStack {
-                    Spacer().frame(width: 20)
+                    //                    Spacer().frame(width: 10)
+                    Spacer()
                     ForEach(0..<viewModel.allMilestones[viewModel.selectedMonthIdx].count, id: \.self) { milestoneColIdx in
                         MilestoneCardView(
                             milestone: viewModel.allMilestones[viewModel.selectedMonthIdx][milestoneColIdx],
@@ -139,8 +195,9 @@ struct MilestoneSummaryView: View {
                         .padding(.trailing, 20)
                     }
                 }
+                .padding(.leading, 15)
             }
-            .scrollIndicators(.never)
+            .scrollIndicators(.hidden)
         }
         .fullScreenCover(isPresented: $viewModel.isMilestoneEditingViewPresented) {
             GrowthMilestoneView(
@@ -160,76 +217,16 @@ struct MilestoneSummaryView: View {
                     }
                 }
             )
+
         }
+
     }
 }
 
-struct MilestoneCardView: View {
-    let milestone: GrowthMilestone
-    let cardWidth: CGFloat
-    let cardHeight: CGFloat
-    let cardType: MilestoneCardType
-    var onTap: () -> Void
+#Preview {
+    // Create a mock coordinator for the preview
+    let mockCoordinator = BabyMoaCoordinator()
     
-    var body: some View {
-        ZStack {
-            if let image = milestone.image {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } else {
-                Image(milestone.illustrationName!)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .opacity(milestone.completedDate == nil ? 0.7 : 1)
-                    .padding(.horizontal, 10)
-            }
-            VStack {
-                Spacer().frame(height: cardType == .small ? 10 : 20)
-                Text(milestone.completedDate != nil ? DateFormatter.yyyyMMdd.string(from: milestone.completedDate!) : "저는 곧 할 수 있어요")
-                    .font(.system(size: cardType.dateFontSize, weight: .bold))
-                Spacer()
-                Text(milestone.title)
-                    .font(.system(size: cardType.titleFontSize, weight: .bold))
-                Spacer().frame(height: cardType == .small ? 10 : 20)
-            }
-            .foregroundStyle(milestone.completedDate == nil ? .orange70 : milestone.image == nil ? .orange50 : .white)
-        }
-        .frame(width: cardWidth, height: cardHeight)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(.white)
-        )
-        .clipShape(
-            RoundedRectangle(cornerRadius: 16)
-        )
-        .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 5)
-        .onTapGesture {
-            onTap()
-        }
-    }
-}
-
-/// 마일스톤 각 카드 항목 상 보여지는 폰트의 크기를 조절하기 위한 타입 값입니다.
-enum MilestoneCardType {
-    case small
-    case big
-    
-    var dateFontSize: CGFloat {
-        switch self {
-        case .small:
-            return 8
-        case .big:
-            return 18
-        }
-    }
-    
-    var titleFontSize: CGFloat {
-        switch self {
-        case .small:
-            return 10
-        case .big:
-            return 30
-        }
-    }
+    // Initialize GrowthView with the mock coordinator
+    GrowthView(coordinator: mockCoordinator)
 }

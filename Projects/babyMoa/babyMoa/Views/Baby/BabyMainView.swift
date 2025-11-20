@@ -30,7 +30,7 @@ struct BabyMainView: View {
             BabyMainRowView(title: "아기", buttonLabel: "아기 추가") {
                 // print
                 print("버튼클릭했어요")
-                coordinator.push(path: .addBabyCreate)
+                coordinator.push(path: .addBaby)
             }
             
             Button("로그아웃", action: {
@@ -47,18 +47,9 @@ struct BabyMainView: View {
         
         .alert("로그아웃할까요?", isPresented: $viewModel.showSignOutAlert, actions: {
             Button("로그아웃", role: .destructive) {
-                
-                if viewModel.signOut() {
-                    // sessionManager.sessionState = .loggedOut 에서 로그아웃을 처리해야 되나 어떻게 해야 되나?
-                    // 서버와 이야기 해야 한다.
-                    print("로그인 버튼을 클릭했습니다.")
-                }
-                
+                viewModel.signOut()
             }
-            Button("취소", role: .cancel) {
-                
-            }
-            
+            Button("취소", role: .cancel) {}
         })
     }
 }
