@@ -32,9 +32,9 @@ struct MapCard: View {
                 ForEach(data.annotations) { journey in
                     Annotation("", coordinate: journey.coordinate) {
                         PhotoMarkerView(image: journey.journeyImage)
-                        .onTapGesture {
-                            actions.onMarkerTap(journey.date)
-                        }
+                            .onTapGesture {
+                                actions.onMarkerTap(journey.date)
+                            }
                     }
                 }
                 
@@ -52,9 +52,10 @@ struct MapCard: View {
                 }
             }
             .mapStyle(.standard)
-            .cornerRadius(16)
+            .frame(height: 400)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
             .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
-
+            
             // 나침반 버튼 (우측 상단)
             Button {
                 actions.onCompassTap()
@@ -69,7 +70,6 @@ struct MapCard: View {
             }
             .padding(12)
         }
-        .frame(height: 400)
     }
 }
 
@@ -78,7 +78,7 @@ struct MapCard: View {
 /// 사진 마커 뷰 - 지도 위 커스텀 마커
 struct PhotoMarkerView: View {
     let image: UIImage
-
+    
     var body: some View {
         Image(uiImage: image)
             .resizable()
@@ -100,12 +100,12 @@ struct PhotoMarkerView: View {
             span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
         )
     )
-
+    
     let mockAnnotations = Journey.mockData
         .filter { journey in
             journey.latitude != 0 && journey.longitude != 0
         }
-
+    
     return VStack {
         MapCard(
             data: MapCardData(
