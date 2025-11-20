@@ -20,10 +20,10 @@ struct JourneyView: View {
     @State private var mapPosition = MapCameraPosition.region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(
-                latitude: 36.5,  // 대한민국 중심
+                latitude: 36.5,
                 longitude: 127.5
             ),
-            span: MKCoordinateSpan(latitudeDelta: 4.0, longitudeDelta: 4.0)  // 한반도 전체 표시
+            span: MKCoordinateSpan(latitudeDelta: 4.0, longitudeDelta: 4.0)
         )
     )
 
@@ -50,7 +50,6 @@ struct JourneyView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-            
                 CalendarCard(
                     data: CalendarCardData(
                         currentMonth: calendarCardVM.currentMonth,
@@ -108,8 +107,6 @@ struct JourneyView: View {
                     )
                 )
                 .padding(.horizontal, 20)
-
-                // 지도 카드
                 MapCard(
                     data: MapCardData(
                         position: $mapPosition,
@@ -176,7 +173,7 @@ struct JourneyView: View {
         }
         .onAppear {
             Task {
-                // MARK: - 사진 라이브러리 권한 체크 (여정 탭 진입 시) Todo : 여기 위치가 맞는지.. 
+                // MARK: - 사진 라이브러리 권한 체크 (여정 탭 진입 시) -> 처음 시작시에 Todo : 여기 위치가 맞는지..
                 let photoStatus =
                     PhotoLibraryPermissionHelper.checkAuthorizationStatus()
 
@@ -250,7 +247,7 @@ struct JourneyView: View {
                 }
             }
         }
-        // MARK: - fullScreenCover (GrowthView 패턴)
+        // MARK: - fullScreenCover
         .fullScreenCover(isPresented: $showAddView) {
             JourneyAddView(
                 selectedDate: selectedDateForAdd,
@@ -334,7 +331,7 @@ struct JourneyView: View {
     }
 }
 
-// MARK: - Identifiable Context (fullScreenCover 전용)
+// MARK: - Identifiable Context (fullScreenCover 전용) -> 최신 리스트뷰 보이게끔
 
 /// Bool state 대신 Identifiable 컨텍스트를 사용하여
 /// fullScreenCover가 항상 최신 데이터를 기반으로 표시되도록 한다.

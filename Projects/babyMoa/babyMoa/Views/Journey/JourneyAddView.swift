@@ -11,7 +11,7 @@ import SwiftUI
 
 struct JourneyAddView: View {
     let selectedDate: Date
-    let photoAccessStatus: PHAuthorizationStatus  // ✅ 추가: 사진 라이브러리 권한 상태
+    let photoAccessStatus: PHAuthorizationStatus  // 추가: 사진 라이브러리 권한 상태
     /// 저장 콜백: 부모(JourneyView)가 JourneyViewModel을 통해 저장 처리
     let onSave: (UIImage, String, Double, Double) -> Void
     let onDismiss: () -> Void
@@ -25,8 +25,8 @@ struct JourneyAddView: View {
     @State private var memo: String = ""
     @State private var showImagePicker = false
     @State private var pickedItem: PhotosPickerItem? = nil
-    @State private var extractedLocation: CLLocation?  // ✅ 위치 정보
-    @State private var showLocationAlert = false  // ✅ 위치 없음 알림
+    @State private var extractedLocation: CLLocation?  // 위치 정보
+    @State private var showLocationAlert = false  // 위치 없음 알림
     @FocusState private var isMemoFocused: Bool  // 키보드 포커스 관리
 
     var body: some View {
