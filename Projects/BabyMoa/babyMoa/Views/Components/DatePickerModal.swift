@@ -14,6 +14,7 @@ enum ModalDatePickerStyle {
     case wheel
 }
 
+
 struct DatePickerModal: View {
     @Binding var birthDate: Date
     @Binding var showDatePicker: Bool
