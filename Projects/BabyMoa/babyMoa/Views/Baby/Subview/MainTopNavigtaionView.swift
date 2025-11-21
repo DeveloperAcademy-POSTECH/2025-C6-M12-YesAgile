@@ -64,8 +64,8 @@ struct MainTopNavigtaionView: View {
     
     @ViewBuilder
     private var profileImageView: some View {
-        if let imageUrlString = babyImage, let url = URL(string: imageUrlString) {
-            AsyncImage(url: url) { phase in
+        if let imageUrlString = babyImage {
+            CachedAsyncImage(urlString: imageUrlString) { phase in
                 switch phase {
                 case .empty:
                     ProgressView()

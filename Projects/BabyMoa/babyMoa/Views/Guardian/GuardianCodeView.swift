@@ -30,8 +30,8 @@ struct GuardianCodeView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         // 아기 프로필 이미지 표시
-                        if let imageUrlString = viewModel.selectedBabyImageURL, let url = URL(string: imageUrlString) {
-                            AsyncImage(url: url) { phase in
+                        if let imageUrlString = viewModel.selectedBabyImageURL {
+                            CachedAsyncImage(urlString: imageUrlString) { phase in
                                 switch phase {
                                 case .empty:
                                     ProgressView()
