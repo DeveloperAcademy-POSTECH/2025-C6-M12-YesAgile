@@ -37,17 +37,8 @@ class BabyMainViewModel: ObservableObject {
     }
     
     func signOut() {
-        // 1. Clear tokens
-        UserToken.accessToken = ""
-        UserToken.refreshToken = ""
-        
-        // 2. Clear selected baby from UserDefaults
-        SelectedBaby.babyId = nil
-        
-        // 3. Clear selected baby from in-memory state
-        SelectedBabyState.shared.baby = nil
-        
-        // 4. Reset navigation stack to trigger root view change
-        coordinator.paths = []
+        // 중앙 세션 관리자를 통해 안전하게 로그아웃을 처리합니다.
+        // 이 함수 하나로 토큰 삭제, 캐시 클리어, 화면 상태 변경이 모두 이루어집니다.
+        SessionManager.signOut()
     }
 }

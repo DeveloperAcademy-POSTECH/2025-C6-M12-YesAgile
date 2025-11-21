@@ -77,6 +77,13 @@ struct MainTabView: View {
                 .presentationDragIndicator(.visible)
             }
         }
+        .onAppear {
+            // 이 뷰가 나타날 때마다 아기 목록을 가져옵니다.
+            // BabyRepository의 캐싱 덕분에, 변경사항이 없을 경우 네트워크 요청 없이 빠르게 로드됩니다.
+            Task {
+                await viewModel.fetchBabies()
+            }
+        }
     }
 }
 

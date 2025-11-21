@@ -34,11 +34,46 @@ struct BabyMainView: View {
                     coordinator.push(path: .addBaby)
                 }
                 
-                Button("로그아웃", action: {
-                    // TODO: 로그아웃 기능 구현
-                    viewModel.showSignOutAlert = true
-                })
-                .buttonStyle(.outlineThirdButton)
+               
+                
+                // 계정 타이틀
+                Text("계정")
+                    .font(.system(size: 14, weight: .medium))
+                    .padding(.leading, 4) // 타이틀에 약간의 여백을 주면 더 자연스럽습니다 (선택)
+
+                VStack(spacing: 0) {
+                    //MARK: - 1. 로그아웃 버튼
+                    Button(action: {
+                        viewModel.showSignOutAlert = true
+                    }, label: {
+                        Text("로그아웃")
+                            .font(.system(size: 14))
+                            .foregroundStyle(Color.font)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(16)
+                    })
+                    // 구분선
+                    Divider()
+                        .padding(.horizontal, 16) // 좌우 여백을 텍스트와 맞춤 (선택사항)
+                    //MARK: - 2. 탈퇴하기 버튼
+                    Button(action: {
+                        coordinator.push(path: .accountDeleteConfirmView)
+                    }, label: {
+                        HStack {
+                            Text("탈퇴하기")
+                                .font(.system(size: 14))
+                                .foregroundStyle(Color.font)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(Color.font)
+                                .font(.system(size: 14))
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(16)
+                    })
+                }
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
                 
                 Spacer()
             }
@@ -46,7 +81,7 @@ struct BabyMainView: View {
         .scrollIndicators(.hidden)
         .backgroundPadding(.horizontal)
         .background(Color.background)
-
+        
         
         .alert("로그아웃할까요?", isPresented: $viewModel.showSignOutAlert, actions: {
             Button("로그아웃", role: .destructive) {

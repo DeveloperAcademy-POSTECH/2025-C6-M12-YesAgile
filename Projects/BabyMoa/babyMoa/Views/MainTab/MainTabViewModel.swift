@@ -49,72 +49,50 @@ final class MainTabViewModel {
         }
     }
     
-    //    func fetchBabies() {
-    //        // Simulate network request
-    //        self.babies = Babies.mockBabies
-    //        if self.selectedBaby == nil {
-    //            self.selectedBaby = babies.first
-    //        }
-    //    }
-    
-    // 서버에서 아기 목록 요약 정보를 가져와서 UI를 업데이트합니다.
+    // 서버에서 아기 목록 요약 정보를 가져와서 UI를 업데이트합니다. (BabyRepository 사용)
     func fetchBabies() async {
-        let result = await babyMoaService.getGetBabyList()
+        let babies = await BabyRepository.shared.fetchBabyList() // BabyRepository에서 아기 목록을 가져옴
 
-        switch result {
-        case .success(let response):
-            // 디버깅 로그: 서버로부터 받은 전체 응답을 출력합니다.
-            print("✅ 아기 목록 응답 받음: \(response)")
+        // 디버깅 로그: Repository에서 가져온 아기 목록을 출력합니다.
+        print("✅ 아기 목록 가져옴 (Repository): \(babies)")
             
-            // `BabyMoaRootViewModel`에서 이미 아기 목록이 있음을 확인했으므로,
-            // 여기서는 데이터를 UI 모델로 변환하고 상태를 업데이트하는 데 집중합니다.
-            if let babyList = response.data, !babyList.isEmpty {
-                // API 응답을 UI 모델(`MainTabModel`)로 변환합니다.
-                self.babies = babyList.map { babyData in
-                    return MainTabModel(
-                        id: babyData.id,
-                        name: babyData.name,
-                        profileImageUrl: babyData.profileImageUrl
-                    )
-                }
+        if !babies.isEmpty {
+            // BabyRepository가 이미 MainTabModel 형태로 데이터를 제공하므로, 추가 변환 불필요.
+            self.babies = babies
 
-                // --- 마지막으로 선택한 아기를 복원하는 로직 ---
-                let savedBabyID = UserDefaults.standard.integer(forKey: LAST_BABY_ID_KEY)
-                
-                var babyToSelect: MainTabModel? = nil
-                
-                if savedBabyID != 0 {
-                    babyToSelect = self.babies.first { $0.id == savedBabyID }
-                }
-                
-                if let foundBaby = babyToSelect {
-                    self.selectedBaby = foundBaby
-                } else {
-                    self.selectedBaby = babies.first
-                    if let firstBaby = babies.first {
-                        UserDefaults.standard.set(firstBaby.id, forKey: LAST_BABY_ID_KEY)
-                    }
-                }
-                
-                // --- 로직 끝 ---
-                
-                // 공유 상태 업데이트: 앱 시작 시 선택된 아기의 상세 정보를 가져와 공유합니다.
-                if let selectedBaby = self.selectedBaby {
-                    Task {
-                        await fetchAndSetSharedBaby(id: selectedBaby.id)
-                    }
-                }
-                
-            } else {
-                // RootViewModel에서 분기 처리를 했으므로, 이 경우는 거의 발생하지 않아야 합니다.
-                // 만약을 위해 로컬 목록을 비웁니다.
-                self.babies = []
+            // --- 마지막으로 선택한 아기를 복원하는 로직 ---
+            let savedBabyID = UserDefaults.standard.integer(forKey: LAST_BABY_ID_KEY)
+            
+            var babyToSelect: MainTabModel? = nil
+            
+            if savedBabyID != 0 {
+                babyToSelect = self.babies.first { $0.id == savedBabyID }
             }
-
-        case .failure(let error):
-            // 네비게이션 로직은 RootViewModel로 이동했으므로 여기서는 에러만 기록합니다.
-            print("MainTabViewModel - 아기 목록을 가져오는데 실패했습니다: \(error.localizedDescription)")
+            
+            if let foundBaby = babyToSelect {
+                self.selectedBaby = foundBaby
+            } else {
+                self.selectedBaby = babies.first
+                if let firstBaby = babies.first {
+                    UserDefaults.standard.set(firstBaby.id, forKey: LAST_BABY_ID_KEY)
+                }
+            }
+            
+            // --- 로직 끝 ---
+            
+            // 공유 상태 업데이트: 앱 시작 시 선택된 아기의 상세 정보를 가져와 공유합니다.
+            if let selectedBaby = self.selectedBaby {
+                Task {
+                    await fetchAndSetSharedBaby(id: selectedBaby.id)
+                }
+            }
+            
+        } else {
+            // Repository에서도 아기 목록이 비어있음.
+            // (AuthenticatedRootView에서 이미 이 경우 AddBabyView로 보냈을 것이므로,
+            // MainTabView는 사실상 이 경로로 들어오지 않습니다. 여기서는 방어적인 코드입니다.)
             self.babies = []
+            print("ℹ️ MainTabViewModel - Repository에서도 아기 목록이 비어있습니다.")
         }
     }
     

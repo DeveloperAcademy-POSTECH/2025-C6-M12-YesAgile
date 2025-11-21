@@ -6,24 +6,24 @@
 //
 //
 
-import UIKit
+import SwiftUI
 import Foundation
 
-// MARK: - ImageCacheManager
+// MARK: - 이미지 캐시 매니저
 final class ImageCacheManager {
     static let shared = ImageCacheManager()
 
-    // MARK: - Properties
+    // MARK: - 속성
     private let memoryCache = NSCache<NSString, UIImage>()
     private let fileManager = FileManager.default
     private let diskCacheDirectoryName = "ImageCache" // 디스크 캐시를 저장할 디렉토리 이름
     
-    // MARK: - Initialization
+    // MARK: - 초기화
     private init() {
         createDiskCacheDirectory()
     }
 
-    // MARK: - Disk Cache Directory Management
+    // MARK: - 디스크 캐시 디렉토리 관리
     // 디스크 캐시 디렉토리 생성
     private func createDiskCacheDirectory() {
         guard let cacheDirectory = diskCacheURL else { return }
@@ -41,7 +41,7 @@ final class ImageCacheManager {
         return fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first?.appendingPathComponent(diskCacheDirectoryName)
     }
 
-    // MARK: - Key Generation for Disk Cache
+    // MARK: - 디스크 캐시용 키 생성
     // URL 문자열을 기반으로 디스크 파일명에 사용할 안전한 키 생성
     private func cacheKey(for urlString: String) -> String {
         // URL 문자열을 Percent-Encoding하여 파일명으로 안전하게 사용
@@ -51,7 +51,7 @@ final class ImageCacheManager {
             return encodedString
         }
         // 인코딩 실패 시 UUID를 사용하여 고유한 이름 생성
-        return UUID().uuidString 
+        return UUID().uuidString
     }
     
     // 디스크 캐시에 저장될 파일의 전체 URL 경로
@@ -59,7 +59,7 @@ final class ImageCacheManager {
         return diskCacheURL?.appendingPathComponent(key)
     }
 
-    // MARK: - Public Methods
+    // MARK: - 공개 메서드 (Public Methods)
     
     /// 주어진 URL 문자열에 해당하는 이미지를 캐시에서 가져옵니다.
     /// (메모리 캐시 먼저 확인 후, 없으면 디스크 캐시 확인)
@@ -100,7 +100,7 @@ final class ImageCacheManager {
 
         // 2. 디스크 캐시에 저장
         // 원본 imageData가 있으면 사용하고, 없으면 UIImage를 JPEG 데이터로 변환하여 저장
-        guard let dataToSave = imageData ?? image.jpegData(compressionQuality: 0.8), 
+        guard let dataToSave = imageData ?? image.jpegData(compressionQuality: 0.8),
               let fileURL = getDiskCacheFileURL(forKey: cacheKey(for: urlString)) else { return }
         
         do {
