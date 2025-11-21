@@ -112,7 +112,7 @@ class GuardianInvitationCodeViewModel: ObservableObject, Hashable {
                 relationship: self.relationship.rawValue
             )
             self.shouldNavigateToCodeView = true
-            await self.coordinator.push(path: .guardiainCode(viewModel: self))
+            self.coordinator.push(path: .guardiainCode(viewModel: self))
 
         case .failure(let error):
             print("GuardianInvitationCodeViewModel API Error: \(error)")
