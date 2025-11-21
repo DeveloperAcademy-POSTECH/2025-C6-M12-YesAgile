@@ -57,15 +57,18 @@ struct DatePickerModal: View {
                         print("DatePicker new value: \(newValue)")
                     }
                 
-                Button("완료") {
+                
+                Button(action: {
                     birthDate = selectedDate
                     showDatePicker = false
-                }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .font(.headline)
-                    .background(Color.brand50)
-                    .foregroundColor(.white)
+                }, label: {
+                    Text("완료")
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .font(.headline)
+                        .background(Color.brand50)
+                        .foregroundColor(.white)
+                })
             }
             .background(Color.white)
             .cornerRadius(12)
