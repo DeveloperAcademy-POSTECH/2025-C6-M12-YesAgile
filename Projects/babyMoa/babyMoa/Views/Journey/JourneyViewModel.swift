@@ -79,6 +79,7 @@ import SwiftUI
                     memo: memo
                 )
                 // 배열에 추가 후 최신순 정렬 (날짜 기준 내림차순)
+                // ✅ 로컬 배열(journies)에 직접 추가 (추가할 때마다 전체 목록을 다시 조회(Fetch)하지 않음)
                 journies.append(newJourney)
                 journies.sort { firstJourney, secondJourney in
                     firstJourney.date > secondJourney.date

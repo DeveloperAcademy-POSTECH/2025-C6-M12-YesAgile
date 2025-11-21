@@ -80,25 +80,37 @@ struct JourneyAddView: View {
                         photoSection
                             .padding(.horizontal, 20)
                             .padding(.top, 8)
-
+                        
                         // 메모 영역
                         VStack(alignment: .leading, spacing: 8) {
                             Text("여정 메모")
                                 .labelTextStyle()
-
-                            TextField(
-                                "아이와 함께한 소중한 여정 메모를 입력 해주세요",
-                                text: $viewModel.memo,
-                                axis: .vertical
-                            )
-                            .focused($isMemoFocused)  // 키보드 포커스 관리
-                            .padding(16)
-                            .frame(width: 353, height: 100, alignment: .top)
-                            .background(Color.white)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.brand40, lineWidth: 2)
-                            )
+                            
+                            ZStack(alignment: .topLeading) {
+                                // TextEditor (전체 영역 클릭 가능)
+                                TextEditor(text: $viewModel.memo)
+                                    .focused($isMemoFocused)
+                                    .scrollContentBackground(.hidden)
+                                    .font(.system(size: 14))
+                                    .frame(height: 150)
+                                    .padding(12)
+                                    .background(Color.white)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .stroke(Color.brand40, lineWidth: 1)
+                                    )
+                                
+                                // Placeholder (텍스트가 비었을 때만 표시)
+                                if viewModel.memo.isEmpty {
+                                    Text("아이와 함께한 소중한 여정 메모를 입력 해주세요")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(Color.gray.opacity(0.6))
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 20)
+                                        .allowsHitTesting(false)
+                                }
+                            }
                         }
                         .padding(.horizontal, 20)
 
@@ -177,7 +189,7 @@ struct JourneyAddView: View {
                     .fill(Color.white)
                     .overlay(
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(Color.brand40.opacity(0.4), lineWidth: 1.5)
+                            .stroke(Color.white)
                     )
                     .overlay(
                         VStack(spacing: 10) {
