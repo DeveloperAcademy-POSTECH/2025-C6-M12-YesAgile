@@ -102,6 +102,9 @@ enum BabyMoaEndpoint: Endpoint {
     case deleteBaby(babyId: Int)
     case deleteHeight(babyId: Int, date: String)
     case deleteWeight(babyId: Int, date: String)
+    
+    // 계정 탈퇴를 위해 요청한다.
+    case deleteAccount
 }
 
 extension BabyMoaEndpoint {
@@ -156,6 +159,8 @@ extension BabyMoaEndpoint {
             return "/api/growth/delete_height"
         case .deleteWeight:
             return "/api/growth/delete_weight"
+        case .deleteAccount:
+            return "/api/auth/delete"
         }
     }
 
@@ -169,7 +174,7 @@ extension BabyMoaEndpoint {
         case .getGrowthData, .getBabyList, .getWeights, .getHeights, .getBaby, .getJourniesAtMonth, .getBabyMilestones, .getBabyInviteCode:
             return .get
         
-        case .deleteBabyMilestone, .deleteBaby, .deleteHeight, .deleteWeight:
+        case .deleteBabyMilestone, .deleteBaby, .deleteHeight, .deleteWeight, .deleteAccount:
             return .delete
             
         case .updateBaby:
@@ -189,7 +194,7 @@ extension BabyMoaEndpoint {
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
             .setHeight, .getWeights, .getHeights, .addJourney,
             .setBabyMilestone, .getBaby, .getJourniesAtMonth,
-            .getBabyMilestones, .deleteBabyMilestone, .getBabyInviteCode, .deleteBaby, .updateBaby, .deleteHeight, .deleteWeight:
+            .getBabyMilestones, .deleteBabyMilestone, .getBabyInviteCode, .deleteBaby, .updateBaby, .deleteHeight, .deleteWeight, .deleteAccount:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",

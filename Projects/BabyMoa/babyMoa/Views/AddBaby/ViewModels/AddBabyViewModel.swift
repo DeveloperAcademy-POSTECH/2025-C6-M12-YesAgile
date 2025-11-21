@@ -185,6 +185,7 @@ class AddBabyViewModel: ObservableObject {
                 switch result {
                 case .success:
                     print("✅ [UPDATE] 아기 정보 수정 성공")
+                    BabyRepository.shared.clearCache()
                     coordinator.pop()
                 case .failure(let error):
                     print("❌ [UPDATE] 아기 정보 수정 실패: \(error.localizedDescription)")
@@ -243,6 +244,7 @@ class AddBabyViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     print("✅ [CREATE] 아기 등록 성공: \(response)")
+                    BabyRepository.shared.clearCache()
                     coordinator.paths.removeAll()
                     
                 case .failure(let error):
@@ -275,6 +277,7 @@ class AddBabyViewModel: ObservableObject {
                 if SelectedBabyState.shared.baby?.babyId == babyId {
                     SelectedBabyState.shared.baby = nil
                 }
+                BabyRepository.shared.clearCache()
                 coordinator.popToRoot() // Go back to the root view after deletion
             case .failure(let error):
                 print("❌ [DELETE] 아기 삭제 실패: \(error.localizedDescription)")

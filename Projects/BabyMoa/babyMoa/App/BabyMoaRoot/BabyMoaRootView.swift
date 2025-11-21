@@ -8,22 +8,20 @@
 import SwiftUI
 
 struct BabyMoaRootView: View {
-    @StateObject var coordinator = BabyMoaCoordinator()
-    @StateObject var viewModel = BabyMoaRootViewModel()
-    @StateObject var alertManager = AlertManager()
+    @StateObject private var coordinator = BabyMoaCoordinator()
+    @StateObject private var appState = AppState.shared
+    @StateObject private var alertManager = AlertManager()
     
     var body: some View {
         NavigationStack(path: $coordinator.paths) {
-            // isReady 상태에 따라 로딩 뷰 또는 컨텐츠 뷰를 표시
             Group {
-                if viewModel.isReady {
-                    VStack {
-                        // 초기 경로 설정이 완료된 후의 뷰 (현재는 비어 있음)
-                    }
-                    .navigationBarBackButtonHidden()
-                } else {
-                    // 앱 시작 시 데이터를 로드하는 동안 표시될 로딩 뷰
-                    ProgressView()
+                switch appState.sessionState {
+                case .signedIn:
+                    // 로그인 상태일 경우, AuthenticatedRootView를 통해 실제 메인 화면 또는 아기 추가 화면으로 분기
+                    AuthenticatedRootView(coordinator: coordinator)
+                case .signedOut:
+                    // 로그아웃 상태일 경우, BabyMoaStartView를 루트 뷰로 설정
+                    BabyMoaStartView(coordinator: coordinator)
                 }
             }
             .navigationDestination(for: CoordinatorPath.self) { path in
@@ -94,34 +92,27 @@ struct BabyMoaRootView: View {
                 case .newWeightAdd(let babyId):
                     WeightAddView(coordinator: coordinator, babyId: babyId)
                         .navigationBarBackButtonHidden()
+                    
+                case .accountDeleteConfirmView:
+                        AccountDeleteConfirmView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
                 default:
                     EmptyView()
                 }
             }
         }
-        .onAppear {
-            // 뷰가 처음 나타날 때 초기 화면 경로를 결정하는 로직을 실행
-            if coordinator.paths.isEmpty {
-                Task {
-                    await viewModel.checkInitialScreen(coordinator: coordinator)
-                }
-            }
-        }
-        .onChange(of: coordinator.paths) { _, newValue in
-            // 로그인 성공 등으로 네비게이션 스택이 리셋되면(newValue.isEmpty) 초기 화면을 다시 결정합니다.
-            if newValue.isEmpty {
-                viewModel.isReady = false // 로딩 뷰를 다시 표시
-                Task {
-                    await viewModel.checkInitialScreen(coordinator: coordinator)
-                }
-            }
-        }
-        //MARK: - 경고창에 대해 사용하도로 해야 한다.
         .environmentObject(alertManager)
         .alert(alertManager.alertTitle, isPresented: $alertManager.showAlert) {
             Button("확인") { }
         } message: {
             Text(alertManager.alertMessage)
+        }
+        .onChange(of: appState.sessionState) { _, newState in
+            // 세션 상태가 로그아웃으로 변경되면, 네비게이션 스택을 모두 비워
+            // 깨끗한 상태에서 로그인/온보딩 플로우를 시작하도록 합니다.
+            if newState == .signedOut {
+                coordinator.paths.removeAll()
+            }
         }
     }
 }

@@ -35,8 +35,11 @@ class BabyMoaCoordinator: ObservableObject {
 
 enum CoordinatorPath: Hashable {
     case startBabyMoa
+    // Account and Auth View
     case privacyConsent
     case login
+    case accountDeleteConfirmView
+    // Growth View
     case mainTab
     case growth
     case allMilestones

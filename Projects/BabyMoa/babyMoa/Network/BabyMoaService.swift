@@ -126,9 +126,27 @@ protocol BabyMoaServicable: HTTPClient {
     func deleteHeight(babyId: Int, date: String) async -> Result<BaseResponse<EmptyData>, RequestError>
     
     func deleteWeight(babyId: Int, date: String) async -> Result<BaseResponse<EmptyData>, RequestError>
+    
+    func deleteAccount() async -> Result<BaseResponse<EmptyData>, RequestError>
 }
 
 class BabyMoaService: BabyMoaServicable {
+    func deleteAccount() async -> Result<BaseResponse<EmptyData>, RequestError> {
+        let result = await request(endpoint: BabyMoaEndpoint.deleteAccount, responseModel: BaseResponse<EmptyData>.self)
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                await refreshToken()
+                return await request(endpoint: BabyMoaEndpoint.deleteAccount, responseModel: BaseResponse<EmptyData>.self)
+            default:
+                return result
+            }
+        }
+    }
+    
     func updateBaby(babyId: Int, alias: String, name: String, birthDate: String, gender: String, avatarImageName: String, relationshipType: String) async -> Result<BaseResponse<EmptyData>, RequestError> {
         let result = await request(endpoint: BabyMoaEndpoint.updateBaby(babyId: babyId, alias: alias, name: name, birthDate: birthDate, gender: gender, avatarImageName: avatarImageName, relationshipType: relationshipType), responseModel: BaseResponse<EmptyData>.self)
         switch result {
@@ -648,6 +666,7 @@ class BabyMoaService: BabyMoaServicable {
         )
     }
     
+    @MainActor
     private func refreshToken() async {
         let authResult = await postAuthRefresh(refreshToken: UserToken.refreshToken)
         switch authResult {
@@ -655,7 +674,9 @@ class BabyMoaService: BabyMoaServicable {
             UserToken.accessToken = success.data!.accessToken
             UserToken.refreshToken = success.data!.refreshToken
         case .failure(let failure):
-            print(failure)
+            print("🔴 [BabyMoaService] Failed to refresh token: \(failure.message)")
+            print("🔴 Triggering forced logout.")
+            SessionManager.signOut()
         }
     }
     

@@ -59,11 +59,15 @@ final class SignUpViewModel {
                             return
                         }
                         let tokenResult = await resModel.toDomain()
+                        
+                        // 1. UserToken의 정적 변수에 토큰을 할당합니다.
+                        //    (@UserDefault 래퍼를 통해 UserDefaults에도 자동으로 저장됩니다.)
                         UserToken.accessToken = tokenResult.accessToken
                         UserToken.refreshToken = tokenResult.refreshToken
+                        
                         await MainActor.run {
-                            // 네비게이션 스택을 리셋하여 RootView에서 초기 경로를 다시 결정하도록 합니다.
-                            coordinator.paths.removeAll()
+                            // 2. 앱의 전역 상태를 '로그인 됨'으로 변경하여 UI를 업데이트합니다.
+                            AppState.shared.sessionState = .signedIn
                         }
                     case .failure(let error):
                         print(error)
