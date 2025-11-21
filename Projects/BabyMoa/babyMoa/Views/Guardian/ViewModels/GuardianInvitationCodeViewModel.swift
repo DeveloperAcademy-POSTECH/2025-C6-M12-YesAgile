@@ -71,6 +71,7 @@ class GuardianInvitationCodeViewModel: ObservableObject, Hashable {
     
     // MARK: - 함수 정의
     
+    @MainActor
     func generateInvitationCode() async {
         isLoading = true
         errorMessage = nil
