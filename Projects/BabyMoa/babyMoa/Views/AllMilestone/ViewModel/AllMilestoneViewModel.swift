@@ -45,37 +45,9 @@ final class AllMilestoneViewModel {
     }
     
     func fetchAllMilestones(babyId: Int) async {
-        let result = await BabyMoaService.shared.getGetBabyMilestones(babyId: babyId)
-        switch result {
-        case .success(let success):
-            guard let milestonesData = success.data else { return }
-            
-            var updatedMilestones = GrowthMilestone.mockData
-            
-            for milestone in milestonesData {
-                let row = Int(milestone.milestoneName.split(separator: "_")[1])!
-                let col = Int(milestone.milestoneName.split(separator: "_")[2])!
-                
-                if updatedMilestones.indices.contains(row) && updatedMilestones[row].indices.contains(col) {
-                    var decodedImage: UIImage?
-                    if let imageUrl = milestone.imageUrl {
-                        decodedImage = await ImageManager.shared.downloadImage(from: imageUrl)
-                    }
-                    
-                    updatedMilestones[row][col].image = decodedImage
-                    updatedMilestones[row][col].completedDate = DateFormatter.yyyyDashMMDashdd.date(from: milestone.date)
-                    updatedMilestones[row][col].description = milestone.memo
-                    updatedMilestones[row][col].isCompleted = true
-                }
-            }
-            
-            let finalMilestones = updatedMilestones
-            await MainActor.run {
-                self.allMilestones = finalMilestones
-            }
-            
-        case .failure(let error):
-            print(error)
+        let fetchedMilestones = await MilestoneRepository.shared.fetchAllMilestones(babyId: babyId)
+        await MainActor.run {
+            self.allMilestones = fetchedMilestones
         }
     }
     
@@ -97,6 +69,7 @@ final class AllMilestoneViewModel {
         
         switch result {
         case .success:
+            MilestoneRepository.shared.clearCache() // Clear repository cache on successful update
             return true
         case .failure(let error):
             print(error)
@@ -109,6 +82,7 @@ final class AllMilestoneViewModel {
         let result = await BabyMoaService.shared.deleteBabyMilestone(babyId: babyId, milestoneName: selectedMilestone.id)
         switch result {
         case .success:
+            MilestoneRepository.shared.clearCache() // Clear repository cache on successful delete
             isMilestoneEditingViewPresented = false
             initiateSelectedMilestone()
         case .failure(let error):
