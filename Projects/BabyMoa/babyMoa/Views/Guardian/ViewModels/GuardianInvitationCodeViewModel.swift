@@ -71,6 +71,7 @@ class GuardianInvitationCodeViewModel: ObservableObject, Hashable {
     
     // MARK: - 함수 정의
     
+    @MainActor
     func generateInvitationCode() async {
         isLoading = true
         errorMessage = nil
@@ -111,7 +112,7 @@ class GuardianInvitationCodeViewModel: ObservableObject, Hashable {
                 relationship: self.relationship.rawValue
             )
             self.shouldNavigateToCodeView = true
-            await self.coordinator.push(path: .guardiainCode(viewModel: self))
+            self.coordinator.push(path: .guardiainCode(viewModel: self))
 
         case .failure(let error):
             print("GuardianInvitationCodeViewModel API Error: \(error)")
