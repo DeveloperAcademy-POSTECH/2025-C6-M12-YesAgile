@@ -7,5 +7,7 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSPhotoLibraryAddUsageDescription </key>
+	<string>지도 스냅샷이나 여정 이미지를 저장하기 위해 필요합니다.</string>
 </dict>
 </plist>
