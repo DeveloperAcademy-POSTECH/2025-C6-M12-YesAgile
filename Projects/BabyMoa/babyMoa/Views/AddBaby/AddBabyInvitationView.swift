@@ -78,3 +78,4 @@ struct AddBabyInvitationView: View {
 #Preview {
     AddBabyInvitationView(coordinator: BabyMoaCoordinator())
 }
+
