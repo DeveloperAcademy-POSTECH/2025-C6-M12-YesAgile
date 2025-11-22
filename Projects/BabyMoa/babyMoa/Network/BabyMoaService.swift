@@ -29,7 +29,7 @@ protocol BabyMoaServicable: HTTPClient {
     func postRegisterBabyByCode(babyCode: String) async -> Result<
         BaseResponse<RegisterBabyByCodeResModel>, RequestError
     >
-    func postSetRelationshipWithBaby(babyId: Int, relationshipType: String)
+    func postSetRelationshipWithBaby(babyId: Int, relationshipType: RelationshipType)
         async -> Result<
             BaseResponse<EmptyData>, RequestError
         >
@@ -563,7 +563,7 @@ class BabyMoaService: BabyMoaServicable {
 
     func postSetRelationshipWithBaby(
         babyId: Int,
-        relationshipType: String
+        relationshipType: RelationshipType
     ) async -> Result<
         BaseResponse<EmptyData>,
         RequestError

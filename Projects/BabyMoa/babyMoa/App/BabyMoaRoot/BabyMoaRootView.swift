@@ -102,6 +102,13 @@ struct BabyMoaRootView: View {
             }
         }
         .environmentObject(alertManager)
+        .overlay(
+            Rectangle()
+                .ignoresSafeArea()
+                .foregroundStyle(Color.black.opacity(0.3))
+                .overlay(ProgressView())
+                .opacity(coordinator.isLoading ? 1 : 0)
+        )
         .alert(alertManager.alertTitle, isPresented: $alertManager.showAlert) {
             Button("확인") { }
         } message: {

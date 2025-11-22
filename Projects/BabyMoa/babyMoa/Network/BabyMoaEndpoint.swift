@@ -29,7 +29,7 @@ enum BabyMoaEndpoint: Endpoint {
     )
     case setRelationshipWithBaby(
         babyId: Int,
-        relationshipType: String
+        relationshipType: RelationshipType
     )
     case setTeethStatus(
         babyId: Int,
@@ -316,7 +316,7 @@ extension BabyMoaEndpoint {
         ):
             return [
                 "babyId": babyId,
-                "relationshipType": relationshipType,
+                "relationshipType": relationshipType.englishDescription,
             ]
         case .setTeethStatus(
             let babyId,
