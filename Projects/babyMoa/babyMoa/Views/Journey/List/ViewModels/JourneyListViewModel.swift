@@ -3,6 +3,7 @@
 //  babyMoa
 //
 //  Created by pherd on 11/20/25.
+//  Refactored on 11/22/25
 //
 
 import Foundation
@@ -11,30 +12,33 @@ import SwiftUI
 @MainActor
 @Observable class JourneyListViewModel {
     let date: Date
-    var journies: [Journey]
+    var journeys: [Journey]
 
-    // 부모 ViewModel 참조 (데이터 동기화 및 API 호출 위임)
-    private var parentVM: JourneyViewModel
+    // 액션 핸들러 (외부 주입)
+    var onDelete: ((Journey) async -> Bool)?
+    var onUpdate: ((Journey, UIImage, String, Double, Double) async -> Bool)?
 
-    init(date: Date, journies: [Journey], parentVM: JourneyViewModel) {
+    init(
+        date: Date,
+        journeys: [Journey],
+        onDelete: ((Journey) async -> Bool)? = nil,
+        onUpdate: ((Journey, UIImage, String, Double, Double) async -> Bool)? = nil
+    ) {
         self.date = date
-        self.journies = journies
-        self.parentVM = parentVM
-    }
-
-    /// 여정 목록 갱신 (부모 데이터 기반)
-    func refresh() {
-        // 부모 VM의 최신 데이터에서 해당 날짜 여정만 다시 필터링하여 업데이트
-        self.journies = parentVM.journies.filter {
-            $0.date.isSameDay(as: self.date)
-        }
+        self.journeys = journeys
+        self.onDelete = onDelete
+        self.onUpdate = onUpdate
     }
 
     /// 여정 삭제
     func deleteJourney(_ journey: Journey) async -> Bool {
-        let success = await parentVM.removeJourney(journey)
+        guard let deleteAction = onDelete else { return false }
+        let success = await deleteAction(journey)
         if success {
-            refresh()
+            // 로컬 리스트에서 제거
+            if let index = journeys.firstIndex(of: journey) {
+                journeys.remove(at: index)
+            }
         }
         return success
     }
@@ -47,16 +51,19 @@ import SwiftUI
         latitude: Double,
         longitude: Double
     ) async -> Bool {
-        let success = await parentVM.updateJourney(
-            journey: journey,
-            image: image,
-            memo: memo,
-            latitude: latitude,
-            longitude: longitude
-        )
+        guard let updateAction = onUpdate else { return false }
+        
+        let success = await updateAction(journey, image, memo, latitude, longitude)
 
         if success {
-            refresh()  // 데이터 갱신 -> UI 자동 업데이트 (시트 안 닫힘)
+            // 수정된 내용 반영 (서버 갔다온 데이터로 교체하는 게 좋지만, 여기서는 UI 갱신을 위해 로컬 수정)
+            if let index = journeys.firstIndex(of: journey) {
+                // 이미지는 그대로, 내용은 수정된 값으로 임시 반영 (실제론 MainVM이 fetch해서 덮어씌움)
+                var updated = journey
+                updated.journeyImage = image
+                updated.memo = memo
+                journeys[index] = updated
+            }
         }
 
         return success
