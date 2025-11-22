@@ -64,6 +64,8 @@ struct JourneyMainView: View {
                     .frame(maxWidth: .infinity)  // TabView 전환 시 레이아웃 안정성 확보
                     .padding(.horizontal, 20)  // shadow 공간 확보용 좌우 여백
                     .padding(.bottom, 24)
+                    .offset(y: -10) // [수정] 전체를 위로 더 끌어올림
+                    
                     
                     // 2. 지도 섹션 (스냅샷)
                     VStack(alignment: .leading, spacing: 12) {
@@ -76,6 +78,7 @@ struct JourneyMainView: View {
                     .frame(maxWidth: .infinity)  // TabView 전환 시 레이아웃 안정성 확보
                     .padding(.horizontal, 20)  // 지도 좌우 여백
                     .padding(.bottom, 24)
+                    .offset(y: -10) // [수정] 지도도 같이 위로 끌어올림
                     
                     Spacer(minLength: 100)
                 }

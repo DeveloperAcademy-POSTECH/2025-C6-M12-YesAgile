@@ -14,7 +14,7 @@ actor JourneyRepository {
     // 예: "1_2025_11" -> [Journey]
     private var journeyCache: [String: [Journey]] = [:]
     
-    // Actor는 내부적으로 동시성 처리를 보장하므로 NSLock 불필요
+    // Actor는 내부적으로 동시성 처리를 보장하므로 NSLock 불필요 ( 에러잡기 위해서 썼었어요 final class X 순차적으로 해야함)
     
     private init() {}
     
