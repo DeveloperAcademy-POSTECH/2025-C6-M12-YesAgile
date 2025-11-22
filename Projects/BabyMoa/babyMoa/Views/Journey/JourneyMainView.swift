@@ -1,58 +1,70 @@
-/*
- ===================================================================================
- [File Name] : JourneyMainView.swift
- [Role]      : 여정(Journey) 탭의 최상위 컨테이너 뷰 (화면 조립 및 데이터 주입)
- [Layer]     : View (Container Layer)
- ===================================================================================
- 
- [핵심 책임 (Core Responsibilities)]
- 1. **Initialization**: 메인 관제탑인 `JourneyViewModel`을 생성(`@StateObject`)하고 수명 주기를 관리합니다.
- 2. **Layout Composition**: 상단에는 달력(`JourneyCalendarView`), 하단에는 지도(`JourneyMapView`)를 배치합니다.
- 3. **Data Injection**: 뷰모델이 가지고 있는 데이터를 꺼내서 하위 뷰들에게 나눠줍니다.
- - 달력에게 -> `viewModel.calendarJournies`
- - 지도에게 -> `viewModel.allJournies`
- 4. **Routing**: 뷰모델의 상태(`selectedDate` 등) 변화를 감지하여, 리스트 화면이나 상세 화면(Sheet/Navigation)을 띄웁니다.
- 
- [설계 의도 및 이유 (Why)]
- 1. 왜 여기서 ViewModel을 만드는가?
- - 여기가 여정 기능의 '시작점'이기 때문입니다. 이 뷰가 살아있는 동안 데이터도 함께 살아있어야 합니다.
- 
- 2. 왜 하위 뷰에 데이터를 직접 넣어주는가? (Dependency Injection)
- - 하위 뷰들이 뷰모델을 직접 알게 되면 결합도가 높아져 재사용이 어렵습니다.
- - "너는 이 데이터만 그려!"라고 명확하게 할당해주면 구조가 단순해집니다.
- */
+//
+//  JourneyMainView.swift
+//  BabyMoa
+//
+//  Created by pherd on 11/6/25.
+//
+import MapKit
+import Photos
+import SwiftUI
+import CoreLocation
 
+struct JourneyMainView: View {
+    // MARK: - Properties
+    let coordinator: BabyMoaCoordinator
+    
+    // State for Map Integration
+    @State private var showMap = false
+    @State private var mapCenter: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780) // Default to Seoul
+    @StateObject private var locationManager = LocationManager()
 
+    init(coordinator: BabyMoaCoordinator) {
+        self.coordinator = coordinator
+    }
 
-// MARK: - 1. Properties
+    var body: some View {
+        ZStack {
+            Color.background
+            
+            ScrollView {
+                VStack(spacing: 20) {
+                    // 1. 달력 화면 구현
+                    JourneyCalendarView()
+                    
+                    // 2. 지도 스냅샷 구현
+                    JourneySnapshotView(
+                        centerCoordinate: mapCenter,
+                        onTap: { showMap = true }
+                    )
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 24)
+            }
+            .background(Color.background)
+            .onAppear {
+                locationManager.startUpdating()
+            }
+            .onDisappear {
+                locationManager.stopUpdating()
+            }
+        }
+        .fullScreenCover(isPresented: $showMap) {
+            JourneyMapView(
+                isPresented: $showMap,
+                initialPosition: .region(MKCoordinateRegion(
+                    center: mapCenter,
+                    span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                ))
+            )
+        }
+        .onChange(of: locationManager.location) { oldLocation, newLocation in
+            if let newLocation = newLocation {
+                mapCenter = newLocation.coordinate
+            }
+        }
+    }
+}
 
-/// [관제탑] 여정 탭의 모든 데이터와 상태를 관리하는 뷰모델입니다.
-/// 뷰가 처음 생성될 때 딱 한 번 초기화됩니다.
-
-/// 화면 이동(네비게이션)을 위한 코디네이터입니다.
-/// (기존 앱 구조에 따라 필요시 주입받습니다)
-
-
-// MARK: - 2. Body
-
-/*
- [구현 가이드]
- ZStack 또는 VStack을 사용하여 레이아웃을 잡습니다.
- (요구사항: "달력과 지도가 상하로 분리됨")
- 
- // 1. 상단 달력 영역
- // 달력 날짜 클릭 -> 뷰모델에게 신호 전달
- 
- // 2. 하단 지도 영역 (남은 공간 다 채움)
- // 3. 화면 진입 시 데이터 요청
- 
- 
- // MARK: - 3. Navigation & Sheet (화면 전환)
- 
-  [시트 표시 로직]
-  뷰모델의 `selectedDate`가 nil이 아니게 되면(즉, 날짜가 선택되면) 리스트 화면을 띄웁니다.
-  
-  // 해당 날짜의 데이터만 필터링해서 넘겨줄 수도 있고,
-  // 뷰모델에게 "이 날짜 데이터 줘"라고 요청할 수도 있습니다.
-  
-*/
+#Preview {
+    JourneyMainView(coordinator: BabyMoaCoordinator())
+}

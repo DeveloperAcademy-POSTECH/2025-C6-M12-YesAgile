@@ -17,6 +17,12 @@ extension Date {
     var yyyyMMddKorean: String {
         return DateFormatter.yyyyMMddKorean.string(from: self)
     }
+    
+    /// Date를 "yyyy년 M월" 형식의 문자열로 변환합니다.
+    /// 달력 헤더 등에서 사용됩니다.
+    var monthYearString: String {
+        return DateFormatter.yyyyKoreanMonth.string(from: self)
+    }
 }
 
 
@@ -52,6 +58,14 @@ extension DateFormatter {
         formatter.dateFormat = "yyyy.MM.dd.HH.mm.ss"
         formatter.timeZone = TimeZone.current
         formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter
+    }()
+    
+    /// "yyyy년 M월" 형식을 위한 static DateFormatter
+    static let yyyyKoreanMonth: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 M월"
+        formatter.locale = Locale(identifier: "ko_KR")
         return formatter
     }()
 }

@@ -40,9 +40,19 @@ struct MainTabView: View {
                         Text("성장")
                     }
                     .tag(0)
+//                
+//                EmptyView()
+//                    .tag(1)
                 
-                EmptyView()
+                
+                JourneyMainView(coordinator: viewModel.coordinator)
+                    .tabItem {
+                        Image(systemName: "hand.thumbsup.fill")
+                        Text("추천")
+                    }
                     .tag(1)
+                    .ignoresSafeArea()
+                
                 // 아기 탭
                 BabyMainView(viewModel: babyMainViewModel, coordinator: viewModel.coordinator)
                     .tabItem {

@@ -1,117 +1,176 @@
-/*
- 
- 
- 📡 JourneyViewModel의 역할 재정의: "관제탑"
- JourneyViewModel은 화면에 그릴지 말지, 어떻게 그릴지 고민하지 않습니다. 오직 **데이터(Data)**와 **상태(State)**만 관리합니다.
-
- 데이터 공급 (Output): 서버에서 가져온 데이터를 달력용, 지도용으로 가공해서 뿌려줍니다.
-
- 신호 수신 (Input): 달력에서 날짜를 눌렀을 때, 지도에서 핀을 눌렀을 때의 신호를 받습니다.
-
- 상태 변경 (State Change): 신호를 받으면 selectedDate나 showDetail 같은 상태를 변경하여 화면을 움직입니다.
- 
- ✨ 이 구조의 장점
- 책임의 명확한 분리:
-
- 달력/지도: "나는 클릭되었을 때 부모가 준 함수(onDateSelected)만 실행할 뿐이야. 그 뒤에 무슨 일이 일어나는지는 몰라." (단순함)
-
- 뷰모델: "누가 클릭했는지는 모르겠고, 신호가 왔으니 selectedDate를 업데이트해야지." (명확함)
-
- 확장성:
-
- 만약 나중에 "달력 날짜를 누르면 리스트가 아니라 바로 상세 페이지로 가고 싶다"면?
-
- 달력 뷰 코드는 건드릴 필요 없이, JourneyMainView의 .sheet 부분만 수정하면 됩니다
- 
-  ===================================================================================
-  [File Name] : JourneyViewModel.swift
-  [Role]      : Journey 기능의 데이터 공급 및 상태 관리를 담당하는 메인 관제탑 (Control Tower)
-  [Layer]     : ViewModel (Business Logic Layer)
-  ===================================================================================
-  
-  [핵심 책임 (Core Responsibilities)]
-  1. **Single Source of Truth**: 여정 탭에서 사용하는 모든 원본 데이터(`allJournies`)를 관리합니다.
-  2. **Data Provider**: 하위 뷰(달력, 지도)가 그리기 쉽도록 데이터를 가공하여 공급합니다.
-     - 지도용: 전체 리스트 그대로 제공
-     - 달력용: 날짜별 '마지막' 사진만 필터링하여 딕셔너리 형태로 제공
-  3. **Signal Handler**: 하위 컴포넌트(달력 날짜 클릭, 지도 핀 클릭)로부터 신호를 받아 상태(`selectedDate` 등)를 변경합니다.
-  4. **Fetcher**: 서버 API를 호출하여 데이터를 가져옵니다. (이미지 다운로드 절대 금지 🚫)
-  
-  [설계 원칙 (Design Principles)]
-  1. **이미지 처리 금지**: 이 뷰모델은 `UIImage`를 절대 다루지 않습니다. 오직 URL 문자열만 전달합니다.
-  2. **수동적 뷰 제어**: 뷰를 직접 제어하지 않고, `@Published` 상태 값을 변경하여 뷰가 반응하도록 합니다.
-  3. **의존성 방향**: ViewModel -> Model (O), ViewModel -> View (X)
- 
- */
-
-
-// MARK: - 1. Data Source (원본 데이터 저장소)
-    /*
-     서버에서 받아온 전체 여정 리스트입니다.
-     지도는 이 배열을 그대로 사용하여 모든 좌표에 핀을 찍습니다.
-     */
-
-
-// MARK: - 2. Derived Data (가공된 데이터)
-    /*
-     달력 뷰(`JourneyCalendarView`)를 위해 가공된 데이터입니다.
-     - 요구사항: "달력에는 날짜별로 사진이 들어가며, 여러 장일 경우 '마지막'에 올린 사진이 표시된다."
-     - 로직: 전체 데이터를 날짜순으로 정렬 후, 딕셔너리에 덮어씌워 해당 날짜의 최신 데이터만 남깁니다.
-     - Return: [ "2025-11-22" : JourneyModel ] 형태의 딕셔너리
-     */
-
-// MARK: - 3. State (화면 상태 관리)
-    /*
-     하위 뷰들의 인터랙션 결과로 변경되는 상태값들입니다.
-     MainView는 이 값들의 변화를 감지하여 화면을 전환(Sheet, Navigation)합니다.
-     */
-
-// MARK: - 4. Actions (서버 통신)
-    
-    /// 서버 API를 호출하여 여정 데이터를 가져옵니다.
-    /// - Note: 이미지 파일(Binary)은 절대 받지 않으며, JSON 데이터(URL 포함)만 받아옵니다.
-
-// MARK: - 5. Signal Handling (신호 처리)
-    /*
-     하위 컴포넌트(달력, 지도)는 로직을 수행하지 않고, "클릭되었다"는 신호만 이 함수들로 보냅니다.
-     
-     상세 설명
-     
-     **"Signal Handling(신호 처리)"**는 우리가 설계한 '관제탑 패턴(Control Tower Pattern)'의 핵심이 되는 부분입니다.
-
-     쉽게 비유하자면, **"리모컨(View) 버튼을 눌렀을 때, TV 본체(ViewModel)가 신호를 받아서 채널을 바꾸는 과정"**이라고 생각하시면 됩니다.
-
-     📡 의미 상세 설명
-     이 부분은 **하위 뷰(달력, 지도)**가 **메인 뷰모델(관제탑)**에게 **"사용자가 무언가를 행동했다"**라고 알려주는 소통 창구입니다.
-
-     1. 왜 '신호(Signal)'라고 부르나요?
-     JourneyCalendarView(달력)나 JourneyMapView(지도)는 **"멍청한 뷰(Dumb View)"**여야 합니다. 즉, 자신이 클릭되었을 때 다음에 무슨 일이 일어나야 하는지 몰라야 합니다.
-
-     기존 방식 (나쁜 예):
-
-     달력: "날짜가 클릭됐네? 내가 직접 리스트 화면을 띄워야지!" (뷰가 로직을 가짐 → 의존성 발생)
-
-     신호 처리 방식 (좋은 예):
-
-     달력: "어? 사용자가 날짜를 클릭했어! 관제탑(ViewModel), 신호 보낼게. 알아서 처리해줘!"
-
-     관제탑: "오케이, 날짜 클릭 신호 접수. 내가 화면 상태(selectedDate)를 바꿀 테니까 메인 뷰는 리스트를 띄워!"
-     
-     
-     전체 흐름 (Flow) 요약
-     User Action: 사용자가 달력의 '11월 22일'을 터치합니다.
-
-     Send Signal: 달력 뷰는 아무 판단도 하지 않고 viewModel.didSelectDate(date)를 호출합니다.
-
-     Handle Signal: 뷰모델은 이 함수 안에서 self.selectedDate = date라고 데이터를 바꿉니다.
-
-     React (UI Update): @Published 변수가 변했으므로, 이를 지켜보던 JourneyMainView가 자동으로 새로운 화면(리스트 뷰)을 띄웁니다.
-
-     💡 이 방식의 장점
-     달력이나 지도를 다른 곳에 재사용하기 쉽습니다. (클릭했을 때 할 일을 밖에서 정해주니까요.)
-
-     로직이 한곳(ViewModel)에 모입니다. 나중에 "날짜 클릭했을 때 로그를 남겨라"라는 기능이 추가되면, 뷰 2개를 고칠 필요 없이 뷰모델만 고치면 됩니다.
-     
-     */
-
-
+//
+//  JourneyViewModel.swift
+//  BabyMoa
+//
+//  Created by pherd on 11/7/25.
+//
+import Foundation
+import SwiftUI
+import CoreLocation
+import MapKit
+import Photos
+//
+//@MainActor
+//@Observable class JourneyViewModel {
+//    // MARK: - Child ViewModels
+//    var calendarViewModel: JourneyCalendarViewModel
+//    var mapViewModel: JourneyMapViewModel
+//    var addViewModel: JourneyAddViewModel?
+//
+//    // MARK: - Core Data
+//    var journies: [Journey] = [] {
+//        didSet {
+//            calendarViewModel.journies = self.journies
+//            mapViewModel.journies = self.journies
+//        }
+//    }
+//
+//    // MARK: - Navigation State
+//    var listContext: JourneyListContextWrapper? = nil
+//    var showPhotoAccessAlert = false
+//    
+//    // MARK: - Map State
+//    private var locationManager = LocationManager()
+//    var mapCenter: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780) {
+//        didSet {
+//            let newPosition = MapCameraPosition.region(MKCoordinateRegion(center: mapCenter, span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)))
+//            mapViewModel.position = newPosition
+//        }
+//    }
+//
+//    init() {
+//        let initialPosition = MapCameraPosition.region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780), span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)))
+//        
+//        self.calendarViewModel = JourneyCalendarViewModel(journies: [], onMonthChange: { _ in }, onDateTap: { _ in })
+//        self.mapViewModel = JourneyMapViewModel(journies: [], initialPosition: initialPosition)
+//        
+//        self.calendarViewModel = JourneyCalendarViewModel(
+//            journies: self.journies,
+//            onMonthChange: { [weak self] newMonth in self?.handleMonthChange(newMonth: newMonth) },
+//            onDateTap: { [weak self] date in self?.handleDateTap(date: date) }
+//        )
+//        self.mapViewModel = JourneyMapViewModel(journies: self.journies, initialPosition: initialPosition)
+//    }
+//
+//    // MARK: - Public Actions
+//    func onAppear() {
+//        // Task {
+//            // await checkPhotoPermission() // Commented out due to API/data interaction
+//            // syncBabyId() // Commented out due to API/data interaction
+//            // await fetchJournies(for: Date()) // Commented out due to API/data interaction
+//            // locationManager.startUpdating() // Keep this, it's UI/local state
+//            updateMapCenter() // Keep this, it's UI/local state
+//        // }
+//        // Provide mock data for development
+//        self.journies = Journey.mockData
+//    }
+//    
+//    // MARK: - Callback Handlers
+//    private func handleMonthChange(newMonth: Date) {
+//        Task { await fetchJournies(for: newMonth) }
+//    }
+//    
+//    private func handleDateTap(date: Date) {
+//        let journiesForDate = self.journies.filter { $0.date.isSameDay(as: date) }
+//        if journiesForDate.isEmpty {
+//            self.addViewModel = JourneyAddViewModel(onSave: { [weak self] image, memo, lat, lon in
+//                guard let self = self else { return }
+//                Task {
+//                    _ = await self.addJourney(image: image, memo: memo, date: date, latitude: lat, longitude: lon)
+//                }
+//            })
+//        } else {
+//            listContext = JourneyListContextWrapper(date: date, journies: journiesForDate)
+//        }
+//    }
+//
+//    // MARK: - Private Helpers
+//    private func checkPhotoPermission() async {
+//        let status = PhotoLibraryPermissionHelper.checkAuthorizationStatus()
+//        if status == .notDetermined {
+//            let newStatus = await PhotoLibraryPermissionHelper.requestAuthorization()
+//            if newStatus == .limited { showPhotoAccessAlert = true }
+//        }
+//    }
+//    
+//    private func updateMapCenter() {
+//        if let location = locationManager.location { mapCenter = location.coordinate; return }
+//        if let first = journies.first(where: { $0.latitude != 0 }) { mapCenter = first.coordinate; return }
+//    }
+//
+//    // MARK: - Data Management
+//    func syncBabyId() {
+//        if let baby = SelectedBabyState.shared.baby { SelectedBaby.babyId = baby.babyId }
+//        else { print("⚠️ SelectedBabyState.shared.baby가 nil") }
+//    }
+//
+//    func addJourney(image: UIImage, memo: String, date: Date, latitude: Double, longitude: Double) async -> Bool {
+//        guard let babyId = SelectedBaby.babyId else { print("⚠️ babyId 없음"); return false }
+//        let resizedImage = ImageManager.shared.resizeImage(image, maxSize: 1024)
+//        guard let base64Image = ImageManager.shared.encodeToBase64(resizedImage, compressionQuality: 0.7) else {
+//            print("❌ 이미지 Base64 변환 실패"); return false
+//        }
+//        let result = await BabyMoaService.shared.postAddJourney(babyId: babyId, journeyImage: base64Image, latitude: latitude, longitude: longitude, date: DateFormatter.yyyyDashMMDashdd.string(from: date), memo: memo)
+//        switch result {
+//        case .success(let response):
+//            if let data = response.data {
+//                let newJourney = Journey(journeyId: data.journeyId, journeyImage: resizedImage, latitude: latitude, longitude: longitude, date: date, memo: memo)
+//                journies.append(newJourney)
+//                journies.sort { $0.date > $1.date }
+//                return true
+//            }
+//            print("⚠️ 서버 응답 데이터 없음"); return false
+//        case .failure(let error):
+//            print("❌ 서버 저장 실패: \(error)"); return false
+//        }
+//    }
+//
+//    func updateJourney(journey: Journey, image: UIImage, memo: String, latitude: Double, longitude: Double) async -> Bool {
+//        guard let babyId = SelectedBaby.babyId else { print("⚠️ babyId 없음"); return false }
+//        let resizedImage = ImageManager.shared.resizeImage(image, maxSize: 1024)
+//        guard let base64Image = ImageManager.shared.encodeToBase64(resizedImage, compressionQuality: 0.7) else {
+//            print("❌ 이미지 Base64 변환 실패"); return false
+//        }
+//        let result = await BabyMoaService.shared.patchUpdateJourney(babyId: babyId, journeyId: journey.journeyId, journeyImage: base64Image, latitude: latitude, longitude: longitude, date: DateFormatter.yyyyDashMMDashdd.string(from: journey.date), memo: memo)
+//        switch result {
+//        case .success:
+//            if let index = journies.firstIndex(where: { $0.journeyId == journey.journeyId }) {
+//                journies[index] = Journey(journeyId: journey.journeyId, journeyImage: resizedImage, latitude: latitude, longitude: longitude, date: journey.date, memo: memo)
+//            }
+//            return true
+//        case .failure(let error):
+//            print("❌ 여정 수정 실패: \(error)"); return false
+//        }
+//    }
+//
+//    func removeJourney(_ journey: Journey) async -> Bool {
+//        guard let babyId = SelectedBaby.babyId else { print("⚠️ babyId 없음"); return false }
+//        let result = await BabyMoaService.shared.deleteJourney(babyId: babyId, journeyId: journey.journeyId)
+//        switch result {
+//        case .success:
+//            journies.removeAll { $0 == journey }
+//            return true
+//        case .failure(let error):
+//            print("❌ 서버 삭제 실패: \(error)"); return false
+//        }
+//    }
+//
+//    func fetchJournies(for date: Date) async {
+//        guard let babyId = SelectedBaby.babyId else { print("⚠️ babyId 없음"); journies = []; return }
+//        let year = Calendar.current.component(.year, from: date)
+//        let month = Calendar.current.component(.month, from: date)
+//        let result = await BabyMoaService.shared.getGetJourniesAtMonth(babyId: babyId, year: year, month: month)
+//        switch result {
+//        case .success(let response):
+//            guard let models = response.data else { print("⚠️ response.data가 nil"); journies = []; return }
+//            var converted: [Journey] = []
+//            for model in models {
+//                let journey = await model.toDomain()
+//                converted.append(journey)
+//            }
+//            journies = converted
+//        case .failure(let error):
+//            print("❌ 여정 조회 실패: \(error)"); journies = []
+//        }
+//    }
+//}

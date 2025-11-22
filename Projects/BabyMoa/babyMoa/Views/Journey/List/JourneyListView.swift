@@ -1,47 +1,179 @@
-/*
- ===================================================================================
- [File Name] : JourneyListView.swift
- [Role]      : 특정 날짜에 해당하는 여정들의 상세 목록을 보여주는 UI
- [Layer]     : View (Presentation Layer)
- ===================================================================================
- 
- [핵심 책임 (Core Responsibilities)]
- 1. **Rendering**: 부모에게 전달받은 `[JourneyModel]` 리스트를 스크롤 가능한 형태로 보여줍니다.
- 2. **Performance**: `CachedAsyncImage`를 사용하여 스크롤 시에도 버벅임 없이 이미지를 로드합니다.
- 3. **Interaction**: '삭제'나 '수정' 버튼을 누르면 부모에게 신호를 보냅니다.
- 
- [설계 의도 및 이유 (Why)]
- 1. 왜 ViewModel이 없는가?
- - 이 뷰는 단순히 데이터를 나열해서 보여주기만 하면 됩니다.
- - 별도의 상태 관리나 복잡한 로직이 필요 없으므로, 데이터만 주입받는 '수동적 뷰'로 설계했습니다.
- 
- 2. CachedAsyncImage 필수
- - `UIImage`를 직접 쓰지 않고 URL 기반으로 로딩해야 메모리 폭발을 막을 수 있습니다.
- */
-
-
-
-// MARK: - 1. Properties
-/*
- [journies: [JourneyModel]]
- - 부모(Main)가 필터링해서 넘겨준 '해당 날짜의 여정 리스트'입니다.
- */
-
-/*
- [onEdit: (JourneyModel) -> Void]
- - 수정 버튼 클릭 시 호출할 클로저입니다.
- */
-
-/*
- [onDelete: (JourneyModel) -> Void]
- - 삭제 버튼 클릭 시 호출할 클로저입니다.
- */
-
-// MARK: - 2. Body
-/*
- [구현 가이드]
- - ScrollView > LazyVStack 구조를 사용합니다.
- - ForEach(journies)를 돌면서 `JourneyCard`(카드 형태 디자인)를 그립니다.
- - 각 카드 내부 이미지: `CachedAsyncImage(urlString: journey.imageURL)` 사용
- - 각 카드 내부 텍스트: `journey.memo` 표시
- */
+//
+//  JourneyListView.swift
+//  babyMoa
+//
+//  Created by pherd on 11/11/25.
+//
+import SwiftUI
+//
+//struct JourneyListView: View {
+//    @State var viewModel: JourneyListViewModel
+//    let onAddJourney: () -> Void
+//    let onDismiss: () -> Void
+//
+//    @Environment(\.dismiss) private var dismiss
+//    @State private var editingJourney: Journey? = nil  // 편집할 여정
+//
+//    var body: some View {
+//        VStack(spacing: 0) {
+//            CustomNavigationBar(
+//                title: viewModel.date.yyyyMMdd,
+//                leading: {
+//                    Button(action: {
+//                        dismiss()
+//                    }) {
+//                        Image(systemName: "chevron.left")
+//                    }
+//                }
+//            )
+//            .padding(.horizontal, 20)
+//
+//            ScrollView {
+//                VStack(spacing: 20) {
+//                    ForEach(viewModel.journies) { journey in
+//                        JourneyCard(
+//                            journey: journey,
+//                            onDelete: {
+//                                Task {
+//                                    let success = await viewModel.deleteJourney(
+//                                        journey
+//                                    )
+//                                    // 여정이 하나도 없으면 화면 닫기
+//                                    if success && viewModel.journies.isEmpty {
+//                                        onDismiss()
+//                                    }
+//                                }
+//                            }
+//                        )
+//                        .onTapGesture {
+//                            editingJourney = journey
+//                        }
+//                    }
+//                }
+//                .padding(.horizontal, 20)
+//                .padding(.top, 20)
+//                .padding(.bottom, 100)
+//            }
+//
+//            // 여정 추가 버튼
+//            Button("여정 추가") {
+//                onAddJourney()
+//            }
+//            .buttonStyle(
+//                AppButtonStyle(
+//                    backgroundColor: Color("BrandMain"),
+//                    foregroundColor: .white,
+//                    pressedBackgroundColor: Color("BrandMain").opacity(0.8)
+//                )
+//            )
+//            .frame(height: 56)
+//            .padding(.horizontal, 20)
+//            .padding(.bottom, 30)
+//        }
+//        .background(Color.background)
+//        .ignoresSafeArea()
+//        .fullScreenCover(item: $editingJourney) { journey in
+//            JourneyAddView(
+//                selectedDate: journey.date,
+//                photoAccessStatus:
+//                    PhotoLibraryPermissionHelper.checkAuthorizationStatus(),
+//                existingJourney: journey,
+//                onSave: { image, memo, lat, lon in
+//                    Task {
+//                        let success = await viewModel.updateJourney(
+//                            journey: journey,
+//                            image: image,
+//                            memo: memo,
+//                            latitude: lat,
+//                            longitude: lon
+//                        )
+//                        if success {
+//                            editingJourney = nil
+//                        }
+//                    }
+//                },
+//                onDismiss: {
+//                    editingJourney = nil
+//                }
+//            )
+//        }
+//    }
+//}
+//
+//// MARK: - Journey Card
+//
+//struct JourneyCard: View {
+//    let journey: Journey
+//    let onDelete: () -> Void
+//    @State private var showDeleteAlert = false
+//
+//    var body: some View {
+//        ZStack(alignment: .topTrailing) {
+//            VStack(alignment: .leading, spacing: 12) {
+//                // 사진 영역 (journeyImage는 non-optional)
+//                Image(uiImage: journey.journeyImage)
+//                    .resizable()
+//                    .scaledToFill()
+//                    .frame(
+//                        width: UIScreen.main.bounds.width - 40,
+//                        height: 300
+//                    )  // 명시적 크기 지정
+//                    .clipped()  // 넘치는 부분 강제로 자르기
+//                    .cornerRadius(16)
+//
+//                // 메모 텍스트
+//                Text(journey.memo)
+//                    .font(.system(size: 16))
+//                    .foregroundColor(.black)
+//                    .lineLimit(nil)
+//                    .padding(.horizontal, 16)
+//                    .padding(.bottom, 16)
+//            }
+//            .background(
+//                Color.background
+//                    .ignoresSafeArea(edges: .bottom)  // 하단만 확장해 여백 없이 표시
+//            )
+//            .cornerRadius(16)
+//            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
+//
+//            // 삭제 버튼 (우측 상단)
+//            Button(action: {
+//                showDeleteAlert = true
+//            }) {
+//                Image(systemName: "trash")
+//                    .font(.system(size: 20))
+//                    .foregroundColor(.red)
+//                    .frame(width: 36, height: 36)
+//                    .background(
+//                        Color(red: 243 / 255, green: 243 / 255, blue: 243 / 255)
+//                            .opacity(0.8)
+//                    )
+//                    .clipShape(Circle())
+//                    .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
+//            }
+//            .padding(12)
+//        }
+//        .alert("아이와 함께한 소중한 추억", isPresented: $showDeleteAlert) {
+//            Button("취소", role: .cancel) {}
+//            Button("삭제", role: .destructive) {
+//                onDelete()
+//            }
+//        } message: {
+//            Text("추억을 삭제 하시겠습니까?")
+//        }
+//    }
+//}
+//
+//// MARK: - Preview
+//
+//#Preview {
+//    JourneyListView(
+//        viewModel: JourneyListViewModel(
+//            date: Date(),
+//            journies: Journey.mockData,
+//            parentVM: JourneyViewModel()
+//        ),
+//        onAddJourney: {},
+//        onDismiss: {}
+//    )
+//}
