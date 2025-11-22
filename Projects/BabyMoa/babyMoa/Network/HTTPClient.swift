@@ -21,6 +21,7 @@ extension HTTPClient {
         components.scheme = endpoint.scheme
         components.host = endpoint.host
         components.path = endpoint.path
+        components.port = 8080
         
         if let query = endpoint.query {
             components.queryItems = dictToQueryItems(query)

@@ -13,6 +13,15 @@ enum RelationshipType: String, CaseIterable, Identifiable, Codable {
     case dad = "아빠"
     
     var id: String { self.rawValue } // UI에서 Identifiable로 사용
+    
+    var englishDescription: String {
+        switch self {
+        case .dad:
+            return "FATHER"
+        case .mom:
+            return "MOTHER"
+        }
+    }
 
     // 서버 문자열로부터 RelationshipType을 생성하는 failable initializer 추가
     init?(serverString: String) {
