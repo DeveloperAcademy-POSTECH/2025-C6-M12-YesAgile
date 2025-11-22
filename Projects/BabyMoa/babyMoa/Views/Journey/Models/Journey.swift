@@ -12,10 +12,13 @@ import UIKit
 /// 서버 ResponseModel과 달리 UI에 최적화된 형태로 데이터 보관
 struct Journey: Entity, Hashable, Identifiable {
     // MapKit ForEach에서 사용하기 위한 Identifiable 구현
-    var id: Int { journeyId }
+    // Optimistic UI를 위해 서버 ID(journeyId) 대신 UUID를 고유 식별자로 사용 가능하도록 확장
+    var id: UUID = UUID() // 로컬에서 고유하게 식별하기 위한 ID
     var journeyId: Int
-    // UI 표시용 이미지 (ViewModel에서 다운로드 후 설정)
-    var journeyImage: UIImage
+    
+    // UI 표시용 이미지 (nil일 경우 imageUrl에서 로드)
+    // 업로드 직후에는 이 프로퍼티에 로컬 이미지를 담아서 즉시 표시
+    var journeyImage: UIImage?
     // 리포지토리 패턴 지원을 위한 원본 URL
     var imageUrl: String?
     var latitude: Double
@@ -23,10 +26,8 @@ struct Journey: Entity, Hashable, Identifiable {
     var date: Date
     var memo: String
     
-    // 리포지토리 패턴 및 캐싱 지원 
-    var cachedImage: UIImage? {
-        return journeyImage
-    }
+    // Optimistic UI: 임시 데이터 여부 (업로드 중인지 확인)
+    var isTemporary: Bool = false
     
     // MARK: - Computed Properties
     
@@ -41,13 +42,6 @@ struct Journey: Entity, Hashable, Identifiable {
             && longitude >= -180 && longitude <= 180
     }
     
-    /// UI 표시용 짧은 날짜 형식 (예: "2025.11.07")
-    var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd"
-        return formatter.string(from: date)
-    }
-    
     /// UI 표시용 한글 날짜 형식 (예: "2025년 11월 07일")
     var formattedDateKorean: String {
         let formatter = DateFormatter()
@@ -56,19 +50,18 @@ struct Journey: Entity, Hashable, Identifiable {
     }
     
     // MARK: - Hashable
+    // Optimistic UI 지원을 위해 UUID와 journeyId를 모두 고려
     static func == (lhs: Journey, rhs: Journey) -> Bool {
-        lhs.journeyId == rhs.journeyId &&
-        lhs.date == rhs.date &&
-        lhs.memo == rhs.memo &&
-        lhs.latitude == rhs.latitude &&
-        lhs.longitude == rhs.longitude &&
-        lhs.journeyImage === rhs.journeyImage
+        // 같은 UUID면 같은 객체 (임시 객체 포함)
+        if lhs.id == rhs.id { return true }
+        // 둘 다 서버 ID가 있고 같으면 같은 객체
+        if lhs.journeyId == rhs.journeyId && lhs.journeyId != 0 { return true }
+        return false
     }
     
     func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
         hasher.combine(journeyId)
-        hasher.combine(date)
-        hasher.combine(memo)
     }
 }
 
@@ -79,7 +72,7 @@ extension Journey {
         [
             Journey(
                 journeyId: 1,
-                journeyImage: UIImage(systemName: "star.fill")!,
+                journeyImage: UIImage(systemName: "star.fill"),
                 imageUrl: nil,
                 latitude: 37.5665,
                 longitude: 126.9780,
@@ -88,7 +81,7 @@ extension Journey {
             ),
             Journey(
                 journeyId: 2,
-                journeyImage: UIImage(systemName: "heart.fill")!,
+                journeyImage: UIImage(systemName: "heart.fill"),
                 imageUrl: nil,
                 latitude: 37.5642,
                 longitude: 126.9770,

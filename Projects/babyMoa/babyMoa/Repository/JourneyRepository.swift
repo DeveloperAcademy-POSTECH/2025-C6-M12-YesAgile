@@ -7,12 +7,14 @@
 
 import SwiftUI
 
-final class JourneyRepository {
+actor JourneyRepository {
     static let shared = JourneyRepository()
     
     // 메모리 캐시: ["babyId_year_month": [Journey]]
     // 예: "1_2025_11" -> [Journey]
     private var journeyCache: [String: [Journey]] = [:]
+    
+    // Actor는 내부적으로 동시성 처리를 보장하므로 NSLock 불필요
     
     private init() {}
     
@@ -24,41 +26,45 @@ final class JourneyRepository {
     func fetchJourneys(babyId: Int, year: Int, month: Int) async -> [Journey] {
         let cacheKey = "\(babyId)_\(year)_\(month)"
         
-        // 1. 캐시 확인
+        // 1. 캐시 확인 (Actor 내부 변수는 안전하게 접근 가능)
         if let cachedJourneys = journeyCache[cacheKey] {
-            print("✅ [JourneyRepository] Cache HIT for key: \(cacheKey)")
             return cachedJourneys
         }
-        
-        print("🟡 [JourneyRepository] Cache MISS. Fetching from server for key: \(cacheKey)")
         
         // 2. 네트워크 요청
         let result = await BabyMoaService.shared.getGetJourniesAtMonth(babyId: babyId, year: year, month: month)
         
         switch result {
         case .success(let response):
-            guard let data = response.data else { return [] }
+            guard let data = response.data else { 
+                return [] 
+            }
             
             let newJourneys = data.compactMap { dto -> Journey? in
+                
                 // Date 변환
                 let formatter = DateFormatter()
                 formatter.dateFormat = "yyyy-MM-dd"
-                guard let date = formatter.date(from: dto.date) else { return nil }
+                guard let date = formatter.date(from: dto.date) else { 
+                    print("⚠️ [JourneyRepository] Failed to parse date: \(dto.date)")
+                    return nil 
+                }
                 
-                return Journey(
+                let journey = Journey(
                     journeyId: dto.journeyId,
-                    journeyImage: UIImage(systemName: "photo")!, // 플레이스홀더 (ViewModel에서 실제 이미지 로드)
+                    journeyImage: nil, // Lazy Loading: ViewModel/View에서 비동기로 로드
                     imageUrl: dto.journeyImageUrl,
                     latitude: dto.latitude,
                     longitude: dto.longitude,
                     date: date,
                     memo: dto.memo
                 )
+                
+                return journey
             }
             
-            // 3. 캐시 저장
+            // 3. 캐시 저장 (Actor 내부라 안전)
             self.journeyCache[cacheKey] = newJourneys
-            print("✅ [JourneyRepository] Fetched & Cached \(newJourneys.count) journeys")
             
             return newJourneys
             
@@ -88,7 +94,6 @@ final class JourneyRepository {
             resizedImage,
             compressionQuality: 0.7
         ) else {
-            print("❌ [JourneyRepository] Image encoding failed")
             return false
         }
         
@@ -109,9 +114,11 @@ final class JourneyRepository {
         
         switch result {
         case .success:
-            print("✅ [JourneyRepository] Add Success")
-            // 캐시 무효화 (데이터 변경됨)
-            clearCache(for: babyId)
+            // Phase 1: 해당 월의 캐시만 무효화 (다른 월 캐시 유지로 성능 향상)
+            let calendar = Calendar.current
+            let year = calendar.component(.year, from: date)
+            let month = calendar.component(.month, from: date)
+            clearCacheForMonth(babyId: babyId, year: year, month: month)
             return true
         case .failure(let error):
             print("🔴 [JourneyRepository] Add Failed: \(error)")
@@ -152,7 +159,11 @@ final class JourneyRepository {
         
         switch result {
         case .success:
-            clearCache(for: babyId)
+            // Phase 1: 해당 월의 캐시만 무효화 (다른 월 캐시 유지로 성능 향상)
+            let calendar = Calendar.current
+            let year = calendar.component(.year, from: date)
+            let month = calendar.component(.month, from: date)
+            clearCacheForMonth(babyId: babyId, year: year, month: month)
             return true
         case .failure(let error):
             print("🔴 [JourneyRepository] Update Failed: \(error)")
@@ -175,20 +186,27 @@ final class JourneyRepository {
     
     // MARK: - Cache Management
     
+    /// 특정 월의 캐시만 삭제 (Phase 1: 성능 최적화)
+    /// - 다른 월의 캐시는 유지하여 불필요한 네트워크 요청 방지
+    /// - Add/Update 시 해당 월만 새로고침하여 즉각적인 UI 반응
+    private func clearCacheForMonth(babyId: Int, year: Int, month: Int) {
+        let key = "\(babyId)_\(year)_\(month)"
+        journeyCache.removeValue(forKey: key)
+    }
+    
     /// 특정 아기의 모든 캐시 삭제
-    /// - Note: 데이터 변경(추가/수정/삭제) 시 호출하여 오래된 데이터가 보이는 것을 방지
+    /// - Note: Delete 시에는 전체 캐시 삭제 (journeyId만 받아서 날짜를 모름)
+    /// - 또는 로그아웃 등 전체 초기화가 필요한 경우 사용
     func clearCache(for babyId: Int) {
         // 키가 "\(babyId)_"로 시작하는 모든 항목 삭제
         let keysToRemove = journeyCache.keys.filter { $0.hasPrefix("\(babyId)_") }
         for key in keysToRemove {
             journeyCache.removeValue(forKey: key)
         }
-        print("ℹ️ [JourneyRepository] Cleared cache for baby \(babyId)")
     }
     
     /// 전체 캐시 삭제 (로그아웃 등)
     func clearAllCache() {
         journeyCache.removeAll()
-        print("ℹ️ [JourneyRepository] All cache cleared")
     }
 }
