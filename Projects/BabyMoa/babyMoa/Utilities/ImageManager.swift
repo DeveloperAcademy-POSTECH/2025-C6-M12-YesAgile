@@ -55,4 +55,31 @@ final class ImageManager {
             return nil
         }
     }
+    /// - Note: 배터리 절약 및 메모리 최적화를 위해 1024x1024로 제한
+    func resizeImage(_ image: UIImage, maxSize: CGFloat = 1024) -> UIImage {
+        let originalSize = image.size
+        
+        // 이미 작으면 원본 반환
+        if originalSize.width <= maxSize && originalSize.height <= maxSize {
+            return image
+        }
+        
+        // 비율 유지하면서 리사이즈
+        let aspectRatio = originalSize.width / originalSize.height
+        var newSize: CGSize
+        
+        if originalSize.width > originalSize.height {
+            newSize = CGSize(width: maxSize, height: maxSize / aspectRatio)
+        } else {
+            newSize = CGSize(width: maxSize * aspectRatio, height: maxSize)
+        }
+        
+        // 리사이즈 수행
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: CGRect(origin: .zero, size: newSize))
+        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return resizedImage ?? image
+    }
 }
