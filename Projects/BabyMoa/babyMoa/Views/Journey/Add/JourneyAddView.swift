@@ -1,82 +1,68 @@
 //
 //  JourneyAddView.swift
-//  BabyMoaJourney
+//  babyMoa
 //
 //  Created by pherd on 11/7/25.
+//  Refactored on 11/22/25
 //
+
 import CoreLocation
-import PhotosUI  // PhotosPicker, PHAuthorizationStatus 포함
+import PhotosUI
 import SwiftUI
 
 struct JourneyAddView: View {
     let selectedDate: Date
-    let photoAccessStatus: PHAuthorizationStatus
     let onSave: (UIImage, String, Double, Double) -> Void
     let onDismiss: () -> Void
 
-    // MARK: - Environment
     @Environment(\.dismiss) private var dismiss
-
-    // MARK: - State (ViewModel)
     @State private var viewModel: JourneyAddViewModel
     @State private var showImagePicker = false
     @State private var pickedItem: PhotosPickerItem? = nil
     @FocusState private var isMemoFocused: Bool
 
-    // MARK: - Init
-
     init(
         selectedDate: Date,
-        photoAccessStatus: PHAuthorizationStatus,
         existingJourney: Journey? = nil,
         onSave: @escaping (UIImage, String, Double, Double) -> Void,
         onDismiss: @escaping () -> Void
     ) {
         self.selectedDate = selectedDate
-        self.photoAccessStatus = photoAccessStatus
         self.onSave = onSave
         self.onDismiss = onDismiss
-
-        // ViewModel 초기화
-        _viewModel = State(
-            initialValue: JourneyAddViewModel(existingJourney: existingJourney)
-        )
+        _viewModel = State(initialValue: JourneyAddViewModel(journey: existingJourney))
     }
 
     var body: some View {
-        // MARK: - 키보드 대응 레이아웃 (GrowthMilestoneView 패턴)
-        ZStack {
-            Color.background
+        @Bindable var viewModel = viewModel // ViewModel 바인딩 활성화
+
+        ZStack(alignment: .top) {
+            // 배경색 (Color.background가 없으면 시스템 배경색)
+            Color(Color.background)
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
+                // MARK: - Custom Navigation Bar
                 CustomNavigationBar(
-                    title: viewModel.navigationTitle.isEmpty
-                        ? selectedDate.yyyyMMdd : viewModel.navigationTitle,
+                    title: selectedDate.formattedString,
                     leading: {
                         Button(action: {
-                            endTextEditing()  // 키보드 내린 후 닫기
-                            dismiss()
+                            dismissKeyboard()
+                            onDismiss()
                         }) {
                             Image(systemName: "chevron.left")
+                                .font(.system(size: 20))
+                                .foregroundColor(.brand50)
                         }
-                    }
+                    },
+                    trailing: { EmptyView() }, // 명시적으로 빈 뷰 전달
+                    paddingTop: 10
                 )
-                .padding(.horizontal, 20)
-
-                // MARK: - Limited Access 안내 배너
-                if photoAccessStatus == .limited {
-                    LimitedAccessBanner(
-                        onSettingsTap: {
-                            PhotoLibraryPermissionHelper.openSettings()
-                        }
-                    )
-                    .padding(.horizontal, 20)
-                    .padding(.top, 12)
-                }
+                .background(Color.background)
 
                 ScrollView {
                     VStack(spacing: 20) {
+                        // 사진 섹션
                         photoSection
                             .padding(.horizontal, 20)
                             .padding(.top, 8)
@@ -84,10 +70,11 @@ struct JourneyAddView: View {
                         // 메모 영역
                         VStack(alignment: .leading, spacing: 8) {
                             Text("여정 메모")
-                                .labelTextStyle()
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2)) // labelTextStyle 대체
                             
                             ZStack(alignment: .topLeading) {
-                                // TextEditor (전체 영역 클릭 가능)
                                 TextEditor(text: $viewModel.memo)
                                     .focused($isMemoFocused)
                                     .scrollContentBackground(.hidden)
@@ -98,10 +85,9 @@ struct JourneyAddView: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 12)
-                                            .stroke(Color.brand40, lineWidth: 1)
+                                            .stroke(Color.brand40.opacity(0.3), lineWidth: 2) // Color.brand40 대체
                                     )
                                 
-                                // Placeholder (텍스트가 비었을 때만 표시)
                                 if viewModel.memo.isEmpty {
                                     Text("아이와 함께한 소중한 여정 메모를 입력 해주세요")
                                         .font(.system(size: 14))
@@ -116,42 +102,31 @@ struct JourneyAddView: View {
 
                         Spacer()
 
-                        // MARK: - 저장 버튼 (ScrollView 내부)
-                        Button("저장") {
-                            guard let image = viewModel.selectedImage else {
-                                return
-                            }
-
-                            endTextEditing()  // 키보드 내림
-
-                            // 리사이즈 로직 제거: JourneyViewModel(부모)에서 수행하므로 여기선 원본 전달
-                            let latitude =
-                                viewModel.extractedLocation?.coordinate.latitude
-                                ?? 0.0
-                            let longitude =
-                                viewModel.extractedLocation?.coordinate
-                                .longitude ?? 0.0
-
+                        // 저장 버튼
+                        Button {
+                            guard let image = viewModel.selectedImage else { return }
+                            dismissKeyboard()
+                            let latitude = viewModel.extractedLocation?.coordinate.latitude ?? 0.0
+                            let longitude = viewModel.extractedLocation?.coordinate.longitude ?? 0.0
+                            
+                            // 즉시 닫고 백그라운드에서 저장 (Fire and Forget)
                             onSave(image, viewModel.memo, latitude, longitude)
-                            dismiss()
+                            onDismiss()
+                        } label: {
+                            Text("저장")
                         }
-                        .buttonStyle(
-                            viewModel.isSaveDisabled
-                                ? .noneButton : .defaultButton
-                        )
-                        .frame(height: 56)
+                        .buttonStyle(viewModel.isSaveDisabled ? .noneButton : .defaultButton) // 활성화 시 defaultButton(brand50) 사용
                         .padding(.horizontal, 20)
                         .padding(.bottom, 30)
                         .disabled(viewModel.isSaveDisabled)
                     }
-                    .padding(.bottom, 44)  // 하단 여백
+                    .padding(.bottom, 44)
                 }
-                .scrollDismissesKeyboard(.interactively)  // 스크롤 시 키보드 내림
+                .scrollDismissesKeyboard(.interactively)
             }
         }
-        .ignoresSafeArea(edges: .top)
         .onTapGesture {
-            endTextEditing()  // 빈 영역 탭 시 키보드 내림 (팀 extension 사용)
+            dismissKeyboard()
         }
         .photosPicker(
             isPresented: $showImagePicker,
@@ -174,7 +149,7 @@ struct JourneyAddView: View {
         }
     }
 
-    // MARK: - Grow 스타일 사진 카드
+    // MARK: - Photo Section
     private var photoSection: some View {
         ZStack {
             if let image = viewModel.selectedImage {
@@ -183,8 +158,11 @@ struct JourneyAddView: View {
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .transition(.opacity.combined(with: .scale))
+                    .onTapGesture {
+                        showImagePicker = true
+                    }
             } else {
+                // Placeholder
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(Color.white)
                     .overlay(
@@ -195,7 +173,7 @@ struct JourneyAddView: View {
                         VStack(spacing: 10) {
                             Image(systemName: "photo.on.rectangle")
                                 .font(.system(size: 36, weight: .medium))
-                                .foregroundColor(Color.brand40)
+                                .foregroundColor(Color.brand40) // Brand40 대체
                             Text("아이와 함께한 소중한 여정 사진을 등록 해주세요")
                                 .font(.system(size: 14, weight: .medium))
                                 .foregroundColor(.gray)
@@ -203,56 +181,48 @@ struct JourneyAddView: View {
                                 .padding(.horizontal, 20)
                         }
                     )
-                    .frame(height: 265)  // 플레이스홀더만 고정 높이
+                    .frame(height: 265)
+                    .onTapGesture {
+                        showImagePicker = true
+                    }
             }
         }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            withAnimation(.spring) {
-                showImagePicker = true
-            }
-        }
-        .animation(.spring, value: viewModel.selectedImage)
+    }
+    
+    private func dismissKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 
-// MARK: - Limited Access 안내 배너
-
-struct LimitedAccessBanner: View {
-    let onSettingsTap: () -> Void
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundColor(.orange)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text("위치 정보를 사용할 수 없습니다. 맵 위에는 보이지 않아요.")
-                    .font(.system(size: 14, weight: .semibold))
-                    .lineLimit(2)
-            }
-
-            Spacer()
-
-            Button("설정") {
-                onSettingsTap()
-            }
-            .font(.system(size: 14, weight: .medium))
-            .foregroundColor(.blue)
-        }
-        .padding(12)
-        .background(Color.orange.opacity(0.1))
-        .cornerRadius(12)
+// MARK: - Date Extension
+private extension Date {
+    var formattedString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy년 MM월 dd일"
+        return formatter.string(from: self)
     }
 }
 
 // MARK: - Preview
-
-#Preview {
+#Preview("추가 모드") {
     JourneyAddView(
         selectedDate: Date(),
-        photoAccessStatus: .authorized,
         onSave: { _, _, _, _ in },
         onDismiss: {}
     )
+}
+
+#Preview("수정 모드 (Mock Data)") {
+    // Mock Data를 사용한 수정 모드 프리뷰
+    // Journey.mockData가 존재하는지 확인하고 사용
+    if let mockJourney = Journey.mockData.first {
+        JourneyAddView(
+            selectedDate: mockJourney.date,
+            existingJourney: mockJourney,
+            onSave: { _, _, _, _ in },
+            onDismiss: {}
+        )
+    } else {
+        Text("Mock Data가 없습니다.")
+    }
 }

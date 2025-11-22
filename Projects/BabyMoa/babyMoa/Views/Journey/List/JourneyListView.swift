@@ -3,7 +3,9 @@
 //  babyMoa
 //
 //  Created by pherd on 11/11/25.
+//  Refactored on 11/22/25
 //
+
 import SwiftUI
 
 struct JourneyListView: View {
@@ -16,30 +18,30 @@ struct JourneyListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            // 네비게이션 바
             CustomNavigationBar(
-                title: viewModel.date.yyyyMMdd,
+                title: viewModel.date.yyyyMMddKorean,
                 leading: {
-                    Button(action: {
-                        dismiss()
-                    }) {
+                    Button(action: { dismiss() }) {
                         Image(systemName: "chevron.left")
+                            .font(.system(size: 20))
+                            .foregroundColor(.brand50)
                     }
-                }
+                },
+                trailing: { EmptyView() },
+                paddingTop: 10
             )
-            .padding(.horizontal, 20)
+            .background(Color.background)
 
             ScrollView {
                 VStack(spacing: 20) {
-                    ForEach(viewModel.journies) { journey in
+                    ForEach(viewModel.journeys) { journey in
                         JourneyCard(
                             journey: journey,
                             onDelete: {
                                 Task {
-                                    let success = await viewModel.deleteJourney(
-                                        journey
-                                    )
-                                    // 여정이 하나도 없으면 화면 닫기
-                                    if success && viewModel.journies.isEmpty {
+                                    let success = await viewModel.deleteJourney(journey)
+                                    if success && viewModel.journeys.isEmpty {
                                         onDismiss()
                                     }
                                 }
@@ -56,29 +58,22 @@ struct JourneyListView: View {
             }
 
             // 여정 추가 버튼
-            Button("여정 추가") {
+            Button {
                 onAddJourney()
+            } label: {
+                Text("여정 추가")
             }
-            .buttonStyle(
-                AppButtonStyle(
-                    backgroundColor: Color("BrandMain"),
-                    foregroundColor: .white,
-                    pressedBackgroundColor: Color("BrandMain").opacity(0.8)
-                )
-            )
-            .frame(height: 56)
+            .buttonStyle(.defaultButton) // brand50 사용
             .padding(.horizontal, 20)
             .padding(.bottom, 30)
         }
-        .background(Color.background)
-        .ignoresSafeArea()
+        .background(Color(uiColor: .systemGroupedBackground))
+        .ignoresSafeArea(edges: .bottom)
         .fullScreenCover(item: $editingJourney) { journey in
             JourneyAddView(
                 selectedDate: journey.date,
-                photoAccessStatus:
-                    PhotoLibraryPermissionHelper.checkAuthorizationStatus(),
                 existingJourney: journey,
-                onSave: { image, memo, lat, lon in
+                onSave: { (image: UIImage, memo: String, lat: Double, lon: Double) -> Void in
                     Task {
                         let success = await viewModel.updateJourney(
                             journey: journey,
@@ -110,16 +105,57 @@ struct JourneyCard: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             VStack(alignment: .leading, spacing: 12) {
-                // 사진 영역 (journeyImage는 non-optional)
-                Image(uiImage: journey.journeyImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(
-                        width: UIScreen.main.bounds.width - 40,
-                        height: 300
-                    )  // 명시적 크기 지정
-                    .clipped()  // 넘치는 부분 강제로 자르기
-                    .cornerRadius(16)
+                // 사진 영역
+                Group {
+                    if let localImage = journey.journeyImage {
+                        // 1. 로컬 이미지가 있으면 우선 표시 (업로드 직후)
+                        Image(uiImage: localImage)
+                            .resizable()
+                            .scaledToFill()
+                            .overlay(
+                                // 임시 상태일 때 로딩 오버레이
+                                Group {
+                                    if journey.isTemporary {
+                                        ZStack {
+                                            Color.black.opacity(0.3)
+                                            ProgressView()
+                                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                        }
+                                    }
+                                }
+                            )
+                    } else {
+                        // 2. 없으면 URL에서 Lazy Loading
+                        CachedAsyncImage(urlString: journey.imageUrl) { phase in
+                            switch phase {
+                            case .empty:
+                                ZStack {
+                                    Color.gray.opacity(0.1)
+                                    ProgressView()
+                                }
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                            case .failure:
+                                ZStack {
+                                    Color.gray.opacity(0.1)
+                                    Image(systemName: "photo")
+                                        .font(.largeTitle)
+                                        .foregroundColor(.gray)
+                                }
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                    }
+                }
+                .frame(
+                    width: UIScreen.main.bounds.width - 40,
+                    height: 300
+                )
+                .clipped()
+                .cornerRadius(16)
 
                 // 메모 텍스트
                 Text(journey.memo)
@@ -129,14 +165,11 @@ struct JourneyCard: View {
                     .padding(.horizontal, 16)
                     .padding(.bottom, 16)
             }
-            .background(
-                Color.background
-                    .ignoresSafeArea(edges: .bottom)  // 하단만 확장해 여백 없이 표시
-            )
+            .background(Color.white)
             .cornerRadius(16)
             .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
 
-            // 삭제 버튼 (우측 상단)
+            // 삭제 버튼
             Button(action: {
                 showDeleteAlert = true
             }) {
@@ -144,12 +177,9 @@ struct JourneyCard: View {
                     .font(.system(size: 20))
                     .foregroundColor(.red)
                     .frame(width: 36, height: 36)
-                    .background(
-                        Color(red: 243 / 255, green: 243 / 255, blue: 243 / 255)
-                            .opacity(0.8)
-                    )
+                    .background(Color.white.opacity(0.8))
                     .clipShape(Circle())
-                    .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
+                    .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
             }
             .padding(12)
         }
@@ -170,8 +200,7 @@ struct JourneyCard: View {
     JourneyListView(
         viewModel: JourneyListViewModel(
             date: Date(),
-            journies: Journey.mockData,
-            parentVM: JourneyViewModel()
+            journeys: Journey.mockData
         ),
         onAddJourney: {},
         onDismiss: {}

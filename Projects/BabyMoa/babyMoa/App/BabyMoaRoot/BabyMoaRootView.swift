@@ -88,12 +88,12 @@ struct BabyMoaRootView: View {
                     
                 case .newWeight(let babyId):
                     WeightView(coordinator: coordinator, babyId: babyId)
-                        .navigationBarBackButtonHidden()
+                                    .navigationBarBackButtonHidden()
                     
                 case .newWeightAdd(let babyId):
                     WeightAddView(coordinator: coordinator, babyId: babyId)
-                        .navigationBarBackButtonHidden()
-                    
+                                    .navigationBarBackButtonHidden()
+
                 case .accountDeleteConfirmView:
                         AccountDeleteConfirmView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()

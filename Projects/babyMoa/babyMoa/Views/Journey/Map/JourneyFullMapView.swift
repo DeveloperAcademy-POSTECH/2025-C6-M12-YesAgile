@@ -1,8 +1,9 @@
 //
-//  FullMapView.swift
+//  JourneyFullMapView.swift
 //  babyMoa
 //
 //  Created by pherd on 11/21/25.
+//  Refactored on 11/22/25
 //
 
 import MapKit
@@ -11,11 +12,11 @@ import SwiftUI
 /// 전체 화면 지도 뷰
 /// - 줌, 이동 등 자유로운 지도 조작 가능
 /// - 마커 탭 시 리스트 표시
-struct FullMapView: View {
+struct JourneyFullMapView: View {
     // MARK: - Properties
     @Binding var isPresented: Bool
-    var journeyVM: JourneyViewModel // 데이터 소스 (@Observable 사용 시 그냥 var로 선언)
-    @Binding var listContext: JourneyListContextWrapper? // 리스트 표시용
+    let journeys: [Journey] // ViewModel 의존성 제거, 데이터만 받음
+    let onMarkerTapped: (Date) -> Void // 마커 탭 액션 전달
     
     // 지도 상태
     @State private var position: MapCameraPosition
@@ -24,13 +25,13 @@ struct FullMapView: View {
     // 초기 위치를 받아서 설정
     init(
         isPresented: Binding<Bool>,
-        journeyVM: JourneyViewModel,
-        listContext: Binding<JourneyListContextWrapper?>,
-        initialPosition: MapCameraPosition
+        journeys: [Journey],
+        initialPosition: MapCameraPosition,
+        onMarkerTapped: @escaping (Date) -> Void
     ) {
         self._isPresented = isPresented
-        self.journeyVM = journeyVM
-        self._listContext = listContext
+        self.journeys = journeys
+        self.onMarkerTapped = onMarkerTapped
         self._position = State(initialValue: initialPosition)
     }
     
@@ -46,19 +47,11 @@ struct FullMapView: View {
                 }
                 
                 // 여정 마커들
-                // 대표 여정만 추출하여 마커로 표시 (MapCardViewModel 로직 재사용 가능하지만 간단히 여기서 처리)
-                ForEach(representativeJournies) { journey in
+                ForEach(dispersedJourneys) { journey in
                     Annotation("", coordinate: journey.coordinate) {
-                        PhotoMarkerView(image: journey.journeyImage)
+                        JourneyMapMarkerView(imageUrl: journey.imageUrl, fallbackImage: journey.journeyImage)
                             .onTapGesture {
-                                // 마커 탭 -> 해당 날짜의 모든 여정 찾아서 리스트 표시
-                                let journiesForDate = journeyVM.journies.filter {
-                                    $0.date.isSameDay(as: journey.date)
-                                }
-                                listContext = JourneyListContextWrapper(
-                                    date: journey.date,
-                                    journies: journiesForDate
-                                )
+                                onMarkerTapped(journey.date)
                             }
                     }
                 }
@@ -106,16 +99,47 @@ struct FullMapView: View {
     
     // MARK: - Helpers
     
-    /// 날짜별 대표 여정 추출 (하루에 하나만 마커 표시)
-    private var representativeJournies: [Journey] {
-        var uniqueDates: [String: Journey] = [:]
-        for journey in journeyVM.journies {
-            let dateKey = DateFormatter.yyyyMMdd.string(from: journey.date)
-            if uniqueDates[dateKey] == nil {
-                uniqueDates[dateKey] = journey
+    /// 겹치는 마커들을 원형으로 분산시킨 여정 목록 (Jittering)
+    private var dispersedJourneys: [Journey] {
+        // 1. 위치별로 그룹핑 (소수점 4자리 약 11m 단위로 근접 위치 판단)
+        var grouped: [String: [Journey]] = [:]
+        
+        for journey in journeys {
+            // 모든 여정을 보여주기 위해 날짜 필터링 제거
+            let lat = String(format: "%.4f", journey.latitude)
+            let lon = String(format: "%.4f", journey.longitude)
+            let key = "\(lat)_\(lon)"
+            grouped[key, default: []].append(journey)
+        }
+        
+        var result: [Journey] = []
+        
+        // 2. 각 그룹별로 좌표 조정
+        for (_, group) in grouped {
+            if group.count == 1 {
+                result.append(group[0])
+            } else {
+                // 겹치는 마커가 있으면 원형으로 배치
+                // 0.0003도는 대략 30m 정도의 거리 (화면상 겹치지 않을 정도)
+                let radius = 0.0003
+                
+                for (index, journey) in group.enumerated() {
+                    var modifiedJourney = journey
+                    
+                    // 각도 계산 (360도를 개수로 나눔)
+                    // 시작 각도를 -90도(12시 방향)부터 시작하면 더 자연스러울 수 있음
+                    let angle = (2.0 * .pi / Double(group.count)) * Double(index) - (.pi / 2)
+                    
+                    // 위도/경도 오프셋 적용
+                    modifiedJourney.latitude += radius * sin(angle) // 위도(Y축)는 sin으로 적용 (지도 좌표계 고려)
+                    modifiedJourney.longitude += radius * cos(angle) // 경도(X축)는 cos으로 적용
+                    
+                    result.append(modifiedJourney)
+                }
             }
         }
-        return Array(uniqueDates.values)
+        
+        return result
     }
     
     /// 현재 위치로 지도 이동
@@ -147,3 +171,13 @@ struct UserLocationMarker: View {
             .shadow(radius: 3)
     }
 }
+
+#Preview {
+    JourneyFullMapView(
+        isPresented: .constant(true),
+        journeys: Journey.mockData,
+        initialPosition: .automatic,
+        onMarkerTapped: { _ in }
+    )
+}
+
