@@ -39,7 +39,8 @@ struct BabyMoaRootView: View {
                     GrowthView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
                 case .journey:
-                    EmptyView()
+                    JourneyMainView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
                 case .privacyConsent:
                     PrivacyConsentView(coordinator: coordinator)
                 case .allMilestones:
