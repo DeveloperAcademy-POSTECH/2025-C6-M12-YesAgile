@@ -154,12 +154,19 @@ final class JourneyMainViewModel {
                 return y == year && m == month
             }
             
+            var imageReused = false
             for var journey in fetchedJourneys {
-                // 방금 추가한 항목인지 확인 (날짜와 메모로 추정)
-                if calendar.isDate(journey.date, inSameDayAs: date) && journey.memo == memo {
+                // 방금 추가한 항목인지 확인 (날짜, 메모, 좌표로 정밀 추정)
+                // 이미지가 중복 적용되는 것을 방지하기 위해 imageReused 플래그 사용
+                if !imageReused,
+                   calendar.isDate(journey.date, inSameDayAs: date),
+                   journey.memo == memo,
+                   abs(journey.latitude - latitude) < 0.0001,
+                   abs(journey.longitude - longitude) < 0.0001 {
+                    
                     journey.journeyImage = image // 로컬 이미지 재사용 (URL 로딩 없이 즉시 표시)
-                    // 만약 이전 임시 객체를 찾고 싶다면 여기서 UUID 매칭은 불가능(서버는 UUID 모름)하지만
-                    // UX상으로는 이미지가 깜빡이지 않으면 충분함
+                    imageReused = true
+                    print("✅ [JourneyVM] Reused uploaded image for synced journey (ID: \(journey.journeyId))")
                 }
                 self.journeys.append(journey)
             }
