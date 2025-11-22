@@ -183,13 +183,13 @@ struct JourneyCard: View {
             }
             .padding(12)
         }
-        .alert("아이와 함께한 소중한 추억", isPresented: $showDeleteAlert) {
+        .alert("아이와 함께한 소중한 여정", isPresented: $showDeleteAlert) {
             Button("취소", role: .cancel) {}
             Button("삭제", role: .destructive) {
                 onDelete()
             }
         } message: {
-            Text("추억을 삭제 하시겠습니까?")
+            Text("여정을 삭제 하시겠습니까?")
         }
     }
 }
