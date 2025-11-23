@@ -14,6 +14,8 @@ import Observation
 /// - 나침반 버튼 탭 시 현재 위치로 지도 이동에 사용
 @Observable
 class LocationManager: NSObject {
+    static let shared = LocationManager() // 싱글톤 인스턴스 추가
+    
     private let locationManager = CLLocationManager()
     
     /// 사용자의 현재 위치 (nil이면 위치 미확보 또는 권한 없음)

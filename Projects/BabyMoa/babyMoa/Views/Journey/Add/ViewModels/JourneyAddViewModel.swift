@@ -56,8 +56,15 @@ final class JourneyAddViewModel {
                         self.extractedLocation = location
                         self.showLocationAlert = false // 성공 시 알림 끄기
                     } else {
-                        self.extractedLocation = nil
-                        self.showLocationAlert = true // 실패 시 알림 켜기
+                        // EXIF 없으면 현재 위치 사용 (LocationManager.shared 사용)
+                        if let currentLocation = LocationManager.shared.location {
+                            self.extractedLocation = currentLocation
+                            self.showLocationAlert = false
+                            print("📍 [JourneyAddVM] Used current location as fallback")
+                        } else {
+                            self.extractedLocation = nil
+                            self.showLocationAlert = true // 둘 다 없으면 알럿
+                        }
                     }
                     
                 } else {
