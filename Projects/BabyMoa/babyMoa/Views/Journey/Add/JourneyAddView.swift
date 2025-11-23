@@ -139,7 +139,7 @@ struct JourneyAddView: View {
         .alert("위치 정보 없음", isPresented: $viewModel.showLocationAlert) {
             Button("확인", role: .cancel) {}
         } message: {
-            Text("사진에 위치 정보가 없으면 현재위치에 사진이 나옵니다.")
+            Text("사진에 위치 정보가 없으면\n지도 위에 사진이 그려지지 않아요.")
         }
         .alert("사진 로드 실패", isPresented: $viewModel.showLoadErrorAlert) {
             Button("확인", role: .cancel) {}

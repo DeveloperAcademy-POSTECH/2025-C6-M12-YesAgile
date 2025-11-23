@@ -37,21 +37,7 @@ struct JourneyMapView: View {
                     .clipped()
             }
             
-            // 3. 로딩 인디케이터 (이미지 유무와 상관없이 로딩 중이면 오버레이)
-            if isLoading {
-                ZStack {
-                    // 이미지가 없을 땐 중앙에, 있을 땐 우측 상단이나 중앙에 작게
-                    if snapshotImage == nil {
-                        ProgressView()
-                    } else {
-                        ProgressView()
-                            .padding(16)
-                            .background(Material.thinMaterial)
-                            .clipShape(Circle())
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                    }
-                }
-            }
+            // 3. 로딩 인디케이터 제거됨 (요청사항)
             
             // 4. 버튼 (유도 UI)
             Button {
@@ -102,7 +88,7 @@ struct JourneyMapView: View {
             // 1. 사용자 위치가 있으면 사용자 중심 (상세 뷰)
             centerCoordinate = userLoc
             span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-        } else if let firstJourney = journeys.first(where: { $0.hasValidLocation }) {
+        } else if let firstJourney = journeys.first(where: { $0.hasValidLocation && (abs($0.latitude) > 0.0001 || abs($0.longitude) > 0.0001) }) {
             // 2. 여정이 있으면 첫 번째 여정 중심 (상세 뷰)
             centerCoordinate = firstJourney.coordinate
             span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
@@ -120,6 +106,9 @@ struct JourneyMapView: View {
         // 스냅샷 영역 내의 journeys만 필터링
         let visibleJourneys = journeys.filter { journey in
             guard journey.hasValidLocation else { return false }
+            // (0,0) 근사값 체크: 위도와 경도의 절대값이 0.0001보다 작으면 유효하지 않은 것으로 간주
+            guard abs(journey.latitude) > 0.0001 || abs(journey.longitude) > 0.0001 else { return false }
+            
             let coord = journey.coordinate
             
             // 간단한 범위 체크
@@ -129,7 +118,7 @@ struct JourneyMapView: View {
         }
         print("🗺️ [JourneyMapView] Visible journeys in snapshot: \(visibleJourneys.count)")
         
-        // [수정] 이미지 미리 준비하기 (Task 사용)
+        // 이미지 미리 준비하기 (Task 사용)
         Task {
             // 1. 이미지 다운로드 (병렬 처리)
             var preparedImages: [Int: UIImage] = [:] // JourneyID : Image
@@ -202,7 +191,7 @@ struct JourneyMapView: View {
                     // Journey 마커들
                     for journey in visibleJourneys {
                         let point = snapshot.point(for: journey.coordinate)
-                        let markerSize: CGFloat = 48
+                        let markerSize: CGFloat = 60
                         let rect = CGRect(
                             x: point.x - markerSize/2,
                             y: point.y - markerSize/2,
@@ -214,10 +203,7 @@ struct JourneyMapView: View {
                         context.cgContext.addEllipse(in: rect)
                         context.cgContext.clip()
                         
-                        // [수정] 준비된 이미지 사용
-                        // 1순위: 로컬 이미지 (방금 추가한 것)
-                        // 2순위: 다운로드된 이미지 (서버 데이터)
-                        // 3순위: 플레이스홀더
+                        // 준비된 이미지 사용
                         let imageToDraw = journey.journeyImage ?? preparedImages[journey.journeyId] ?? UIImage(systemName: "photo.circle.fill")!
                         imageToDraw.draw(in: rect)
                         
@@ -245,4 +231,3 @@ struct JourneyMapView: View {
         onTap: {}
     )
 }
-

@@ -37,6 +37,26 @@ final class JourneyAddViewModel {
             self.extractedLocation = CLLocation(latitude: journey.latitude, longitude: journey.longitude)
         }
     }
+    
+    // MARK: - Nested Types (For Transferable)
+    enum TransferError: Error {
+        case importFailed
+    }
+    
+    struct ImageSnippet: Transferable {
+        let image: UIImage
+        let data: Data // EXIF 추출을 위해 원본 데이터도 유지
+        
+        static var transferRepresentation: some TransferRepresentation {
+            DataRepresentation(importedContentType: .image) { data in
+                guard let uiImage = UIImage(data: data) else {
+                    throw TransferError.importFailed
+                }
+                // UIImage와 원본 Data를 함께 반환
+                return ImageSnippet(image: uiImage, data: data)
+            }
+        }
+    }
 
     // MARK: - Methods
     
@@ -45,34 +65,29 @@ final class JourneyAddViewModel {
 
         Task {
             do {
-                // 1. 이미지 데이터 로드
-                if let data = try await item.loadTransferable(type: Data.self),
-                   let image = UIImage(data: data) {
+                // Transferable을 사용하여 이미지와 데이터(EXIF용) 로드
+                if let snippet = try await item.loadTransferable(type: ImageSnippet.self) {
+                    self.selectedImage = snippet.image
                     
-                    self.selectedImage = image
-                    
-                    // 2. EXIF에서 위치 정보 추출
-                    if let location = ImageEXIFHelper.extractLocation(from: data) {
+                    // EXIF에서 위치 정보 추출
+                    if let location = ImageEXIFHelper.extractLocation(from: snippet.data) {
                         self.extractedLocation = location
-                        self.showLocationAlert = false // 성공 시 알림 끄기
+                        self.showLocationAlert = false
                     } else {
-                        // EXIF 없으면 현재 위치 사용 (LocationManager.shared 사용)
-                        if let currentLocation = LocationManager.shared.location {
-                            self.extractedLocation = currentLocation
-                            self.showLocationAlert = false
-                            print("📍 [JourneyAddVM] Used current location as fallback")
-                        } else {
-                            self.extractedLocation = nil
-                            self.showLocationAlert = true // 둘 다 없으면 알럿
-                        }
+                        // EXIF 없으면 위치 없음으로 처리 (현재 위치 사용 안 함)
+                        self.extractedLocation = nil
+                        self.showLocationAlert = true // "위치 정보가 없습니다" 알림
+                        print("📍 [JourneyAddVM] No EXIF location found. Alerting user.")
                     }
-                    
                 } else {
-                    self.loadErrorMessage = "이미지를 불러올 수 없습니다."
-                    self.showLoadErrorAlert = true
+                    // nil 반환 시 에러 처리
+                    throw TransferError.importFailed
                 }
+                
             } catch {
-                self.loadErrorMessage = error.localizedDescription
+                print("❌ [JourneyAddVM] Image load failed: \(error.localizedDescription)")
+                // 에러 메시지 명확화
+                self.loadErrorMessage = "사진을 불러올 수 없습니다.\niCloud 사진인 경우 다운로드 후 다시 시도해주세요."
                 self.showLoadErrorAlert = true
             }
         }
