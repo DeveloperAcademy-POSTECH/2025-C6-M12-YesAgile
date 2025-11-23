@@ -30,6 +30,7 @@ class AddBabyViewModel: ObservableObject {
     @Published var showRelationshipPicker: Bool = false
     @Published var showDeleteConfirmation: Bool = false
     @Published var inviteCodeAccessComplete: Bool = false
+    @Published var showPermissionModal: Bool = false
 
     // MARK: - Photo Picker
     @Published var showImageOptions: Bool = false
@@ -355,5 +356,16 @@ class AddBabyViewModel: ObservableObject {
         } catch {
             print("❌ 이미지 로드 실패: \(error.localizedDescription)")
         }
+    }
+    
+    func showPhotoLibrary() {
+        PermissionManager.shared.checkPhotoLibraryPermission(
+            authorized: {
+                self.showLibrary = true
+            },
+            denied: {
+                self.showPermissionModal = true
+            }
+        )
     }
 }

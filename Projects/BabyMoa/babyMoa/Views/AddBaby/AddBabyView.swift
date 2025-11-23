@@ -10,7 +10,6 @@
 import SwiftUI
 
 struct AddBabyView: View {
-    
     @StateObject private var viewModel: AddBabyViewModel
     
     init(coordinator: BabyMoaCoordinator) {
