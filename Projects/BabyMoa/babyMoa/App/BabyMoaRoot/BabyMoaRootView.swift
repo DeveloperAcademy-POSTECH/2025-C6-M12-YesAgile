@@ -39,7 +39,8 @@ struct BabyMoaRootView: View {
                     GrowthView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
                 case .journey:
-                    EmptyView()
+                    JourneyMainView(coordinator: coordinator)
+                        .navigationBarBackButtonHidden()
                 case .privacyConsent:
                     PrivacyConsentView(coordinator: coordinator)
                 case .allMilestones:
@@ -87,12 +88,12 @@ struct BabyMoaRootView: View {
                     
                 case .newWeight(let babyId):
                     WeightView(coordinator: coordinator, babyId: babyId)
-                        .navigationBarBackButtonHidden()
+                                    .navigationBarBackButtonHidden()
                     
                 case .newWeightAdd(let babyId):
                     WeightAddView(coordinator: coordinator, babyId: babyId)
-                        .navigationBarBackButtonHidden()
-                    
+                                    .navigationBarBackButtonHidden()
+
                 case .accountDeleteConfirmView:
                         AccountDeleteConfirmView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()

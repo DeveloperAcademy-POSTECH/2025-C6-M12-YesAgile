@@ -105,6 +105,21 @@ enum BabyMoaEndpoint: Endpoint {
     
     // 계정 탈퇴를 위해 요청한다.
     case deleteAccount
+    
+    case patchUpdateJourney(
+        babyId: Int,
+        journeyId: Int,
+        journeyImage: String,
+        latitude: Double,
+        longitude: Double,
+        date: String,  //"2025-11-08"
+        memo: String
+    )
+    case deleteJourney(
+        babyId: Int,
+        journeyId: Int
+        
+    )
 }
 
 extension BabyMoaEndpoint {
@@ -161,6 +176,12 @@ extension BabyMoaEndpoint {
             return "/api/growth/delete_weight"
         case .deleteAccount:
             return "/api/auth/delete"
+        // 추가된 Joureny
+        case .patchUpdateJourney:
+            return "/api/journey/update_journey"
+        case .deleteJourney:
+            return "/api/journey/delete_journey"
+            
         }
     }
 
@@ -174,10 +195,10 @@ extension BabyMoaEndpoint {
         case .getGrowthData, .getBabyList, .getWeights, .getHeights, .getBaby, .getJourniesAtMonth, .getBabyMilestones, .getBabyInviteCode:
             return .get
         
-        case .deleteBabyMilestone, .deleteBaby, .deleteHeight, .deleteWeight, .deleteAccount:
+        case .deleteBabyMilestone, .deleteBaby, .deleteHeight, .deleteWeight, .deleteAccount, .deleteJourney:
             return .delete
             
-        case .updateBaby:
+        case .updateBaby, .patchUpdateJourney:
             return .patch
         }
     }
@@ -194,7 +215,7 @@ extension BabyMoaEndpoint {
             .getGrowthData, .setTeethStatus, .getBabyList, .setWeight,
             .setHeight, .getWeights, .getHeights, .addJourney,
             .setBabyMilestone, .getBaby, .getJourniesAtMonth,
-            .getBabyMilestones, .deleteBabyMilestone, .getBabyInviteCode, .deleteBaby, .updateBaby, .deleteHeight, .deleteWeight, .deleteAccount:
+            .getBabyMilestones, .deleteBabyMilestone, .getBabyInviteCode, .deleteBaby, .updateBaby, .deleteHeight, .deleteWeight, .deleteAccount, .patchUpdateJourney, .deleteJourney:
             return [
                 "accept": "*/*",
                 "Content-Type": "application/json",
@@ -413,6 +434,32 @@ extension BabyMoaEndpoint {
                 "milestoneName": milestoneName,
                 "milestoneImage": milestoneImage,
                 "date": date
+            ]
+        case .patchUpdateJourney(
+            let babyId,
+            let journeyId,
+            let journeyImage,
+            let latitude,
+            let longitude,
+            let date,
+            let memo
+        ):
+            return [
+                "babyId": babyId,
+                "journeyId": journeyId,
+                "journeyImage": journeyImage,
+                "latitude": latitude,
+                "longitude": longitude,
+                "date": date,
+                "memo": memo,
+            ]
+        case .deleteJourney(
+            let babyId,
+            let journeyId
+        ):
+            return [
+                "babyId": babyId,
+                "journeyId": journeyId,
             ]
 
         // case 없이도 가능

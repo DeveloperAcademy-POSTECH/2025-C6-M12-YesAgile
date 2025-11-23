@@ -65,6 +65,12 @@ final class SignUpViewModel {
                         UserToken.accessToken = tokenResult.accessToken
                         UserToken.refreshToken = tokenResult.refreshToken
                         
+                        // [Develop Fix] 로그인이 자꾸 풀려서 추가함
+                        // AppState는 TokenManager(KeyChain)를 확인하는데, 기존에는 UserDefaults에만 저장하고 있었음.
+                        // KeyChain에도 동일하게 저장하여 앱 재실행 시 로그인 상태가 유지되도록 수정.
+                        TokenManager.shared.saveAccessToken(tokenResult.accessToken)
+                        TokenManager.shared.saveRefreshToken(tokenResult.refreshToken)
+                        
                         await MainActor.run {
                             // 2. 앱의 전역 상태를 '로그인 됨'으로 변경하여 UI를 업데이트합니다.
                             AppState.shared.sessionState = .signedIn

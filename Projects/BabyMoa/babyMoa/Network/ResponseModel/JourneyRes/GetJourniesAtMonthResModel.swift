@@ -5,6 +5,7 @@
 //  Created by pherd on 11/1/25.
 // GET / array<object>
 struct GetJourniesAtMonthResModel: Decodable {
+    var journeyId: Int
     var journeyImageUrl: String
     var latitude: Double
     var longitude: Double

@@ -128,6 +128,22 @@ protocol BabyMoaServicable: HTTPClient {
     func deleteWeight(babyId: Int, date: String) async -> Result<BaseResponse<EmptyData>, RequestError>
     
     func deleteAccount() async -> Result<BaseResponse<EmptyData>, RequestError>
+    
+    func deleteJourney(
+        babyId: Int,
+        journeyId: Int
+    ) async -> Result<BaseResponse<EmptyData>, RequestError>
+    
+    func patchUpdateJourney(
+        babyId: Int,
+        journeyId: Int,
+        journeyImage: String,
+        latitude: Double,
+        longitude: Double,
+        date: String,
+        memo: String
+    ) async -> Result<BaseResponse<EmptyData>, RequestError>
+    
 }
 
 class BabyMoaService: BabyMoaServicable {
@@ -711,5 +727,82 @@ class BabyMoaService: BabyMoaServicable {
             }
         }
     }
-
-}
+    func deleteJourney(
+        babyId: Int,
+        journeyId: Int
+    ) async -> Result<BaseResponse<EmptyData>, RequestError> {
+        let result = await request(
+            endpoint: BabyMoaEndpoint.deleteJourney(
+                babyId: babyId,
+                journeyId: journeyId
+            ),
+            responseModel: BaseResponse<EmptyData>.self
+        )
+        switch result {
+        case .success:
+            return result
+        case .failure(let error):
+            switch error {
+            case .unauthorized:
+                await refreshToken()
+                return await request(
+                    endpoint: BabyMoaEndpoint.deleteJourney(
+                        babyId: babyId,
+                        journeyId: journeyId
+                    ),
+                    responseModel: BaseResponse<EmptyData>.self
+                )
+            default:
+                return result
+            }
+        }
+    }
+        func patchUpdateJourney(
+            babyId: Int,
+            journeyId: Int,
+            journeyImage: String,
+            latitude: Double,
+            longitude: Double,
+            date: String,
+            memo: String
+        )
+        async -> Result<BaseResponse<EmptyData>, RequestError>
+        {
+            let result = await request(
+                endpoint:
+                    BabyMoaEndpoint.patchUpdateJourney(
+                        babyId: babyId,
+                        journeyId: journeyId,
+                        journeyImage: journeyImage,
+                        latitude: latitude,
+                        longitude: longitude,
+                        date: date,
+                        memo: memo
+                    ),
+                responseModel: BaseResponse<EmptyData>.self
+            )
+            switch result {
+            case .success:
+                return result
+            case .failure(let error):
+                switch error {
+                case .unauthorized:
+                    await refreshToken()
+                    return await request(
+                        endpoint: BabyMoaEndpoint.patchUpdateJourney(
+                            babyId: babyId,
+                            journeyId: journeyId,
+                            journeyImage: journeyImage,
+                            latitude: latitude,
+                            longitude: longitude,
+                            date: date,
+                            memo: memo
+                        ),
+                        responseModel: BaseResponse<EmptyData>.self
+                    )
+                default:
+                    return result
+                }
+            }
+        }
+    }
