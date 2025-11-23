@@ -20,9 +20,9 @@ final class BabyRepository {
     
     /// 아기 목록을 가져옵니다.
     /// 메모리 캐시된 목록이 있다면 반환하고, 그렇지 않으면 네트워크에서 가져옵니다.
-    func fetchBabyList() async -> [MainTabModel] {
-        // 1. 이미 채워진 캐시 데이터가 있다면 반환합니다.
-        if !babyListCache.isEmpty {
+    func fetchBabyList(isBabyAdded: Bool = false) async -> [MainTabModel] {
+        // 1. 이미 채워진 캐시 데이터가 있고, 새로 추가된 아기가 없다면 이미 있는 아기 리스트를 반환합니다.
+        if !babyListCache.isEmpty && !isBabyAdded {
             print("✅ [BabyRepository] Returning cached baby list.")
             return babyListCache
         }

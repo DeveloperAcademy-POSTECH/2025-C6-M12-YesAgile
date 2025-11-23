@@ -9,6 +9,8 @@ import SwiftUI
 
 class BabyMoaCoordinator: ObservableObject {
     @Published var paths: [CoordinatorPath] = []
+    @Published var isLoading: Bool = false
+    @Published var isBabyAdded: Bool = false // MARK: 아기 추가 상태 확인 (임시, 어디로 옮길지는 의논 필요) 25.11.22
     
     @MainActor
     public func push(path: CoordinatorPath) {

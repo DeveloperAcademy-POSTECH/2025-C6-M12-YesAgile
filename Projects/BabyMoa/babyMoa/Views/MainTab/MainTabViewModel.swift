@@ -51,7 +51,7 @@ final class MainTabViewModel {
     
     // 서버에서 아기 목록 요약 정보를 가져와서 UI를 업데이트합니다. (BabyRepository 사용)
     func fetchBabies() async {
-        let babies = await BabyRepository.shared.fetchBabyList() // BabyRepository에서 아기 목록을 가져옴
+        let babies = await BabyRepository.shared.fetchBabyList(isBabyAdded: coordinator.isBabyAdded) // BabyRepository에서 아기 목록을 가져옴
 
         // 디버깅 로그: Repository에서 가져온 아기 목록을 출력합니다.
         print("✅ 아기 목록 가져옴 (Repository): \(babies)")
