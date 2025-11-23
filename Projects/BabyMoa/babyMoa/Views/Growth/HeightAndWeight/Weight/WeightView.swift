@@ -29,47 +29,46 @@ struct WeightView: View {
                 })
                 
                 
-                ScrollView {
-                    Picker("탭 선택", selection: $selectedTab) {
-                        ForEach(WeightTab.allCases, id: \.self) { tab in
-                            Text(tab.rawValue).tag(tab)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.top, 8)
-                    
-                    if viewModel.isLoading {
-                        Spacer()
-                        ProgressView("데이터 로딩 중...")
-                        Spacer()
-                    } else if let error = viewModel.errorMessage {
-                        Spacer()
-                        Text(error)
-                            .foregroundColor(.red)
-                            .multilineTextAlignment(.center)
-                            .padding()
-                        Spacer()
-                    } else if viewModel.records.isEmpty {
-                        EmptyRecordView(
-                            title: "아직 몸무게 기록이 없어요.",
-                            description: "첫 몸무게를 추가하고 아이의 성장을 기록해보세요.",
-                            imageSystemName: "scalemass.fill",
-                            
-                        )
-                    } else {
-                        switch selectedTab {
-                        case .record:
-                            WeightRecordListView(viewModel: viewModel)
-                                .padding(.top, 20)
-                        case .chart:
-                            WeightChartView(viewModel: viewModel)
-                                .padding(.top, 20)
-
-                        }
-                        
+                Picker("탭 선택", selection: $selectedTab) {
+                    ForEach(WeightTab.allCases, id: \.self) { tab in
+                        Text(tab.rawValue).tag(tab)
                     }
                 }
-                .scrollIndicators(.hidden)
+                .pickerStyle(.segmented)
+                .padding(.top, 8)
+                
+                if viewModel.isLoading {
+                    Spacer()
+                    ProgressView("데이터 로딩 중...")
+                    Spacer()
+                } else if let error = viewModel.errorMessage {
+                    Spacer()
+                    Text(error)
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                    Spacer()
+                } else if viewModel.records.isEmpty {
+                    EmptyRecordView(
+                        title: "아직 몸무게 기록이 없어요.",
+                        description: "첫 몸무게를 추가하고 아이의 성장을 기록해보세요.",
+                        imageSystemName: "scalemass.fill",
+                        
+                    )
+                } else {
+                    switch selectedTab {
+                    case .record:
+                        WeightRecordListView(viewModel: viewModel)
+                            .padding(.top, 20)
+                    case .chart:
+                        ScrollView {
+                            WeightChartView(viewModel: viewModel)
+                                .padding(.top, 20)
+                        }
+
+                    }
+                    
+                }
                 
                 // 기록 추가 버튼
                 Button(action: {

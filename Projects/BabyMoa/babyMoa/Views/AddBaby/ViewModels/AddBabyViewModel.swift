@@ -29,6 +29,7 @@ class AddBabyViewModel: ObservableObject {
     @Published var showDatePicker: Bool = false
     @Published var showRelationshipPicker: Bool = false
     @Published var showDeleteConfirmation: Bool = false
+    @Published var inviteCodeAccessComplete: Bool = false
 
     // MARK: - Photo Picker
     @Published var showImageOptions: Bool = false
@@ -251,6 +252,49 @@ class AddBabyViewModel: ObservableObject {
                     print("❌ [CREATE] 아기 등록 실패: \(error)")
                 }
             }
+        }
+    }
+    
+    func addBabyByInvitationCode() async {
+        coordinator.isLoading = true
+        let result = await BabyMoaService.shared.postRegisterBabyByCode(babyCode: invitationCode)
+        switch result {
+        case .success(let success):
+            if let addBabyByCodeRes = success.data {
+                coordinator.isLoading = false
+                print("아기 추가 성공, babyId: \(addBabyByCodeRes.babyId)")
+                await MainActor.run {
+                    editingBaby = AddBabyModel(babyId: addBabyByCodeRes.babyId, name: addBabyByCodeRes.name, gender: addBabyByCodeRes.gender, birthDate: DateFormatter.yyyyDashMMDashdd.date(from: addBabyByCodeRes.birthDate)!, relationship: "설정 필요", profileImage: addBabyByCodeRes.avatarImageName)
+                    
+                    inviteCodeAccessComplete = true
+                }
+            }
+            
+        case .failure(let error):
+            print(error)
+        }
+    }
+    
+    func completeSelectRelationship() async {
+        guard let baby = editingBaby else { return }
+        coordinator.isLoading = true
+        let result = await BabyMoaService.shared.postSetRelationshipWithBaby(babyId: baby.babyId, relationshipType: relationship)
+        switch result {
+        case .success(let success):
+            if let message = success.message {
+                print("아기 추가 성공: \(message)")
+                coordinator.isLoading = false
+                coordinator.isBabyAdded = true
+                coordinator.popToRoot()
+            } else {
+                print("아기 추가 성공")
+                coordinator.isLoading = false
+                coordinator.isBabyAdded = true
+                coordinator.popToRoot()
+            }
+        case .failure(let error):
+            print("아기 추가 중 에러 발생: \(error.localizedDescription)")
+            coordinator.isLoading = false
         }
     }
 
