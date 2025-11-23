@@ -74,7 +74,7 @@ struct AddBabyStatusView: View {
                             }
                         }
                         .onTapGesture {
-                            viewModel.showLibrary = true
+                            viewModel.showPhotoLibrary()
                         }
                         
                         // 이름 / 태명 / 성별
@@ -193,6 +193,9 @@ struct AddBabyStatusView: View {
         } message: {
             Text("나에게만 아기 정보가 삭제돼요.")
         }
+        .overlay(
+            PermissionModal(isPresented: $viewModel.showPermissionModal)
+        )
     }
 }
 

@@ -191,7 +191,7 @@
 					};
 				};
 			};
-			buildConfigurationList = D4110B632EBBC61100B0C783 /* Build configuration list for PBXProject "babyMoa" */;
+			buildConfigurationList = D4110B632EBBC61100B0C783 /* Build configuration list for PBXProject "BabyMoa" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -418,6 +418,7 @@
 				INFOPLIST_FILE = "BabyMoa-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = BabyMoA;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "사진권한이 필요합니다.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "현재 위치를 지도에 표시하고 여정 장소를 기록하기 위해 위치 정보를 사용합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "여정 기록에 추억 사진을 등록하기 위해 사진 라이브러리에 접근합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -459,6 +460,7 @@
 				INFOPLIST_FILE = "BabyMoa-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = BabyMoA;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "사진권한이 필요합니다.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "현재 위치를 지도에 표시하고 여정 장소를 기록하기 위해 위치 정보를 사용합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "여정 기록에 추억 사진을 등록하기 위해 사진 라이브러리에 접근합니다.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -562,7 +564,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D4110B632EBBC61100B0C783 /* Build configuration list for PBXProject "babyMoa" */ = {
+		D4110B632EBBC61100B0C783 /* Build configuration list for PBXProject "BabyMoa" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D4110B872EBBC61200B0C783 /* Debug */,
