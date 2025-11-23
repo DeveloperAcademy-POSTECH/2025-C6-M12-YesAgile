@@ -57,7 +57,6 @@ struct MainTopNavigtaionView: View {
                 }
             }
             .backgroundPadding(.horizontal)
-            .padding(.bottom, 20)
         }
         .background(Color.background)
     }

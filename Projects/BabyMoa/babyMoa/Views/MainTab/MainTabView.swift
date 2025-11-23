@@ -20,9 +20,36 @@ struct MainTabView: View {
     }
 
     var body: some View {
-        
-        VStack(spacing: 0) {
+        TabView(selection: $selectedTab) {
+            GrowthView(coordinator: viewModel.coordinator)
+                .tabItem { Image(systemName: "book.pages.fill"); Text("성장") }
+                .tag(0)
+                .padding(.top, 60)
+                .background(Color.background)
 
+            JourneyMainView(coordinator: viewModel.coordinator)
+                .tabItem { Image(systemName: "hand.thumbsup.fill"); Text("추천") }
+                .tag(1)
+                .padding(.top, 60)
+                .background(Color.background)
+
+
+            BabyMainView(viewModel: babyMainViewModel, coordinator: viewModel.coordinator)
+                .tabItem { Image(systemName: "gift.fill"); Text("아기") }
+                .tag(2)
+                .padding(.top, 60)
+                .background(Color.background)
+
+        }
+        .tint(.orange50)
+        .toolbarBackground(.visible, for: .tabBar)
+        .toolbarBackground(Color.white, for: .tabBar)
+
+        // ✅ 시스템 NavigationBar를 완전히 숨겨 '띠' 제거
+        .toolbar(.hidden, for: .navigationBar)
+
+        // 커스텀 상단 헤더를 안전영역에 꽂기
+        .safeAreaInset(edge: .top) {
             MainTopNavigtaionView(
                 babyName: viewModel.selectedBaby?.name ?? "아기 선택",
                 babyImage: viewModel.selectedBaby?.profileImageUrl,
@@ -30,75 +57,29 @@ struct MainTabView: View {
             ) {
                 viewModel.showBabyListSheet()
             }
-            
-            
-            TabView(selection: $selectedTab) {
-                // 성장 탭
-                GrowthView(coordinator: viewModel.coordinator)
-                    .tabItem {
-                        Image(systemName: "book.pages.fill")
-                        Text("성장")
-                    }
-                    .tag(0)
-//                
-//                EmptyView()
-//                    .tag(1)
-                
-                
-                JourneyMainView(coordinator: viewModel.coordinator)
-                    .tabItem {
-                        Image(systemName: "hand.thumbsup.fill")
-                        Text("추천")
-                    }
-                    .tag(1)
-                    .ignoresSafeArea()
-                
-                // 아기 탭
-                BabyMainView(viewModel: babyMainViewModel, coordinator: viewModel.coordinator)
-                    .tabItem {
-                        Image(systemName: "gift.fill")
-                        Text("아기")
-                    }
-                    .tag(2)
-            }
-            .tint(.orange50)  // 선택된 탭 색상
-            // 탭바 배경이 상황 따라 투명/유리로 바뀌지 않도록 "항상 보이게"
-            .toolbarBackground(.visible, for: .tabBar)
-            // 시스템 배경색을 강제 (유리감/플로팅 인상 제거)
-            .toolbarBackground(Color.white, for: .tabBar)
-            //  Sheet View을 통해서 ListView가 올라와야 한다.
-            .sheet(isPresented: $viewModel.isShowingSheet) {
-                BabyListView(babies: viewModel.babies, onSelectBaby: { baby in
-                    viewModel.selectBaby(baby)
-                }, onAddBaby: {
+            .background(Color.background)
+            .padding(.vertical, 0)
+        }
+
+        .sheet(isPresented: $viewModel.isShowingSheet) {
+            BabyListView(
+                babies: viewModel.babies,
+                onSelectBaby: { baby in viewModel.selectBaby(baby) },
+                onAddBaby: {
                     viewModel.coordinator.push(path: .addBaby)
                     viewModel.isShowingSheet = false
-                })
-                .onPreferenceChange(HeightPreferenceKey.self) { newHeight in
-                    if newHeight > 0 {
-                        self.sheetHeight = newHeight
-                        print("Calculated sheet height: \(newHeight)")
-                    }
                 }
-                .presentationDetents(
-                    sheetHeight > 0 ? [.height(sheetHeight)] : [.medium]
-                )
-                .presentationCornerRadius(25)
-                .presentationDragIndicator(.visible)
+            )
+            .onPreferenceChange(HeightPreferenceKey.self) { newHeight in
+                if newHeight > 0 { sheetHeight = newHeight }
             }
+            .presentationDetents(sheetHeight > 0 ? [.height(sheetHeight)] : [.medium])
+            .presentationCornerRadius(25)
+            .presentationDragIndicator(.visible)
         }
-        .onAppear {
-            // 이 뷰가 나타날 때마다 아기 목록을 가져옵니다.
-            // BabyRepository의 캐싱 덕분에, 변경사항이 없을 경우 네트워크 요청 없이 빠르게 로드됩니다.
-            Task {
-                await viewModel.fetchBabies()
-            }
-        }
+        .onAppear { Task { await viewModel.fetchBabies() } }
     }
 }
-
-
-// MARK: - Baby Selection Header
 
 #Preview {
     @Previewable @StateObject var coordinator = BabyMoaCoordinator()

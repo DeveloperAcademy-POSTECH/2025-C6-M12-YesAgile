@@ -29,12 +29,14 @@ struct BabyMoaRootView: View {
                 case .startBabyMoa:
                     BabyMoaStartView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
+                        .toolbarBackground(.visible, for: .navigationBar)
                 case .login:
                     SignUpView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
                 case .mainTab:
                     MainTabView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
+                        .toolbarBackground(.visible, for: .navigationBar)
                 case .growth:
                     GrowthView(coordinator: coordinator)
                         .navigationBarBackButtonHidden()
@@ -100,6 +102,9 @@ struct BabyMoaRootView: View {
                     EmptyView()
                 }
             }
+//            // 최상위에서 네비게이션 바를 항상 불투명으로 고정
+//            .toolbarBackground(.visible, for: .navigationBar)
+//            .toolbarBackground(Color.white, for: .navigationBar)
         }
         .environmentObject(alertManager)
         .alert(alertManager.alertTitle, isPresented: $alertManager.showAlert) {
