@@ -171,7 +171,7 @@ struct JourneyMapView: View {
                     
                     // 흰색 테두리
                     context.cgContext.setStrokeColor(UIColor.white.cgColor)
-                    context.cgContext.setLineWidth(4)
+                    context.cgContext.setLineWidth(0.5)
                     context.cgContext.strokeEllipse(in: rect)
                 }
             }
