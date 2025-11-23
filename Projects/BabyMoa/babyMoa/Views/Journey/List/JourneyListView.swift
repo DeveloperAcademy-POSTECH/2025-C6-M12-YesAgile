@@ -24,9 +24,8 @@ struct JourneyListView: View {
                 leading: {
                     Button(action: { dismiss() }) {
                         Image(systemName: "chevron.left")
-                            .font(.system(size: 20))
-                            .foregroundColor(.brand50)
                     }
+                    .padding(.leading, 15)
                 },
                 trailing: { EmptyView() },
                 paddingTop: 10

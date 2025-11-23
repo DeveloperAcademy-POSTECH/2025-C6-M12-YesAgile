@@ -51,9 +51,8 @@ struct JourneyAddView: View {
                             onDismiss()
                         }) {
                             Image(systemName: "chevron.left")
-                                .font(.system(size: 20))
-                                .foregroundColor(.brand50)
                         }
+                        .padding(.leading, 15)
                     },
                     trailing: { EmptyView() }, // 명시적으로 빈 뷰 전달
                     paddingTop: 10
