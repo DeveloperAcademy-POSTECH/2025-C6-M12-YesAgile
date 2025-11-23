@@ -35,7 +35,7 @@ struct Journey: Entity, Hashable, Identifiable {
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
-
+    
     /// 지도에 표시 가능한 유효한 위치인지 확인
     var hasValidLocation: Bool {
         latitude != 0 && longitude != 0 && latitude >= -90 && latitude <= 90

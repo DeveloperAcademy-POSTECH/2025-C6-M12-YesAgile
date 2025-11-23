@@ -23,22 +23,37 @@ struct JourneyMapView: View {
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            // 1. 배경 (스냅샷 이미지 or 로딩)
+            // 1. 배경 (회색 박스 - 이미지가 없을 때만 보임)
+            Rectangle()
+                .fill(Color.gray.opacity(0.1))
+                .frame(width: 354, height: 400)
+            
+            // 2. 스냅샷 이미지 (있으면 위에 덮어씀)
             if let image = snapshotImage {
                 Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: 354, height: 400)  // 디자인 사이즈 고정
+                    .frame(width: 354, height: 400)
                     .clipped()
-            } else {
-                // 로딩 상태 (회색 박스)
-                Rectangle()
-                    .fill(Color.gray.opacity(0.1))
-                    .frame(width: 354, height: 400)  // 디자인 사이즈 고정
-                    .overlay(ProgressView())
             }
             
-            // 2. 버튼 (유도 UI)
+            // 3. 로딩 인디케이터 (이미지 유무와 상관없이 로딩 중이면 오버레이)
+            if isLoading {
+                ZStack {
+                    // 이미지가 없을 땐 중앙에, 있을 땐 우측 상단이나 중앙에 작게
+                    if snapshotImage == nil {
+                        ProgressView()
+                    } else {
+                        ProgressView()
+                            .padding(16)
+                            .background(Material.thinMaterial)
+                            .clipShape(Circle())
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    }
+                }
+            }
+            
+            // 4. 버튼 (유도 UI)
             Button {
                 onTap()
             } label: {
@@ -76,6 +91,7 @@ struct JourneyMapView: View {
     // MARK: - Snapshot Logic
     private func takeSnapshot() {
         guard !isLoading else { return }
+        print("🗺️ [JourneyMapView] takeSnapshot started. UserLoc: \(String(describing: userLocation)), Journeys: \(journeys.count)")
         isLoading = true
         
         // 지도 중심 및 줌 레벨 결정
@@ -111,74 +127,112 @@ struct JourneyMapView: View {
             let lonDiff = abs(coord.longitude - centerCoordinate.longitude)
             return latDiff <= span.latitudeDelta / 2 && lonDiff <= span.longitudeDelta / 2
         }
+        print("🗺️ [JourneyMapView] Visible journeys in snapshot: \(visibleJourneys.count)")
         
-        let snapshotter = MKMapSnapshotter(options: options)
-        snapshotter.start { snapshot, _ in
-            guard let snapshot = snapshot else {
+        // [수정] 이미지 미리 준비하기 (Task 사용)
+        Task {
+            // 1. 이미지 다운로드 (병렬 처리)
+            var preparedImages: [Int: UIImage] = [:] // JourneyID : Image
+            
+            await withTaskGroup(of: (Int, UIImage?).self) { group in
+                for journey in visibleJourneys {
+                    // 이미 로컬 이미지가 있으면 바로 사용
+                    if let localImage = journey.journeyImage {
+                        preparedImages[journey.journeyId] = localImage
+                        continue
+                    }
+                    
+                    // 없으면 URL 다운로드 시도
+                    if let urlString = journey.imageUrl {
+                        group.addTask {
+                            let image = await ImageManager.shared.downloadImage(from: urlString)
+                            return (journey.journeyId, image)
+                        }
+                    }
+                }
+                
+                // 결과 수집
+                for await (id, image) in group {
+                    if let image = image {
+                        preparedImages[id] = image
+                    }
+                }
+            }
+            
+            print("🗺️ [JourneyMapView] Prepared images count: \(preparedImages.count)")
+            
+            // 2. 스냅샷 생성 시작
+            let snapshotter = MKMapSnapshotter(options: options)
+            snapshotter.start { snapshot, error in
+                if let error = error {
+                    print("❌ [JourneyMapView] Snapshot failed: \(error.localizedDescription)")
+                    Task { @MainActor in self.isLoading = false }
+                    return
+                }
+                
+                guard let snapshot = snapshot else {
+                    Task { @MainActor in self.isLoading = false }
+                    return
+                }
+                
+                // 3. 마커 그리기
+                let image = UIGraphicsImageRenderer(size: options.size).image { context in
+                    // 지도 배경
+                    snapshot.image.draw(at: .zero)
+                    
+                    // 사용자 위치 마커
+                    if let userLoc = userLocation {
+                        let point = snapshot.point(for: userLoc)
+                        let markerSize: CGFloat = 32
+                        let rect = CGRect(
+                            x: point.x - markerSize/2,
+                            y: point.y - markerSize/2,
+                            width: markerSize,
+                            height: markerSize
+                        )
+                        
+                        context.cgContext.setFillColor(UIColor.white.cgColor)
+                        context.cgContext.fillEllipse(in: rect)
+                        
+                        let innerRect = rect.insetBy(dx: 4, dy: 4)
+                        context.cgContext.setFillColor(UIColor.systemBlue.cgColor)
+                        context.cgContext.fillEllipse(in: innerRect)
+                    }
+                    
+                    // Journey 마커들
+                    for journey in visibleJourneys {
+                        let point = snapshot.point(for: journey.coordinate)
+                        let markerSize: CGFloat = 48
+                        let rect = CGRect(
+                            x: point.x - markerSize/2,
+                            y: point.y - markerSize/2,
+                            width: markerSize,
+                            height: markerSize
+                        )
+                        
+                        context.cgContext.saveGState()
+                        context.cgContext.addEllipse(in: rect)
+                        context.cgContext.clip()
+                        
+                        // [수정] 준비된 이미지 사용
+                        // 1순위: 로컬 이미지 (방금 추가한 것)
+                        // 2순위: 다운로드된 이미지 (서버 데이터)
+                        // 3순위: 플레이스홀더
+                        let imageToDraw = journey.journeyImage ?? preparedImages[journey.journeyId] ?? UIImage(systemName: "photo.circle.fill")!
+                        imageToDraw.draw(in: rect)
+                        
+                        context.cgContext.restoreGState()
+                        
+                        context.cgContext.setStrokeColor(UIColor.white.cgColor)
+                        context.cgContext.setLineWidth(4)
+                        context.cgContext.strokeEllipse(in: rect)
+                    }
+                }
+                
                 Task { @MainActor in
+                    self.snapshotImage = image
                     self.isLoading = false
                 }
-                return
-            }
-            
-            // 마커들 그리기
-            let image = UIGraphicsImageRenderer(size: options.size).image { context in
-                // 1. 지도 배경
-                snapshot.image.draw(at: .zero)
-                
-                // 2. 사용자 위치 마커 (파란 원)
-                if let userLoc = userLocation {
-                    let point = snapshot.point(for: userLoc)
-                    let markerSize: CGFloat = 32
-                    let rect = CGRect(
-                        x: point.x - markerSize/2,
-                        y: point.y - markerSize/2,
-                        width: markerSize,
-                        height: markerSize
-                    )
-                    
-                    // 외곽선 (흰색)
-                    context.cgContext.setFillColor(UIColor.white.cgColor)
-                    context.cgContext.fillEllipse(in: rect)
-                    
-                    // 내부 (파란색)
-                    let innerRect = rect.insetBy(dx: 4, dy: 4)
-                    context.cgContext.setFillColor(UIColor.systemBlue.cgColor)
-                    context.cgContext.fillEllipse(in: innerRect)
-                }
-                
-                // 3. Journey 마커들 (이미지 썸네일)
-                for journey in visibleJourneys {
-                    let point = snapshot.point(for: journey.coordinate)
-                    let markerSize: CGFloat = 48
-                    let rect = CGRect(
-                        x: point.x - markerSize/2,
-                        y: point.y - markerSize/2,
-                        width: markerSize,
-                        height: markerSize
-                    )
-                    
-                    // 이미지를 원형으로 클리핑
-                    context.cgContext.saveGState()
-                    context.cgContext.addEllipse(in: rect)
-                    context.cgContext.clip()
-                    
-                    // 이미지 그리기
-                    let imageToDraw = journey.journeyImage ?? UIImage(systemName: "photo.circle.fill")!
-                    imageToDraw.draw(in: rect)
-                    
-                    context.cgContext.restoreGState()
-                    
-                    // 흰색 테두리
-                    context.cgContext.setStrokeColor(UIColor.white.cgColor)
-                    context.cgContext.setLineWidth(4)
-                    context.cgContext.strokeEllipse(in: rect)
-                }
-            }
-            
-            Task { @MainActor in
-                self.snapshotImage = image
-                self.isLoading = false
             }
         }
     }

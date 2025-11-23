@@ -128,14 +128,18 @@ struct CalendarGrid: View {
                     Calendar.current.isDate(journey.date, inSameDayAs: date)
                 }
                 
+                let isCurrentMonth = viewModel.isInCurrentMonth(date)
+                
                 DateCellView(
                     date: date,
-                    isCurrentMonth: viewModel.isInCurrentMonth(date),
+                    isCurrentMonth: isCurrentMonth,
                     journeys: dateJourneys,
                     isSelected: viewModel.isSelected(date)
                 )
                 .onTapGesture {
-                    onDateTap(date)
+                    if isCurrentMonth {
+                        onDateTap(date)
+                    }
                 }
             }
         }

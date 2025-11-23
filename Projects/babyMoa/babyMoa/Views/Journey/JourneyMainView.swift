@@ -97,7 +97,16 @@ struct JourneyMainView: View {
             JourneyFullMapView(
                 isPresented: $isFullMapPresented,
                 journeys: viewModel.journeys,
-                initialPosition: .automatic,
+                initialPosition: {
+                    if let userLocation = locationManager.location {
+                        return .region(MKCoordinateRegion(
+                            center: userLocation.coordinate,
+                            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                        ))
+                    } else {
+                        return .automatic
+                    }
+                }(),
                 onMarkerTapped: { date in
                     isFullMapPresented = false
                     Task {
