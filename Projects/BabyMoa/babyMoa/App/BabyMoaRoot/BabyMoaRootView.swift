@@ -122,5 +122,8 @@ struct BabyMoaRootView: View {
                 coordinator.paths.removeAll()
             }
         }
+        .onAppear {
+            PermissionManager.shared.checkPhotoLibraryPermission()
+        }
     }
 }

@@ -18,8 +18,8 @@ final class PermissionManager {
     ///   - authorized: 권한이 있을 때 실행할 클로저
     ///   - denied: 권한이 없을 때 실행할 클로저
     func checkPhotoLibraryPermission(
-        authorized: @escaping () -> Void,
-        denied: @escaping () -> Void
+        authorized: @escaping () -> Void = {},
+        denied: @escaping () -> Void = {}
     ) {
         let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         
