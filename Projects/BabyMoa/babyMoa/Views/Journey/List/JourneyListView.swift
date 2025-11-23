@@ -107,24 +107,24 @@ struct JourneyCard: View {
             VStack(alignment: .leading, spacing: 12) {
                 // 사진 영역
                 Group {
-                    if let localImage = journey.journeyImage {
-                        // 1. 로컬 이미지가 있으면 우선 표시 (업로드 직후)
-                        Image(uiImage: localImage)
-                            .resizable()
-                            .scaledToFill()
-                            .overlay(
-                                // 임시 상태일 때 로딩 오버레이
-                                Group {
-                                    if journey.isTemporary {
-                                        ZStack {
-                                            Color.black.opacity(0.3)
-                                            ProgressView()
-                                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                        }
-                                    }
-                                }
-                            )
-                    } else {
+//                    if let localImage = journey.journeyImage {
+//                        // 1. 로컬 이미지가 있으면 우선 표시 (업로드 직후)
+//                        Image(uiImage: localImage)
+//                            .resizable()
+//                            .scaledToFill()
+//                            .overlay(
+//                                // 임시 상태일 때 로딩 오버레이
+//                                Group {
+//                                    if journey.isTemporary {
+//                                        ZStack {
+//                                            Color.black.opacity(0.3)
+//                                            ProgressView()
+//                                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+//                                        }
+//                                    }
+//                                }
+//                            )
+//                    } else {
                         // 2. 없으면 URL에서 Lazy Loading
                         CachedAsyncImage(urlString: journey.imageUrl) { phase in
                             switch phase {
@@ -148,7 +148,7 @@ struct JourneyCard: View {
                                 EmptyView()
                             }
                         }
-                    }
+//                    }
                 }
                 .frame(
                     width: UIScreen.main.bounds.width - 40,
