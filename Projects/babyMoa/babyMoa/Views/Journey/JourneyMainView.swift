@@ -32,6 +32,7 @@ struct JourneyMainView: View {
     
     @State private var isFullMapPresented = false
     @State private var isAddViewPresented = false
+    @State private var isLocationPermissionAlertPresented = false // 위치 권한 알림 상태
     
     // 리스트 표시용 날짜 (DateWrapper 사용)
     @State private var selectedListDateWrapper: DateWrapper?
@@ -72,7 +73,10 @@ struct JourneyMainView: View {
                         JourneyMapView(
                             userLocation: locationManager.location?.coordinate,
                             journeys: viewModel.journeys,
-                            onTap: { isFullMapPresented = true }
+                            onTap: { 
+                                // 지도 탭 시 권한 확인
+                                checkLocationPermission()
+                            }
                         )
                     }
                     .frame(maxWidth: .infinity)  // TabView 전환 시 레이아웃 안정성 확보
@@ -145,8 +149,43 @@ struct JourneyMainView: View {
             viewModel.updateDate(newDate)
         }
         .onAppear {
-            // 사용자 위치 추적 시작
+            // 사용자 위치 추적 시작 (최초 권한 요청)
             locationManager.startUpdating()
+            
+            // 진입 시 권한 체크 (이미 거부된 경우를 위해 별도 알림은 띄우지 않고 상태만 갱신하거나, 필요하다면 여기서도 알림 가능)
+            // 여기서는 '지도 탭 시'에만 알림을 띄우기로 결정했으므로 startUpdating만 호출
+        }
+        // 위치 권한 거부 시 알림
+        .alert("위치 권한 필요", isPresented: $isLocationPermissionAlertPresented) {
+            Button("설정으로 이동", role: .none) {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            Button("취소", role: .cancel) {}
+        } message: {
+            Text("현재 위치를 지도에 표시하려면 위치 권한이 필요합니다. 설정에서 권한을 허용해주세요.")
+        }
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func checkLocationPermission() {
+        // LocationManager에 새로 추가된 authorizationStatus 접근자를 사용
+        let status = locationManager.authorizationStatus
+        
+        switch status {
+        case .authorizedAlways, .authorizedWhenInUse:
+            // 권한이 있으면 전체 지도 표시
+            isFullMapPresented = true
+        case .denied, .restricted:
+            // 거부되었으면 설정 이동 알림 표시
+            isLocationPermissionAlertPresented = true
+        case .notDetermined:
+            // 결정되지 않았으면 권한 요청
+            locationManager.requestAuthorization()
+        @unknown default:
+            break
         }
     }
     

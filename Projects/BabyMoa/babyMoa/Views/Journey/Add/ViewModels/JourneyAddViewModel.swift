@@ -35,6 +35,14 @@ final class JourneyAddViewModel {
             self.selectedImage = journey.journeyImage
             self.memo = journey.memo
             self.extractedLocation = CLLocation(latitude: journey.latitude, longitude: journey.longitude)
+            
+            // [수정] journeyImage가 없고 imageUrl만 있는 경우 (수정 모드 진입 시)
+            // 이미지를 비동기로 다운로드하여 selectedImage에 할당
+            if self.selectedImage == nil, let imageUrl = journey.imageUrl {
+                Task {
+                    self.selectedImage = await ImageManager.shared.downloadImage(from: imageUrl)
+                }
+            }
         }
     }
     
