@@ -47,6 +47,51 @@ final class JWTUtil {
         
         return jsonObject
     }
+
+    // Base64URL Encoding (padding 제거)
+    func base64URLEncode(_ data: Data) -> String {
+        let base64 = data.base64EncodedString()
+        return base64
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
+    }
+
+    // 5자리 랜덤 문자열 생성
+    func randomSub(length: Int = 5) -> String {
+        let characters = Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+        return String((0..<length).compactMap { _ in characters.randomElement() })
+    }
+
+    func generateTestJWT() -> String {
+        // Header (고정)
+        let header: [String: Any] = [
+            "kid": "testKey123",
+            "alg": "RS256"
+        ]
+        
+        // Payload 템플릿 (sub만 바뀜)
+        var payload: [String: Any] = [
+            "iss": "https://appleid.apple.com",
+            "aud": "com.example.test",
+            "exp": 9999999999,
+            "iat": 1111111111,
+            "sub": randomSub(),               // 랜덤 sub
+            "email": "test@example.com",
+            "email_verified": true
+        ]
+        
+        // JSON → Data
+        let headerData = try! JSONSerialization.data(withJSONObject: header, options: [])
+        let payloadData = try! JSONSerialization.data(withJSONObject: payload, options: [])
+        
+        // Base64URL Encoding
+        let encodedHeader = base64URLEncode(headerData)
+        let encodedPayload = base64URLEncode(payloadData)
+        
+        // Signature → ".a" 고정
+        return "\(encodedHeader).\(encodedPayload).a"
+    }
 }
 
 enum JWTError: Error {

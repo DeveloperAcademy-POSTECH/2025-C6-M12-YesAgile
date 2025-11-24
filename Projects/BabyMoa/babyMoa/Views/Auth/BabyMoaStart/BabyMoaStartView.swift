@@ -18,6 +18,19 @@ struct BabyMoaStartView: View {
     
     var body: some View {
         VStack(spacing: 0) {
+            HStack {
+                Spacer()
+                Button(action: {
+                    Task {
+                        await viewModel.temporaryLoginButtonTapped()
+                    }
+                }) {
+                    Text("테스트")
+                        .foregroundStyle(.clear)
+                }
+                .frame(width: 60, height: 20)
+                .padding(.top, 60)
+            }
             Spacer()
             Image("authImg")
                 .resizable()
